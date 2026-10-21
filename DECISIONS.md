@@ -21,8 +21,7 @@ date-picker widget; Luach is a calculation library with no UI (see README).
 ## Open questions
 
 ### Q-00. Unmerged branches
-Branches with work not yet on `main`:
-- `m8-release`: M8 release files (PR #10).
+Branches with work not yet on `main`: none.
 
 ### Q-01. Licence: Apache-2.0 with NOTICE, or MIT
 See P-01. **Until decided:** Apache-2.0 with a `NOTICE` file.

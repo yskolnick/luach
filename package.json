@@ -70,21 +70,29 @@
     "check:licenses": "node scripts/check-licenses.mjs",
     "check:imports": "node scripts/check-imports.mjs",
     "check:size": "node scripts/check-size.mjs",
-    "check": "npm run typecheck && npm run lint && npm run check:imports && npm run check:licenses && npm test && npm run build && npm run check:size"
+    "check": "npm run typecheck && npm run lint && npm run check:imports && npm run check:licenses && npm run build && npm test && npm run check:size",
+    "test:hermes": "node scripts/hermes-test.mjs"
   },
   "devDependencies": {
+    "@babel/core": "^7.29.7",
+    "@babel/preset-env": "^7.29.7",
     "@hebcal/core": "^6.14.6",
     "@hebcal/learning": "^6.12.2",
     "@hebcal/leyning": "^10.1.0",
     "@types/node": "^22.20.5",
+    "ajv": "^8.20.0",
     "astronomy-engine": "^2.1.19",
     "esbuild": "^0.25.12",
     "eslint": "^9.39.5",
     "fast-check": "^3.23.2",
+    "ical.js": "^2.2.1",
     "kosher-zmanim": "^0.9.0",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.72.0",
     "vitest": "^3.2.7"
+  },
+  "bin": {
+    "luach": "./dist/cli/cli.js"
   }
 }

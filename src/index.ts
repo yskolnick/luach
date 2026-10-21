@@ -38,3 +38,6 @@ export * from './zmanim/day.js';
 export * from './learning/cycles.js';
 export * from './parsha/haftara.js';
 export * from './places/places.js';
+export * from './day/day-info.js';
+export * from './output/ical.js';
+export * from './text/parse.js';

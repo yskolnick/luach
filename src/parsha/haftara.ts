@@ -153,7 +153,9 @@ export function haftaraFor(date: HebrewDate, options: HaftaraOptions = {}): Haft
 export function fastMinchaHaftara(date: HebrewDate, options: HaftaraOptions = {}): Haftara | null {
   const minhag = options.minhag ?? 'ashkenaz';
   const events = holidaysOn(date, { israel: options.israel ?? false });
-  const fast = events.find((e) => e.flags.fast !== null);
+  // Communal fasts only (SA OC 566:1). Taanis Bechoros is the firstborn's fast (SA OC 470:1)
+  // and has no reading.
+  const fast = events.find((e) => e.flags.fast !== null && e.id !== 'taanis-bechoros');
   if (!fast || fast.id === 'yom-kippur') return fast ? special('yom-kippur-mincha', minhag) : null;
   if (fast.id === 'tisha-bav') return special('tisha-bav-mincha', minhag);
   const h = special('fast-day-mincha', minhag);

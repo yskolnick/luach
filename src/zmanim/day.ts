@@ -7,6 +7,7 @@
 
 import { HebrewDate } from '../calendar/hebrew-date.js';
 import { civilDateAt } from '../time/zone.js';
+import { civilToDays, daysToCivil } from '../time/civil.js';
 import { holidaysOn } from '../holidays/holidays.js';
 import type { HolidayEvent, HolidayOptions } from '../holidays/types.js';
 import { ZmanimCalendar, type GeoLocation, type ZmanimOptions } from './calendar.js';
@@ -33,10 +34,17 @@ function boundaryTime(z: ZmanimCalendar, b: DayBoundary): Zman {
  * date is used.
  */
 export function hebrewDateAt(instant: Date, location: GeoLocation, options?: { boundary?: DayBoundary } & ZmanimOptions): HebrewDate {
-  const civil = civilDateAt(instant.getTime(), location.timeZone);
-  const z = new ZmanimCalendar(location, civil, { ...options, rounding: false });
-  const end = boundaryTime(z, options?.boundary ?? 'sunset').time;
-  return HebrewDate.fromCivil(civil, { afterSunset: end !== null && instant.getTime() >= end.getTime() });
+  const t = instant.getTime();
+  const civil = civilDateAt(t, location.timeZone);
+  const zOptions = { ...options, rounding: false as const };
+  const boundary = options?.boundary ?? 'sunset';
+  // At high latitudes the previous civil day's boundary can fall after midnight, on this
+  // civil date. Until it passes, the Hebrew date is still the previous day's.
+  const yesterday = daysToCivil(civilToDays(civil.year, civil.month, civil.day) - 1);
+  const prevEnd = boundaryTime(new ZmanimCalendar(location, yesterday, zOptions), boundary).time;
+  if (prevEnd !== null && t < prevEnd.getTime()) return HebrewDate.fromCivil(yesterday);
+  const end = boundaryTime(new ZmanimCalendar(location, civil, zOptions), boundary).time;
+  return HebrewDate.fromCivil(civil, { afterSunset: end !== null && t >= end.getTime() });
 }
 
 /** Opinions for {@link fastTimes}. */
@@ -92,6 +100,16 @@ export function isMelachaForbiddenAt(instant: Date, location: GeoLocation, optio
   const tomorrow = today.next();
   const holy = (d: HebrewDate) => d.isShabbos || holidaysOn(d, options).some((e) => e.flags.melachaForbidden);
   const t = instant.getTime();
+  // At high latitudes the previous evening's candle lighting or havdala time can fall after
+  // midnight, on this civil date.
+  const yesterday = daysToCivil(civilToDays(civil.year, civil.month, civil.day) - 1);
+  const y = new ZmanimCalendar(location, yesterday, { ...options, rounding: false });
+  const yStart = y.candleLighting(options.beginsMinutesBeforeSunset ?? y.options.candleLightingMinutes).time;
+  const yEnd = y.havdala(options.ends ?? { degrees: 8.5 }).time;
+  if (yStart !== null && yEnd !== null) {
+    if (t < yStart.getTime()) return holy(today.prev());
+    if (t < yEnd.getTime()) return holy(today.prev()) || holy(today);
+  }
   const sunset = z.sunset().time;
   const start = z.candleLighting(options.beginsMinutesBeforeSunset ?? z.options.candleLightingMinutes).time;
   const end = z.havdala(options.ends ?? { degrees: 8.5 }).time;

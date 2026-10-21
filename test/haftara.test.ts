@@ -24,6 +24,9 @@ describe('haftara', () => {
     expect(haftaraFor(new HebrewDate(5787, Month.TISHREI, 10))?.key).toBe('yom-kippur-shacharis');
     expect(fastMinchaHaftara(new HebrewDate(5787, Month.TEVES, 10))?.key).toBe('fast-day-mincha');
     expect(fastMinchaHaftara(new HebrewDate(5787, Month.TEVES, 10), { minhag: 'sephardi' })).toBeNull();
+    // Taanis Bechoros is the firstborn's fast (SA OC 470:1), not a communal one (SA OC 566:1): no reading.
+    expect(fastMinchaHaftara(new HebrewDate(5786, Month.NISAN, 14))).toBeNull();
+    expect(fastMinchaHaftara(new HebrewDate(5785, Month.NISAN, 12))).toBeNull(); // moved to Thursday
   });
   it('Teimani gaps are null, not guessed', () => {
     const d = HebrewDate.fromGregorian(2026, 11, 7); // Chayei Sarah

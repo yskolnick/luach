@@ -25,6 +25,7 @@ import { amudYomi, mishnaYomis, nachYomi, rambamOneChapter, rambamThreeChapters,
 import { ZmanimCalendar, type GeoLocation, type ZmanimOptions } from '../zmanim/calendar.js';
 import { fastTimes } from '../zmanim/day.js';
 import { ZMANIM } from '../zmanim/opinions.js';
+import { zmanMethod } from '../zmanim/methods.js';
 import { Zman } from '../zmanim/zman.js';
 
 /** `$id` of the JSON Schema for {@link DayInfo}. */
@@ -143,11 +144,7 @@ export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = 
   if (options.location) {
     const z = new ZmanimCalendar(options.location, h, options);
     const names = options.zmanim ?? DEFAULT_DAY_ZMANIM;
-    zmanim = names.map((n) => {
-      const f = (z as unknown as Record<string, unknown>)[n];
-      if (typeof f !== 'function') throw new RangeError(`Unknown zman method "${n}"`);
-      return (f as () => Zman).call(z).toJSON();
-    });
+    zmanim = names.map((n) => zmanMethod(z, n).call(z).toJSON());
     const today = holy(h, hopts);
     // After 29 Elul 9999 (the last supported day) comes Rosh Hashana 10000, always Yom Tov.
     const tomorrow = h.epochDays === MAX_DAYS || holy(h.next(), hopts);

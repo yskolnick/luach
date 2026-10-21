@@ -179,3 +179,13 @@ describe('dayInfo', () => {
     expect(dayInfoRange({ year: 2026, month: 10, day: 21 }, 7).map((d) => d.weekday)).toEqual([3, 4, 5, 6, 0, 1, 2]);
   });
 });
+
+describe('dayInfo zmanim option', () => {
+  it('accepts only zman methods', () => {
+    const location = getPlace('lakewood')!;
+    for (const bad of ['constructor', 'make', 'riseSet', 'toString', '__proto__', 'nope']) {
+      expect(() => dayInfo({ year: 2027, month: 1, day: 1 }, { location, zmanim: [bad] }), bad).toThrow(new RangeError(`${bad} is not a zman`));
+    }
+    expect(dayInfo({ year: 2027, month: 1, day: 1 }, { location, zmanim: ['sunset'] }).zmanim).toHaveLength(1);
+  });
+});

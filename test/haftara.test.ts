@@ -52,6 +52,38 @@ describe('haftara', () => {
     expect(haftaraFor(haazinu, { shuvaAddition: 'both' })?.segments).toEqual(['Hosea 14:2-10', 'Joel 2:15-27', 'Micah 7:18-20']);
     expect(haftaraFor(haazinu, { minhag: 'sephardi' })?.reference).toBe('Hosea 14:2-10; Micah 7:18-20');
   });
+  it('Rosh Chodesh Av on Shabbos: Shim\'u by default (MB 425:8), Isaiah 66 as an option (Rema 425:1)', () => {
+    const rcAv = new HebrewDate(5781, Month.AV, 1);
+    expect(rcAv.isShabbos).toBe(true);
+    expect(haftaraFor(rcAv)?.reference).toBe('Jeremiah 2:4-28; Jeremiah 3:4');
+    expect(haftaraFor(rcAv, { roshChodeshAv: 'affliction' })?.key).toBe('shabbos-rosh-chodesh-av');
+    const rc = haftaraFor(rcAv, { roshChodeshAv: 'roshChodesh' })!;
+    expect(rc.key).toBe('shabbos-rosh-chodesh');
+    expect(rc.reference).toBe('Isaiah 66:1-24; Isaiah 66:23');
+  });
+  it('Rosh Chodesh Elul on Shabbos Re\'eh: by minhag, or chosen (SA and Rema OC 425:1, MB 425:7)', () => {
+    const reeh = new HebrewDate(5782, Month.AV, 30);
+    const kiSeitzei = reeh.addDays(14);
+    expect(reeh.isShabbos).toBe(true);
+    // Defaults: Ashkenaz reads Isaiah 66 and makes up Re'eh's on Ki Seitzei; Sephardim keep Re'eh's.
+    expect(haftaraFor(reeh)?.reference).toBe('Isaiah 66:1-24; Isaiah 66:23');
+    expect(haftaraFor(kiSeitzei)?.reference).toBe('Isaiah 54:1-55:5');
+    expect(haftaraFor(reeh, { minhag: 'sephardi' })?.reference).toBe('Isaiah 54:11-55:5');
+    expect(haftaraFor(kiSeitzei, { minhag: 'sephardi' })?.reference).toBe('Isaiah 54:1-10');
+    // Ashkenaz choosing the Mechaber's custom: no displacement, nothing to make up.
+    const a = { roshChodeshElul: 'consolation' } as const;
+    expect(haftaraFor(reeh, a)?.key).toBe('consolation-3');
+    expect(haftaraFor(reeh, a)?.reference).toBe('Isaiah 54:11-55:5');
+    expect(haftaraFor(kiSeitzei, a)?.key).toBe('consolation-5');
+    expect(haftaraFor(kiSeitzei, a)?.reference).toBe('Isaiah 54:1-10');
+    // Sephardi choosing the Rema's: Rosh Chodesh's haftara, Re'eh's added on Ki Seitzei.
+    const s = { minhag: 'sephardi', roshChodeshElul: 'roshChodesh' } as const;
+    expect(haftaraFor(reeh, s)?.key).toBe('shabbos-rosh-chodesh-and-erev');
+    expect(haftaraFor(kiSeitzei, s)?.key).toBe('ki-seitzei-after-rosh-chodesh-elul');
+    expect(haftaraFor(kiSeitzei, s)?.segments).toEqual(['Isaiah 54:1-10', 'Isaiah 54:11-55:5']);
+    // The explicit default changes nothing.
+    expect(haftaraFor(reeh, { roshChodeshElul: 'roshChodesh' })).toEqual(haftaraFor(reeh));
+  });
   it('Teimani gaps are null, not guessed', () => {
     const d = HebrewDate.fromGregorian(2026, 11, 7); // Chayei Sarah
     const t = haftaraFor(d, { minhag: 'teimani' })!;

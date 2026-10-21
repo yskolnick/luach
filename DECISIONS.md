@@ -179,6 +179,11 @@ See ADR 0005. **Default until decided:** as proposed.
   Vayelech and Joel 2:15-27 when it is Haazinu (the Dagul Mervava, MB 428:23), where it always
   added Joel. Option `shuvaAddition`: `'micah'`, `'joel'` or `'both'` (Prague; Luach puts Joel
   before Micah, in book order, which the MB does not specify).
+- *As built (2026-10-21):* haftara options `roshChodeshAv` (default `'affliction'`, Shim'u, per
+  MB 425:8 following the Gra; `'roshChodesh'`, Isaiah 66, which the Rema OC 425:1 calls
+  primary where there is no custom) and `roshChodeshElul` (default by minhag as before;
+  `'consolation'` per the SA OC 425:1, `'roshChodesh'` per the Rema there, with Re'eh's
+  haftara added on Ki Seitzei per MB 425:7).
 - *As built (2026-10-21):* `pirkeiAvos` with `until: 'shavuos'` (Kaf HaChaim 292:23) reads
   chapters 1–6 before Shavuos; a seventh Shabbos (Israel, when Pesach begins on Shabbos)
   returns null, since the source does not say what is read then.

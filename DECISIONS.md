@@ -119,6 +119,14 @@ decided:** as described (`ISRAEL_BOUNDARY` in `src/places/places.ts`).
 ### P-07. Per-module ESM output and name tables
 See ADR 0005. **Default until decided:** as proposed.
 
+### P-08. Freeze the shared tables
+`ZMANIM` (and each entry), `DEFAULT_DAY_ZMANIM`, the places from `getPlace()`,
+`builtInPlaces()` and `fullPlaces()`, and `ISRAEL_BOUNDARY` are plain objects and arrays: a
+caller's write changes every later result in the process. Proposal: `Object.freeze` them
+(deeply) where they are built. **Why:** a wrong zman is worse than a missing one, and a
+server or app shares one copy. **Default until decided:** not frozen;
+`test/immutability.test.ts` holds the tests as todos and runs each once its table is frozen.
+
 ## As built
 
 - *As built:* `gematriya()` writes an exact multiple of 1000 like its units digit (א׳ is 1
@@ -258,3 +266,19 @@ See ADR 0005. **Default until decided:** as proposed.
 - *As built:* UTC offsets from `Intl` are not rounded to whole minutes (historical local mean
   time has seconds), and rounded zmanim are rounded to whole minutes of the local clock, which
   is the same as UTC minutes for every zone with a whole-minute offset.
+- *As built:* the day JSON Schema ships in the package as `luach/schema/day.schema.json`
+  (`docs/schema/` keeps an identical copy, checked by a test). Its `$id`, and `$schema` in
+  every `dayInfo()` object, is
+  `https://raw.githubusercontent.com/yskolnick/luach/main/schema/day.schema.json`, a URL
+  that serves the JSON (the earlier GitHub `blob/` URL served a web page). Every object in
+  the schema with a fixed shape, including `learning`, is closed (`additionalProperties: false`).
+- *As built:* the import and licence checks read code with a small tokenizer of their own
+  (`scripts/lib/js-scan.mjs`), fail on `createRequire`, computed `import()`/`require()` and
+  devDependency names in strings, and check the built `dist/` for oracle text and package
+  imports; `npm run check` builds before the licence check (ADR 0006).
+- *As built:* CI builds once and smoke-tests the built package on Node 18, 20 and 22 (ESM,
+  CommonJS, the `exports` map and the CLI), in Bun (ESM and CommonJS), in Deno (ESM) and
+  in headless Chromium (`test/runtimes/`, ADR 0007).
+- *As built:* the example server's `/calendar.ics` serves at most 400 days with a place
+  (candle lighting and havdala make each day costly) and 5 × 366 days without, answering
+  a longer range with 400 Bad Request.

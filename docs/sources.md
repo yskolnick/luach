@@ -327,6 +327,7 @@ explicitly. Full text: [`DECISIONS.md`](https://github.com/yskolnick/luach/blob/
 | P-05 | Move table-only learning cycles after 1.0 | Proposals |
 | P-06 | What `isInIsrael` covers | Proposals |
 | P-07 | Per-module ESM output and name tables | Proposals |
+| P-08 | Freeze the shared tables | Proposals |
 
 ### Architecture decision records
 
@@ -335,6 +336,8 @@ explicitly. Full text: [`DECISIONS.md`](https://github.com/yskolnick/luach/blob/
 - [`docs/decisions/0003-tooling-and-zero-dependencies.md`](https://github.com/yskolnick/luach/blob/main/docs/decisions/0003-tooling-and-zero-dependencies.md): 0003. TypeScript, zero runtime dependencies, tsup, Vitest, ESLint
 - [`docs/decisions/0004-calendar-representation.md`](https://github.com/yskolnick/luach/blob/main/docs/decisions/0004-calendar-representation.md): 0004. Day count, month numbering and supported range
 - [`docs/decisions/0005-build-output-and-name-tables.md`](https://github.com/yskolnick/luach/blob/main/docs/decisions/0005-build-output-and-name-tables.md): 0005. Per-module ESM output and per-module name tables
+- [`docs/decisions/0006-clean-room-gates-tokenizer-and-dist.md`](https://github.com/yskolnick/luach/blob/main/docs/decisions/0006-clean-room-gates-tokenizer-and-dist.md): 0006. Clean-room gates: a tokenizer, and a check of the built files
+- [`docs/decisions/0007-runtime-smoke-tests.md`](https://github.com/yskolnick/luach/blob/main/docs/decisions/0007-runtime-smoke-tests.md): 0007. Smoke tests of the built package on every supported runtime
 
 ## Research notes and reports
 

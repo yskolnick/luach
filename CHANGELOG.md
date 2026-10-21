@@ -33,7 +33,8 @@ All notable changes for users of the `luach` package. This project follows
   15,000+ people in a separate import, `luach/places-full` (GeoNames, CC-BY 4.0).
 - The ESM build is now one file per module, so unused features are dropped by bundlers.
 - `dayInfo` / `dayInfoRange`: everything about a day as JSON, with a JSON Schema
-  (`docs/schema/day.schema.json`).
+  shipped in the package as `luach/schema/day.schema.json`; its `$id` and each object's
+  `$schema` are a URL that serves the JSON file.
 - iCalendar export (`toICalendar`) of holidays, parsha, learning, candle lighting, havdala
   and zmanim.
 - `parseHebrewDate` for "י״ד אדר תשפ״ז" and "14 Adar II 5787"; `moladAnnouncement`;
@@ -77,3 +78,9 @@ All notable changes for users of the `luach` package. This project follows
 - The city-data files ship without source maps; the package is about half the size.
 - Hebrew zman labels carry a left-to-right mark (U+200E) after each degree sign, so the
   angle reads correctly in right-to-left text.
+
+### Fixed
+- iCalendar: semicolons and lone carriage returns in text values are now escaped
+  (RFC 5545 §3.3.11), so summaries like Rambam's "chapter 18, 19; Fasts chapter 1" and
+  calendar names survive a round trip. An invalid `now` and a `zmanim` name that is not a
+  zman method (e.g. `constructor`) throw a `RangeError`.

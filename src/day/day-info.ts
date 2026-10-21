@@ -28,7 +28,7 @@ import { ZMANIM } from '../zmanim/opinions.js';
 import { Zman } from '../zmanim/zman.js';
 
 /** `$id` of the JSON Schema for {@link DayInfo}. */
-export const DAY_INFO_SCHEMA_ID = 'https://github.com/yskolnick/luach/blob/main/docs/schema/day.schema.json';
+export const DAY_INFO_SCHEMA_ID = 'https://raw.githubusercontent.com/yskolnick/luach/main/schema/day.schema.json';
 
 /**
  * A place for {@link dayInfo}: a GeoLocation, optionally with a name, an Israel flag and a

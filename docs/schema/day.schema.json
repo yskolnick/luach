@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/yskolnick/luach/blob/main/docs/schema/day.schema.json",
+  "$id": "https://raw.githubusercontent.com/yskolnick/luach/main/schema/day.schema.json",
   "title": "Luach day",
   "description": "Everything about one day, as returned by dayInfo() in the luach package. Times are ISO 8601 UTC instants with a local HH:MM in the location's zone. Every zman names its opinion and source; defaults are not rulings.",
   "type": "object",
@@ -72,7 +72,15 @@
           ]
         },
         "reason": {
-          "type": "string"
+          "enum": [
+            "sun-always-above",
+            "sun-always-below",
+            "no-sunrise",
+            "no-sunset",
+            "depends-on-missing-zman",
+            "not-applicable-today",
+            "requires-terrain-data"
+          ]
         },
         "fallback": {
           "type": "string"
@@ -139,7 +147,9 @@
   },
   "properties": {
     "$schema": {
-      "type": "string"
+      "type": "string",
+      "const": "https://raw.githubusercontent.com/yskolnick/luach/main/schema/day.schema.json",
+      "description": "The $id of this schema."
     },
     "gregorian": {
       "type": "string",
@@ -346,11 +356,59 @@
     },
     "learning": {
       "type": "object",
-      "additionalProperties": {
-        "type": [
-          "string",
-          "null"
-        ]
+      "required": [
+        "dafYomi",
+        "yerushalmiYomi",
+        "amudYomi",
+        "mishnaYomis",
+        "rambamOneChapter",
+        "rambamThreeChapters",
+        "nachYomi"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "dafYomi": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "yerushalmiYomi": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "amudYomi": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "mishnaYomis": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rambamOneChapter": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rambamThreeChapters": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "nachYomi": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
       }
     },
     "location": {

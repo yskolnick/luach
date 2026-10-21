@@ -75,6 +75,11 @@ export interface HolidayOptions {
    * Berura 417:4 for those who do not say Selichos. (On Shabbos it is always Thursday.)
    */
   yomKippurKatanOnFriday?: 'thursday' | 'friday';
+  /**
+   * Keep Yom Kippur Katan before Rosh Chodesh Cheshvan (Kaf HaChaim OC 417:16: "צריך
+   * להתענות"). Default `false` (as built; Luach found no source for leaving it out).
+   */
+  yomKippurKatanCheshvan?: boolean;
   /** Include the Shabbosos of Shovavim. Default `false`. */
   shovavim?: boolean;
   /** Include Shabbos Mevorchim. Default `true`. */

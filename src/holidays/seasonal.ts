@@ -8,6 +8,7 @@
  * @packageDocumentation
  */
 
+import type { OmerNusach } from './omer.js';
 import { HebrewDate } from '../calendar/hebrew-date.js';
 import { Month } from '../calendar/months.js';
 import { molad } from '../calendar/molad.js';
@@ -56,11 +57,16 @@ export function talUmatarStart(year: number, options?: { israel?: boolean }): Ta
  *   {@link talUmatarStart}) until Mincha of Erev Pesach (SA OC 117:1).
  *   Values describe the daytime Shacharis of `date`.
  *
- * Whether to say "morid hatal" in summer is a custom (Ashkenaz outside Israel generally
- * says nothing; Nusach Sefard and Israel say it); it is reported as `moridHatal` when
- * `mashivHaruach` is false.
+ * "Morid hatal" in summer (`moridHatal`) is a custom, chosen by `nusach` (default
+ * `'ashkenaz'`):
+ * - Edot HaMizrach say it: MB 114:13 ("למנהג ספרד שנוהגין לכתחילה לומר מוריד הטל בימות
+ *   החמה"; also MB 114:3; SA OC 114:3).
+ * - Ashkenazim outside Israel do not: Rema OC 114:3 ("ואנו בני אשכנז לא מזכירין טל לא בימות
+ *   החמה ולא בימות הגשמים").
+ * - In Israel it is said in every nusach (Tashbetz Katan 101).
+ * - Nusach Sefard siddurim print it for the summer (not verified in a halachic code).
  */
-export function amidahSeason(date: HebrewDate, options?: { israel?: boolean }): {
+export function amidahSeason(date: HebrewDate, options?: { israel?: boolean; nusach?: OmerNusach }): {
   mashivHaruach: boolean;
   moridHatal: boolean;
   talUmatar: boolean;
@@ -69,11 +75,13 @@ export function amidahSeason(date: HebrewDate, options?: { israel?: boolean }): 
   const y = date.year;
   const sheminiAtzeres = new HebrewDate(y, Month.TISHREI, 22);
   const pesach = new HebrewDate(y, Month.NISAN, 15);
-  const winter = date.epochDays > sheminiAtzeres.epochDays && date.epochDays < pesach.epochDays;
+  // Shacharis: from the day after Shemini Atzeres through the first day of Pesach.
+  const winter = date.epochDays > sheminiAtzeres.epochDays && date.epochDays <= pesach.epochDays;
   const changesAtMusaf = date.equals(sheminiAtzeres) || date.equals(pesach);
   const start = talUmatarStart(y, options).hebrewDate;
   const talUmatar = date.epochDays >= start.epochDays && date.epochDays < pesach.epochDays;
-  return { mashivHaruach: winter, moridHatal: !winter, talUmatar, changesAtMusaf };
+  const saysTal = Boolean(options?.israel) || (options?.nusach ?? 'ashkenaz') !== 'ashkenaz';
+  return { mashivHaruach: winter, moridHatal: !winter && saysTal, talUmatar, changesAtMusaf };
 }
 
 /** Birkas HaChama: the Wednesday dates (Gregorian) of the 28-year cycle in a range of years. */

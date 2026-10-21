@@ -296,6 +296,18 @@ recorded as new entries; old ones are superseded, not erased.
 - **Confidence:** High.
 - **Open:** decided: [D-09](#d-09).
 
+### Q-07. Chabad on Shabbos HaChodesh or Chanukah before Rosh Chodesh {#q-07}
+
+- **What it does:** on Shabbos HaChodesh on 29 Adar and a Shabbos of Chanukah on 29 Kislev,
+  the Chabad haftara has no Machar Chodesh verses added.
+- **Why:** Chabad's addition after Shekalim is in the haftara table; for these two days Luach
+  found no source either way.
+- **Sources:** SA OC 425:2, 685:4, 684:3; Aruch HaShulchan OC 425:4–5 (the displacement
+  itself, *verified*); no Chabad source read for the added verses.
+- **Checked against:** nothing; the oracle tests do not cover Chabad.
+- **Confidence:** Low.
+- **Open:** a Chabad luach or Sefer HaMinhagim for these two days.
+
 ## Proposals
 
 ### P-01. Apache-2.0 with a NOTICE file {#p-01}
@@ -397,6 +409,21 @@ recorded as new entries; old ones are superseded, not erased.
 - **Confidence:** Not applicable.
 - **Open:** decided: [D-11](#d-11). A caller's write now throws in strict mode (and is
   ignored otherwise).
+
+### P-09. Tachanun after Sukkos: which default {#p-09}
+
+- **What it does:** `tefillahOn` omits Tachanun through Rosh Chodesh Cheshvan unless
+  `tishreiTachanun: 'isruChag'` is given.
+- **Why:** proposed change: the module's defaults are common Ashkenazi practice, and the
+  Ashkenazi works Luach read resume Tachanun after Isru Chag. The old documentation called
+  the longer custom "widespread Ashkenazi"; the sources say otherwise.
+- **Sources:** SA OC 131:7; Kitzur SA 22:8; Sha'arei Teshuvah 131:19 ("במדינות אלו אין
+  המנהג כן ומי שנוהג כן ... אין מוחין בידו"); Aruch HaShulchan OC 131:12 ("ואינו עיקר");
+  Kaf HaChaim OC 131:98 (Knesses HaGedolah; Pri Chadash; Chaim Sha'al: the custom in Israel)
+  (*verified*, Sefaria).
+- **Checked against:** `test/sourced-options.test.ts`.
+- **Confidence:** High on the sources; what shuls do today was not surveyed.
+- **Open:** Yosef's choice of default.
 
 ## As built
 
@@ -1000,5 +1027,58 @@ These are defaults and details the code has that nobody has chosen. Each can be 
 - **Why:** havdala over a cup is not said on Motzaei Shabbos then; showing a havdala time was wrong.
 - **Sources:** Shulchan Aruch OC 556:1; Mishna Berura 556:2; Rema OC 299:10 ("HaMavdil" before melacha) (*verified*).
 - **Checked against:** unit, CLI and iCal tests for 2 August 2025, New York.
+- **Confidence:** High.
+- **Open:** nothing.
+
+### AB-57. Mourning restrictions by named custom {#ab-57}
+
+- **What it does:** `mourningPeriods(date, { sefirah, beinHametzarim, meatWine })` says, per
+  category, whether the custom restricts haircuts, weddings, meat and wine, and laundry that
+  day, with part of the day (`until-sunrise`, `night-only`, `until-chatzos`) and the source.
+- **Why:** the customs differ widely and there is no common default; a calendar span alone
+  ("the Three Weeks") was being read as a rule. Days the sources do not settle (weddings on
+  10 Av for Ashkenaz; the fast day itself for Sephardim when there is no week of Tisha B'Av;
+  meat on 10 Av without a Three Weeks custom) are `null`.
+- **Sources:** SA and Rema OC 493:1–3; MB 493:5–7, 10–11, 14–15; Kaf HaChaim OC 493:13
+  (the Arizal); SA and Rema OC 551:2–4, 9; MB 551:58–59; SA and Rema OC 558:1; MB 558:3–4
+  (*verified*, Sefaria). Kaf HaChaim OC 551:125 (from 2 Av) was found by a research agent and
+  not re-read.
+- **Checked against:** `test/mourning.test.ts`, a test per rule.
+- **Confidence:** Medium: the sources are read, but the exceptions (a bris, a seudas mitzvah,
+  Shabbos Chazon, mourners, children) are not modelled.
+- **Open:** more customs on request.
+
+### AB-58. Tachanun on Pesach Sheni {#ab-58}
+
+- **What it does:** no Tachanun on 14 Iyar unless `pesachSheniTachanun: 'say'`.
+- **Why:** the Shulchan Aruch does not list it; the later works record the custom to omit it.
+- **Sources:** Kaf HaChaim OC 131:98 (Knesses HaGedolah); Sha'arei Teshuvah 131:19; Aruch
+  HaShulchan OC 131:12 ("ופסח שני לא חשבו והוא פלא, ומנהג הספרדים שלא ליפול בו")
+  (*verified*, Sefaria).
+- **Checked against:** `test/sourced-options.test.ts`.
+- **Confidence:** High.
+- **Open:** nothing.
+
+### AB-59. Yom Kippur Katan: which months {#ab-59}
+
+- **What it does:** no Yom Kippur Katan before Tishrei, Iyar or Teves; before Cheshvan only
+  with `yomKippurKatanCheshvan`. Friday or Shabbos moves it to Thursday by default.
+- **Why:** each exclusion now has its reason; Cheshvan had none, so it became an option.
+- **Sources:** SA OC 581:2 (Erev Rosh Hashana); MB 429:10 (Erev Rosh Chodesh Iyar is in
+  Nisan); SA OC 670:1 and MA, MB 686:1 (Chanukah); Kaf HaChaim OC 417:16 (Cheshvan: "צריך
+  להתענות"); MB 550:11 and Aruch HaShulchan OC 417:11 (Thursday) (*verified*, Sefaria).
+- **Checked against:** `test/sourced-options.test.ts`; the hebcal oracle for the other months.
+- **Confidence:** Medium: the default for Cheshvan (off) has no source.
+- **Open:** whether Cheshvan should be on by default.
+
+### AB-60. Mashiv haruach and morid hatal {#ab-60}
+
+- **What it does:** `amidahSeason` gives "mashiv haruach" at Shacharis of 15 Nisan, and
+  `moridHatal` only for a non-Ashkenaz `nusach` or in Israel.
+- **Why:** the change is at Musaf of the first day of Pesach, so Shacharis is still winter;
+  and Ashkenazim outside Israel say neither in summer.
+- **Sources:** SA OC 114:1–3; Rema OC 114:3 ("ואנו בני אשכנז לא מזכירין טל"); MB 114:3, 13;
+  Tashbetz Katan 101 (Israel) (*verified* except the Tashbetz Katan, found by a research agent).
+- **Checked against:** `test/amidah-season.test.ts`.
 - **Confidence:** High.
 - **Open:** nothing.

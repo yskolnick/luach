@@ -15,9 +15,24 @@ plans in [ROADMAP.md](ROADMAP.md) and user-facing changes in [CHANGELOG.md](CHAN
   - stop exporting internal helpers: done (149 names → 96);
   - one zman's bundle cost: kept at 10.6 KB for 1.0 (D-13; hebcal 44.8 KB, kosher-zmanim
     49.0 KB);
-  - a source or an option for every rule the code audit found without one: in progress.
+  - a source or an option for every rule the code audit found without one: done (AB-57 to
+    AB-60).
+- **P-09** Tachanun after Sukkos: whether the default should be Isru Chag (the Ashkenazi
+  sources) instead of the end of Tishrei.
+- **Q-07** Chabad's haftara when Shabbos HaChodesh or Chanukah is the day before Rosh Chodesh.
 - Private vulnerability reporting to be turned on in the repository settings
   ([SECURITY.md](SECURITY.md) points there).
+
+## 2026-10-21 (sources and options)
+
+The last D-12 item: every rule the code audit found without a source now has one, or an option.
+- Mourning periods: the restrictions of each named custom (Sefirah, the Three Weeks, meat and
+  wine), with sources, and `null` where the sources do not settle a day. No default (AB-57).
+- Tachanun on Pesach Sheni is now an option, with sources (AB-58); the Tishrei default's
+  documentation was wrong and now cites both sides (P-09 proposes changing the default).
+- Yom Kippur Katan: a source for each month it is skipped; Cheshvan is an option (AB-59).
+- Mashiv haruach on the first morning of Pesach fixed; morid hatal follows the nusach (AB-60).
+- Machar Chodesh's precedence and Shabbos Mevorchim before Tishrei now cite their sources.
 
 ## 2026-10-21 (decisions)
 

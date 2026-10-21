@@ -153,6 +153,12 @@ only partly accurate (`docs/research/2026-10-21-zmanim-opinions.md`): the Magen 
 and Shulchan Aruch HaRav 89:1 gives no minutes (459:10 makes a mil 24 minutes). **Until
 decided:** Luach cites each part separately, as in `src/zmanim/opinions.ts`.
 
+### Q-07. Chabad on Shabbos HaChodesh or Chanukah before Rosh Chodesh
+When Shabbos HaChodesh is 29 Adar, or a Shabbos of Chanukah is 29 Kislev, Rosh Chodesh is on
+Sunday. Chabad adds the first and last verses of Machar Chodesh after Shekalim in that case
+(`shekalim-machar-chodesh`), but Luach found no source for whether it does so after
+HaChodesh or the Chanukah haftara. **Until decided:** no verses are added (as built).
+
 ## Proposals
 
 ### P-01. Apache-2.0 with a NOTICE file
@@ -202,6 +208,15 @@ caller's write changes every later result in the process. Proposal: `Object.free
 (deeply) where they are built. **Why:** a wrong zman is worse than a missing one, and a
 server or app shares one copy. **Default until decided:** not frozen;
 `test/immutability.test.ts` holds the tests as todos and runs each once its table is frozen.
+
+### P-09. Tachanun after Sukkos: which default
+`tefillahOn` stops Tachanun through Rosh Chodesh Cheshvan by default (`'endOfTishrei'`), and
+its documentation called that "a widespread Ashkenazi custom". The sources Luach read put the
+longer custom with the Sephardim and Israel (Knesses HaGedolah in Kaf HaChaim OC 131:98), and
+the Ashkenazi works against it: Sha'arei Teshuvah 131:19 "במדינות אלו אין המנהג כן", Aruch
+HaShulchan OC 131:12 "ואינו עיקר", Kitzur SA 22:8 (through Isru Chag). The module's stated
+default is common Ashkenazi practice. Proposal: make `'isruChag'` the default. **Default until
+decided:** `'endOfTishrei'`, with the documentation corrected to cite both sides.
 
 ## As built
 
@@ -364,3 +379,21 @@ server or app shares one copy. **Default until decided:** not frozen;
   `shabbosEnds` (when Shabbos ends; not havdala) and `fastBeginsTonight`, and havdala over a cup
   when the fast ends on Sunday night (SA OC 556:1; MB 556:2). `fastBeginsTonight` is also set on
   Erev Yom Kippur and Erev Tisha B'Av.
+- **AB-57** *As built (D-12):* `mourningPeriods(date, options)` reports the restrictions
+  (haircuts, weddings, meat and wine, laundry) only for customs the caller names: six Sefirah
+  customs (SA, Rema and MB 493; Kaf HaChaim OC 493:13), Ashkenaz or Sephard for the Three Weeks
+  (SA and Rema OC 551:2–4; MB 558:3–4), four meat-and-wine customs (SA OC 551:9; MB 551:58–59;
+  Kaf HaChaim OC 551:125), ending on 10 Av per SA or Rema OC 558:1. There is no default; with
+  no custom, `restrictions` is `null`, and a day the sources read do not settle is `null`. It
+  also gives `weekOfTishaBav` (none when 9 Av is Sunday or Shabbos, SA OC 551:4).
+- **AB-58** *As built (D-12):* Tachanun is omitted on Pesach Sheni by default
+  (`pesachSheniTachanun: 'omit'`; Kaf HaChaim OC 131:98; Sha'arei Teshuvah 131:19; Aruch
+  HaShulchan OC 131:12); `'say'` follows the Shulchan Aruch's list.
+- **AB-59** *As built (D-12):* Yom Kippur Katan is not kept before Tishrei (SA OC 581:2), Iyar
+  (MB 429:10) or Teves (SA OC 670:1); before Cheshvan it is off by default and on with
+  `yomKippurKatanCheshvan` (Kaf HaChaim OC 417:16 says to fast; Luach found no source for
+  leaving it out).
+- **AB-60** *As built (D-12):* `amidahSeason` says "mashiv haruach" at Shacharis of the first
+  day of Pesach (it changes at Musaf), and "morid hatal" by `nusach`: not for Ashkenaz outside
+  Israel (Rema OC 114:3, the default), yes for other nusachos and in Israel (MB 114:3, 13;
+  Tashbetz Katan 101). Before, `moridHatal` was true all summer for everyone.

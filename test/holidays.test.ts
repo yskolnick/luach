@@ -212,7 +212,7 @@ describe('tefillah', () => {
     expect(tefillahOn(n22).mizmorLesodah).toBe(false); // diaspora: the last day of Pesach
   });
   it('mourning periods', () => {
-    expect(mourningPeriods(new HebrewDate(5787, Month.AV, 3))).toEqual({ threeWeeks: true, nineDays: true, omer: false });
+    expect(mourningPeriods(new HebrewDate(5787, Month.AV, 3))).toEqual({ threeWeeks: true, nineDays: true, weekOfTishaBav: false, omer: false, restrictions: null });
     expect(mourningPeriods(new HebrewDate(5787, Month.IYAR, 3)).omer).toBe(true);
   });
 });

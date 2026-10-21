@@ -27,8 +27,17 @@ All notable changes for users of the `luach` package. This project follows
   from `getPlace()`, `builtInPlaces()` and `fullPlaces()`, `LOCAL_CANDLE_LIGHTING` and
   `ISRAEL_BOUNDARY`. Writing to
   them throws in strict mode. Copy a table before changing it.
+- `mourningPeriods` returns `weekOfTishaBav` and `restrictions` as well, and moved to its own
+  module (still exported from `luach`). `restrictions` is `null` unless a custom is given; see
+  `MourningOptions`. Code comparing the whole result with `toEqual` needs the new fields.
+- `amidahSeason(...).moridHatal` now follows `nusach` (default `'ashkenaz'`): false outside
+  Israel for Ashkenaz, which says neither in summer (Rema OC 114:3). Pass `nusach: 'sefard'`
+  or `'edot-hamizrach'`, or `israel: true`, for the old value.
 
 ### Added
+- Mourning restrictions by named custom (`mourningPeriods(date, { sefirah, beinHametzarim,
+  meatWine })`), each with its source and part of the day.
+- `pesachSheniTachanun` (`tefillahOn`) and `yomKippurKatanCheshvan` (holiday options).
 - Hebrew ↔ Gregorian conversion for Hebrew years 1–9999 (`HebrewDate`), computed from
   the Rambam's rules; molad; leap years; year types; month and year lengths.
 - Yahrzeit and birthday dates (`anniversary`, `barMitzvahDate`) with a choice of customs.
@@ -105,6 +114,8 @@ All notable changes for users of the `luach` package. This project follows
   angle reads correctly in right-to-left text.
 
 ### Fixed
+- `amidahSeason` on the first day of Pesach: Shacharis still says "mashiv haruach" (the change
+  is at Musaf); it used to report summer for the whole day.
 - iCalendar: semicolons and lone carriage returns in text values are now escaped
   (RFC 5545 §3.3.11), so summaries like Rambam's "chapter 18, 19; Fasts chapter 1" and
   calendar names survive a round trip. An invalid `now` and a `zmanim` name that is not a

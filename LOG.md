@@ -14,8 +14,55 @@ plans in [ROADMAP.md](ROADMAP.md) and user-facing changes in [CHANGELOG.md](CHAN
 - **Q-05** Modern Israeli days in the years before their amendments.
 - **Q-06** A citation in the original project brief that was only partly accurate.
 - **P-05** Move the learning cycles that need a publisher's day-by-day table to after 1.0.
+- **P-08** Freeze the shared tables, so one caller's change cannot alter another's results.
 - Private vulnerability reporting to be turned on in the repository settings
   ([SECURITY.md](SECURITY.md) points there).
+
+## 2026-10-21 (second session)
+
+A second session had built Luach in parallel. Yosef kept `main` (**D-05**: "Keep main and see
+where this code is better, add that"). The second implementation is archived, unmerged; what it
+did better is in yskolnick/luach#14, each change with a test that failed first.
+
+**Fixed:**
+- Shabbos candles on a Friday that is Yom Tov were given after nightfall.
+- A Shabbos before Tisha B'Av postponed to Sunday showed havdala.
+- At high latitudes, the Hebrew date and the melacha check went wrong just after midnight.
+- Taanis Bechoros got a Mincha haftara.
+- Pirkei Avos was said on Shabbos Erev Tisha B'Av.
+- The Kedoshim haftara was wrong when Acharei Mos's had been displaced.
+- Shabbos Shuva always added Joel.
+- A bar mitzvah for 30 Adar I came out a month early in common years.
+- BeHaB started a week early when Rosh Chodesh was Shabbos (the AB-06 question).
+- Yaaleh V'Yavo was off on Yom Kippur.
+- Yom HaShoah's Friday rule applied from 1951 instead of the 1959 law (the Q-05 question).
+- The high-latitude fallbacks invented times in polar night.
+- iCal did not escape semicolons.
+
+**Added:**
+- Local candle-lighting customs with their source (Jerusalem 40, Haifa 30).
+- 197 built-in places.
+- Search that no longer guesses wrong cities.
+- The JSON Schema shipped in the package.
+- Runtime tests on Node 18–22, Bun, Deno and Chromium.
+- The published USNO tables as a test.
+- [Sources](docs/sources.md): an index, generated from the code, of every zman's source, every
+  citation in the code, the data, the test oracles, every decision and every research note.
+  Yosef: "Write up a sources and decisions document about where times came from and cite and
+  source every decision and document etc. This is being built in public".
+
+**Citation audits:** every citation was read again in the primary texts.
+- Zmanim: 67 citations; 3 wrong and 12 imprecise, all corrected. Unread attributions are marked
+  "not verified" (several are known only from other software's documentation).
+- Calendar and readings: 69 citations; 1 wrong and 5 imprecise, all corrected.
+- Notes in [docs/research](docs/research). The Levush source for Plag (AB-14) is now Biur
+  Halacha 261:2 (AB-40).
+
+**Open, found but not done:**
+- The library assumes the diaspora and Ashkenaz when the caller doesn't choose.
+- One zman costs about 10 KB in a bundle.
+- Many internal helpers are exported.
+- Several halachic rules have no source or option (see the code audit note).
 
 ## 2026-10-21
 

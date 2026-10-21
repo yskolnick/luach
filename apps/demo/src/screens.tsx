@@ -58,7 +58,7 @@ export function TodayScreen({ theme, t, settings, date }: ScreenProps) {
       )}
       <Card theme={theme}>
         <Heading theme={theme} rtl={rtl}>{t.parsha}</Heading>
-        <Text style={[styles.body, { color: theme.text }, dir(rtl)]}>{info.parsha.name ?? info.parsha.holiday ?? '—'}</Text>
+        <Text style={[styles.body, { color: theme.text }, dir(rtl)]}>{info.parsha?.name ?? info.parsha?.holiday ?? '—'}</Text>
         <Heading theme={theme} rtl={rtl}>{t.daf}</Heading>
         <Text style={[styles.body, { color: theme.text }, dir(rtl)]}>{info.learning.dafYomi ?? '—'}</Text>
         {info.omer && (
@@ -123,7 +123,7 @@ export function WeekScreen({ theme, settings, date }: ScreenProps) {
   const israel = israelOf(settings);
   const events = holidaysBetween(start, start.addDays(6), { israel });
   const shabbos = start.onOrAfter(6);
-  const parsha = parshaName(parshaFor(shabbos, { israel }).parsha, locale);
+  const parsha = parshaName(parshaFor(shabbos, { israel })?.parsha ?? null, locale);
   return (
     <View>
       {Array.from({ length: 7 }, (_, i) => start.addDays(i)).map((d) => {

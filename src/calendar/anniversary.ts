@@ -1,7 +1,7 @@
 /**
  * Yahrzeits and Hebrew birthdays (including bar and bas mitzvah) in later years.
  *
- * Most dates simply recur on the same Hebrew day. Three cases need a rule, and customs
+ * Most dates simply recur on the same Hebrew day. Four cases need a rule, and customs
  * differ; the caller chooses. Defaults are documented below and are not rulings.
  * Ask your rav. This library calculates; it does not rule.
  *
@@ -11,10 +11,20 @@
  *    Rema there gives Adar I, adding that some observe both; the default for
  *    `kind: 'yahrzeit'` is Adar I. Set `adarInLeapYear` to choose.
  * 2. **Adar I or Adar II of a leap year, observed in a common year:** Adar.
- *    30 Adar I (the first day of Rosh Chodesh Adar II) becomes 30 Shevat, the first day
- *    of Rosh Chodesh Adar in a common year (MB 568:42; Magen Avraham 568:20 gives the
- *    mirror case; *as built*; see DECISIONS.md).
- * 3. **The 30th of Cheshvan or Kislev, in a year when that month has 29 days.**
+ *    For a yahrzeit, 30 Adar I (the first day of Rosh Chodesh Adar II) becomes 30 Shevat,
+ *    the first day of Rosh Chodesh Adar in a common year (MB 568:42; Magen Avraham 568:20
+ *    gives the mirror case; *as built*; see DECISIONS.md).
+ *    For a birthday it becomes 1 Nisan: when the 30th does not exist, the year is not
+ *    complete until the 1st of the next month (Magen Avraham OC 55:10; Mishna Berura 55:45,
+ *    and 55:44: one born in Adar I counts from Adar, not Shevat). This applies to every
+ *    birthday whose day is missing in the target month.
+ * 3. **Born in Adar I, birthday in a leap year** (`kind: 'birthday'` only). `adarI: 'levush'`
+ *    keeps Adar I: the Levush (OC 685, as cited by the Magen Avraham), and Mishna Berura 55:43,
+ *    "the consensus of the later authorities, against the Magen Avraham". `adarI:
+ *    'magen-avraham'` gives Adar II: Magen Avraham 55:10 argues that the twelfth year was a
+ *    common year, so thirteen full years end only in Adar II ("נעשה ב"מ באדר שני").
+ *    Default: `'levush'` (*as built*; see DECISIONS.md Q-04). A yahrzeit in Adar I stays in Adar I.
+ * 4. **The 30th of Cheshvan or Kislev, in a year when that month has 29 days.**
  *    `'nextMonth'` moves it to the 1st of the following month (the second day of
  *    the same Rosh Chodesh); `'firstAnniversary'` keeps the 30th whenever it exists, and
  *    otherwise follows the first anniversary: if the month had only 29 days in the year
@@ -37,14 +47,20 @@ export interface AnniversaryOptions {
   adarInLeapYear?: 'adar1' | 'adar2';
   /** For the 30th of Cheshvan or Kislev in a year when the month has only 29 days. */
   missingThirtieth?: 'nextMonth' | 'firstAnniversary';
+  /**
+   * Birthdays only: born in Adar I, observed in a leap year. `'levush'` (default): Adar I
+   * (Levush OC 685; Mishna Berura 55:43). `'magen-avraham'`: Adar II (Magen Avraham OC 55:10).
+   */
+  adarI?: 'levush' | 'magen-avraham';
 }
 
 /** The Hebrew date in `year` on which an event of `original` is observed. */
 export function anniversary(original: HebrewDateParts, year: number, options: AnniversaryOptions): HebrewDate {
   assertHebrewDate(original.year, original.month, original.day);
   assertYear(year);
-  const adarChoice = options.adarInLeapYear ?? (options.kind === 'birthday' ? 'adar2' : 'adar1');
-  const thirtieth = options.missingThirtieth ?? (options.kind === 'birthday' ? 'nextMonth' : 'firstAnniversary');
+  const birthday = options.kind === 'birthday';
+  const adarChoice = options.adarInLeapYear ?? (birthday ? 'adar2' : 'adar1');
+  const thirtieth = options.missingThirtieth ?? (birthday ? 'nextMonth' : 'firstAnniversary');
   const fromLeap = isLeapYear(original.year);
   const toLeap = isLeapYear(year);
   let month: number = original.month;
@@ -54,11 +70,13 @@ export function anniversary(original: HebrewDateParts, year: number, options: An
     if (!fromLeap && toLeap) {
       month = adarChoice === 'adar2' ? Month.ADAR_II : Month.ADAR_I;
     } else if (fromLeap && !toLeap) {
-      if (month === Month.ADAR_I && day === 30) {
+      if (month === Month.ADAR_I && day === 30 && !birthday) {
         month = Month.SHEVAT;
       } else {
         month = Month.ADAR;
       }
+    } else if (fromLeap && toLeap && birthday && month === Month.ADAR_I && options.adarI === 'magen-avraham') {
+      month = Month.ADAR_II;
     }
   }
 
@@ -72,13 +90,25 @@ export function anniversary(original: HebrewDateParts, year: number, options: An
     }
   }
 
-  // A 30th that the target month lacks in any other month (e.g. 30 Adar I in a leap
-  // year observed in a leap year is always fine; Adar (29) never has a 30th).
-  if (day > monthLength(year, month)) day = monthLength(year, month);
+  const length = monthLength(year, month);
+  if (day > length) {
+    // A birthday whose 30th is missing (30 Adar I in Adar or Adar II): the age is not
+    // complete until the 1st of the next month (Magen Avraham OC 55:10; Mishna Berura 55:45).
+    // Adar is never the last month of the year, so the next day stays in `year`.
+    if (birthday) return new HebrewDate(year, month, length).next();
+    day = length;
+  }
   return new HebrewDate(year, month, day);
 }
 
-/** The year a boy becomes bar mitzvah (13) or a girl bas mitzvah (12), and the date. */
-export function barMitzvahDate(birth: HebrewDateParts, age: 12 | 13 = 13): HebrewDate {
-  return anniversary(birth, birth.year + age, { kind: 'birthday' });
+/**
+ * The date a boy becomes bar mitzvah (13) or a girl bas mitzvah (12): the birthday rules of
+ * {@link anniversary} (`kind: 'birthday'`), with `adarI` for one born in Adar I.
+ */
+export function barMitzvahDate(
+  birth: HebrewDateParts,
+  age: 12 | 13 = 13,
+  options: Pick<AnniversaryOptions, 'adarI'> = {},
+): HebrewDate {
+  return anniversary(birth, birth.year + age, { kind: 'birthday', ...options });
 }

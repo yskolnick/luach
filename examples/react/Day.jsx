@@ -14,7 +14,7 @@ export function Day({ date, place }) {
           <li key={e.id + (e.day ?? '')}>{e.name}</li>
         ))}
       </ul>
-      {info.parsha.name && <p>Parshas {info.parsha.name}</p>}
+      {info.parsha?.name && <p>Parshas {info.parsha.name}</p>}
       <table>
         <tbody>
           {info.zmanim.map((z) => (

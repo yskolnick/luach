@@ -61,31 +61,63 @@ DEFAULT = [
   ('shoham', 8428283, []),
   ('rosh-haayin', 293690, ["Rosh Ha'Ayin"]),
   ('yavne', 293222, ['Yavneh']),
+  ('karmiel', 294577, ["Karmi'el", 'Carmiel']),
+  ('hod-hasharon', 294760, []),
+  ('akko', 295721, ['Acre', 'Acco', 'Ako']),
+  ('nahariya', 294117, ['Nahariyya', 'Naharia']),
+  ('immanuel', 283610, ['Emmanuel', 'Emanuel', 'Imanuel']),
   # United States
-  ('brooklyn', 5110302, []),
+  ('brooklyn', 5110302, ['Williamsburg', 'Flatbush', 'Crown Heights']),
+  ('borough-park', 5109790, ['Boro Park', 'Boropark']),
+  ('queens', 5133273, ['Kew Gardens Hills', 'Forest Hills']),
   ('new-york', 5128581, ['NYC', 'Manhattan']),
   ('far-rockaway', 5116917, ['Five Towns']),
   ('lakewood', 5100280, ['Lakewood NJ']),
+  ('toms-river', 4504476, []),
   ('monsey', 5127315, []),
+  ('spring-valley', 5139301, []),
   ('kiryas-joel', 5123533, ['Kiryas Yoel', 'Kiryat Yoel']),
   ('passaic', 5102443, []),
   ('teaneck', 5105262, []),
   ('baltimore', 4347778, []),
+  ('washington', 4140963, ['Washington DC', 'Washington D.C.']),
+  ('pittsburgh', 5206379, []),
+  ('scranton', 5211303, []),
+  ('new-haven', 4839366, []),
+  ('stamford', 4843564, []),
+  ('providence', 5224151, []),
+  ('albany', 5106834, []),
+  ('buffalo', 5110629, []),
   ('silver-spring', 4369596, []),
   ('philadelphia', 4560349, []),
   ('boston', 4930956, []),
   ('chicago', 4887398, []),
+  ('skokie', 4911600, []),
+  ('southfield', 5010636, []),
+  ('cincinnati', 4508722, []),
+  ('columbus', 4509177, []),
+  ('minneapolis', 5037649, []),
+  ('milwaukee', 5263045, []),
   ('cleveland', 5150529, []),
   ('detroit', 4990729, []),
   ('miami', 4164138, []),
   ('miami-beach', 4164143, []),
+  ('boca-raton', 4148411, []),
+  ('hollywood-fl', 4158928, ['Hollywood']),
+  ('orlando', 4167147, []),
   ('atlanta', 4180439, []),
+  ('charlotte', 4460243, []),
+  ('memphis', 4641239, []),
+  ('nashville', 4644585, []),
+  ('austin', 4671654, []),
   ('dallas', 4684888, []),
   ('houston', 4699066, []),
   ('denver', 5419384, []),
   ('phoenix', 5308655, []),
   ('los-angeles', 5368361, ['LA']),
+  ('san-diego', 5391811, []),
   ('san-francisco', 5391959, []),
+  ('portland', 5746545, ['Portland Oregon']),
   ('seattle', 5809844, []),
   ('las-vegas', 5506956, []),
   ('st-louis', 4407066, ['Saint Louis']),
@@ -97,6 +129,7 @@ DEFAULT = [
   ('vancouver', 6173331, []),
   ('ottawa', 6094817, []),
   ('winnipeg', 6183235, []),
+  ('calgary', 5913490, []),
   # Latin America
   ('mexico-city', 3530597, ['Ciudad de Mexico', 'CDMX']),
   ('buenos-aires', 3435910, []),
@@ -104,11 +137,18 @@ DEFAULT = [
   ('rio-de-janeiro', 3451190, []),
   ('panama-city', 3703443, ['Panama']),
   ('santiago', 3871336, []),
+  ('montevideo', 3441575, []),
+  ('caracas', 3646738, []),
+  ('bogota', 3688689, ['Bogotá']),
+  ('lima', 3936456, []),
   # United Kingdom and Ireland
   ('london', 2643743, []),
   ('stamford-hill', 11669854, []),
   ('golders-green', 7535506, []),
   ('manchester', 2643123, []),
+  ('salford', 2638671, []),
+  ('birmingham', 2655603, []),
+  ('liverpool', 2644210, []),
   ('gateshead', 2648773, []),
   ('leeds', 2644688, []),
   ('glasgow', 2648579, []),
@@ -133,10 +173,15 @@ DEFAULT = [
   ('milan', 3173435, ['Milano']),
   ('madrid', 3117735, []),
   ('barcelona', 3128760, []),
+  ('lisbon', 2267057, ['Lisboa']),
   ('budapest', 3054643, []),
   ('prague', 3067696, ['Praha']),
   ('warsaw', 756135, ['Warszawa']),
   ('krakow', 3094802, ['Kraków', 'Cracow']),
+  ('bucharest', 683506, ['București', 'Bucuresti']),
+  ('vilnius', 593116, ['Vilna', 'Vilne']),
+  ('riga', 456172, []),
+  ('minsk', 625144, []),
   ('copenhagen', 2618425, ['København']),
   ('stockholm', 2673730, []),
   ('oslo', 3143244, []),
@@ -150,14 +195,19 @@ DEFAULT = [
   ('dnipro', 709930, ['Dnepropetrovsk']),
   ('uman', 690688, []),
   ('istanbul', 745044, []),
+  ('tbilisi', 611717, []),
+  ('baku', 587084, []),
+  ('tashkent', 1512569, []),
   ('athens', 264371, []),
   ('thessaloniki', 734077, ['Salonika']),
   # Africa, Asia, Oceania
   ('johannesburg', 993800, []),
   ('cape-town', 3369157, []),
+  ('durban', 1007311, []),
   ('casablanca', 2553604, []),
   ('dubai', 292223, []),
   ('mumbai', 1275339, ['Bombay']),
+  ('new-delhi', 1261481, ['Delhi']),
   ('bangkok', 1609350, []),
   ('hong-kong', 1819729, []),
   ('singapore', 1880252, []),
@@ -167,7 +217,10 @@ DEFAULT = [
   ('melbourne', 2158177, []),
   ('sydney', 2147714, []),
   ('perth', 2063523, []),
+  ('brisbane', 2174003, []),
+  ('adelaide', 2078025, []),
   ('auckland', 2193733, []),
+  ('wellington', 2179537, []),
   ('chatham-islands', 4032804, ['Waitangi', 'Chatham']),
 ]
 
@@ -182,15 +235,20 @@ NAME = {
   'kiryat-shmona': 'Kiryat Shmona', 'rishon-letzion': 'Rishon LeZion', 'beer-sheva': "Be'er Sheva",
   'beit-shemesh': 'Beit Shemesh', 'tzfas': 'Safed (Tzfas)', 'teverya': 'Tiberias', 'chatham-islands': 'Chatham Islands (Waitangi)',
   'thessaloniki': 'Thessaloniki', 'zurich': 'Zurich', 'montreal': 'Montreal', 'krakow': 'Krakow', 'reykjavik': 'Reykjavik',
+  'karmiel': 'Karmiel', 'akko': 'Akko (Acre)', 'nahariya': 'Nahariya', 'immanuel': 'Immanuel', 'washington': 'Washington, D.C.',
+  'hollywood-fl': 'Hollywood (Florida)', 'portland': 'Portland (Oregon)', 'bogota': 'Bogota',
 }
 HEBREW = {
   'elad': 'אלעד', 'istanbul': 'איסטנבול', 'passaic': 'פסייק', 'teaneck': 'טינק', 'silver-spring': 'סילבר ספרינג',
   'miami-beach': 'מיאמי ביץ׳', 'chatham-islands': 'איי צ׳טהאם', 'dnipro': 'דניפרו', 'santiago': 'סנטיאגו',
+  'queens': 'קווינס', 'toms-river': 'טומס ריבר', 'spring-valley': 'ספרינג ואלי', 'washington': 'וושינגטון',
+  'boca-raton': 'בוקה רטון', 'salford': 'סלפורד', 'nahariya': 'נהריה',
 }
-ZONE = {'givat-zeev': 'Asia/Jerusalem', 'maale-adumim': 'Asia/Jerusalem', 'efrat': 'Asia/Jerusalem', 'alon-shvut': 'Asia/Jerusalem', 'ariel': 'Asia/Jerusalem'}
+ZONE = {'immanuel': 'Asia/Jerusalem', 'givat-zeev': 'Asia/Jerusalem', 'maale-adumim': 'Asia/Jerusalem', 'efrat': 'Asia/Jerusalem', 'alon-shvut': 'Asia/Jerusalem', 'ariel': 'Asia/Jerusalem'}
 
 HEB = re.compile('[א-ת]')
 NIKUD = re.compile('[֑-ׇ]')
+BIDI = re.compile('[\u200e\u200f\u202a-\u202e]')
 
 def hebrew(path_alt, path_cities):
     ids = set(l.split('\t', 1)[0] for l in open(path_cities, encoding='utf8'))
@@ -201,11 +259,20 @@ def hebrew(path_alt, path_cities):
 
 def pick_hebrew(names):
     """Preferred, then the first plain (no nikud, not historic) name."""
-    names = [(n, f) for n, f in names if HEB.search(n)]
+    names = [(BIDI.sub('', n).strip(), f) for n, f in names if HEB.search(n)]
     pref = [n for n, flags in names if flags[0] == '1' and not NIKUD.search(n)]
     if pref: return pref[0]
     plain = [n for n, flags in names if not NIKUD.search(n) and flags[3] != '1']
     return plain[0] if plain else None
+
+def other_hebrew(names, chosen):
+    """Every other Hebrew name, without nikud or direction marks, not historic, in GeoNames' order."""
+    out = []
+    for n, flags in names:
+        n = BIDI.sub('', NIKUD.sub('', n)).strip()
+        if HEB.search(n) and flags[3] != '1' and n != chosen and n not in out and '|' not in n and '\t' not in n:
+            out.append(n)
+    return out
 
 def load(dir_):
     rows = {}
@@ -249,11 +316,12 @@ def build(dir_):
         hname = pick_hebrew(he.get(gid, [])) or ''
         name = p[1].replace('\t', ' ')
         ascii_ = p[2] if p[2] != p[1] else ''
-        full.append('\t'.join([str(gid), name, ascii_, hname, f'{float(p[4]):.4f}'.rstrip('0').rstrip('.'), f'{float(p[5]):.4f}'.rstrip('0').rstrip('.'), str(elevation(p)), p[17], p[8], p[10], p[14]]))
+        others = '|'.join(other_hebrew(he.get(gid, []), hname))
+        full.append('\t'.join([str(gid), name, ascii_, hname, f'{float(p[4]):.4f}'.rstrip('0').rstrip('.'), f'{float(p[5]):.4f}'.rstrip('0').rstrip('.'), str(elevation(p)), p[17], p[8], p[10], p[14], others]))
     with open('src/places/full-data.ts', 'w', encoding='utf8') as f:
         f.write('/**\n * Every city of 15,000+ people, from GeoNames (https://www.geonames.org/), CC-BY 4.0.\n')
         f.write(' * Generated by scripts/build-places.py; do not edit by hand. One city per line:\n')
-        f.write(' * GeoNames id, name, ASCII name (if different), Hebrew name, latitude, longitude,\n * elevation (m), IANA zone, country, admin1 code, population; tab-separated.\n *\n * @packageDocumentation\n */\n\n')
+        f.write(' * GeoNames id, name, ASCII name (if different), Hebrew name, latitude, longitude,\n * elevation (m), IANA zone, country, admin1 code, population, other Hebrew names\n * (separated by |); tab-separated.\n *\n * @packageDocumentation\n */\n\n')
         f.write('export const FULL_CITY_DATA = ' + json.dumps('\n'.join(full), ensure_ascii=False) + ';\n')
     print(len(out), 'default cities;', len(full), 'full')
 

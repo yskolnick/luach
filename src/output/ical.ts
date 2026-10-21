@@ -18,7 +18,8 @@ import { mishnaYomis, nachYomi, rambamOneChapter, rambamThreeChapters, yerushalm
 import type { DayLocation } from '../day/day-info.js';
 import { dayInfo } from '../day/day-info.js';
 import { ZmanimCalendar } from '../zmanim/calendar.js';
-import type { Zman } from '../zmanim/zman.js';
+import { zmanLabel } from '../zmanim/opinions.js';
+import { zmanMethod } from '../zmanim/methods.js';
 import { gematriya } from '../text/gematriya.js';
 
 /** Learning cycles that can be included. */
@@ -42,15 +43,18 @@ export interface ICalOptions {
   location?: DayLocation;
   /** Candle lighting and havdala (needs `location`). Default true when a location is given. */
   candleLighting?: boolean;
-  /** Zmanim to add as timed events, by {@link ZmanimCalendar} method name. Default none. */
+  /**
+   * Zmanim to add as timed events, by {@link ZmanimCalendar} method name (e.g. `sofZmanShemaGra`).
+   * Default none. A name that is not a zman method throws a RangeError.
+   */
   zmanim?: readonly string[];
-  /** Timestamp for DTSTAMP. Default now. Pass a fixed value for reproducible files. */
+  /** Timestamp for DTSTAMP. Default now. Pass a fixed value for reproducible files. An invalid Date throws a RangeError. */
   now?: Date;
 }
 
 /** Escapes text for an iCalendar value (RFC 5545 §3.3.11). */
 export function icalEscape(s: string): string {
-  return s.replace(/\\/g, '\\\\').replace(/;/g, '\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
+  return s.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r\n|\r|\n/g, '\\n');
 }
 
 /** Folds a content line to 75 octets (UTF-8), continuation lines starting with a space (§3.1). */
@@ -101,6 +105,11 @@ export function toICalendar(start: CivilDate | HebrewDate, end: CivilDate | Hebr
   if (h1.epochDays < h0.epochDays) throw new RangeError('end is before start');
   const locale = options.locale ?? he;
   const israel = options.israel ?? options.location?.israel ?? false;
+  const now = options.now ?? new Date();
+  if (!(now instanceof Date) || !Number.isFinite(now.getTime())) throw new RangeError('options.now is not a valid Date');
+  const zmanMethods = options.location
+    ? (options.zmanim ?? []).map((m) => zmanMethod(new ZmanimCalendar(options.location!, h0), m))
+    : [];
   const items: Item[] = [];
   const rtl = locale.dir === 'rtl';
 
@@ -115,7 +124,7 @@ export function toICalendar(start: CivilDate | HebrewDate, end: CivilDate | Hebr
     const c = d.toCivil();
     if (options.parsha !== false && d.isShabbos) {
       const r = parshaFor(d, { israel });
-      if (r.parsha) items.push({ uid: `${d.toString()}-parsha`, summary: `${rtl ? 'פרשת' : 'Parshas'} ${parshaName(r.parsha, locale)}`, categories: 'parsha', allDay: c });
+      if (r?.parsha) items.push({ uid: `${d.toString()}-parsha`, summary: `${rtl ? 'פרשת' : 'Parshas'} ${parshaName(r.parsha, locale)}`, categories: 'parsha', allDay: c });
     }
     for (const l of options.learning ?? []) {
       let text: string | null = null;
@@ -133,18 +142,17 @@ export function toICalendar(start: CivilDate | HebrewDate, end: CivilDate | Hebr
       if (options.candleLighting !== false) {
         const info = dayInfo(d, { location: options.location, israel, locale });
         if (info.candleLighting?.time) items.push({ uid: `${d.toString()}-candles`, summary: rtl ? 'הדלקת נרות' : 'Candle lighting', description: `${info.candleLighting.opinion}. ${info.candleLighting.source}`, categories: 'candle-lighting', at: new Date(info.candleLighting.time) });
-        if (info.havdala?.time) items.push({ uid: `${d.toString()}-havdala`, summary: rtl ? 'הבדלה' : 'Havdala', description: `${info.havdala.opinion}. ${info.havdala.source}`, categories: 'havdala', at: new Date(info.havdala.time) });
+        if (info.havdala?.time) items.push({ uid: `${d.toString()}-havdala`, summary: info.havdala.id === 'havdala' ? (rtl ? 'הבדלה' : 'Havdala') : zmanLabel(info.havdala.id, locale), description: `${info.havdala.opinion}. ${info.havdala.source}`, categories: 'havdala', at: new Date(info.havdala.time) });
+        if (info.shabbosEnds?.time) items.push({ uid: `${d.toString()}-shabbos-ends`, summary: zmanLabel(info.shabbosEnds.id, locale), description: `${info.shabbosEnds.opinion}. ${info.shabbosEnds.source}`, categories: 'shabbos-ends', at: new Date(info.shabbosEnds.time) });
       }
-      for (const m of options.zmanim ?? []) {
-        const f = (z as unknown as Record<string, unknown>)[m];
-        if (typeof f !== 'function') throw new RangeError(`Unknown zman method "${m}"`);
-        const zm = (f as () => Zman).call(z);
+      for (const f of zmanMethods) {
+        const zm = f.call(z);
         if (zm.time) items.push({ uid: `${d.toString()}-${zm.id}`, summary: zm.opinion, description: zm.source, categories: 'zman', at: zm.time });
       }
     }
   }
 
-  const stamp = utcValue(options.now ?? new Date());
+  const stamp = utcValue(now);
   const lines = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',

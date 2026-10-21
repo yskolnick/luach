@@ -7,6 +7,7 @@
  */
 
 import { HebrewDate } from '../calendar/hebrew-date.js';
+import { MAX_DAYS } from '../calendar/year.js';
 import { formatIsoDate, type CivilDate } from '../time/civil.js';
 import { formatHebrewDate, monthName, weekdayName } from '../text/format.js';
 import { he } from '../locales/he.js';
@@ -23,13 +24,21 @@ import { dafYomi } from '../learning/bavli.js';
 import { amudYomi, mishnaYomis, nachYomi, rambamOneChapter, rambamThreeChapters, yerushalmiYomi } from '../learning/cycles.js';
 import { ZmanimCalendar, type GeoLocation, type ZmanimOptions } from '../zmanim/calendar.js';
 import { fastTimes } from '../zmanim/day.js';
-import type { Zman } from '../zmanim/zman.js';
+import { ZMANIM } from '../zmanim/opinions.js';
+import { zmanMethod } from '../zmanim/methods.js';
+import { Zman } from '../zmanim/zman.js';
 
 /** `$id` of the JSON Schema for {@link DayInfo}. */
-export const DAY_INFO_SCHEMA_ID = 'https://github.com/yskolnick/luach/blob/main/docs/schema/day.schema.json';
+export const DAY_INFO_SCHEMA_ID = 'https://raw.githubusercontent.com/yskolnick/luach/main/schema/day.schema.json';
 
-/** A place for {@link dayInfo}: a GeoLocation, optionally with a name and an Israel flag. */
-export type DayLocation = GeoLocation & { readonly israel?: boolean };
+/**
+ * A place for {@link dayInfo}: a GeoLocation, optionally with a name, an Israel flag and a
+ * documented local candle-lighting custom (as on a built-in `Place`).
+ */
+export type DayLocation = GeoLocation & {
+  readonly israel?: boolean;
+  readonly candleLighting?: { readonly minutes: number; readonly custom: string; readonly source: string };
+};
 
 /** Options for {@link dayInfo}. */
 export interface DayInfoOptions extends ZmanimOptions {
@@ -68,7 +77,8 @@ export interface DayInfo {
   readonly israel: boolean;
   readonly events: readonly { id: string; name: string; flags: HolidayFlags; day?: number; candlesTonight?: number; moved?: boolean }[];
   /** This week's reading (the Shabbos on or after this day). */
-  readonly parsha: { readonly date: string; readonly ids: readonly ParshaId[] | null; readonly name: string | null; readonly holiday?: string };
+  /** The coming Shabbos's reading; null only in the last days of year 9999 (that Shabbos is in year 10000). */
+  readonly parsha: { readonly date: string; readonly ids: readonly ParshaId[] | null; readonly name: string | null; readonly holiday?: string } | null;
   readonly haftara: { readonly key: string; readonly reference: string | null } | null;
   readonly omer: { readonly day: number; readonly text: string; readonly textEnglish: string; readonly sefirah: string } | null;
   readonly tefillah: TefillahDay;
@@ -76,8 +86,35 @@ export interface DayInfo {
   readonly location: { readonly name?: string; readonly latitude: number; readonly longitude: number; readonly elevation: number; readonly timeZone: string } | null;
   readonly zmanim: readonly ReturnType<Zman['toJSON']>[];
   readonly candleLighting: ReturnType<Zman['toJSON']> | null;
+  /**
+   * Havdala tonight. Null on the Shabbos before Tisha B'Av postponed to Sunday (see
+   * `shabbosEnds`); on that Sunday it is havdala over a cup when the fast ends (SA OC 556:1).
+   */
   readonly havdala: ReturnType<Zman['toJSON']> | null;
+  /**
+   * When Shabbos ends on a Shabbos whose havdala is deferred (Tisha B'Av postponed to Sunday):
+   * melacha is permitted from then after saying "Baruch HaMavdil bein kodesh lechol"; it is
+   * not havdala. Otherwise null.
+   */
+  readonly shabbosEnds: ReturnType<Zman['toJSON']> | null;
   readonly fast: { readonly id: string; readonly begins: ReturnType<Zman['toJSON']>; readonly ends: ReturnType<Zman['toJSON']> } | null;
+  /** A fast that begins this evening at sunset (Yom Kippur, Tisha B'Av), or null. */
+  readonly fastBeginsTonight: { readonly id: string; readonly begins: ReturnType<Zman['toJSON']> } | null;
+}
+
+/** A Zman at the time of `base`, under another id from the opinions table. */
+function relabel(id: string, base: Zman): Zman {
+  const def = ZMANIM[id]!;
+  return new Zman({
+    id,
+    time: base.time,
+    opinion: def.opinion,
+    source: `${def.source}; time: ${base.opinion}`,
+    rounded: base.rounded,
+    timeZone: base.timeZone,
+    ...(base.reason ? { reason: base.reason } : {}),
+    ...(base.fallback ? { fallback: base.fallback } : {}),
+  });
 }
 
 function holy(d: HebrewDate, opts: HolidayOptions): boolean {
@@ -101,22 +138,42 @@ export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = 
   let zmanim: ReturnType<Zman['toJSON']>[] = [];
   let candleLighting: ReturnType<Zman['toJSON']> | null = null;
   let havdala: ReturnType<Zman['toJSON']> | null = null;
+  let shabbosEnds: ReturnType<Zman['toJSON']> | null = null;
   let fast: DayInfo['fast'] = null;
+  let fastBeginsTonight: DayInfo['fastBeginsTonight'] = null;
   if (options.location) {
     const z = new ZmanimCalendar(options.location, h, options);
     const names = options.zmanim ?? DEFAULT_DAY_ZMANIM;
-    zmanim = names.map((n) => {
-      const f = (z as unknown as Record<string, unknown>)[n];
-      if (typeof f !== 'function') throw new RangeError(`Unknown zman method "${n}"`);
-      return (f as () => Zman).call(z).toJSON();
-    });
+    zmanim = names.map((n) => zmanMethod(z, n).call(z).toJSON());
     const today = holy(h, hopts);
-    const tomorrow = holy(h.next(), hopts);
-    if (tomorrow && !today) candleLighting = z.candleLighting().toJSON();
+    // After 29 Elul 9999 (the last supported day) comes Rosh Hashana 10000, always Yom Tov.
+    const tomorrow = h.epochDays === MAX_DAYS || holy(h.next(), hopts);
+    // Lighting after nightfall is only for a second holy night that is Yom Tov: from Shabbos
+    // into Yom Tov, or from Yom Tov into Yom Tov (SA OC 503:1). Shabbos itself begins at sunset
+    // (SA OC 261:2), so on a Yom Tov that falls on Friday the candles for Shabbos are lit at
+    // the usual time before sunset.
+    const beforeSunset = tomorrow && (!today || (h.epochDays < MAX_DAYS && h.next().isShabbos));
+    // The place's documented custom applies when the caller has not chosen the minutes.
+    const custom = options.candleLightingMinutes === undefined ? options.location.candleLighting : undefined;
+    if (beforeSunset) {
+      candleLighting = custom
+        ? { ...z.candleLighting(custom.minutes).toJSON(), opinion: `Candle lighting ${custom.minutes} minutes before sunset, ${custom.custom}`, source: `${custom.source}; Shulchan Aruch OC 261:2 (tosefes Shabbos)` }
+        : z.candleLighting().toJSON();
+    }
     else if (tomorrow && today) candleLighting = z.candleLightingSecondNight().toJSON();
-    if (today && !tomorrow) havdala = z.havdala().toJSON();
     const ft = fastTimes(h, options.location, { ...options, ...hopts });
     if (ft) fast = { id: ft.fast.id, begins: ft.begins.toJSON(), ends: ft.ends.toJSON() };
+    const next = h.epochDays < MAX_DAYS ? fastTimes(h.next(), options.location, { ...options, ...hopts }) : null;
+    if (next && next.fast.flags.fast === 'major') fastBeginsTonight = { id: next.fast.id, begins: next.begins.toJSON() };
+    // Tisha B'Av postponed from Shabbos to Sunday: no havdala over a cup on Motzaei Shabbos;
+    // it is said over a cup, without candle or spices, when the fast ends (SA OC 556:1).
+    // Melacha after Shabbos needs "HaMavdil bein kodesh lechol" (MB 556:2; SA OC 299:10).
+    const deferred = next?.fast.id === 'tisha-bav' && h.isShabbos;
+    if (today && !tomorrow) {
+      if (deferred) shabbosEnds = relabel('shabbos-ends-no-havdala', z.havdala()).toJSON();
+      else havdala = z.havdala().toJSON();
+    }
+    if (ft && ft.fast.id === 'tisha-bav' && h.prev().isShabbos) havdala = relabel('havdala-after-fast', ft.ends).toJSON();
   }
 
   return {
@@ -134,12 +191,14 @@ export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = 
       ...(e.candlesTonight !== undefined ? { candlesTonight: e.candlesTonight } : {}),
       ...(e.moved ? { moved: true } : {}),
     })),
-    parsha: {
-      date: formatIsoDate(reading.date.toCivil()),
-      ids: reading.parsha,
-      name: parshaName(reading.parsha, locale),
-      ...(reading.holiday ? { holiday: reading.holiday } : {}),
-    },
+    parsha: reading
+      ? {
+          date: formatIsoDate(reading.date.toCivil()),
+          ids: reading.parsha,
+          name: parshaName(reading.parsha, locale),
+          ...(reading.holiday ? { holiday: reading.holiday } : {}),
+        }
+      : null,
     haftara: haft ? { key: haft.key, reference: haft.reference } : null,
     omer: om ? { day: om, text: omerText(om), textEnglish: omerTextEnglish(om), sefirah: omerSefirah(om, style) } : null,
     tefillah: tefillahOn(h, { ...options.tefillah, israel }),
@@ -158,7 +217,9 @@ export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = 
     zmanim,
     candleLighting,
     havdala,
+    shabbosEnds,
     fast,
+    fastBeginsTonight,
   };
 }
 

@@ -14,7 +14,7 @@ describe('docs/guide examples', () => {
     expect(formatHebrewDate(d, { locale: ashkenazi })).toBe('10 Cheshvan 5787');
     const info = dayInfo({ year: 2026, month: 10, day: 23 }, { location: getPlace('lakewood')! });
     expect(info.candleLighting?.local).toBe('17:47');
-    expect(info.parsha.name).toBe('לך לך');
+    expect(info.parsha?.name).toBe('לך לך');
   });
   it('dates', () => {
     const d = new HebrewDate(5787, Month.ADAR_II, 14);
@@ -40,7 +40,7 @@ describe('docs/guide examples', () => {
   });
   it('parsha and learning', () => {
     const shabbos = HebrewDate.fromGregorian(2026, 10, 24);
-    expect(parshaName(parshaFor(shabbos).parsha, ashkenazi)).toBe('Lech Lecha');
+    expect(parshaName(parshaFor(shabbos)!.parsha, ashkenazi)).toBe('Lech Lecha');
     expect(haftaraFor(shabbos)?.reference).toBe('Isaiah 40:27-41:16');
     const d = HebrewDate.fromGregorian(2026, 10, 21);
     expect(dafYomi(d)).toMatchObject({ tractate: 'Bekhorot', daf: 33, cycle: 14 });

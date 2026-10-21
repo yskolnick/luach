@@ -28,12 +28,13 @@ All notable changes for users of the `luach` package. This project follows
   haftaros and their precedence (`haftaraFor`, `fastMinchaHaftara`).
 - Learning cycles: Yerushalmi Yomi (Vilna), Amud HaYomi, Daf HaShavua, Mishna Yomis, Rambam
   (one and three chapters), Sefer HaMitzvos day number, Nach Yomi.
-- Places: a built-in table of about 150 cities (`builtInPlaces`, `getPlace`), search by
+- Places: a built-in table of about 200 cities (`builtInPlaces`, `getPlace`), search by
   English spellings and Hebrew (`searchPlaces`), `isInIsrael`, `nearestPlace`; every city of
   15,000+ people in a separate import, `luach/places-full` (GeoNames, CC-BY 4.0).
 - The ESM build is now one file per module, so unused features are dropped by bundlers.
 - `dayInfo` / `dayInfoRange`: everything about a day as JSON, with a JSON Schema
-  (`docs/schema/day.schema.json`).
+  shipped in the package as `luach/schema/day.schema.json`; its `$id` and each object's
+  `$schema` are a URL that serves the JSON file.
 - iCalendar export (`toICalendar`) of holidays, parsha, learning, candle lighting, havdala
   and zmanim.
 - `parseHebrewDate` for "י״ד אדר תשפ״ז" and "14 Adar II 5787"; `moladAnnouncement`;
@@ -48,8 +49,40 @@ All notable changes for users of the `luach` package. This project follows
   week, and settings; Hebrew and English, light and dark.
 
 ### Changed
+- A birthday or bar mitzvah for someone born on 30 Adar I, in a common year, is 1 Nisan
+  (was 30 Shevat; Magen Avraham 55:10, Mishna Berura 55:45). New option `adarI` for one born
+  in Adar I whose birthday falls in a leap year (Levush, the default, or Magen Avraham).
+- BeHaB counts from the first Shabbos after Rosh Chodesh (MB 492:3): when 1 Cheshvan or
+  1 Iyar is Shabbos the fasts are a week later than before.
+- Yom Kippur Katan: new option `yomKippurKatanOnFriday` (`'thursday'`, the default, or
+  `'friday'`) for an Erev Rosh Chodesh on Friday; moved days carry `moved: true`; the
+  citations now say what Magen Avraham 417:3 and Mishna Berura 417:4 each hold.
+- Every date in Hebrew year 9999 works: `holidaysForYear(9999)` and everything built on it
+  no longer throw. `parshaFor` returns `null` (and `dayInfo().parsha` is `null`) only for the
+  last days of 9999, whose coming Shabbos is in year 10000; `readingCycle(9999)` omits the
+  Shabbosos of year 10000.
+- `parseGematriya` rejects numerals not written the standard way (letters out of order,
+  repeated units or tens, יה/יו for 15/16, doubled geresh or gershayim) instead of adding up
+  the letters; every string `gematriya()` writes still parses, and thousands need a geresh.
+- Jerusalem and Haifa carry their documented candle-lighting customs (40 and 30 minutes,
+  Peninei Halakha, Shabbat 3:2); `dayInfo`, iCal and the CLI use them unless
+  `candleLightingMinutes` is given, and label the time with the custom and its source.
+- CLI: `--city` also searches every city of 15,000+ people when the built-in table has no
+  match; `--lat/--lon` need `--tz`; `--elevation <m>` (or `=<m>`) turns on
+  elevation-adjusted sunrise and sunset.
+- Place search: short or loose transliteration resemblances no longer return a wrong city
+  ("Tzfat", "Boro Park", "Emmanuel"); the full table knows the built-in spellings and every
+  Hebrew name GeoNames has (e.g. both "סיאול" and "סאול").
+- `isInIsrael`: the outline is redrawn near the borders (Yotvata, Ramat Magshimim, Hamat
+  Gader and Ghajar are inside; Egyptian Rafah is outside).
 - Three zmanim defined by 16.1° (Shema, Shacharis and Plag of the Magen Avraham) were
   labelled "16.1 min"; they now read "16.1°".
 - The city-data files ship without source maps; the package is about half the size.
 - Hebrew zman labels carry a left-to-right mark (U+200E) after each degree sign, so the
   angle reads correctly in right-to-left text.
+
+### Fixed
+- iCalendar: semicolons and lone carriage returns in text values are now escaped
+  (RFC 5545 §3.3.11), so summaries like Rambam's "chapter 18, 19; Fasts chapter 1" and
+  calendar names survive a round trip. An invalid `now` and a `zmanim` name that is not a
+  zman method (e.g. `constructor`) throw a `RangeError`.

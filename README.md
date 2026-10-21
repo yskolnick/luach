@@ -74,6 +74,9 @@ outputs, right-to-left text, React Native), every zman with its source, the accu
 reports and the API reference. Build and open it with `npm run docs:dev`. Runnable examples
 are in `examples/`; a demo app is in `apps/demo/`.
 
+Luach is built in public. [Sources and decisions](docs/sources.md) lists where every time,
+rule, table and decision comes from, with a link to each citation in the code.
+
 ## How to credit
 
 Luach is licensed under the [Apache License 2.0](LICENSE). You may use it in any project,

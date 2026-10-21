@@ -6,12 +6,14 @@
  */
 
 import { HebrewDate } from '../calendar/hebrew-date.js';
+import { MAX_DAYS } from '../calendar/year.js';
 import { civilDateAt } from '../time/zone.js';
+import { civilToDays, daysToCivil } from '../time/civil.js';
 import { holidaysOn } from '../holidays/holidays.js';
 import type { HolidayEvent, HolidayOptions } from '../holidays/types.js';
 import { ZmanimCalendar, type GeoLocation, type ZmanimOptions } from './calendar.js';
 import { ZMANIM } from './opinions.js';
-import { Zman } from './zman.js';
+import { roundToLocalMinute, Zman } from './zman.js';
 
 /** Which zman ends the Hebrew day, for {@link hebrewDateAt}. */
 export type DayBoundary = 'sunset' | 'tzeis-8.5' | 'tzeis-7.083' | 'tzeis-72';
@@ -33,10 +35,17 @@ function boundaryTime(z: ZmanimCalendar, b: DayBoundary): Zman {
  * date is used.
  */
 export function hebrewDateAt(instant: Date, location: GeoLocation, options?: { boundary?: DayBoundary } & ZmanimOptions): HebrewDate {
-  const civil = civilDateAt(instant.getTime(), location.timeZone);
-  const z = new ZmanimCalendar(location, civil, { ...options, rounding: false });
-  const end = boundaryTime(z, options?.boundary ?? 'sunset').time;
-  return HebrewDate.fromCivil(civil, { afterSunset: end !== null && instant.getTime() >= end.getTime() });
+  const t = instant.getTime();
+  const civil = civilDateAt(t, location.timeZone);
+  const zOptions = { ...options, rounding: false as const };
+  const boundary = options?.boundary ?? 'sunset';
+  // At high latitudes the previous civil day's boundary can fall after midnight, on this
+  // civil date. Until it passes, the Hebrew date is still the previous day's.
+  const yesterday = daysToCivil(civilToDays(civil.year, civil.month, civil.day) - 1);
+  const prevEnd = boundaryTime(new ZmanimCalendar(location, yesterday, zOptions), boundary).time;
+  if (prevEnd !== null && t < prevEnd.getTime()) return HebrewDate.fromCivil(yesterday);
+  const end = boundaryTime(new ZmanimCalendar(location, civil, zOptions), boundary).time;
+  return HebrewDate.fromCivil(civil, { afterSunset: end !== null && t >= end.getTime() });
 }
 
 /** Opinions for {@link fastTimes}. */
@@ -63,7 +72,7 @@ export function fastTimes(date: HebrewDate, location: GeoLocation, options: Fast
     // The fast's start is a deadline for eating, so it is rounded down.
     const exact = new ZmanimCalendar(location, date, { ...options, rounding: false });
     const ex = { 'alos-72': exact.alos72(), 'alos-90': exact.alos90(), 'alos-16.1': exact.alos16Point1(), 'alos-18': exact.alos18(), 'alos-19.8': exact.alos19Point8(), 'alos-72-zmaniyos': exact.alos72Zmaniyos() }[options.begins ?? 'alos-72'];
-    const t = ex.time ? (z.options.rounding ? Math.floor(ex.time.getTime() / 60000) * 60000 : ex.time.getTime()) : null;
+    const t = ex.time ? (z.options.rounding ? roundToLocalMinute(ex.time.getTime(), 'down', location.timeZone) : ex.time.getTime()) : null;
     begins = new Zman({ id: 'fast-begins', time: t === null ? null : new Date(t), opinion: `${def.opinion} (${a.opinion})`, source: `${def.source}; ${a.source}`, rounded: t !== null && z.options.rounding ? 'down' : null, timeZone: location.timeZone, ...(a.reason ? { reason: a.reason } : {}) });
   }
   const e = { 'tzeis-6.45': z.tzeis6Point45(), 'tzeis-7.083': z.tzeis7Point083(), 'tzeis-8.5': z.tzeis8Point5(), 'tzeis-42': z.tzeis42(), 'tzeis-50': z.tzeis50(), 'tzeis-72': z.tzeis72() }[options.ends ?? 'tzeis-7.083'];
@@ -89,9 +98,20 @@ export function isMelachaForbiddenAt(instant: Date, location: GeoLocation, optio
   const civil = civilDateAt(instant.getTime(), location.timeZone);
   const z = new ZmanimCalendar(location, civil, { ...options, rounding: false });
   const today = HebrewDate.fromCivil(civil);
-  const tomorrow = today.next();
   const holy = (d: HebrewDate) => d.isShabbos || holidaysOn(d, options).some((e) => e.flags.melachaForbidden);
+  // After 29 Elul 9999 (the last supported day) comes Rosh Hashana 10000, always Yom Tov.
+  const holyTomorrow = () => today.epochDays === MAX_DAYS || holy(today.next());
   const t = instant.getTime();
+  // At high latitudes the previous evening's candle lighting or havdala time can fall after
+  // midnight, on this civil date.
+  const yesterday = daysToCivil(civilToDays(civil.year, civil.month, civil.day) - 1);
+  const y = new ZmanimCalendar(location, yesterday, { ...options, rounding: false });
+  const yStart = y.candleLighting(options.beginsMinutesBeforeSunset ?? y.options.candleLightingMinutes).time;
+  const yEnd = y.havdala(options.ends ?? { degrees: 8.5 }).time;
+  if (yStart !== null && yEnd !== null) {
+    if (t < yStart.getTime()) return holy(today.prev());
+    if (t < yEnd.getTime()) return holy(today.prev()) || holy(today);
+  }
   const sunset = z.sunset().time;
   const start = z.candleLighting(options.beginsMinutesBeforeSunset ?? z.options.candleLightingMinutes).time;
   const end = z.havdala(options.ends ?? { degrees: 8.5 }).time;
@@ -100,7 +120,7 @@ export function isMelachaForbiddenAt(instant: Date, location: GeoLocation, optio
     return holy(today);
   }
   if (t < start.getTime()) return holy(today);
-  if (t >= end.getTime()) return holy(tomorrow);
+  if (t >= end.getTime()) return holyTomorrow();
   // Between candle lighting and havdala time: forbidden if today is holy (still ending) or tomorrow is (beginning).
-  return holy(today) || holy(tomorrow);
+  return holy(today) || holyTomorrow();
 }

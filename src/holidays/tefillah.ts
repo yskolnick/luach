@@ -96,13 +96,15 @@ export function tefillahOn(date: HebrewDate, options: TefillahOptions = {}): Tef
 
   // ---- Mizmor L'Sodah: not on Shabbos/Yom Tov, Erev Pesach, Chol Hamoed Pesach, Erev Yom Kippur (Rema OC 51:9). ----
   let mizmorLesodah = !date.isShabbos && !yomTov;
-  if (m === Month.NISAN && d >= 14 && d <= 22) mizmorLesodah = false;
+  // Erev Pesach through the last day of Pesach; 22 Nisan in the diaspora is Yom Tov (above), in Israel Isru Chag.
+  if (m === Month.NISAN && d >= 14 && d <= 21) mizmorLesodah = false;
   if (m === Month.TISHREI && d === 9) mizmorLesodah = false;
 
   return {
     tachanun,
     hallel,
-    yaalehVyavo: roshChodesh || (yomTov && !(m === Month.TISHREI && d === 10)) || cholHamoed,
+    // Every Yom Tov including Yom Kippur ("ביום הכפרים הזה" in its Amidah), Rosh Chodesh, Chol Hamoed.
+    yaalehVyavo: roshChodesh || yomTov || cholHamoed,
     alHanissim: chanukah || purim,
     mizmorLesodah,
   };

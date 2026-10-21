@@ -15,6 +15,7 @@ export default defineConfig({
       { text: 'Guide', link: '/guide/getting-started' },
       { text: 'Zmanim sources', link: '/halacha/zmanim' },
       { text: 'Why it works this way', link: '/rationale' },
+      { text: 'Sources', link: '/sources' },
       { text: 'Accuracy', link: '/accuracy' },
       { text: 'API', link: '/api/' },
     ],
@@ -47,6 +48,7 @@ export default defineConfig({
         {
           text: 'Project',
           items: [
+            { text: 'Sources and decisions', link: '/sources' },
             { text: 'Accuracy', link: '/accuracy' },
             { text: 'Zmanim accuracy table', link: '/accuracy-zmanim' },
             { text: 'Data sources', link: '/data-sources' },

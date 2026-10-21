@@ -4,7 +4,7 @@
 import { parshaFor, parshaName, haftaraFor, HebrewDate, ashkenazi } from 'luach';
 
 const shabbos = HebrewDate.fromGregorian(2026, 10, 24);
-parshaName(parshaFor(shabbos).parsha, ashkenazi);   // "Lech Lecha"
+parshaName(parshaFor(shabbos)?.parsha ?? null, ashkenazi);   // "Lech Lecha"
 haftaraFor(shabbos).reference;                      // "Isaiah 40:27-41:16"
 haftaraFor(shabbos, { minhag: 'sephardi' }).reference;
 ```

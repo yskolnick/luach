@@ -126,7 +126,8 @@ export function holidaysForYear(year: number, options: HolidayOptions = {}): Hol
       b.add('chanukah', first.addDays(i), { minor: true }, { day: i + 1, candlesTonight: i < 7 ? i + 2 : 0 });
     }
   }
-  // Asarah B'Teves: never pushed off; it can fall on Friday (SA OC 550:3 and commentaries).
+  // Asarah B'Teves: it can fall on Friday and is kept then (implied by the Rema, OC 550:3); that it
+  // is never pushed off is the Abudraham, cited by the Beis Yosef on OC 550. It never falls on Shabbos.
   b.add('asarah-bteves', d(Month.TEVES, 10), { fast: 'minor' });
 
   // ---- Shevat ----
@@ -177,7 +178,8 @@ export function holidaysForYear(year: number, options: HolidayOptions = {}): Hol
   // ---- Nisan ----
   // Shabbos HaGadol: the Shabbos before Pesach (on 14 Nisan if Erev Pesach is Shabbos). SA OC 430:1.
   b.add('shabbos-hagadol', d(Month.NISAN, 14).onOrBefore(SHABBAT), { specialShabbos: true });
-  // Taanis Bechoros, 14 Nisan; when Erev Pesach is Shabbos it moves to Thursday (SA OC 470:2).
+  // Taanis Bechoros, 14 Nisan; when Erev Pesach is Shabbos it moves to Thursday (Rema OC 470:2;
+  // the Shulchan Aruch there records a dispute).
   {
     const tb = d(Month.NISAN, 14);
     if (tb.isShabbos) b.add('taanis-bechoros', tb.addDays(-2), { fast: 'minor' }, { moved: true });
@@ -233,10 +235,11 @@ export function holidaysForYear(year: number, options: HolidayOptions = {}): Hol
   b.add('rosh-hashana-labehemos', d(Month.ELUL, 1), { minor: true });
   // Leil Selichos (Ashkenaz): the Motzaei Shabbos before Rosh Hashana, or a week earlier if
   // fewer than four days of selichos would remain (Rema OC 581:1; the four-day reason is MB 581:6). Dated on the Shabbos.
+  // Counted from Erev Rosh Hashana (29 Elul), so year 9999 needs no date in year 10000.
   {
-    const rh = new HebrewDate(year + 1, Month.TISHREI, 1);
-    let s = rh.addDays(-4).onOrBefore(SHABBAT);
-    if (rh.daysSince(s) < 5) s = s.addDays(-7);
+    const erevRh = d(Month.ELUL, 29);
+    let s = erevRh.addDays(-3).onOrBefore(SHABBAT);
+    if (erevRh.daysSince(s) < 4) s = s.addDays(-7);
     b.add('leil-selichos', s, { minor: true });
   }
   b.add('erev-rosh-hashana', d(Month.ELUL, 29), { erev: true });
@@ -252,21 +255,27 @@ export function holidaysForYear(year: number, options: HolidayOptions = {}): Hol
     if (options.shabbosMevorchim ?? true) {
       b.add('shabbos-mevorchim', start.prev().onOrBefore(SHABBAT), { specialShabbos: true }, { month: m, monthYear: year });
     }
-    // Yom Kippur Katan: the day before Rosh Chodesh, moved to Thursday if it falls on
-    // Friday or Shabbos; not kept before Tishrei, Cheshvan, Teves or Iyar (MB 417:4; Magen Avraham 417:3;
-    // the exclusions are common practice, not stated there).
+    // Yom Kippur Katan: the day before Rosh Chodesh. On Shabbos it moves to Thursday (Magen
+    // Avraham 417:3; MB 417:4). On Friday: Magen Avraham 417:3 keeps it on Friday; MB 417:4 says
+    // those who say Selichos fast on Thursday and those who don't on Friday. Default Thursday
+    // (`yomKippurKatanOnFriday`). Not kept before Tishrei, Cheshvan, Teves or Iyar (common
+    // practice, not stated in either).
     if (options.yomKippurKatan && m !== Month.CHESHVAN && m !== Month.TEVES && m !== Month.IYAR) {
-      let ykk = start.prev();
-      if (ykk.dayOfWeek === FRIDAY || ykk.dayOfWeek === SHABBAT) ykk = ykk.onOrBefore(THURSDAY);
-      b.add('yom-kippur-katan', ykk, { fast: 'minor', optional: true }, { month: m, monthYear: year });
+      const erev = start.prev();
+      const toThursday =
+        erev.dayOfWeek === SHABBAT || (erev.dayOfWeek === FRIDAY && (options.yomKippurKatanOnFriday ?? 'thursday') === 'thursday');
+      const ykk = toThursday ? erev.onOrBefore(THURSDAY) : erev;
+      b.add('yom-kippur-katan', ykk, { fast: 'minor', optional: true }, toThursday ? { month: m, monthYear: year, moved: true } : { month: m, monthYear: year });
     }
   }
   // Shabbos Mevorchim for Tishrei of next year is not said; nothing to add.
 
-  // ---- BeHaB: Monday, Thursday, Monday after the first Shabbos of Cheshvan and of Iyar (SA OC 492:1 with Rema; MB 492:3). ----
+  // ---- BeHaB: Monday, Thursday, Monday after the first Shabbos after Rosh Chodesh Cheshvan and
+  // Iyar (SA OC 492:1 with Rema; MB 492:3, "שבת הראשון שאחר ר"ח"). When the 1st is Shabbos it
+  // is Rosh Chodesh itself, so the count starts from the next Shabbos. ----
   if (options.behab) {
     for (const m of [Month.CHESHVAN, Month.IYAR]) {
-      const shabbos = d(m, 1).onOrAfter(SHABBAT);
+      const shabbos = d(m, 2).onOrAfter(SHABBAT);
       const mon1 = shabbos.onOrAfter(MONDAY);
       b.add('behab', mon1, { fast: 'minor', optional: true }, { day: 1, month: m });
       b.add('behab', mon1.onOrAfter(THURSDAY), { fast: 'minor', optional: true }, { day: 2, month: m });
@@ -295,14 +304,15 @@ function gregorianYearOf(date: HebrewDate): number {
 function addModernIsraeli(b: Builder): void {
   const flags: Partial<HolidayFlags> = { modernIsraeli: true, optional: true };
   // Rules are applied from the year each was adopted (docs/research/2026-10-21-modern-israeli-days.md).
-  // Yom HaShoah: 27 Nisan (from 1951). If it falls on Friday it is moved to Thursday; from
-  // 1997 (Amendment No. 3), if on Sunday it is moved to Monday.
+  // Yom HaShoah: 27 Nisan (Knesset resolution, 1951). From the 1959 law, if it falls on Friday
+  // it is moved to Thursday; from 1997 (Amendment No. 3), if on Sunday it is moved to Monday.
+  // 1954 (a Friday) fell under the resolution alone, which had no weekday rule.
   {
     const base = b.d(Month.NISAN, 27);
     const greg = gregorianYearOf(base);
     if (greg >= 1951) {
       let day = base;
-      if (base.dayOfWeek === FRIDAY) day = base.prev();
+      if (greg >= 1959 && base.dayOfWeek === FRIDAY) day = base.prev();
       else if (greg >= 1997 && base.dayOfWeek === SUNDAY) day = base.next();
       b.add('yom-hashoah', day, flags, day.equals(base) ? undefined : { moved: true });
     }
@@ -347,7 +357,7 @@ const COMMEMORATIONS: {
   { id: 'sigd', month: Month.CHESHVAN, day: 29, from: 5769, move: (w) => (w === SHABBAT ? -2 : 0), official: true },
   // Friday → the Wednesday before (Aliyah Day law, 2016).
   { id: 'yom-haaliyah', month: Month.CHESHVAN, day: 7, from: 5777, move: (w) => (w === FRIDAY ? -2 : 0), official: true },
-  // Shabbos → Sunday (Herzl law, 2004; 10 Iyar is in fact never Shabbos).
+  // Shabbos → Sunday (Herzl law, 2004). 10 Iyar is Shabbos when Pesach begins on Tuesday (5784).
   { id: 'yom-herzl', month: Month.IYAR, day: 10, from: 5765, move: (w) => (w === SHABBAT ? 1 : 0), official: true },
   // Friday or Shabbos → the next Sunday (Ben-Gurion law, 1976).
   { id: 'yom-ben-gurion', month: Month.KISLEV, day: 6, from: 5737, move: (w) => (w === FRIDAY ? 2 : w === SHABBAT ? 1 : 0), official: true },
@@ -392,7 +402,7 @@ function addCommemorations(b: Builder): void {
 const cache = new Map<string, HolidayEvent[]>();
 
 function cachedYear(year: number, options: HolidayOptions): HolidayEvent[] {
-  const key = `${year}|${options.israel ? 1 : 0}${options.modernIsraeli ? 1 : 0}${options.behab ? 1 : 0}${options.yomKippurKatan ? 1 : 0}${options.shabbosMevorchim === false ? 0 : 1}${options.shovavim ? 1 : 0}${options.israeliCommemorations ? 1 : 0}`;
+  const key = `${year}|${options.israel ? 1 : 0}${options.modernIsraeli ? 1 : 0}${options.behab ? 1 : 0}${options.yomKippurKatan ? 1 : 0}${options.yomKippurKatanOnFriday === 'friday' ? 1 : 0}${options.shabbosMevorchim === false ? 0 : 1}${options.shovavim ? 1 : 0}${options.israeliCommemorations ? 1 : 0}`;
   let v = cache.get(key);
   if (!v) {
     v = holidaysForYear(year, options);

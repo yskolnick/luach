@@ -22,12 +22,12 @@
 
 import { HebrewDate } from '../calendar/hebrew-date.js';
 import { Month } from '../calendar/months.js';
-import { civilToDays, daysToCivil, MS_PER_DAY, type CivilDate } from '../time/civil.js';
+import { assertCivil, civilToDays, daysToCivil, MS_PER_DAY, type CivilDate } from '../time/civil.js';
 import { assertTimeZone, zonedToInstant, type TimeZone } from '../time/zone.js';
 import { horizonDip, solarTransit, SUNRISE_ZENITH, timeAtZenith, type NoEventReason } from './solar.js';
 import { usnoTimeAtZenith } from './usno.js';
 import { ZMANIM } from './opinions.js';
-import { roundToMinute, Zman, type ZmanUnavailableReason } from './zman.js';
+import { roundToLocalMinute, Zman, type ZmanUnavailableReason } from './zman.js';
 
 /** A place on earth. */
 export interface GeoLocation {
@@ -53,17 +53,19 @@ export interface ZmanimOptions {
    * computed at sea level. See the docs, "Elevation".
    */
   useElevation?: boolean;
-  /** Minutes before sunset for `candleLighting()`. Default 18. */
+  /** Minutes before sunset for `candleLighting()`. Default 18. Must be finite, 0–180. */
   candleLightingMinutes?: number;
-  /** Minutes after sunset for Ateret Torah's tzeis. Default 40. */
+  /** Minutes after sunset for Ateret Torah's tzeis. Default 40. Must be finite, more than 0 and at most 180. */
   ateretTorahMinutes?: number;
   /**
-   * What to do when the sun does not reach an angle (high latitudes):
+   * What to do when the sun does not get low enough to reach an angle (high-latitude summer
+   * nights, reason `'sun-always-above'`):
    * - `'none'` (default): return `null` with the reason;
    * - `'nearestDay'`: use the same offset from solar noon as on the nearest day when the
    *   angle is reached;
    * - `'halfNight'`: use solar midnight (the sun's lowest point).
-   * Fallback times are marked in `Zman.fallback`.
+   * Fallback times are marked in `Zman.fallback`. When the sun never rises high enough
+   * (polar night, `'sun-always-below'`) no fallback applies and the time stays `null`.
    */
   highLatitudeFallback?: 'none' | 'nearestDay' | 'halfNight';
   /** Solar algorithm. Default `'noaa'`; `'usno'` is offered for cross-checking. */
@@ -71,6 +73,32 @@ export interface ZmanimOptions {
 }
 
 type Raw = { time: number } | { reason: ZmanUnavailableReason; fallback?: never };
+
+/**
+ * Accepted range for a caller's angle below the horizon after sunset (havdala, second-night
+ * candles): more than sunset's 0.833° (so the time is after sunset) and at most 30°.
+ */
+export const DEPRESSION_RANGE = { min: 0.833, max: 30 } as const;
+/** Accepted range, in minutes, for a caller's offset from sunset (candle lighting, havdala, Ateret Torah). */
+export const MINUTES_RANGE = { min: 0, max: 180 } as const;
+
+function checkMinutes(what: string, m: number, allowZero: boolean): number {
+  if (!Number.isFinite(m) || m < MINUTES_RANGE.min || m > MINUTES_RANGE.max || (!allowZero && m === 0)) {
+    throw new RangeError(`${what}: minutes must be a finite number ${allowZero ? 'from' : 'greater than'} ${MINUTES_RANGE.min} ${allowZero ? 'to' : 'and at most'} ${MINUTES_RANGE.max}, got ${m}`);
+  }
+  return m;
+}
+
+function checkBy(what: string, by: { degrees: number } | { minutes: number }): { degrees: number } | { minutes: number } {
+  if (by !== null && typeof by === 'object' && 'degrees' in by) {
+    const d = by.degrees;
+    if (!Number.isFinite(d) || !(d > DEPRESSION_RANGE.min) || d > DEPRESSION_RANGE.max) {
+      throw new RangeError(`${what}: degrees below the horizon must be a finite number greater than ${DEPRESSION_RANGE.min} (sunset) and at most ${DEPRESSION_RANGE.max}, got ${d}`);
+    }
+    return by;
+  }
+  return { minutes: checkMinutes(what, (by as { minutes: number } | null)?.minutes ?? NaN, false) };
+}
 
 /** A seasonal hour (shaah zmanis) by some opinion. */
 export interface ShaahZmanis {
@@ -95,14 +123,18 @@ export class ZmanimCalendar {
     if (!(Math.abs(location.latitude) <= 90) || !(Math.abs(location.longitude) <= 180)) {
       throw new RangeError(`Invalid coordinates ${location.latitude}, ${location.longitude}`);
     }
+    if (location.elevation !== undefined && !Number.isFinite(location.elevation)) {
+      throw new RangeError(`Invalid elevation ${location.elevation}: metres above sea level must be a finite number`);
+    }
     assertTimeZone(location.timeZone);
+    if (!(date instanceof HebrewDate)) assertCivil(date.year, date.month, date.day);
     this.location = location;
     this.date = date instanceof HebrewDate ? date.toCivil() : date;
     this.options = {
       rounding: options.rounding ?? true,
       useElevation: options.useElevation ?? false,
-      candleLightingMinutes: options.candleLightingMinutes ?? 18,
-      ateretTorahMinutes: options.ateretTorahMinutes ?? 40,
+      candleLightingMinutes: checkMinutes('candleLightingMinutes', options.candleLightingMinutes ?? 18, true),
+      ateretTorahMinutes: checkMinutes('ateretTorahMinutes', options.ateretTorahMinutes ?? 40, false),
       highLatitudeFallback: options.highLatitudeFallback ?? 'none',
       algorithm: options.algorithm ?? 'noaa',
     };
@@ -130,7 +162,10 @@ export class ZmanimCalendar {
     const hit = this.cache.get(key);
     if (hit) return hit;
     let r: Raw & { fallback?: string } = this.event(90 + degrees, rising);
-    if ('reason' in r) {
+    // A fallback only stands in for a twilight that never gets dark enough (summer nights).
+    // When the sun never rises high enough (polar night) there is no dawn or nightfall to
+    // approximate, and any time would be invented: the null and its reason stay.
+    if ('reason' in r && r.reason === 'sun-always-above') {
       const mode = this.options.highLatitudeFallback;
       if (mode === 'halfNight') {
         r = { time: this.solarMidnight(rising), fallback: 'Solar midnight (the sun\'s lowest point), used because the sun does not reach this angle' } as Raw & { fallback: string };
@@ -180,7 +215,7 @@ export class ZmanimCalendar {
       return new Zman({ id, time: null, opinion: def.opinion, source: def.source, rounded: null, timeZone: tz, reason: raw.reason });
     }
     const rounding = this.options.rounding;
-    const ms = rounding ? roundToMinute(raw.time, def.round) : raw.time;
+    const ms = rounding ? roundToLocalMinute(raw.time, def.round, tz) : raw.time;
     return new Zman({
       id,
       time: new Date(ms),
@@ -417,15 +452,21 @@ export class ZmanimCalendar {
    * view's) business.
    */
   candleLighting(minutes = this.options.candleLightingMinutes): Zman {
-    return this.make('candle-lighting', this.offset(this.set(), -minutes));
+    return this.make('candle-lighting', this.offset(this.set(), -checkMinutes('candleLighting', minutes, true)));
   }
-  /** Havdala at `degrees` below the horizon (e.g. 8.5) or `minutes` after sunset (e.g. 42, 50, 72). Default 8.5°. */
+  /**
+   * Havdala at `degrees` below the horizon (e.g. 8.5) or `minutes` after sunset (e.g. 42, 50, 72).
+   * Default 8.5°. Throws a RangeError for a number that is not finite, an angle outside
+   * {@link DEPRESSION_RANGE} or minutes outside {@link MINUTES_RANGE} (zero excluded).
+   */
   havdala(by: { degrees: number } | { minutes: number } = { degrees: 8.5 }): Zman {
-    return this.make('havdala', 'degrees' in by ? this.angle(by.degrees, false) : this.offset(this.set(), by.minutes));
+    const b = checkBy('havdala', by);
+    return this.make('havdala', 'degrees' in b ? this.angle(b.degrees, false) : this.offset(this.set(), b.minutes));
   }
-  /** Candle lighting on the second night of Yom Tov (or Yom Tov after Shabbos): after nightfall, by default 8.5°. */
+  /** Candle lighting on the second night of Yom Tov (or Yom Tov after Shabbos): after nightfall, by default 8.5°. Same ranges as {@link havdala}. */
   candleLightingSecondNight(by: { degrees: number } | { minutes: number } = { degrees: 8.5 }): Zman {
-    return this.make('candle-lighting-second-night', 'degrees' in by ? this.angle(by.degrees, false) : this.offset(this.set(), by.minutes));
+    const b = checkBy('candleLightingSecondNight', by);
+    return this.make('candle-lighting-second-night', 'degrees' in b ? this.angle(b.degrees, false) : this.offset(this.set(), b.minutes));
   }
   private erevPesach(id: string, raw: Raw): Zman {
     const h = this.hebrewDate;

@@ -94,11 +94,27 @@ recorded as new entries; old ones are superseded, not erased.
   and tests on 2026-10-21. Where the repository records no source, the entry says so rather
   than supplying one.
 
+### D-05. One implementation: `main` {#d-05}
+
+- **What it does:** keeps the implementation on `main` and ports into it what a second,
+  parallel implementation did better (yskolnick/luach#14). The second one stays on the branch
+  `archive/parallel-implementation-2026-10-21` for reference.
+- **Why:** Yosef: "Keep main and see where this code is better, add that". Three comparisons
+  (calendar and readings; zmanim and places; outputs and tooling) ran both on the same inputs
+  and against the oracles; each difference was decided by the primary source or the oracle,
+  not by which implementation wrote it.
+- **Sources:** DECISIONS.md D-05. The sources index, [Sources](./sources.md), came from the
+  same session: Yosef: "Write up a sources and decisions document about where times came
+  from and cite and source every decision and document etc. This is being built in public".
+- **Checked against:** every ported change has a test that failed before it; `npm run check`.
+- **Confidence:** Not applicable.
+- **Open:** items found but not ported are listed in the pull request and the LOG.
+
 ## Open questions
 
 ### Q-00. Unmerged branches {#q-00}
 
-- **What it does:** lists branches with work not yet on `main` (currently none).
+- **What it does:** lists branches with work not yet on `main` (see DECISIONS.md Q-00).
 - **Why:** so nobody loses track of unfinished work.
 - **Sources:** project process (AGENTS.md).
 - **Checked against:** the repository's branches.
@@ -147,6 +163,12 @@ recorded as new entries; old ones are superseded, not erased.
   - Not modelled: the Rema's exception that a death in Adar II of a leap year keeps Adar II
     in later leap years (Terumas HaDeshen 294; Rema YD 402:12).
   - The defaults await Yosef's decision.
+- **Update 2026-10-21:** a birthday for 30 Adar I observed in a common year is now 1 Nisan,
+  not 30 Shevat: Magen Avraham OC 55:10 and Mishna Berura 55:45 (the age is not complete until
+  the 1st of the next month) and MB 55:44 (*verified*); hebcal's `getBirthdayHD` agrees and is
+  now a test oracle. New option `adarI` for one born in Adar I whose birthday falls in a leap
+  year: `'levush'` (default; MB 55:43, "the consensus of the later authorities") or
+  `'magen-avraham'` (MA 55:10, Adar II) (*verified*).
 
 ### Q-05. Modern Israeli days before their amendments {#q-05}
 
@@ -161,10 +183,10 @@ recorded as new entries; old ones are superseded, not erased.
   [Accuracy](./accuracy.md)).
 - **Confidence:** Medium. The Knesset's own PDFs could not be opened.
 - **Open:**
-  - **Discrepancy:** the research note says the Friday → Thursday rule for Yom HaShoah
-    should apply "from 1959", but the code applies it from 1951. The note also could not
-    confirm whether the rule was in the 1959 law or added in 1961. A scholar with access to
-    the Knesset records could settle this.
+  - **Resolved 2026-10-21:** the Friday → Thursday rule for Yom HaShoah now applies from
+    1959, the year of the law, as the research note says; 1954 stays on Friday. Whether the
+    rule was in the 1959 law or added in 1961 is still unconfirmed (it affects no year: no
+    27 Nisan fell on Friday between 1959 and 1961).
   - Not modelled: the 1954 date of Yom HaAtzmaut's Shabbos rule, and the uncertain 1950
     date.
 
@@ -271,6 +293,19 @@ recorded as new entries; old ones are superseded, not erased.
   zmanim 9.4 KB, holidays 5.8 KB).
 - **Confidence:** Not applicable.
 - **Open:** nothing.
+
+### P-08. Freeze the shared tables {#p-08}
+
+- **What it does:** nothing yet. Proposes `Object.freeze` (deeply) for `ZMANIM`,
+  `DEFAULT_DAY_ZMANIM`, the place objects and `ISRAEL_BOUNDARY`.
+- **Why:** they are shared by every caller in a process. A test showed that writing to one
+  (for example, a zman's opinion text, or a place's latitude) changes every later result.
+- **Sources:** no halachic source; an engineering choice.
+- **Checked against:** `test/immutability.test.ts`, whose tests run as soon as the tables are
+  frozen (they passed with the tables frozen in a trial).
+- **Confidence:** Not applicable.
+- **Open:** freezing makes a caller's write throw in strict mode: a behaviour change for
+  Yosef to approve.
 
 ## As built
 
@@ -692,3 +727,183 @@ These are defaults and details the code has that nobody has chosen. Each can be 
 - **Checked against:** unit tests only.
 - **Confidence:** Medium.
 - **Open:** some read only until Shavuos; customs for the end of the summer differ.
+
+### AB-37. Yom Kippur Katan when Erev Rosh Chodesh is Friday {#ab-37}
+
+- **What it does:** an option `yomKippurKatanOnFriday`: Thursday (default) or Friday. On Shabbos it is Thursday.
+- **Why:** the sources differ, so both are offered; the default is the behaviour before, and agrees with the oracle.
+- **Sources:** Magen Avraham OC 417:3 (Friday); Mishna Berura 417:4 (Thursday for those who say Selichos, Friday for those who don't) (*verified*, citation audit).
+- **Checked against:** @hebcal/core (Thursday); unit tests for both options.
+- **Confidence:** High for the sources; the default is a judgement.
+- **Open:** the month exclusions (AB-05) still have no source.
+
+### AB-38. BeHaB from the first Shabbos after Rosh Chodesh {#ab-38}
+
+- **What it does:** BeHaB starts after the first Shabbos *after* Rosh Chodesh; a Shabbos that is Rosh Chodesh is not counted.
+- **Why:** the source says so; before, a Rosh Chodesh Shabbos was counted and the fasts came a week early.
+- **Sources:** Mishna Berura 492:3, "שבת הראשון שאחר ר"ח" (*verified*).
+- **Checked against:** @hebcal/core (`addBehab`); unit test for 5785 Cheshvan.
+- **Confidence:** High.
+- **Open:** nothing.
+
+### AB-39. Local candle-lighting customs {#ab-39}
+
+- **What it does:** a place may carry its documented custom (Jerusalem 40, Haifa 30); the day view, CLI and iCal use it unless the caller sets the minutes, and label it with the source.
+- **Why:** the minutes are a local custom; a city whose custom is documented should not get the generic 18.
+- **Sources:** Peninei Halakha, Shabbat 3:2 (Jerusalem 40, Haifa 30) and Zemanim 13:5 n. 11 (Jerusalem) (*verified*, read on ph.yhb.org.il). Not set without a source: Zichron Yaakov 30, Petach Tikva 40, the Shomron 30.
+- **Checked against:** unit and CLI tests.
+- **Confidence:** Medium: one published source per city.
+- **Open:** Lu'ach Eretz Yisrael is reported to give Jerusalem 25 (not verified); other cities need sources.
+
+### AB-40. Plag HaMincha of the Levush: the source {#ab-40}
+
+- **What it does:** unchanged calculation (the Gra's); the citation now names where the Levush's view is reported.
+- **Why:** the earlier citation, Magen Avraham 233:3, reads the Levush differently (from tzeis).
+- **Sources:** Levush OC 267, as reported in Biur Halacha 261:2 s.v. "להקדים" (*verified*); Magen Avraham 233:3 (*verified*).
+- **Checked against:** the [citation audit](./research/2026-10-21-citation-audit-zmanim.md).
+- **Confidence:** Medium: the Levush itself was not read.
+- **Open:** reading the Levush directly; whether to offer MA's reading as an option.
+
+### AB-41. 197 built-in places {#ab-41}
+
+- **What it does:** the built-in table has 197 places (was 144), adding cities with Jewish communities.
+- **Why:** the second implementation had communities `main` lacked (Toms River, Spring Valley, Boca Raton, Durban, Brisbane…).
+- **Sources:** GeoNames (CC-BY 4.0), regenerated with `scripts/build-places.py`; six Hebrew names written for Luach where GeoNames has none. *No source recorded* for the choice of cities: a judgement.
+- **Checked against:** regenerating without changes reproduced the existing files exactly; place tests.
+- **Confidence:** Medium.
+- **Open:** Kiryat Ata and Nof HaGalil are not built in.
+
+### AB-42. Search no longer guesses {#ab-42}
+
+- **What it does:** transliteration matches need four consonants and must cover most of the name; the full table knows the built-in spellings and every Hebrew name.
+- **Why:** "Tzfat" returned a town in Egypt and "Boro Park" a district of São Paulo: a wrong place gives wrong zmanim, worse than no match.
+- **Sources:** *No source recorded*: an engineering choice.
+- **Checked against:** search tests with those cases.
+- **Confidence:** Medium.
+- **Open:** nothing.
+
+### AB-43. The CLI's place and elevation options {#ab-43}
+
+- **What it does:** `--city` falls back to the full table; `--lat/--lon` need `--tz`; `--elevation` turns on elevation-adjusted sunrise and sunset.
+- **Why:** a missing city, or the computer's own time zone, silently gave wrong or no results.
+- **Sources:** *No source recorded*: interface choices. Elevation follows AB-10 and AB-17.
+- **Checked against:** CLI tests.
+- **Confidence:** Not applicable.
+- **Open:** `luach ics --elevation` errors, because the iCal export takes no zmanim options.
+
+### AB-44. Kedoshim when Acharei Mos's haftara was displaced {#ab-44}
+
+- **What it does:** Ashkenazi Kedoshim reads Amos 9:7-15 when Acharei Mos's own haftara was displaced; otherwise Ezekiel 22:1-16.
+- **Why:** the source says so; the accuracy page had called the difference a Rema-vs-Hertz variant.
+- **Sources:** Mishna Berura 428:26, citing R. Akiva Eiger, who names Machar Chodesh (*verified*). Applying the same reason to Shabbos HaGadol and Rosh Chodesh is Luach's reading.
+- **Checked against:** @hebcal/leyning, every Shabbos 5660–6000 (it agrees, apart from ending Ezekiel 22 at 22:19).
+- **Confidence:** High for Machar Chodesh; Medium for the extension.
+- **Open:** whether the MB's reason covers Shabbos HaGadol and Rosh Chodesh.
+
+### AB-45. Shabbos Shuva: Micah or Joel {#ab-45}
+
+- **What it does:** Ashkenazi Shabbos Shuva adds Micah 7:18-20 with Vayelech and Joel 2:15-27 with Haazinu; option `shuvaAddition`.
+- **Why:** the source says so; before, Joel was always added.
+- **Sources:** Mishna Berura 428:23, recording the Dagul Mervava (*verified*). Joel before Micah for `'both'`: *no source recorded* (book order).
+- **Checked against:** @hebcal/leyning for the Vayelech years.
+- **Confidence:** High.
+- **Open:** the order for `'both'`.
+
+### AB-46. Rosh Chodesh Av and Elul haftara options {#ab-46}
+
+- **What it does:** options `roshChodeshAv` and `roshChodeshElul`; defaults unchanged.
+- **Why:** the Rema and the Mishna Berura differ, so both are offered.
+- **Sources:** Rema OC 425:1; Mishna Berura 425:7–8; Shulchan Aruch OC 425:1 (*verified*).
+- **Checked against:** unit tests.
+- **Confidence:** High for the sources; the defaults are the behaviour before.
+- **Open:** nothing.
+
+### AB-47. Pirkei Avos on Erev Tisha B'Av, and until Shavuos {#ab-47}
+
+- **What it does:** Pirkei Avos is not said on Shabbos 8 Av; option `until: 'shavuos'` for one round before Shavuos.
+- **Why:** the source says so; before, a chapter was said on 8 Av and every later chapter shifted.
+- **Sources:** Rema OC 553:2, "אם חל [ערב ת"ב] בשבת אין אומרים פרקי אבות"; Kaf HaChaim 292:23 (*verified*).
+- **Checked against:** @hebcal/learning (`pirkeiAvot`), every Shabbos 5700–5900, Israel and diaspora.
+- **Confidence:** High.
+- **Open:** what is read on a seventh Shabbos before Shavuos (null).
+
+### AB-48. Year 9999 {#ab-48}
+
+- **What it does:** every date in 9999 works; answers that need a date in year 10000 are null.
+- **Why:** 9999 is advertised as supported (P-04); a guessed answer would be worse than none.
+- **Sources:** P-04; the calendar arithmetic of Rosh Hashana 10000 (Rambam, Hilchos Kiddush HaChodesh 7).
+- **Checked against:** unit tests over every day of 9999.
+- **Confidence:** High.
+- **Open:** nothing.
+
+### AB-49. No fallback in polar night {#ab-49}
+
+- **What it does:** the high-latitude fallbacks apply only when the sun never gets low enough; in polar night the time stays null.
+- **Why:** in polar night the sun never rises to the angle, so any time would be invented.
+- **Sources:** *No source recorded* for the fallbacks themselves (AB-18).
+- **Checked against:** Svalbard in winter and summer; astronomy-engine for edge days.
+- **Confidence:** High for the null; the fallbacks remain a judgement.
+- **Open:** nothing.
+
+### AB-50. Limits on caller-supplied numbers {#ab-50}
+
+- **What it does:** angles must be more than 0.833° and at most 30° below the horizon, minutes after sunset 0–180, candle lighting 0–180; otherwise a RangeError.
+- **Why:** a missing or negative number produced an invalid time and crashed JSON output; a negative angle gave "havdala" before sunset.
+- **Sources:** *No source recorded*: the limits are generous bounds, not halachic positions.
+- **Checked against:** unit tests.
+- **Confidence:** Not applicable.
+- **Open:** nothing.
+
+### AB-51. Historical offsets keep their seconds {#ab-51}
+
+- **What it does:** UTC offsets keep seconds (local mean time before standard time); rounding is to whole minutes of the local clock.
+- **Why:** rounding the offset moved historical zmanim by up to 30 seconds.
+- **Sources:** the IANA time-zone database through `Intl`.
+- **Checked against:** Jerusalem 1900 noon (09:39:20Z).
+- **Confidence:** High.
+- **Open:** nothing.
+
+### AB-52. The day JSON Schema ships in the package {#ab-52}
+
+- **What it does:** `luach/schema/day.schema.json`, with a URL that serves JSON; every fixed-shape object is closed.
+- **Why:** the schema was only in the docs, and its URL served a web page.
+- **Sources:** JSON Schema 2020-12.
+- **Checked against:** Ajv against real output over a year of days, Israel and diaspora, polar places, every locale.
+- **Confidence:** High.
+- **Open:** nothing.
+
+### AB-53. Import and licence checks read code properly {#ab-53}
+
+- **What it does:** the checks use a small tokenizer, catch `createRequire` and computed imports, and scan the built files for oracle code.
+- **Why:** regular expressions could be fooled, which matters for the clean room (P-01).
+- **Sources:** ADR 0006.
+- **Checked against:** 22 probe tests.
+- **Confidence:** Not applicable.
+- **Open:** nothing.
+
+### AB-54. Runtime smoke tests {#ab-54}
+
+- **What it does:** CI loads the built package on Node 18, 20 and 22, Bun, Deno and headless Chromium, in ESM and CommonJS, and runs the CLI.
+- **Why:** the package says Node 18+ and ships CommonJS; neither was tested.
+- **Sources:** ADR 0007.
+- **Checked against:** the runtimes themselves.
+- **Confidence:** Not applicable.
+- **Open:** nothing.
+
+### AB-55. The example server limits calendar ranges {#ab-55}
+
+- **What it does:** at most 400 days with a place, 5 × 366 without.
+- **Why:** one request for many years could tie up the server.
+- **Sources:** *No source recorded*: an engineering choice for the example only.
+- **Checked against:** handler tests.
+- **Confidence:** Not applicable.
+- **Open:** nothing.
+
+### AB-56. Shabbos before a postponed Tisha B'Av {#ab-56}
+
+- **What it does:** on that Shabbos the day view gives when Shabbos ends (not havdala) and when the fast begins; havdala over a cup comes when the fast ends on Sunday night.
+- **Why:** havdala over a cup is not said on Motzaei Shabbos then; showing a havdala time was wrong.
+- **Sources:** Shulchan Aruch OC 556:1; Mishna Berura 556:2; Rema OC 299:10 ("HaMavdil" before melacha) (*verified*).
+- **Checked against:** unit, CLI and iCal tests for 2 August 2025, New York.
+- **Confidence:** High.
+- **Open:** nothing.

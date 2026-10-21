@@ -47,6 +47,47 @@ describe('gematriya', () => {
     expect(() => parseGematriya('abc')).toThrow(RangeError);
     expect(() => gematriya(0)).toThrow(RangeError);
   });
+  it('round-trips every form gematriya() writes', () => {
+    for (let n = 1; n <= 9999; n++) {
+      if (n % 1000) {
+        expect(parseGematriya(gematriya(n, { thousands: false }))).toBe(n % 1000);
+        expect(parseGematriya(gematriya(n).replace(/׳/g, "'").replace(/״/g, '"'))).toBe(n);
+      } else {
+        // An exact thousand reads as its units digit (documented above).
+        expect(parseGematriya(gematriya(n))).toBe(n / 1000);
+      }
+    }
+    for (let n = 1; n <= 999; n++) expect(parseGematriya(gematriya(n, { punctuate: false }))).toBe(n);
+    for (const n of [10_001, 15_015, 16_016, 115_115, 999_999]) expect(parseGematriya(gematriya(n))).toBe(n);
+    expect(parseGematriya('ה׳ה׳')).toBe(5005);
+    expect(parseGematriya('ה׳א')).toBe(5001);
+    expect(parseGematriya('טו')).toBe(15);
+    expect(parseGematriya('ט"ז')).toBe(16);
+    expect(parseGematriya('תתקצ״ט')).toBe(999);
+    expect(parseGematriya('ך׳')).toBe(20);
+  });
+  it('rejects numerals that are not written the standard way', () => {
+    for (const bad of [
+      'יה', // 15 is ט״ו
+      'יו', // 16 is ט״ז
+      'אאא', // repeated units
+      'קקקקק', // repeated hundreds
+      'יי', // repeated tens
+      'בא׳ג', // a later group out of order
+      'אב', // ascending
+      'הת', // ascending (thousands need a geresh)
+      'תתת', // 1200 within one group
+      'ה׳׳', // doubled geresh
+      'ה״״ו', // doubled gershayim
+      'ה׳ה׳ה', // two thousands marks
+      '׳ה', // nothing before the thousands mark
+      'ט״ו׳ה', // gershayim in the thousands
+      'תשפ״ז׳', // gershayim then geresh
+      '״', // marks only
+    ]) {
+      expect(() => parseGematriya(bad), bad).toThrow(RangeError);
+    }
+  });
   it('parses ASCII punctuation', () => {
     expect(parseGematriya('תשפ"ז')).toBe(787);
     expect(parseGematriya("ה'תשפ\"ז")).toBe(5787);

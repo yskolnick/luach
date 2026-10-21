@@ -10,11 +10,13 @@
  * Chukas–Balak, Matos–Masei, Nitzavim–Vayelech). The schedule is fixed by deadlines
  * (Tur and Shulchan Aruch OC 428:4):
  *
- * - in a common year Tzav is read before Pesach, in a leap year Metzora;
+ * - in a common year Tzav is read before Pesach, in a leap year Metzora, except in the leap
+ *   years the Shulchan Aruch names, when Acharei Mos is read before Pesach (so Metzora is a
+ *   minimum, not a fixed slot);
  * - Bamidbar before Shavuos;
  * - Devarim on the Shabbos before Tisha B'Av (Shabbos Chazon), Vaeschanan after it;
  * - Nitzavim before Rosh Hashana;
- * - Haazinu before Sukkos.
+ * - Haazinu before Sukkos (inferred from 428:4, not stated there).
  *
  * Pairs are joined only when the Shabbosos before a deadline cannot fit the parshiyos that
  * must be read by then, in a fixed order of preference. Israel and the diaspora diverge
@@ -27,7 +29,8 @@
 
 import { HebrewDate } from '../calendar/hebrew-date.js';
 import { Month } from '../calendar/months.js';
-import { isLeapYear } from '../calendar/year.js';
+import { isLeapYear, roshHashanaDays, MAX_DAYS } from '../calendar/year.js';
+import { dayOfWeekOfDays } from '../time/civil.js';
 import { festivalOn } from '../holidays/holidays.js';
 import { lookupIn, type Locale } from '../locales/types.js';
 import { NAMES } from './names-data.js';
@@ -75,7 +78,9 @@ const cache = new Map<string, ShabbosReading[]>();
 
 /**
  * Every Shabbos reading of the cycle that begins after Simchas Torah of Hebrew year `year`
- * and ends with Haazinu before Sukkos of `year + 1`.
+ * and ends with Haazinu before Sukkos of `year + 1`. For 9999, the last supported year, the
+ * schedule is worked out in full (1 Tishrei 10000 is known), but the Shabbosos that fall in
+ * year 10000 are omitted.
  */
 export function readingCycle(year: number, options?: { israel?: boolean }): ShabbosReading[] {
   const israel = options?.israel ?? false;
@@ -84,7 +89,17 @@ export function readingCycle(year: number, options?: { israel?: boolean }): Shab
   if (hit) return hit;
 
   const start = new HebrewDate(year, Month.TISHREI, israel ? 22 : 23).next().onOrAfter(6);
-  const end = new HebrewDate(year + 1, Month.TISHREI, 15).prev().onOrBefore(6);
+  // The last Shabbos before Sukkos of `year + 1`, as an epoch day: for 9999 it lies in year
+  // 10000, which has no HebrewDate, but its day is known from the molad arithmetic.
+  const rhNext = roshHashanaDays(year + 1);
+  const sukkosEve = rhNext + 13;
+  const endDays = sukkosEve - ((dayOfWeekOfDays(sukkosEve) + 1) % 7);
+  const festivalOnDays = (days: number): string | null => {
+    if (days <= MAX_DAYS) return festivalOn(HebrewDate.fromEpochDays(days), israel);
+    // Tishrei of year 10000, before Sukkos: only Rosh Hashana and Yom Kippur are Yom Tov.
+    const t = days - rhNext + 1;
+    return t === 1 || t === 2 ? 'rosh-hashana' : t === 10 ? 'yom-kippur' : null;
+  };
   const lastShabbosBefore = (d: HebrewDate) => d.prev().onOrBefore(6).epochDays;
   // Pesach, Shavuos and Tisha B'Av of this cycle fall in Hebrew year `year` (Tishrei–Elul).
   const deadlines: Deadline[] = [
@@ -93,13 +108,13 @@ export function readingCycle(year: number, options?: { israel?: boolean }): Shab
     { by: new HebrewDate(year, Month.AV, 9).onOrBefore(6).epochDays, through: P('devarim') },
     // Nitzavim before Rosh Hashana follows from this last deadline: there are always seven
     // Shabbosos from Tisha B'Av to Rosh Hashana for Vaeschanan–Nitzavim.
-    { by: end.epochDays, through: P('haazinu') },
+    { by: endDays, through: P('haazinu') },
   ];
 
   // Shabbosos with no parsha: Yom Tov or Chol Hamoed (and Yom Kippur).
-  const shabbosos: { date: HebrewDate; holiday: string | null }[] = [];
-  for (let d = start; d.epochDays <= end.epochDays; d = d.addDays(7)) {
-    shabbosos.push({ date: d, holiday: festivalOn(d, israel) });
+  const shabbosos: { days: number; holiday: string | null }[] = [];
+  for (let days = start.epochDays; days <= endDays; days += 7) {
+    shabbosos.push({ days, holiday: festivalOnDays(days) });
   }
 
   // Decide which pairs to join, deadline by deadline: when the Shabbosos before a deadline
@@ -111,7 +126,7 @@ export function readingCycle(year: number, options?: { israel?: boolean }): Shab
   let slot = 0;
   for (const dl of deadlines) {
     let slots = 0;
-    while (slot + slots < reading.length && reading[slot + slots]!.date.epochDays <= dl.by) slots++;
+    while (slot + slots < reading.length && reading[slot + slots]!.days <= dl.by) slots++;
     const needed = dl.through - i + 1;
     if (needed > slots) {
       const candidates = JOIN_PREFERENCE.filter((p) => p >= i && p + 1 <= dl.through);
@@ -125,19 +140,17 @@ export function readingCycle(year: number, options?: { israel?: boolean }): Shab
 
   const out: ShabbosReading[] = [];
   i = 0;
-  for (const { date, holiday } of shabbosos) {
+  for (const { days, holiday } of shabbosos) {
+    // Year 10000 is outside the range: its Shabbosos are counted but not listed.
+    const date = days <= MAX_DAYS ? HebrewDate.fromEpochDays(days) : null;
     if (holiday) {
-      out.push({ date, parsha: null, holiday });
+      if (date) out.push({ date, parsha: null, holiday });
       continue;
     }
     if (i > P('haazinu')) throw new Error(`Parsha schedule overran in ${year}`);
-    if (joins.has(i)) {
-      out.push({ date, parsha: [PARSHIYOS[i]!, PARSHIYOS[i + 1]!] });
-      i += 2;
-    } else {
-      out.push({ date, parsha: [PARSHIYOS[i]!] });
-      i += 1;
-    }
+    const parsha: ParshaId[] = joins.has(i) ? [PARSHIYOS[i]!, PARSHIYOS[i + 1]!] : [PARSHIYOS[i]!];
+    if (date) out.push({ date, parsha });
+    i += parsha.length;
   }
   if (i !== P('vezos-haberacha')) throw new Error(`Parsha schedule for ${year} ended at ${PARSHIYOS[i]}`);
   cache.set(key, out);
@@ -146,9 +159,11 @@ export function readingCycle(year: number, options?: { israel?: boolean }): Shab
 
 /**
  * The reading for the Shabbos on or after `date` (so on a weekday it is "this week's
- * parsha"). `parsha` is null when that Shabbos is Yom Tov or Chol Hamoed.
+ * parsha"). `parsha` is null when that Shabbos is Yom Tov or Chol Hamoed. Returns null only
+ * for the last days of year 9999, whose coming Shabbos is in year 10000, outside the range.
  */
-export function parshaFor(date: HebrewDate, options?: { israel?: boolean }): ShabbosReading {
+export function parshaFor(date: HebrewDate, options?: { israel?: boolean }): ShabbosReading | null {
+  if (date.epochDays + ((6 - date.dayOfWeek + 7) % 7) > MAX_DAYS) return null;
   const shabbos = date.onOrAfter(6);
   // The cycle that contains this Shabbos began after Simchas Torah of this year or the year before.
   for (const y of [shabbos.year, shabbos.year - 1]) {
@@ -170,30 +185,53 @@ export function parshaName(parsha: readonly ParshaId[] | null, locale: Locale = 
   return parsha.map((p) => lookupIn(locale, `parsha.${p}`, NAMES)).join(lookupIn(locale, 'parsha.join', NAMES));
 }
 
+/** Options for {@link pirkeiAvos}. */
+export interface PirkeiAvosOptions {
+  israel?: boolean;
+  /** The last weeks before Rosh Hashana: one chapter a week (`'single'`, default) or doubled to end with chapter 6. */
+  cycle?: 'doubled' | 'single';
+  /**
+   * `'roshHashana'` (default): the whole summer (Rema OC 292:2). `'shavuos'`: one round on the
+   * Shabbosos between Pesach and Shavuos, "כל שבת פרק א'", the custom the Kaf HaChaim records (292:23).
+   */
+  until?: 'roshHashana' | 'shavuos';
+}
+
 /**
  * The chapter of Pirkei Avos read on a summer Shabbos afternoon (between Pesach and Rosh
  * Hashana; Rema OC 292:2 records the custom). Chapters 1–6 are read in order, one each
- * Shabbos, and repeated; Shabbosos that are Yom Tov or Tisha B'Av are skipped. In the last
- * weeks before Rosh Hashana, when fewer than six Shabbosos remain for a full round, some
- * double up the chapters so the year ends with chapter 6 (`cycle: 'doubled'`); the default,
- * `cycle: 'single'`, keeps one chapter a week (*as built*). Customs vary (some read only until Shavuos); returns null outside
- * the season or when not read.
+ * Shabbos, and repeated. Skipped, without losing a chapter: a Shabbos that is Yom Tov;
+ * Erev Tisha B'Av, 8 Av (Rema OC 553:2: "אם חל בשבת אין אומרים פרקי אבות"); and 9 Av, when
+ * the fast is postponed to Sunday. In the last weeks before Rosh Hashana, when fewer than
+ * six Shabbosos remain for a full round, some double up the chapters so the year ends with
+ * chapter 6 (`cycle: 'doubled'`); the default, `cycle: 'single'`, keeps one chapter a week
+ * (*as built*). With `until: 'shavuos'`, one round of chapters 1–6 before Shavuos (Kaf
+ * HaChaim 292:23); in Israel, when the first Shabbos after Pesach is 22 Nisan, there are
+ * seven Shabbosos and the seventh returns null, since the source does not say what is read
+ * then (*as built*). Returns null outside the season or when not read.
  */
-export function pirkeiAvos(date: HebrewDate, options?: { israel?: boolean; cycle?: 'doubled' | 'single' }): number[] | null {
+export function pirkeiAvos(date: HebrewDate, options?: PirkeiAvosOptions): number[] | null {
   if (!date.isShabbos) return null;
   const israel = options?.israel ?? false;
+  const untilShavuos = options?.until === 'shavuos';
   const y = date.year;
   const firstAfterPesach = new HebrewDate(y, Month.NISAN, israel ? 22 : 23).onOrAfter(6);
-  const rh = new HebrewDate(y + 1, Month.TISHREI, 1);
-  if (date.epochDays < firstAfterPesach.epochDays || date.epochDays >= rh.epochDays) return null;
-  const av9 = new HebrewDate(y, Month.AV, 9);
+  // Rosh Hashana is the day after 29 Elul (Elul always has 29 days), so the end is known
+  // without building a date in year y + 1 (which may be past the supported range).
+  const end = untilShavuos ? new HebrewDate(y, Month.SIVAN, 6).epochDays : new HebrewDate(y, Month.ELUL, 29).epochDays + 1;
+  if (date.epochDays < firstAfterPesach.epochDays || date.epochDays >= end) return null;
+  const av8 = new HebrewDate(y, Month.AV, 8);
+  const av9 = av8.next();
   const counted: HebrewDate[] = [];
-  for (let d = firstAfterPesach; d.epochDays < rh.epochDays; d = d.addDays(7)) {
-    if (festivalOn(d, israel) || d.equals(av9)) continue;
+  for (let e = firstAfterPesach.epochDays; e < end; e += 7) {
+    const d = HebrewDate.fromEpochDays(e);
+    // Erev Tisha B'Av (Rema OC 553:2); 9 Av on Shabbos, when the fast is on Sunday.
+    if (festivalOn(d, israel) || d.equals(av8) || d.equals(av9)) continue;
     counted.push(d);
   }
   const idx = counted.findIndex((d) => d.equals(date));
   if (idx < 0) return null;
+  if (untilShavuos) return idx < 6 ? [idx + 1] : null;
   const n = counted.length;
   const r = n % 6;
   const lastStart = n - r;

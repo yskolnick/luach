@@ -1,7 +1,7 @@
 # Working on Luach
 
 Luach is a clean-room Hebrew calendar and zmanim library owned by Yosef Skolnick.
-Read this, `ROADMAP.md`, `DECISIONS.md` and the latest LOG entry (private records repo)
+Read this, `ROADMAP.md`, `DECISIONS.md` and the latest entry in `LOG.md`
 before starting.
 
 ## Rules
@@ -21,8 +21,11 @@ before starting.
 6. **Records.** Every decision lands in `DECISIONS.md` in the same commit as the work;
    tooling/dependency/licence choices also get an ADR (`docs/decisions/`). Research goes in
    `docs/research/YYYY-MM-DD-topic.md` with sources; datasets in `docs/data-sources.md`.
-   Session logs and conversation records live in the private records repo, never here.
-7. **No secrets, tokens, session links, model names or personal data** in this repo.
+   Each session updates the public `LOG.md` (updates, decisions, open questions; nothing
+   personal). Personal notes and conversation records live in the private records repo.
+7. **No secrets, tokens, session links or personal data** in this repo. Commit messages
+   name the model that wrote the change (`Co-Authored-By:`) and may name the model that
+   checked it (D-02); nothing else names a model.
 8. **Small green commits,** a branch per milestone, PR, merge when CI is green.
    Never skip or delete a failing test to get green.
 9. **Never publish to npm.** Yosef publishes (`RELEASING.md`).

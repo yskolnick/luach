@@ -9,12 +9,12 @@
  * @packageDocumentation
  */
 
-import { HebrewDate } from '../calendar/hebrew-date';
-import { Month } from '../calendar/months';
-import { isLeapYear, monthLength, monthsOfYear } from '../calendar/year';
-import { daysToCivil } from '../time/civil';
-import { readingCycle } from '../parsha/parsha';
-import type { HolidayEvent, HolidayFlags, HolidayOptions } from './types';
+import { HebrewDate } from '../calendar/hebrew-date.js';
+import { Month } from '../calendar/months.js';
+import { isLeapYear, monthLength, monthsOfYear } from '../calendar/year.js';
+import { daysToCivil } from '../time/civil.js';
+import { readingCycle } from '../parsha/parsha.js';
+import type { HolidayEvent, HolidayFlags, HolidayOptions } from './types.js';
 
 const NONE: HolidayFlags = {
   yomTov: false,

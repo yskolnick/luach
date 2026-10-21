@@ -12,7 +12,7 @@
  * @packageDocumentation
  */
 
-import { civilToDays, MS_PER_DAY, type CivilDate, daysToCivil } from './civil';
+import { civilToDays, MS_PER_DAY, type CivilDate, daysToCivil } from './civil.js';
 
 /** Anything that can say what the UTC offset is at a given instant. */
 export interface TimeZoneProvider {

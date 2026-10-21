@@ -20,14 +20,14 @@
  * @packageDocumentation
  */
 
-import { HebrewDate } from '../calendar/hebrew-date';
-import { Month } from '../calendar/months';
-import { civilToDays, daysToCivil, MS_PER_DAY, type CivilDate } from '../time/civil';
-import { assertTimeZone, zonedToInstant, type TimeZone } from '../time/zone';
-import { horizonDip, solarTransit, SUNRISE_ZENITH, timeAtZenith, type NoEventReason } from './solar';
-import { usnoTimeAtZenith } from './usno';
-import { ZMANIM } from './opinions';
-import { roundToMinute, Zman, type ZmanUnavailableReason } from './zman';
+import { HebrewDate } from '../calendar/hebrew-date.js';
+import { Month } from '../calendar/months.js';
+import { civilToDays, daysToCivil, MS_PER_DAY, type CivilDate } from '../time/civil.js';
+import { assertTimeZone, zonedToInstant, type TimeZone } from '../time/zone.js';
+import { horizonDip, solarTransit, SUNRISE_ZENITH, timeAtZenith, type NoEventReason } from './solar.js';
+import { usnoTimeAtZenith } from './usno.js';
+import { ZMANIM } from './opinions.js';
+import { roundToMinute, Zman, type ZmanUnavailableReason } from './zman.js';
 
 /** A place on earth. */
 export interface GeoLocation {

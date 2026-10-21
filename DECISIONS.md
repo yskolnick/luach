@@ -22,8 +22,9 @@ date-picker widget; Luach is a calculation library with no UI (see README).
 
 ### Q-00. Unmerged branches
 Branches with work not yet on `main`:
-- `m3-parsha`: M3 part 1 (PR #3).
-- `m4-zmanim`: M4 zmanim (PR #4, stacked on #3).
+- `m4-zmanim`: M4 zmanim (PR #4).
+- `m3b-learning`: M3 part 2 (PR #5, stacked on #4).
+- `m5-places`: M5 places (stacked on #5).
 
 ### Q-01. Licence: Apache-2.0 with NOTICE, or MIT
 See P-01. **Until decided:** Apache-2.0 with a `NOTICE` file.
@@ -86,6 +87,16 @@ tractate lengths not yet found). **Why:** shipping a publisher's table needs its
 permission; a guess would be wrong. **Default until decided:** listed as post-1.0 in the
 roadmap. Yosef may instead approve deferring them, or obtaining permission to ship tables.
 
+### P-06. What `isInIsrael` covers
+The built-in boundary is a simplified outline of the area where communities keep one day of
+Yom Tov: the State of Israel with Judea and Samaria, the Golan Heights and Gaza, accurate to
+a few kilometres. **Why:** the function exists to choose Israel or diaspora rules; it makes no
+political statement, and callers can always pass `israel` explicitly. **Default until
+decided:** as described (`ISRAEL_BOUNDARY` in `src/places/places.ts`).
+
+### P-07. Per-module ESM output and name tables
+See ADR 0005. **Default until decided:** as proposed.
+
 ## As built
 
 - *As built:* `gematriya()` writes an exact multiple of 1000 like its units digit (א׳ is 1
@@ -122,5 +133,10 @@ roadmap. Yosef may instead approve deferring them, or obtaining permission to sh
 - *As built:* Mishna Yomis cycles before the 14th (2021) are counted back from it.
 - *As built:* Amud HaYomi returns null after Me'ilah 22a (2038) until Dirshu publishes how
   Kinnim, Tamid and Middos are learned.
+- *As built:* the built-in city table (about 150 places) was chosen for Luach: cities with
+  Jewish communities, plus the test cities for high latitude and the date line. Israeli
+  communities that GeoNames puts in Asia/Hebron are given Asia/Jerusalem, the time they keep.
+- *As built:* place search ranks exact, prefix, transliteration-skeleton, then substring
+  matches, with larger places first on ties.
 - *As built:* the plain-English locale (`en`) uses "Tishri, Heshvan, Iyyar" spellings and
   "Saturday".

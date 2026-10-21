@@ -11,8 +11,8 @@
  * @packageDocumentation
  */
 
-import { civilToDays } from '../time/civil';
-import type { HebrewDate } from '../calendar/hebrew-date';
+import { civilToDays } from '../time/civil.js';
+import type { HebrewDate } from '../calendar/hebrew-date.js';
 
 /** A tractate with its first and last daf in a learning sequence. */
 export interface TractateSpan {

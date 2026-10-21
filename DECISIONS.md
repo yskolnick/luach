@@ -150,6 +150,14 @@ See ADR 0005. **Default until decided:** as proposed.
   degree-based zmanim are always at sea level.
 - *As built:* rounding is on by default (earliest times up, deadlines down).
 - *As built:* candle lighting defaults to 18 minutes; havdala and second-night candles to 8.5°.
+- *As built:* a place may carry its documented candle-lighting custom, and the day view (and
+  so the CLI and iCal) uses it when the caller has not set `candleLightingMinutes`, labelled
+  with the custom and its source. Set only where a source was read: Jerusalem 40 and Haifa 30
+  (Peninei Halakha, Shabbat 3:2; Jerusalem also Zemanim 13:5 n. 11). Not set: Zichron Yaakov 30
+  (not verified: no source found beyond other software's settings); Petach Tikva 40 (one article
+  by R. Eliezer Melamed, "Adding Sanctity to the Sabbath", says so; his Peninei Halakha does not);
+  the Shomron 30 (same article; a region, not a city). Lu'ach Eretz Yisrael is reported to give
+  Jerusalem 25 (not verified).
 - *As built:* Mincha Gedola (Gra) is 6.5 seasonal hours after sunrise; "30 minutes" is after
   astronomical chatzos; chatzos is the solar transit.
 - *As built:* Plag HaMincha per the Levush is the Gra's calculation (Magen Avraham 233:3).
@@ -171,12 +179,27 @@ See ADR 0005. **Default until decided:** as proposed.
 - *As built:* the built-in city table (about 150 places) was chosen for Luach: cities with
   Jewish communities, plus the test cities for high latitude and the date line. Israeli
   communities that GeoNames puts in Asia/Hebron are given Asia/Jerusalem, the time they keep.
+- *As built:* (supersedes the count above) the built-in table has 197 places: the 144 above
+  plus 51 cities with Jewish communities from the retired implementation's table (Toms River,
+  Spring Valley, Queens, Boca Raton, Skokie, Salford, Durban, Calgary, Montevideo, Brisbane, …)
+  and Borough Park and Immanuel. Left out from that table: Cairo (almost no community today)
+  and Nazareth (Nof HaGalil would be the Jewish town; not added).
 - *As built:* place search ranks exact, prefix, transliteration-skeleton, then substring
   matches, with larger places first on ties.
+- *As built:* (adds to the entry above) a transliteration match needs a skeleton of at least
+  four consonants, and a skeleton-prefix match must cover three quarters of the name, so
+  "Tzfat", "Boro Park" and "Emmanuel" no longer find Zefta, a São Paulo district or Manila.
+  The full table carries the built-in table's spellings for the same GeoNames city and every
+  non-historic Hebrew name GeoNames has. The CLI takes a loose full-table match only when no
+  built-in place matches at all.
 - *As built:* the day view's default zmanim are alos 72 min and 16.1°, misheyakir 11°,
   sunrise, Shema (MGA 72, Gra), Tefilla (Gra), chatzos, Mincha Gedola (later of two), Mincha
   Ketana and Plag (Gra), sunset, tzeis 8.5° and Rabbeinu Tam: a common set, not a ruling.
 - *As built:* the CLI prints Ashkenazi names by default (`--locale` changes it).
+- *As built:* the CLI's `--city` searches the built-in places, then (only when none matches by
+  name or prefix) the full table, loaded on demand; `--lat/--lon` need `--tz` (the computer's
+  own zone is never assumed); `--elevation <m>` turns on elevation-adjusted sunrise and sunset
+  (`useElevation`) and says so in the output.
 - *As built:* iCal events are all-day for holidays, parsha and learning, and zero-length at the
   instant for candle lighting, havdala and zmanim.
 - *As built:* Israeli commemorations (option `israeliCommemorations`) are listed from the

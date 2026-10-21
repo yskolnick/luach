@@ -35,7 +35,7 @@ Research behind the extra items (marked †): `docs/research/2026-10-21-what-use
 | CAL-10 | RTL: opt-in Unicode isolates; docs explain why | Unicode UAX #9 | unit | done |
 | CAL-11 | `HebrewDate` with `afterSunset` input † | research §2 | unit | done |
 | CAL-12 | Parse Hebrew date strings ("י״ד אדר תשפ״ז", "14 Adar 5787") † | research §10 | unit | planned |
-| CAL-13 | Day-boundary-aware "Hebrew date now at a place" (uses zmanim) † | research §2 | unit with zmanim | planned (M4) |
+| CAL-13 | Day-boundary-aware "Hebrew date now at a place" (uses zmanim) † | research §2 | unit with zmanim | done |
 
 ## M2. Holidays and special days
 
@@ -83,19 +83,21 @@ All events carry flags: `yomTov`, `melachaForbidden`, `cholHamoed`, `fast` (`maj
 
 | ID | Spec | Source | Test | Status |
 |---|---|---|---|---|
-| ZMN-01 | NOAA solar calculator (public domain), sea level and elevation | NOAA GML | oracle: astronomy-engine < 1 min | planned |
-| ZMN-02 | Second algorithm (Meeus) for cross-checking | Meeus ch. 25 | agree with NOAA | planned |
-| ZMN-03 | Every opinion in plan §M4 as a named function with source | see `docs/halacha/` | oracle: kosher-zmanim, 19 cities, 4 years | planned |
-| ZMN-04 | `Zman` object `{ time, opinion, source, rounded }` + `toJSON` | — | unit | planned |
-| ZMN-05 | `null` with reason when the sun does not reach the angle | — | Tromsø, Reykjavik, London 16.1° June | planned |
-| ZMN-06 | Rounding: earliest up, deadlines down, opt-out | — | unit | planned |
-| ZMN-07 | IANA zones via Intl; regression for kosher-zmanim #37 (Sydney, Auckland, Chatham) | research | unit | planned |
-| ZMN-08 | Candle lighting (configurable; 18/40/30/20), havdala, second-night Yom Tov, Erev Pesach chametz times | SA OC 261, 443 | oracle: hebcal + kosher-zmanim | planned |
-| ZMN-09 | Fast start/end by opinion | SA OC 562 | oracle | planned |
-| ZMN-10 | High-latitude fallback (off by default, marked) | — | unit | planned |
-| ZMN-11 | Host-zone independence: same results under any `TZ` † | research | tests run under several TZ | planned |
-| ZMN-12 | Zman labels in Hebrew and English † | research §10 | unit | planned |
+| ZMN-01 | NOAA solar calculator (public domain), sea level and elevation | NOAA GML | oracle: astronomy-engine < 1 min | done |
+| ZMN-02 | Second algorithm for cross-checking (USNO Almanac for Computers, public domain) | USNO 1990 | agrees with NOAA within 2 min | done |
+| ZMN-03 | Every opinion in plan §M4 as a named function with source | see `docs/halacha/` | oracle: kosher-zmanim, 19 cities, 4 years | done |
+| ZMN-04 | `Zman` object `{ time, opinion, source, rounded }` + `toJSON` | — | unit | done |
+| ZMN-05 | `null` with reason when the sun does not reach the angle | — | Tromsø, Reykjavik, London 16.1° June | done |
+| ZMN-06 | Rounding: earliest up, deadlines down, opt-out | — | unit | done |
+| ZMN-07 | IANA zones via Intl; regression for kosher-zmanim #37 (Sydney, Auckland, Chatham) | research | unit | done |
+| ZMN-08 | Candle lighting (configurable; 18/40/30/20), havdala, second-night Yom Tov, Erev Pesach chametz times | SA OC 261, 443 | oracle: hebcal + kosher-zmanim | done |
+| ZMN-09 | Fast start/end by opinion | SA OC 562 | oracle | done |
+| ZMN-10 | High-latitude fallback (off by default, marked) | — | unit | done |
+| ZMN-11 | Host-zone independence: same results under any `TZ` † | research | tests run under several TZ | done |
+| ZMN-12 | Zman labels in Hebrew and English † | research §10 | unit | done |
 | ZMN-13 | Netz HaNireh (visible sunrise with terrain) | needs terrain data | — | post-1.0 |
+| ZMN-14 | Time-aware "is melacha forbidden now" (Motzaei Shabbos correct) † | research | unit | done |
+| ZMN-15 | Bein HaShmashos: Rabbeinu Tam, Geonim (13.5/16.875/18), Yereim (18/16.875/13.5) | SA OC 261:2; Biur Halacha 261:2; Yereim 274 | oracle | done |
 
 ## M5. Places
 

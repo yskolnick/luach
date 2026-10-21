@@ -23,9 +23,9 @@
  * @packageDocumentation
  */
 
-import { HebrewDate, type HebrewDateParts } from './hebrew-date';
-import { Month } from './months';
-import { isLeapYear, monthLength, assertHebrewDate, assertYear } from './year';
+import { HebrewDate, type HebrewDateParts } from './hebrew-date.js';
+import { Month } from './months.js';
+import { isLeapYear, monthLength, assertHebrewDate, assertYear } from './year.js';
 
 /** Options for {@link anniversary}. */
 export interface AnniversaryOptions {

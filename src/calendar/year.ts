@@ -10,7 +10,7 @@
  * @packageDocumentation
  */
 
-import { Month, type MonthNumber } from './months';
+import { Month, type MonthNumber } from './months.js';
 
 /** Chalakim (parts) in an hour. Rambam, KH 6:2. */
 export const PARTS_PER_HOUR = 1080;

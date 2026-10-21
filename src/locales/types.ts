@@ -30,6 +30,12 @@ export interface Locale {
   readonly dir: 'rtl' | 'ltr';
   /** Whether numbers in dates are written in Hebrew letters (`'hebrew'`) or digits. */
   readonly numerals: 'hebrew' | 'arabic';
+  /**
+   * Which built-in style this locale is based on. Holiday, parsha and zman names live in
+   * per-module tables (so apps that never show them do not bundle them) and are found by
+   * this. Keys in `names` always win.
+   */
+  readonly base?: 'he' | 'ashkenazi' | 'sephardi' | 'en';
   /** Locale to consult for keys this one lacks. */
   readonly fallback?: Locale;
   /** The names. */
@@ -40,6 +46,23 @@ export interface Locale {
 export function lookup(locale: Locale, key: string): string {
   for (let l: Locale | undefined = locale; l; l = l.fallback) {
     const v = l.names[key];
+    if (v !== undefined) return v;
+  }
+  return key;
+}
+
+/**
+ * Looks up `key` (e.g. "holiday.pesach") in the locale chain, then in a module's name table
+ * (`table[base][subkey]`), then returns the key itself.
+ */
+export function lookupIn(locale: Locale, key: string, table: Readonly<Record<string, Readonly<Record<string, string>>>>): string {
+  for (let l: Locale | undefined = locale; l; l = l.fallback) {
+    const v = l.names[key];
+    if (v !== undefined) return v;
+  }
+  const sub = key.slice(key.indexOf('.') + 1);
+  for (let l: Locale | undefined = locale; l; l = l.fallback) {
+    const v = l.base ? table[l.base]?.[sub] : undefined;
     if (v !== undefined) return v;
   }
   return key;

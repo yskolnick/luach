@@ -9,7 +9,7 @@
  * @packageDocumentation
  */
 
-import { daysBeforeMonth, monthsBeforeYear, monthsOfYear, MOLAD_BAHARAD, MONTH_PARTS, PARTS_PER_DAY, PARTS_PER_HOUR, assertYear } from './year';
+import { daysBeforeMonth, monthsBeforeYear, monthsOfYear, MOLAD_BAHARAD, MONTH_PARTS, PARTS_PER_DAY, PARTS_PER_HOUR, assertYear } from './year.js';
 
 /** A molad, broken into its parts. */
 export interface Molad {

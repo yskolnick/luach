@@ -23,11 +23,11 @@
  * @packageDocumentation
  */
 
-import { HebrewDate } from '../calendar/hebrew-date';
-import { Month } from '../calendar/months';
-import { festivalOn, holidaysOn, roshChodeshOn } from '../holidays/holidays';
-import { parshaFor } from './parsha';
-import { PARSHA_HAFTAROS, SPECIAL_HAFTAROS, type HaftaraRow } from './haftaros-data';
+import { HebrewDate } from '../calendar/hebrew-date.js';
+import { Month } from '../calendar/months.js';
+import { festivalOn, holidaysOn, roshChodeshOn } from '../holidays/holidays.js';
+import { parshaFor } from './parsha.js';
+import { PARSHA_HAFTAROS, SPECIAL_HAFTAROS, type HaftaraRow } from './haftaros-data.js';
 
 /** Customs with haftara data. */
 export type HaftaraMinhag = 'ashkenaz' | 'sephardi' | 'chabad' | 'teimani';

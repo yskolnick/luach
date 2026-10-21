@@ -5,13 +5,13 @@
  * @packageDocumentation
  */
 
-import { HebrewDate } from '../calendar/hebrew-date';
-import { civilDateAt } from '../time/zone';
-import { holidaysOn } from '../holidays/holidays';
-import type { HolidayEvent, HolidayOptions } from '../holidays/types';
-import { ZmanimCalendar, type GeoLocation, type ZmanimOptions } from './calendar';
-import { ZMANIM } from './opinions';
-import { Zman } from './zman';
+import { HebrewDate } from '../calendar/hebrew-date.js';
+import { civilDateAt } from '../time/zone.js';
+import { holidaysOn } from '../holidays/holidays.js';
+import type { HolidayEvent, HolidayOptions } from '../holidays/types.js';
+import { ZmanimCalendar, type GeoLocation, type ZmanimOptions } from './calendar.js';
+import { ZMANIM } from './opinions.js';
+import { Zman } from './zman.js';
 
 /** Which zman ends the Hebrew day, for {@link hebrewDateAt}. */
 export type DayBoundary = 'sunset' | 'tzeis-8.5' | 'tzeis-7.083' | 'tzeis-72';

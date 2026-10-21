@@ -105,17 +105,17 @@ All events carry flags: `yomTov`, `melachaForbidden`, `cholHamoed`, `fast` (`maj
 
 | ID | Spec | Source | Test | Status |
 |---|---|---|---|---|
-| PLC-01 | Small built-in city table: coordinates, elevation, IANA zone, Israel flag | GeoNames CC-BY 4.0 | unit | planned |
-| PLC-02 | Optional full dataset as a separate import | GeoNames | size budget | planned |
-| PLC-03 | Search by name, Hebrew names, alternate spellings | — | unit | planned |
-| PLC-04 | `isInIsrael(lat, lon)` with documented boundary and override | — | unit | planned |
-| PLC-05 | Docs: plugging in a platform geocoder (no service built in) | — | docs | planned |
+| PLC-01 | Small built-in city table: coordinates, elevation, IANA zone, Israel flag | GeoNames CC-BY 4.0 | unit | done |
+| PLC-02 | Optional full dataset as a separate import | GeoNames | size budget | done |
+| PLC-03 | Search by name, Hebrew names, alternate spellings | — | unit | done |
+| PLC-04 | `isInIsrael(lat, lon)` with documented boundary and override | — | unit | done |
+| PLC-05 | Docs: plugging in a platform geocoder (no service built in) | — | docs | done |
 
 ## M6. Outputs and integrations
 
 | ID | Spec | Source | Test | Status |
 |---|---|---|---|---|
-| OUT-01 | ESM + CJS + types; Node, browser, Deno, Bun, React Native (Hermes) | — | CI: Node; Hermes run | planned |
+| OUT-01 | ESM (per module, tree-shakable) + CJS + types; Node, browser, Deno, Bun, React Native (Hermes) | ADR 0005 | CI: Node, size budgets per feature; Hermes run | in progress |
 | OUT-02 | iCal (.ics) export for holidays, zmanim, learning | RFC 5545 | unit + validator | planned |
 | OUT-03 | "Everything about this day" JSON + JSON Schema | — | schema validation test | planned |
 | OUT-04 | CLI: `luach today --city`, `luach zmanim DATE --lat --lon` | — | unit | planned |

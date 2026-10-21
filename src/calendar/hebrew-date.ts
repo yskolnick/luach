@@ -4,9 +4,9 @@
  * @packageDocumentation
  */
 
-import { civilToDays, daysToCivil, dayOfWeekOfDays, assertCivil, type CivilDate } from '../time/civil';
-import { civilDateOf, type TimeZone } from '../time/zone';
-import type { MonthNumber } from './months';
+import { civilToDays, daysToCivil, dayOfWeekOfDays, assertCivil, type CivilDate } from '../time/civil.js';
+import { civilDateOf, type TimeZone } from '../time/zone.js';
+import type { MonthNumber } from './months.js';
 import {
   daysToHebrew,
   hebrewToDays,
@@ -17,7 +17,7 @@ import {
   type YearType,
   monthsInYear,
   roshHashanaDays,
-} from './year';
+} from './year.js';
 
 /** Plain-data form of a Hebrew date. */
 export interface HebrewDateParts {

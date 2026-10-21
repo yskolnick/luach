@@ -9,10 +9,10 @@
  * @packageDocumentation
  */
 
-import { HebrewDate } from '../calendar/hebrew-date';
-import { Month } from '../calendar/months';
-import { holidaysOn, purimMonth } from './holidays';
-import type { HolidayOptions } from './types';
+import { HebrewDate } from '../calendar/hebrew-date.js';
+import { Month } from '../calendar/months.js';
+import { holidaysOn, purimMonth } from './holidays.js';
+import type { HolidayOptions } from './types.js';
 
 /** Options for {@link tefillahOn}. */
 export interface TefillahOptions extends HolidayOptions {

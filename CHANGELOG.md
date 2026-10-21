@@ -28,3 +28,7 @@ All notable changes for users of the `luach` package. This project follows
   haftaros and their precedence (`haftaraFor`, `fastMinchaHaftara`).
 - Learning cycles: Yerushalmi Yomi (Vilna), Amud HaYomi, Daf HaShavua, Mishna Yomis, Rambam
   (one and three chapters), Sefer HaMitzvos day number, Nach Yomi.
+- Places: a built-in table of about 150 cities (`builtInPlaces`, `getPlace`), search by
+  English spellings and Hebrew (`searchPlaces`), `isInIsrael`, `nearestPlace`; every city of
+  15,000+ people in a separate import, `luach/places-full` (GeoNames, CC-BY 4.0).
+- The ESM build is now one file per module, so unused features are dropped by bundlers.

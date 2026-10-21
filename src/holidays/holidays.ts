@@ -263,10 +263,12 @@ export function holidaysForYear(year: number, options: HolidayOptions = {}): Hol
   }
   // Shabbos Mevorchim for Tishrei of next year is not said; nothing to add.
 
-  // ---- BeHaB: Monday, Thursday, Monday after the first Shabbos of Cheshvan and of Iyar (SA OC 492:1 with Rema; MB 492:3). ----
+  // ---- BeHaB: Monday, Thursday, Monday after the first Shabbos after Rosh Chodesh Cheshvan and
+  // Iyar (SA OC 492:1 with Rema; MB 492:3, "שבת הראשון שאחר ר"ח"). When the 1st is Shabbos it
+  // is Rosh Chodesh itself, so the count starts from the next Shabbos. ----
   if (options.behab) {
     for (const m of [Month.CHESHVAN, Month.IYAR]) {
-      const shabbos = d(m, 1).onOrAfter(SHABBAT);
+      const shabbos = d(m, 2).onOrAfter(SHABBAT);
       const mon1 = shabbos.onOrAfter(MONDAY);
       b.add('behab', mon1, { fast: 'minor', optional: true }, { day: 1, month: m });
       b.add('behab', mon1.onOrAfter(THURSDAY), { fast: 'minor', optional: true }, { day: 2, month: m });

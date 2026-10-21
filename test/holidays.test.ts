@@ -82,6 +82,22 @@ describe('known dates (published calendars)', () => {
     const b = holidaysForYear(5787, { behab: true }).filter((e) => e.id === 'behab');
     expect(b.map((e) => e.date.dayOfWeek)).toEqual([1, 4, 1, 1, 4, 1]);
   });
+  it('BeHaB counts from the first Shabbos after Rosh Chodesh, not Rosh Chodesh itself (MB 492:3)', () => {
+    // 1 Cheshvan 5785 was Shabbos, 2 November 2024: the fasts are 11, 14 and 18 November.
+    expect(new HebrewDate(5785, Month.CHESHVAN, 1).isShabbos).toBe(true);
+    const iso = (y: number) => holidaysForYear(y, { behab: true }).filter((e) => e.id === 'behab').map((e) => formatIsoDate(e.date.toCivil()));
+    expect(iso(5785).slice(0, 3)).toEqual(['2024-11-11', '2024-11-14', '2024-11-18']);
+    // Every year: the Shabbos before the first Monday is the first Shabbos after the 1st.
+    for (let y = 5700; y < 5900; y++) {
+      for (const e of holidaysForYear(y, { behab: true }).filter((x) => x.id === 'behab' && x.day === 1)) {
+        const shabbos = e.date.addDays(-2);
+        const first = new HebrewDate(y, e.month!, 1);
+        expect(shabbos.isShabbos).toBe(true);
+        expect(shabbos.daysSince(first), `${y} ${e.month}`).toBeGreaterThanOrEqual(1);
+        expect(shabbos.daysSince(first), `${y} ${e.month}`).toBeLessThanOrEqual(7);
+      }
+    }
+  });
 });
 
 describe('names', () => {

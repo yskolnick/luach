@@ -117,6 +117,10 @@ See ADR 0005. **Default until decided:** as proposed.
   Friday/Shabbos (MB 417:4).
 - *As built:* BeHaB (optional) is the Monday, Thursday and Monday after the first Shabbos of
   Cheshvan and of Iyar.
+- *As built (supersedes the BeHaB entry above, 2026-10-21):* BeHaB is the Monday, Thursday and
+  Monday after the first Shabbos *after* Rosh Chodesh (MB 492:3, "שבת הראשון שאחר ר"ח"). When
+  1 Cheshvan or 1 Iyar is Shabbos, that Shabbos is Rosh Chodesh and is not counted (5785:
+  11, 14 and 18 November 2024, not 4, 7 and 11 November).
 - *As built:* the molad is read as Jerusalem mean time at longitude 35.2354° E when turned
   into an instant (Kiddush Levana times).
 - *As built:* Tachanun defaults: no Tachanun from Erev Yom Kippur through the end of Tishrei,

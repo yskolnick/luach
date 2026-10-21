@@ -32,4 +32,10 @@ describe('iCalendar export', () => {
     const b = toICalendar({ year: 2027, month: 1, day: 1 }, { year: 2027, month: 1, day: 31 }, { now: new Date(0) });
     expect(a).toBe(b);
   });
+  it('Yom Tov on Friday: candles for Shabbos before sunset (same rule as dayInfo)', () => {
+    const ics = toICalendar({ year: 2027, month: 4, day: 23 }, { year: 2027, month: 4, day: 23 }, { location: getPlace('new-york')!, now: new Date(0), locale: ashkenazi });
+    const comp = new ICAL.Component(ICAL.parse(ics));
+    const candles = comp.getAllSubcomponents('vevent').map((v) => new ICAL.Event(v)).find((e) => e.summary === 'Candle lighting')!;
+    expect(candles.startDate.toJSDate().toISOString()).toBe('2027-04-23T23:25:00.000Z');
+  });
 });

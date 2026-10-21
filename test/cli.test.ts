@@ -22,6 +22,8 @@ describe('cli', () => {
   });
   it('day view with a city, and JSON', () => {
     expect(run(['date', '2026-10-23', '--city', 'lakewood']).out).toContain('Candle lighting');
+    // Pesach II on a Friday: Shabbos candles before sunset, not after nightfall.
+    expect(run(['date', '2027-04-23', '--city', 'new-york']).out).toContain('Candle lighting: 19:25');
     const j = JSON.parse(run(['date', '2026-10-23', '--city', 'jerusalem', '--json']).out);
     expect(j.israel).toBe(true);
   });

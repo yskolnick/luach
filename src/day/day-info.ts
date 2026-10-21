@@ -112,7 +112,11 @@ export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = 
     });
     const today = holy(h, hopts);
     const tomorrow = holy(h.next(), hopts);
-    if (tomorrow && !today) candleLighting = z.candleLighting().toJSON();
+    // Lighting after nightfall is only for a second holy night that is Yom Tov: from Shabbos
+    // into Yom Tov, or from Yom Tov into Yom Tov (SA OC 503:1). Shabbos itself begins at sunset
+    // (SA OC 261:2), so on a Yom Tov that falls on Friday the candles for Shabbos are lit at
+    // the usual time before sunset.
+    if (tomorrow && (!today || h.next().isShabbos)) candleLighting = z.candleLighting().toJSON();
     else if (tomorrow && today) candleLighting = z.candleLightingSecondNight().toJSON();
     if (today && !tomorrow) havdala = z.havdala().toJSON();
     const ft = fastTimes(h, options.location, { ...options, ...hopts });

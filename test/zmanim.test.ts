@@ -131,4 +131,13 @@ describe('Hebrew labels keep degree signs with their numbers', () => {
   it('a left-to-right mark follows each degree sign', () => {
     expect(zmanLabel('misheyakir-11', heLocale)).toBe('משיכיר (11°‎)');
   });
+
+  it('a zman defined by degrees is labelled in degrees, never minutes', () => {
+    for (const id of Object.keys(ZMANIM).filter((id) => /-(16\.1|19\.8|8\.5|7\.083|6\.45)$/.test(id))) {
+      for (const locale of [en, heLocale]) {
+        expect(zmanLabel(id, locale), id).not.toMatch(/\d (min|דקות)\)/);
+        expect(zmanLabel(id, locale), id).toMatch(/°/);
+      }
+    }
+  });
 });

@@ -12,12 +12,14 @@
  *    `kind: 'yahrzeit'` is Adar I. Set `adarInLeapYear` to choose.
  * 2. **Adar I or Adar II of a leap year, observed in a common year:** Adar.
  *    30 Adar I (the first day of Rosh Chodesh Adar II) becomes 30 Shevat, the first day
- *    of Rosh Chodesh Adar in a common year (*as built*; see DECISIONS.md).
+ *    of Rosh Chodesh Adar in a common year (MB 568:42; Magen Avraham 568:20 gives the
+ *    mirror case; *as built*; see DECISIONS.md).
  * 3. **The 30th of Cheshvan or Kislev, in a year when that month has 29 days.**
  *    `'nextMonth'` moves it to the 1st of the following month (the second day of
  *    the same Rosh Chodesh); `'firstAnniversary'` keeps the 30th whenever it exists, and
  *    otherwise follows the first anniversary: if the month had only 29 days in the year
- *    after the event, the 29th; if it had 30, the 1st of the next month. Defaults: `'nextMonth'` for birthdays,
+ *    after the event, the 29th; if it had 30, the 1st of the next month (Magen Avraham
+ *    568:20, brought in MB 568:42). Defaults: `'nextMonth'` for birthdays,
  *    `'firstAnniversary'` for yahrzeits (*as built*; see DECISIONS.md).
  *
  * @packageDocumentation

@@ -93,12 +93,14 @@ function kzMillis(v: unknown): number | null {
   return v && typeof (v as { toMillis?: () => number }).toMillis === 'function' ? (v as { toMillis: () => number }).toMillis() : null;
 }
 
-export function compareCity(city: (typeof TEST_CITIES)[number], step = STEP): OracleStats[] {
+export async function compareCity(city: (typeof TEST_CITIES)[number], step = STEP): Promise<OracleStats[]> {
   const geo = new KZ.GeoLocation(city.name, city.latitude, city.longitude, 0, city.timeZone);
   const kz = new KZ.ComplexZmanimCalendar(geo);
   const stats = new Map<string, OracleStats>();
   for (const [id] of PAIRS) stats.set(id, { city: city.name, zman: id, compared: 0, maxSeconds: 0, over60: 0, nullMismatch: 0, dayShifted: 0, unreachable: 0, grazing: [] });
   for (let d = civilToDays(2025, 1, 1); d < civilToDays(2029, 1, 1); d += step) {
+    // Yield now and then so the test worker can talk to the runner during long runs.
+    if (d % 90 === 0) await new Promise((r) => setTimeout(r, 0));
     const date = daysToCivil(d);
     const ours = new ZmanimCalendar(city, date, { rounding: false });
     // kosher-zmanim issue #37 moves some date-line cities a day ahead; ask it for the
@@ -155,14 +157,12 @@ export function compareCity(city: (typeof TEST_CITIES)[number], step = STEP): Or
 
 describe(`zmanim vs kosher-zmanim, 19 cities, 2025–2028, every ${STEP} day(s)`, () => {
   for (const city of TEST_CITIES) {
-    it(city.name, () => {
-      const stats = compareCity(city);
+    it(city.name, async () => {
+      const stats = await compareCity(city);
       // Null mismatches are allowed only on the boundary days when the sun first or last
       // reaches an angle (at most 2 per year per zman); they are listed in docs/accuracy.md.
       const bad = stats.filter((s) => s.over60 > 0 || s.nullMismatch > 8 / STEP + 2);
       if (process.env.ACCURACY_OUT) for (const s of stats) appendFileSync(process.env.ACCURACY_OUT, JSON.stringify(s) + '\n');
-      // Printed so the accuracy report can be regenerated from CI logs.
-      for (const s of stats) if (s.maxSeconds > 30 || s.nullMismatch || s.grazing.length) console.log(JSON.stringify(s));
       expect(bad.map((s) => `${s.zman}: max ${s.maxSeconds.toFixed(0)}s, over 60s ${s.over60}, null mismatch ${s.nullMismatch}`)).toEqual([]);
     });
   }

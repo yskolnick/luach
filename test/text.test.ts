@@ -1,20 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { gematriya as hebcalGematriya } from '@hebcal/core';
-import {
-  gematriya,
-  parseGematriya,
-  formatHebrewDate,
-  ashkenazi,
-  sephardi,
-  en,
-  he,
-  isolate,
-  RLI,
-  PDI,
-  extendLocale,
-  monthName,
-  stripBidiControls,
-} from '../src/index';
+import { gematriya, parseGematriya, formatHebrewDate, ashkenazi, sephardi, en, he, isolate, extendLocale, monthName, stripBidiControls } from '../src/index';
+import { RLI, PDI } from '../src/text/rtl';
 
 describe('gematriya', () => {
   it('known values', () => {

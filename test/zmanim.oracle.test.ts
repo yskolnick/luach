@@ -6,7 +6,9 @@
 import { appendFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import * as KZ from 'kosher-zmanim';
-import { ZmanimCalendar, civilToDays, daysToCivil, localParts, solarAltitude, type Zman } from '../src/index';
+import { ZmanimCalendar, civilToDays, daysToCivil, type Zman } from '../src/index';
+import { localParts } from '../src/time/zone';
+import { solarAltitude } from '../src/zmanim/solar';
 import { TEST_CITIES } from './fixtures/cities';
 
 /** Calls a kosher-zmanim method whose typings demand optional arguments. */

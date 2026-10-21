@@ -10,9 +10,12 @@ plans in [ROADMAP.md](ROADMAP.md) and user-facing changes in [CHANGELOG.md](CHAN
   ([RELEASING.md](RELEASING.md)), after the API clean-up below.
 - **Q-01** Licence: Apache-2.0 with NOTICE (current) or MIT. Yosef is not sure yet.
 - **Q-04** Anniversary defaults for Adar and the 30th of Cheshvan/Kislev: left open.
-- **API clean-up (D-12), in progress:** infer Israel from the place (D-10, done); stop exporting
-  internal helpers; shrink the cost of a single zman; source or give options for the rules
-  the code audit found without a source.
+- **API clean-up (D-12), in progress:**
+  - infer Israel from the place (D-10): done;
+  - stop exporting internal helpers: done (149 names → 96);
+  - one zman's bundle cost: kept at 10.6 KB for 1.0 (D-13; hebcal 44.8 KB, kosher-zmanim
+    49.0 KB);
+  - a source or an option for every rule the code audit found without one: in progress.
 - Private vulnerability reporting to be turned on in the repository settings
   ([SECURITY.md](SECURITY.md) points there).
 
@@ -26,6 +29,7 @@ Yosef answered the open questions:
 - **D-10** When a caller gives a place but not Israel or the diaspora, Luach decides from the
   place (done: `dayInfo`, `toICalendar`, `fastTimes`, `isMelachaForbiddenAt`).
 - **D-11** P-08: the shared tables are frozen (done; a breaking change, in the CHANGELOG).
+- **D-13** One zman's bundle cost stays at 10.6 KB for 1.0; a lighter route after 1.0.
 - **D-12** Before 1.0: a smaller bundle for one zman, no internal helpers in the public API,
   and a source or an option for every rule that lacks one.
 

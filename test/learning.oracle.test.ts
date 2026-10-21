@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { HDate } from '@hebcal/core';
 import { DafYomi } from '@hebcal/learning';
-import { dafYomi, daysToCivil, civilToDays, dafYomiCycleStart, formatIsoDate } from '../src/index';
+import { dafYomi, daysToCivil, civilToDays, formatIsoDate } from '../src/index';
+import { dafYomiCycleStart } from '../src/learning/bavli';
 
 // hebcal spellings → ours (test-only; names are plain transliterations).
 const NAME_MAP: Record<string, string> = {

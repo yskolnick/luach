@@ -1,5 +1,6 @@
 import { expect, it } from 'vitest';
-import { julianToDays, civilToDays } from '../src/index';
+import { civilToDays } from '../src/index';
+import { julianToDays } from '../src/time/civil';
 
 it('Julian 1582-10-05 is Gregorian 1582-10-15 (the reform)', () => {
   expect(julianToDays(1582, 10, 5)).toBe(civilToDays(1582, 10, 15));

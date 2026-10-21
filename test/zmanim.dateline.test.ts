@@ -4,7 +4,8 @@
  */
 import { describe, expect, it } from 'vitest';
 import * as Astronomy from 'astronomy-engine';
-import { ZmanimCalendar, civilToDays, daysToCivil, localParts } from '../src/index';
+import { ZmanimCalendar, civilToDays, daysToCivil } from '../src/index';
+import { localParts } from '../src/time/zone';
 
 const CITIES = [
   { name: 'Sydney', latitude: -33.8688, longitude: 151.2093, timeZone: 'Australia/Sydney' },

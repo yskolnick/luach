@@ -88,6 +88,13 @@ Yosef asked for three changes before 1.0: shrink the bundle cost of a single zma
 exporting internal helpers; and give every halachic rule the code audit found without a source
 either a source or an option.
 
+### D-13. One zman costs 10.6 KB for 1.0
+Asked how an app should get one zman without paying for all of them, Yosef chose "Keep
+10.6 KB; revisit after 1.0". Measured on 2026-10-21 (one sunrise, minified and gzipped):
+Luach 10.6 KB, `@hebcal/core` 44.8 KB, `kosher-zmanim` 49.0 KB. A lighter route (importable
+definitions computed by one function) would only add to the API, so it can come later
+without breaking anyone (ROADMAP OUT-12). This settles the bundle part of D-12.
+
 ## Open questions
 
 ### Q-00. Unmerged branches

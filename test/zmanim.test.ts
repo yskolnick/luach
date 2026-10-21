@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { ZmanimCalendar, HebrewDate, Month, ZMANIM, fixedOffsetZone, roundToMinute, offsetMinutes, zonedToInstant, localParts } from '../src/index';
+import { ZmanimCalendar, HebrewDate, Month, ZMANIM, fixedOffsetZone, offsetMinutes } from '../src/index';
+import { roundToMinute } from '../src/zmanim/zman';
+import { zonedToInstant, localParts } from '../src/time/zone';
 
 const LAKEWOOD = { latitude: 40.0821, longitude: -74.2097, elevation: 20, timeZone: 'America/New_York' };
 const LONDON = { latitude: 51.5074, longitude: -0.1278, timeZone: 'Europe/London' };

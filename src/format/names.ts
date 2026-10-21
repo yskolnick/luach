@@ -7,6 +7,7 @@
  */
 
 import { ADAR, ADAR_II, isLeapYear } from '../calendar/hebrew.js';
+import { HOLIDAY_NAMES_ASHKENAZI, HOLIDAY_NAMES_EN, HOLIDAY_NAMES_HE, HOLIDAY_NAMES_SEPHARDI } from '../holidays/names.js';
 import { PARSHA_NAMES_ASHKENAZI, PARSHA_NAMES_EN, PARSHA_NAMES_HE, PARSHA_NAMES_SEPHARDI } from '../parsha/names.js';
 
 /** A table of names keyed by id. Missing keys fall back to English, then to the id itself. */
@@ -52,10 +53,10 @@ const en: Record<string, string> = {
 
 /** The built-in tables. */
 export const NAMES: Readonly<Record<NameStyle, NameTable>> = {
-  he: { ...he, ...PARSHA_NAMES_HE },
-  ashkenazi: { ...ashkenazi, ...PARSHA_NAMES_ASHKENAZI },
-  sephardi: { ...sephardi, ...PARSHA_NAMES_SEPHARDI },
-  en: { ...en, ...PARSHA_NAMES_EN },
+  he: { ...he, ...PARSHA_NAMES_HE, ...HOLIDAY_NAMES_HE },
+  ashkenazi: { ...ashkenazi, ...PARSHA_NAMES_ASHKENAZI, ...HOLIDAY_NAMES_ASHKENAZI },
+  sephardi: { ...sephardi, ...PARSHA_NAMES_SEPHARDI, ...HOLIDAY_NAMES_SEPHARDI },
+  en: { ...en, ...PARSHA_NAMES_EN, ...HOLIDAY_NAMES_EN },
 };
 
 /** Look up a name. `names` is a style or a custom table; missing keys fall back to English, then the id. */

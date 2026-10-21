@@ -104,3 +104,31 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npm run docs:build
       - run: node scripts/render-docs.mjs
+
+  demo:
+    # Type-checks the Expo demo app, exports the web build and renders every screen
+    # (light/dark, English/Hebrew) in Chromium; fails on any page error.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm ci
+        working-directory: apps/demo
+      - run: npm run typecheck
+        working-directory: apps/demo
+      - run: npm run export:web
+        working-directory: apps/demo
+        env:
+          CI: 1
+      - run: npm run screenshots -- screenshots
+        working-directory: apps/demo
+      - uses: actions/upload-artifact@v4
+        with:
+          name: demo-screenshots
+          path: apps/demo/screenshots

@@ -44,3 +44,9 @@ All notable changes for users of the `luach` package. This project follows
   HaAliyah, Herzl, Ben-Gurion, Jabotinsky, Rabin, the 7 October memorial day and others,
   each with its law's moving rule.
 - Documentation site (VitePress) with guides, zmanim sources and the API reference.
+- An Expo demo app (`apps/demo`, not published): today, zmanim with opinion pickers, the
+  week, and settings; Hebrew and English, light and dark.
+
+### Changed
+- Hebrew zman labels carry a left-to-right mark (U+200E) after each degree sign, so the
+  angle reads correctly in right-to-left text.

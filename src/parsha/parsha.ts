@@ -170,30 +170,52 @@ export function parshaName(parsha: readonly ParshaId[] | null, locale: Locale = 
   return parsha.map((p) => lookupIn(locale, `parsha.${p}`, NAMES)).join(lookupIn(locale, 'parsha.join', NAMES));
 }
 
+/** Options for {@link pirkeiAvos}. */
+export interface PirkeiAvosOptions {
+  israel?: boolean;
+  /** The last weeks before Rosh Hashana: one chapter a week (`'single'`, default) or doubled to end with chapter 6. */
+  cycle?: 'doubled' | 'single';
+  /**
+   * `'roshHashana'` (default): the whole summer (Rema OC 292:2). `'shavuos'`: one round on the
+   * Shabbosos between Pesach and Shavuos, "כל שבת פרק א'", the custom the Kaf HaChaim records (292:23).
+   */
+  until?: 'roshHashana' | 'shavuos';
+}
+
 /**
  * The chapter of Pirkei Avos read on a summer Shabbos afternoon (between Pesach and Rosh
  * Hashana; Rema OC 292:2 records the custom). Chapters 1–6 are read in order, one each
- * Shabbos, and repeated; Shabbosos that are Yom Tov or Tisha B'Av are skipped. In the last
- * weeks before Rosh Hashana, when fewer than six Shabbosos remain for a full round, some
- * double up the chapters so the year ends with chapter 6 (`cycle: 'doubled'`); the default,
- * `cycle: 'single'`, keeps one chapter a week (*as built*). Customs vary (some read only until Shavuos); returns null outside
- * the season or when not read.
+ * Shabbos, and repeated. Skipped, without losing a chapter: a Shabbos that is Yom Tov;
+ * Erev Tisha B'Av, 8 Av (Rema OC 553:2: "אם חל בשבת אין אומרים פרקי אבות"); and 9 Av, when
+ * the fast is postponed to Sunday. In the last weeks before Rosh Hashana, when fewer than
+ * six Shabbosos remain for a full round, some double up the chapters so the year ends with
+ * chapter 6 (`cycle: 'doubled'`); the default, `cycle: 'single'`, keeps one chapter a week
+ * (*as built*). With `until: 'shavuos'`, one round of chapters 1–6 before Shavuos (Kaf
+ * HaChaim 292:23); in Israel, when the first Shabbos after Pesach is 22 Nisan, there are
+ * seven Shabbosos and the seventh returns null, since the source does not say what is read
+ * then (*as built*). Returns null outside the season or when not read.
  */
-export function pirkeiAvos(date: HebrewDate, options?: { israel?: boolean; cycle?: 'doubled' | 'single' }): number[] | null {
+export function pirkeiAvos(date: HebrewDate, options?: PirkeiAvosOptions): number[] | null {
   if (!date.isShabbos) return null;
   const israel = options?.israel ?? false;
+  const untilShavuos = options?.until === 'shavuos';
   const y = date.year;
   const firstAfterPesach = new HebrewDate(y, Month.NISAN, israel ? 22 : 23).onOrAfter(6);
-  const rh = new HebrewDate(y + 1, Month.TISHREI, 1);
-  if (date.epochDays < firstAfterPesach.epochDays || date.epochDays >= rh.epochDays) return null;
-  const av9 = new HebrewDate(y, Month.AV, 9);
+  // Rosh Hashana is the day after 29 Elul (Elul always has 29 days), so the end is known
+  // without building a date in year y + 1 (which may be past the supported range).
+  const end = untilShavuos ? new HebrewDate(y, Month.SIVAN, 6).epochDays : new HebrewDate(y, Month.ELUL, 29).epochDays + 1;
+  if (date.epochDays < firstAfterPesach.epochDays || date.epochDays >= end) return null;
+  const av8 = new HebrewDate(y, Month.AV, 8);
+  const av9 = av8.next();
   const counted: HebrewDate[] = [];
-  for (let d = firstAfterPesach; d.epochDays < rh.epochDays; d = d.addDays(7)) {
-    if (festivalOn(d, israel) || d.equals(av9)) continue;
+  for (let d = firstAfterPesach; d.epochDays < end; d = d.addDays(7)) {
+    // Erev Tisha B'Av (Rema OC 553:2); 9 Av on Shabbos, when the fast is on Sunday.
+    if (festivalOn(d, israel) || d.equals(av8) || d.equals(av9)) continue;
     counted.push(d);
   }
   const idx = counted.findIndex((d) => d.equals(date));
   if (idx < 0) return null;
+  if (untilShavuos) return idx < 6 ? [idx + 1] : null;
   const n = counted.length;
   const r = n % 6;
   const lastStart = n - r;

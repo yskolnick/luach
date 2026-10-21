@@ -29,6 +29,10 @@ with these explained differences:
 
 Identical to `@hebcal/core` on every Shabbos 5660–6000, Israel and diaspora.
 
+Pirkei Avos (`cycle: 'doubled'`): identical to `@hebcal/learning`'s `pirkeiAvot` on every
+Shabbos from Pesach 5700 to Rosh Hashana 5900, Israel and diaspora, including the Shabbos
+of 8 Av, on which it is not said (Rema OC 553:2).
+
 ## Learning
 
 - Daf Yomi (Bavli): identical to `@hebcal/learning` on every day 1923-09-11 to 2240-12-31.

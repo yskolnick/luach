@@ -42,6 +42,23 @@ describe('Pirkei Avos', () => {
     expect(pirkeiAvos(first.addDays(7))).toEqual([2]);
     expect(pirkeiAvos(new HebrewDate(5786, Month.TEVES, 1).onOrAfter(6))).toBeNull();
   });
+  it('is not said on a Shabbos that is Erev Tisha B\'Av (Rema OC 553:2)', () => {
+    // 8 Av 5710 is Shabbos: no chapter, and the next Shabbos continues where the last left off.
+    const erev = new HebrewDate(5710, Month.AV, 8);
+    expect(erev.isShabbos).toBe(true);
+    expect(pirkeiAvos(erev)).toBeNull();
+    expect(pirkeiAvos(erev.addDays(-7))).toEqual([2]);
+    expect(pirkeiAvos(erev.addDays(7))).toEqual([3]);
+  });
+  it('until Shavuos: one round of six chapters before Shavuos (Kaf HaChaim 292:23)', () => {
+    const first = new HebrewDate(5786, Month.NISAN, 23).onOrAfter(6);
+    const opts = { until: 'shavuos' } as const;
+    const got = [0, 1, 2, 3, 4, 5].map((w) => pirkeiAvos(first.addDays(7 * w), opts));
+    expect(got).toEqual([[1], [2], [3], [4], [5], [6]]);
+    // After Shavuos nothing is read under this custom.
+    expect(pirkeiAvos(new HebrewDate(5786, Month.SIVAN, 8).onOrAfter(6), opts)).toBeNull();
+    expect(pirkeiAvos(new HebrewDate(5786, Month.SIVAN, 8).onOrAfter(6))).not.toBeNull();
+  });
   it('doubled custom ends the summer with chapter 6', () => {
     const lastShabbos = new HebrewDate(5787, Month.TISHREI, 1).prev().onOrBefore(6);
     const ch = pirkeiAvos(lastShabbos, { cycle: 'doubled' })!;

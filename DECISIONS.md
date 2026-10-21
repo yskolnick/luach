@@ -180,3 +180,6 @@ See ADR 0005. **Default until decided:** as proposed.
   0.833° (sunset) and at most 30° below the horizon; minutes after sunset more than 0 and at
   most 180; candle-lighting minutes 0–180. Anything else, or a non-finite number, throws a
   `RangeError` (`DEPRESSION_RANGE`, `MINUTES_RANGE`).
+- *As built:* UTC offsets from `Intl` are not rounded to whole minutes (historical local mean
+  time has seconds), and rounded zmanim are rounded to whole minutes of the local clock, which
+  is the same as UTC minutes for every zone with a whole-minute offset.

@@ -27,7 +27,7 @@ import { assertTimeZone, zonedToInstant, type TimeZone } from '../time/zone.js';
 import { horizonDip, solarTransit, SUNRISE_ZENITH, timeAtZenith, type NoEventReason } from './solar.js';
 import { usnoTimeAtZenith } from './usno.js';
 import { ZMANIM } from './opinions.js';
-import { roundToMinute, Zman, type ZmanUnavailableReason } from './zman.js';
+import { roundToLocalMinute, Zman, type ZmanUnavailableReason } from './zman.js';
 
 /** A place on earth. */
 export interface GeoLocation {
@@ -215,7 +215,7 @@ export class ZmanimCalendar {
       return new Zman({ id, time: null, opinion: def.opinion, source: def.source, rounded: null, timeZone: tz, reason: raw.reason });
     }
     const rounding = this.options.rounding;
-    const ms = rounding ? roundToMinute(raw.time, def.round) : raw.time;
+    const ms = rounding ? roundToLocalMinute(raw.time, def.round, tz) : raw.time;
     return new Zman({
       id,
       time: new Date(ms),

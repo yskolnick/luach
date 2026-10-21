@@ -55,6 +55,10 @@ Pass an IANA zone ("America/New_York"). Luach reads offsets from the platform's 
 line get their own day's times. Where `Intl` lacks time zones, pass a `TimeZoneProvider`
 such as `fixedOffsetZone(-300)`.
 
+Offsets keep their seconds: before standard time, places kept local mean time (Jerusalem
+was +2:20:40 in the runtime's data until 1918), so `offsetMinutes` can be a fraction and
+rounded zmanim are rounded to whole minutes of that local clock.
+
 ## More
 
 - `hebrewDateAt(instant, place)`: the Hebrew date now, by sunset (or a chosen tzeis).

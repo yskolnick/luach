@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ZmanimCalendar, HebrewDate, Month, ZMANIM, fixedOffsetZone, roundToMinute } from '../src/index';
+import { ZmanimCalendar, HebrewDate, Month, ZMANIM, fixedOffsetZone, roundToMinute, offsetMinutes, zonedToInstant, localParts } from '../src/index';
 
 const LAKEWOOD = { latitude: 40.0821, longitude: -74.2097, elevation: 20, timeZone: 'America/New_York' };
 const LONDON = { latitude: 51.5074, longitude: -0.1278, timeZone: 'Europe/London' };
@@ -128,6 +128,31 @@ describe('time zones', () => {
   });
   it('rejects unknown zones', () => {
     expect(() => new ZmanimCalendar({ ...LAKEWOOD, timeZone: 'Mars/Olympus' }, { year: 2027, month: 6, day: 1 })).toThrow(RangeError);
+  });
+  it('historical offsets keep their seconds (Jerusalem local mean time in 1900)', () => {
+    const at = Date.UTC(1900, 0, 1, 12);
+    // The runtime's own offset, to the second (ICU data; tzdata's LMT for Jerusalem).
+    const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Jerusalem', timeZoneName: 'longOffset' }).formatToParts(new Date(at));
+    const m = /GMT([+-])(\d\d):(\d\d)(?::(\d\d))?/.exec(parts.find((p) => p.type === 'timeZoneName')!.value)!;
+    const intlMinutes = (m[1] === '-' ? -1 : 1) * (Number(m[2]) * 60 + Number(m[3]) + Number(m[4] ?? 0) / 60);
+    expect(offsetMinutes('Asia/Jerusalem', at)).toBeCloseTo(intlMinutes, 9);
+    expect(Number.isInteger(intlMinutes)).toBe(false);
+    // Local noon maps back to 12:00:00 on the local clock (not 12:00:20).
+    const noon = zonedToInstant({ year: 1900, month: 1, day: 1 }, 12 * 60, 'Asia/Jerusalem');
+    expect(localParts(noon, 'Asia/Jerusalem')).toMatchObject({ hour: 12, minute: 0, second: 0 });
+    expect(noon).toBe(Date.UTC(1900, 0, 1, 12) - Math.round(intlMinutes * 60) * 1000);
+    // Rounding is to the local minute, so a rounded time still shows whole local minutes and
+    // never displays earlier than the exact time.
+    const loc = { ...JERUSALEM, timeZone: 'Asia/Jerusalem' };
+    const r = new ZmanimCalendar(loc, { year: 1900, month: 3, day: 14 }).tzeis8Point5();
+    const x = new ZmanimCalendar(loc, { year: 1900, month: 3, day: 14 }, { rounding: false }).tzeis8Point5();
+    expect(localParts(r.time!.getTime(), 'Asia/Jerusalem').second).toBe(0);
+    expect(r.time!.getTime()).toBeGreaterThanOrEqual(x.time!.getTime());
+    expect(r.time!.getTime() - x.time!.getTime()).toBeLessThan(60_000);
+    const s = new ZmanimCalendar(loc, { year: 1900, month: 3, day: 14 }).sofZmanShemaGra();
+    const sx = new ZmanimCalendar(loc, { year: 1900, month: 3, day: 14 }, { rounding: false }).sofZmanShemaGra();
+    expect(localParts(s.time!.getTime(), 'Asia/Jerusalem').second).toBe(0);
+    expect(s.time!.getTime()).toBeLessThanOrEqual(sx.time!.getTime());
   });
   it('toJSON gives local time in the location zone', () => {
     const j = new ZmanimCalendar(JERUSALEM, { year: 2027, month: 3, day: 14 }).chatzos().toJSON();

@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-import { localParts, zoneName, type TimeZone } from '../time/zone.js';
+import { localParts, offsetMinutes, zoneName, type TimeZone } from '../time/zone.js';
 
 /**
  * How a zman is rounded to the minute for display: an *earliest* time (e.g. the end of a
@@ -100,4 +100,15 @@ export class Zman {
 export function roundToMinute(ms: number, direction: RoundingDirection): number {
   const m = 60_000;
   return direction === 'up' ? Math.ceil(ms / m) * m : Math.floor(ms / m) * m;
+}
+
+/**
+ * Rounds an instant to a whole minute of the local clock in `zone`. The same as
+ * {@link roundToMinute} for zones whose offset is whole minutes; for historical local mean
+ * time (an offset with seconds) it keeps the displayed `HH:MM` on the safe side.
+ */
+export function roundToLocalMinute(ms: number, direction: RoundingDirection, zone: TimeZone): number {
+  const off = Math.round(offsetMinutes(zone, ms) * 60_000);
+  const frac = ((off % 60_000) + 60_000) % 60_000;
+  return roundToMinute(ms + frac, direction) - frac;
 }

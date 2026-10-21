@@ -12,7 +12,7 @@ import { holidaysOn } from '../holidays/holidays.js';
 import type { HolidayEvent, HolidayOptions } from '../holidays/types.js';
 import { ZmanimCalendar, type GeoLocation, type ZmanimOptions } from './calendar.js';
 import { ZMANIM } from './opinions.js';
-import { Zman } from './zman.js';
+import { roundToLocalMinute, Zman } from './zman.js';
 
 /** Which zman ends the Hebrew day, for {@link hebrewDateAt}. */
 export type DayBoundary = 'sunset' | 'tzeis-8.5' | 'tzeis-7.083' | 'tzeis-72';
@@ -71,7 +71,7 @@ export function fastTimes(date: HebrewDate, location: GeoLocation, options: Fast
     // The fast's start is a deadline for eating, so it is rounded down.
     const exact = new ZmanimCalendar(location, date, { ...options, rounding: false });
     const ex = { 'alos-72': exact.alos72(), 'alos-90': exact.alos90(), 'alos-16.1': exact.alos16Point1(), 'alos-18': exact.alos18(), 'alos-19.8': exact.alos19Point8(), 'alos-72-zmaniyos': exact.alos72Zmaniyos() }[options.begins ?? 'alos-72'];
-    const t = ex.time ? (z.options.rounding ? Math.floor(ex.time.getTime() / 60000) * 60000 : ex.time.getTime()) : null;
+    const t = ex.time ? (z.options.rounding ? roundToLocalMinute(ex.time.getTime(), 'down', location.timeZone) : ex.time.getTime()) : null;
     begins = new Zman({ id: 'fast-begins', time: t === null ? null : new Date(t), opinion: `${def.opinion} (${a.opinion})`, source: `${def.source}; ${a.source}`, rounded: t !== null && z.options.rounding ? 'down' : null, timeZone: location.timeZone, ...(a.reason ? { reason: a.reason } : {}) });
   }
   const e = { 'tzeis-6.45': z.tzeis6Point45(), 'tzeis-7.083': z.tzeis7Point083(), 'tzeis-8.5': z.tzeis8Point5(), 'tzeis-42': z.tzeis42(), 'tzeis-50': z.tzeis50(), 'tzeis-72': z.tzeis72() }[options.ends ?? 'tzeis-7.083'];

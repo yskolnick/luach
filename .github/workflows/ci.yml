@@ -24,8 +24,9 @@ jobs:
       - run: npm run typecheck
       - run: npm run lint
       - run: npm run check:imports
-      - run: npm run check:licenses
       - run: npm run build
+      # after the build, so it also checks dist/ for oracle text and imports
+      - run: npm run check:licenses
       - run: npm test
       - run: npm run check:size
 

@@ -1,8 +1,10 @@
 // Fails if any runtime dependency (direct or transitive) has a licence that is not
 // on the permissive allow-list. devDependencies (test oracles) are not checked here:
-// they never ship. See docs/decisions/0002-licence-and-clean-room.md.
-import { readFileSync, existsSync } from 'node:fs';
-import { join } from 'node:path';
+// they never ship. If dist/ exists, the built files are checked too (see below).
+// See docs/decisions/0002-licence-and-clean-room.md. Runs in the current directory.
+import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
+import { join, relative } from 'node:path';
+import { findImports, packageName } from './lib/js-scan.mjs';
 
 const ALLOWED = new Set([
   'MIT', 'MIT-0', 'ISC', 'BSD-2-Clause', 'BSD-3-Clause', '0BSD', 'Apache-2.0',
@@ -34,8 +36,38 @@ function check(name) {
 for (const name of Object.keys(pkg.dependencies ?? {})) check(name);
 for (const name of Object.keys(pkg.peerDependencies ?? {})) check(name);
 
+// The built package (when dist/ exists): it loads only runtime dependencies (and node:
+// built-ins in the CLI), and contains no text from the copyleft test oracles.
+const ORACLE_TEXT = ['@hebcal/', 'kosher-zmanim', 'GNU General Public', 'GNU Lesser General Public'];
+const runtimeDeps = new Set([...Object.keys(pkg.dependencies ?? {}), ...Object.keys(pkg.peerDependencies ?? {})]);
+function walk(dir) {
+  return readdirSync(dir).flatMap((f) => {
+    const p = join(dir, f);
+    return statSync(p).isDirectory() ? walk(p) : [p];
+  });
+}
+const dist = join(root, 'dist');
+let distFiles = 0;
+if (existsSync(dist)) {
+  for (const file of walk(dist)) {
+    const rel = relative(root, file);
+    const text = readFileSync(file, 'utf8');
+    distFiles++;
+    for (const marker of ORACLE_TEXT) if (text.includes(marker)) errors.push(`${rel}: contains "${marker}"`);
+    if (!/\.(c|m)?js$/.test(file)) continue;
+    const { specs, problems } = findImports(text);
+    for (const p of problems) errors.push(`${rel}: ${p}`);
+    for (const spec of specs) {
+      const name = packageName(spec);
+      if (name === null || runtimeDeps.has(name)) continue;
+      if (spec.startsWith('node:') && rel.startsWith(join('dist', 'cli'))) continue;
+      errors.push(`${rel}: loads "${spec}", which is not a runtime dependency`);
+    }
+  }
+}
+
 if (errors.length) {
   console.error('Licence check failed:\n  ' + errors.join('\n  '));
   process.exit(1);
 }
-console.log(`Licence check passed (${seen.size} runtime dependencies).`);
+console.log(`Licence check passed (${seen.size} runtime dependencies${existsSync(dist) ? `; ${distFiles} built files clean` : '; no dist/ to check'}).`);

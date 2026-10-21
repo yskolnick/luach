@@ -72,7 +72,7 @@
     "check:licenses": "node scripts/check-licenses.mjs",
     "check:imports": "node scripts/check-imports.mjs",
     "check:size": "node scripts/check-size.mjs",
-    "check": "npm run typecheck && npm run lint && npm run check:imports && npm run check:licenses && npm run build && npm test && npm run check:size",
+    "check": "npm run typecheck && npm run lint && npm run check:imports && npm run build && npm run check:licenses && npm test && npm run check:size",
     "test:hermes": "node scripts/hermes-test.mjs",
     "docs:api": "typedoc",
     "docs:gen": "node scripts/gen-halacha-docs.mjs",

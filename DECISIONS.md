@@ -167,3 +167,7 @@ See ADR 0005. **Default until decided:** as proposed.
   `https://raw.githubusercontent.com/yskolnick/luach/main/schema/day.schema.json`, a URL
   that serves the JSON (the earlier GitHub `blob/` URL served a web page). Every object in
   the schema with a fixed shape, including `learning`, is closed (`additionalProperties: false`).
+- *As built:* the import and licence checks read code with a small tokenizer of their own
+  (`scripts/lib/js-scan.mjs`), fail on `createRequire`, computed `import()`/`require()` and
+  devDependency names in strings, and check the built `dist/` for oracle text and package
+  imports; `npm run check` builds before the licence check (ADR 0006).

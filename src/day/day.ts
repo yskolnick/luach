@@ -16,6 +16,8 @@ import type { NameStyle } from '../format/names.js';
 import { hallel } from '../holidays/hallel.js';
 import { type Holiday, holidayName, holidaysOn, type HolidayOptions } from '../holidays/holidays.js';
 import { type Location, parshaOn, readingName } from '../parsha/parsha.js';
+import { type HaftaraOptions, type Minhag, haftaraOn } from '../parsha/haftara.js';
+import { pirkeiAvos } from '../parsha/avos.js';
 import { toZoned } from '../time/zone.js';
 import { fastTimes } from '../zmanim/fasts.js';
 import { dafHaShavua, dafYomi, mishnaYomis, nachYomi, rambam1, rambam3, yerushalmiYomi } from '../learning/learning.js';
@@ -55,6 +57,13 @@ export interface DayOptions extends Omit<HolidayOptions, 'location'> {
   readonly havdala?: { degrees: number } | { minutes: number };
   /** Name style for display strings. Default `'en'`. */
   readonly names?: NameStyle;
+  /**
+   * Custom for the haftara and Pirkei Avos. Without it, `haftara` and `pirkeiAvos` are null: they depend on
+   * custom, and Luach does not choose one. Pirkei Avos runs until Shavuos for `'sephardi'` and `'teimani'`, else until
+   * Rosh Hashana.
+   */
+  readonly minhag?: Minhag;
+  readonly haftaraOptions?: HaftaraOptions;
 }
 
 /** A zman in the day JSON. */
@@ -88,6 +97,8 @@ export interface DayInfo {
   havdala: DayZman | null;
   fast: { begins: DayZman; ends: DayZman } | null;
   /** Today's portion in each learning cycle (null before a cycle began, or on a day it skips). */
+  haftara: { reference: string | null; reason: string; service: 'shacharis' | 'mincha' }[] | null;
+  pirkeiAvos: number[] | null;
   learning: Record<'dafYomi' | 'yerushalmi' | 'mishnaYomis' | 'rambam3' | 'rambam1' | 'nachYomi' | 'dafHaShavua', { text: string; textHebrew: string } | null>;
 }
 
@@ -176,6 +187,15 @@ export function getDay(date: Z.DateInput, options: DayOptions): DayInfo {
     candleLighting,
     havdala,
     fast: ft ? { begins: dayZman(ft.begins, loc, zo), ends: dayZman(ft.ends, loc, zo) } : null,
+    haftara: options.minhag
+      ? haftaraOn(n, options.calendar, options.minhag, options.haftaraOptions).map((x) => ({ reference: x.reference, reason: x.reason, service: x.service }))
+      : null,
+    pirkeiAvos: options.minhag
+      ? (() => {
+          const c = pirkeiAvos(n, options.calendar, options.minhag === 'sephardi' || options.minhag === 'teimani' ? 'until-shavuos' : 'until-rosh-hashana');
+          return c ? [...c] : null;
+        })()
+      : null,
     learning: {
       dafYomi: brief(dafYomi(n)),
       yerushalmi: brief(yerushalmiYomi(n)),

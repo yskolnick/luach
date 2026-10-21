@@ -14,7 +14,7 @@ describe('getDay', () => {
     for (const [name, calendar] of [['Jerusalem', 'israel'], ['Lakewood', 'diaspora'], ['London', 'diaspora'], ['Tromsø', 'diaspora']] as const) {
       const loc = findCity(name)!;
       for (let n = gregorianToDayNumber(2027, 1, 1); n <= gregorianToDayNumber(2027, 12, 31); n += 1) {
-        const d = JSON.parse(JSON.stringify(getDay(n, { location: loc, calendar })));
+        const d = JSON.parse(JSON.stringify(getDay(n, { location: loc, calendar, ...(n % 2 ? { minhag: 'ashkenaz' as const } : {}) })));
         if (!validate(d)) throw new Error(`${name} ${d.gregorian}: ${ajv.errorsText(validate.errors)}`);
       }
     }

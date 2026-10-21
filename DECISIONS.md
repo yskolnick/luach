@@ -111,3 +111,9 @@ Choices made while building that nobody has ruled on. Each can be changed.
   moved to post-1.0 (HOL-19).
 - AB-14. The brief's example citation "Shulchan Aruch Harav 89:1" for 72 minutes / 16.1° does not say that
   (it is about instituting the three prayers). Luach cites Magen Avraham 58:1 and Pesachim 94a instead.
+- AB-15. Haftara defaults (all overridable): Rosh Chodesh Av → Shim'u (MB 425:8, the Gra); Rosh Chodesh Elul → Rema for
+  Ashkenaz/Chabad, Mechaber for Sephardi/Teimani (SA OC 425:1); Shabbos HaGadol → every year, except Chabad (only on
+  Erev Pesach); Ashkenaz Shuva → Dagul Mervava (MB 428:23). getDay() includes the haftara and Pirkei Avos only when a
+  minhag is passed.
+- AB-16. Pirkei Avos: until Rosh Hashana for Ashkenaz/Chabad, until Shavuos for Sephardi/Teimani; at the end of the summer
+  the last weeks read two chapters so the year ends with chapters 5–6 (matches the oracle every year 5660–6000).

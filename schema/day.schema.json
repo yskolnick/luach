@@ -21,7 +21,9 @@
     "candleLighting",
     "havdala",
     "fast",
-    "learning"
+    "learning",
+    "haftara",
+    "pirkeiAvos"
   ],
   "$defs": {
     "zman": {
@@ -540,6 +542,59 @@
           ]
         }
       }
+    },
+    "haftara": {
+      "description": "Null unless a minhag is passed (the haftara depends on custom).",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "reference",
+              "reason",
+              "service"
+            ],
+            "properties": {
+              "reference": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "reason": {
+                "type": "string"
+              },
+              "service": {
+                "enum": [
+                  "shacharis",
+                  "mincha"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "pirkeiAvos": {
+      "description": "Chapters read this Shabbos afternoon; null unless a minhag is passed.",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 6
+          }
+        }
+      ]
     }
   }
 }

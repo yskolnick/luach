@@ -57,8 +57,8 @@ All events carry flags: `yomTov` (melacha forbidden), `cholHamoed`, `fast` (`maj
 |---|---|---|---|---|
 | PAR-01 | Weekly parsha, Israel and diaspora, doubled parshiyos, divergence weeks | Tur OC 428 (keviyos tables) | oracle hebcal Sedra 5660–6000 both locations | done |
 | PAR-02 | `null` on Shabbos that is Yom Tov / Chol Hamoed, with the special reading | SA OC 488, 490, 663 | oracle | done |
-| PAR-03 | Haftara by minhag (Ashkenaz, Sephardi, Chabad; Teimani only with a source), special haftaros; references only | SA OC 284, 425, 428; Mishna Berura | hand-entered from a printed Chumash (named per test) | planned |
-| PAR-04 | Pirkei Avos chapter on summer Shabbosim, with cycle customs | Rema OC 292:2 | hand-entered | planned |
+| PAR-03 | Haftara by minhag (Ashkenaz, Sephardi, Chabad; Teimani only with a source), special haftaros; references only | SA OC 284, 425, 428; Mishna Berura | hand-entered from a printed Chumash (named per test) | done |
+| PAR-04 | Pirkei Avos chapter on summer Shabbosim, with cycle customs | Rema OC 292:2 | hand-entered | done |
 | LRN-01 | Daf Yomi Bavli (from 11 Sept 1923; Shekalim 13 dafim before cycle 8) | published cycle | oracle @hebcal/learning 1923–2100 | done |
 | LRN-02 | Daf Yomi Yerushalmi, Vilna (from 2 Feb 1980; skips Yom Kippur and Tisha B'Av). Schottenstein cycle: Q-12 | published cycle | oracle 1980–2060 | done (Vilna); Schottenstein blocked (Q-12) |
 | LRN-03 | Mishna Yomis (from the 2010 cycle; earlier start not public) | published cycle; Sefaria structure | oracle 2010–2040 | done |

@@ -43,6 +43,22 @@ p('  - Yom HaZikaron 5708–5710: established in 5711/1951; the oracle lists ear
 p('  - Yom Yerushalayim 5727: declared in 5728/1968; the oracle also lists 28 Iyar 5727 itself.');
 p();
 
+p('## Haftara and Pirkei Avos');
+p();
+for (const [key, label] of [['haftara-diaspora', 'Ashkenaz, diaspora'], ['haftara-israel', 'Ashkenaz, Israel'], ['haftara-sephardi', 'Sephardi, diaspora']]) {
+  const r = read(key);
+  if (r) p(`- Haftara (${label}): ${r.shabbosos.toLocaleString('en')} Shabbosos (5737–5800) vs ${r.oracle}: **${r.unexplained} unexplained differences**.`);
+}
+p('  - Explained: Shavuos day 2 begins at Habakkuk 2:20 (SA OC 494:2) where the oracle begins at 3:1. For Sephardim on Rosh Chodesh');
+p('    Elul, Luach follows the Mechaber (SA OC 425:1, "עניה סוערה") and the oracle the Rema; on Rosh Chodesh Av the oracle adds the');
+p('    first and last verses of Isaiah 66, a custom for which no source was found. Chabad and Teimani readings have no oracle and');
+p('    rest on the sources in docs/research/2026-10-21-haftaros.md.');
+for (const loc of ['diaspora', 'israel']) {
+  const r = read(`avos-${loc}`);
+  if (r) p(`- Pirkei Avos (${loc}): ${r.shabbosos.toLocaleString('en')} Shabbosos (5660–6000) vs ${r.oracle}: **${r.differences} differences**.`);
+}
+p();
+
 p('## Hallel');
 p();
 for (const loc of ['diaspora', 'israel']) {

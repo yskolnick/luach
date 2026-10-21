@@ -85,30 +85,51 @@ const VALUES: Record<string, number> = {
   ק: 100, ר: 200, ש: 300, ת: 400,
 };
 
+/** Final letters read as their ordinary forms. */
+const FINALS: Record<string, string> = { ך: 'כ', ם: 'מ', ן: 'נ', ף: 'פ', ץ: 'צ' };
+
 /**
- * Reads a number written in Hebrew letters. A geresh after the first group, followed by
- * more letters, marks thousands ("ה׳תשפ״ז" = 5787). ASCII ' and " are accepted too.
- * Final letters count as their ordinary forms. Throws on any other character.
+ * One group (below 1000) in the standard order: up to two ת, one of ק/ר/ש, then a tens
+ * letter and a units letter, or ט־ו / ט־ז for 15 and 16 (never י־ה or י־ו).
+ */
+const GROUP = /^(ת{0,2})([קרש]?)(טו|טז|(?!י[הו]$)[יכלמנסעפצ]?[אבגדהוזחט]?)$/;
+
+/**
+ * Reads a number written in Hebrew letters, as {@link gematriya} writes it. A geresh after
+ * the first group, followed by more letters, marks thousands ("ה׳תשפ״ז" = 5787); thousands
+ * need it. ASCII ' and " are accepted too. Final letters count as their ordinary forms.
+ *
+ * Throws a RangeError on anything else: other characters, letters out of descending order,
+ * a repeated unit, ten or hundred (other than ת, ת־ת), 15 or 16 written י־ה or י־ו, and
+ * doubled or misplaced geresh or gershayim marks.
  */
 export function parseGematriya(s: string): number {
   const text = s.trim().replace(/'/g, GERESH).replace(/"/g, GERSHAYIM);
   if (!text) throw new RangeError('Empty gematriya');
-  const groups = text.split(GERESH).filter((g, i, a) => !(i === a.length - 1 && g === ''));
-  let total = 0;
-  const sum = (g: string): number => {
-    let v = 0;
-    for (const ch of g.replace(new RegExp(GERSHAYIM, 'g'), '').replace(/\s+/g, '')) {
-      const x = VALUES[ch];
-      if (x === undefined) throw new RangeError(`Not a Hebrew numeral letter: "${ch}" in "${s}"`);
-      v += x;
+  const bad = (why: string): RangeError => new RangeError(`Not a standard Hebrew numeral (${why}): "${s}"`);
+  const parts = text.split(GERESH);
+  // A trailing geresh marks a single letter (א׳) or the thousands (ה׳, ה׳א׳).
+  if (parts.length > 1 && parts[parts.length - 1] === '') parts.pop();
+  if (parts.length > 2) throw bad('more than one thousands mark');
+  const group = (g: string, thousands: boolean): number => {
+    const marks = g.split(GERSHAYIM).length - 1;
+    const trimmed = g.trim();
+    const letters = trimmed.replace(new RegExp(GERSHAYIM, 'g'), '').replace(/\s+/g, '');
+    if (!letters) throw bad('a mark with no letters');
+    if (marks > 1) throw bad('more than one gershayim');
+    if (marks === 1 && (thousands || trimmed.startsWith(GERSHAYIM) || trimmed.endsWith(GERSHAYIM) || text.endsWith(GERESH))) {
+      throw bad('misplaced gershayim');
     }
+    let plain = '';
+    for (const ch of letters) {
+      if (VALUES[ch] === undefined) throw new RangeError(`Not a Hebrew numeral letter: "${ch}" in "${s}"`);
+      plain += FINALS[ch] ?? ch;
+    }
+    if (!GROUP.test(plain)) throw bad('letters out of order or repeated');
+    let v = 0;
+    for (const ch of plain) v += VALUES[ch]!;
     return v;
   };
-  if (groups.length >= 2 && groups[1] !== '') {
-    total = sum(groups[0] ?? '') * 1000 + sum(groups.slice(1).join(''));
-  } else {
-    total = sum(groups[0] ?? '');
-  }
-  if (total === 0) throw new RangeError(`Not a Hebrew numeral: "${s}"`);
-  return total;
+  if (parts.length === 2) return group(parts[0]!, true) * 1000 + group(parts[1]!, false);
+  return group(parts[0]!, false);
 }

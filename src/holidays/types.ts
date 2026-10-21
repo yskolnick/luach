@@ -69,6 +69,12 @@ export interface HolidayOptions {
   behab?: boolean;
   /** Include Yom Kippur Katan. Default `false`. */
   yomKippurKatan?: boolean;
+  /**
+   * Yom Kippur Katan when Erev Rosh Chodesh is Friday. `'thursday'` (the default): Mishna
+   * Berura 417:4, for those who say Selichos. `'friday'`: Magen Avraham 417:3, and Mishna
+   * Berura 417:4 for those who do not say Selichos. (On Shabbos it is always Thursday.)
+   */
+  yomKippurKatanOnFriday?: 'thursday' | 'friday';
   /** Include the Shabbosos of Shovavim. Default `false`. */
   shovavim?: boolean;
   /** Include Shabbos Mevorchim. Default `true`. */

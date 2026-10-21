@@ -49,6 +49,17 @@ birthdays, `'firstAnniversary'` for yahrzeits and `'nextMonth'` for birthdays; 3
 in a common year becomes 30 Shevat. **Until decided:** these defaults, documented as
 defaults, not rulings.
 
+*Note, 2026-10-21:* the birthday default for 30 Adar I observed in a common year changed
+from 30 Shevat to 1 Nisan (a bar mitzvah a month early was a wrong date, not a custom).
+Magen Avraham OC 55:10 and Mishna Berura 55:45: when the 30th does not exist, the age is not
+complete until the 1st of the next month ("עדיין לא מלאה לו שנה ... דבעי' י"ג שנים שלימים");
+MB 55:44: one born in Adar I counts from Adar, not Shevat. The same rule now applies to any
+birthday whose day is missing (30 Adar I under the Adar II option below). Yahrzeits keep
+30 Shevat. Also added: for a birthday of someone born in Adar I, observed in a leap year,
+`adarI: 'levush'` (Adar I; Levush OC 685 as cited by MA 55:10; MB 55:43, "the consensus of the
+later authorities, against the Magen Avraham") or `'magen-avraham'` (Adar II; MA 55:10,
+"נעשה ב"מ באדר שני"). **Until decided:** `'levush'`, the behaviour before the option existed.
+
 ### Q-05. Modern Israeli days before their amendments
 Rules are applied from the year they were adopted
 (`docs/research/2026-10-21-modern-israeli-days.md`): Yom HaShoah Friday → Thursday from 1951
@@ -115,8 +126,20 @@ See ADR 0005. **Default until decided:** as proposed.
 - *As built:* Yom Kippur Katan (optional) is not listed before Rosh Chodesh Tishrei, Cheshvan,
   Teves or Iyar (common practice; not stated in MB 417:4), and moves to Thursday from
   Friday/Shabbos (MB 417:4).
+- *As built (supersedes the Yom Kippur Katan entry above as to its sources, 2026-10-21):* when
+  Erev Rosh Chodesh is Shabbos, Yom Kippur Katan is on Thursday (Magen Avraham 417:3: Rosh
+  Chodesh on Sunday, fast on Thursday; MB 417:4). When it is Friday the sources differ: Magen
+  Avraham 417:3 keeps it on Friday ("ואם חל ר"ח בשבת מתענין ביום ו'"); MB 417:4 says those who
+  say Selichos fast on Thursday and those who don't on Friday. Option `yomKippurKatanOnFriday`:
+  `'thursday'` (default, the behaviour before the option existed; @hebcal/core, the test oracle,
+  agrees) or `'friday'`. The default is a
+  default, not a ruling. The exclusions are as before.
 - *As built:* BeHaB (optional) is the Monday, Thursday and Monday after the first Shabbos of
   Cheshvan and of Iyar.
+- *As built (supersedes the BeHaB entry above, 2026-10-21):* BeHaB is the Monday, Thursday and
+  Monday after the first Shabbos *after* Rosh Chodesh (MB 492:3, "שבת הראשון שאחר ר"ח"). When
+  1 Cheshvan or 1 Iyar is Shabbos, that Shabbos is Rosh Chodesh and is not counted (5785:
+  11, 14 and 18 November 2024, not 4, 7 and 11 November).
 - *As built:* the molad is read as Jerusalem mean time at longitude 35.2354° E when turned
   into an instant (Kiddush Levana times).
 - *As built:* Tachanun defaults: no Tachanun from Erev Yom Kippur through the end of Tishrei,
@@ -188,11 +211,13 @@ See ADR 0005. **Default until decided:** as proposed.
   primary where there is no custom) and `roshChodeshElul` (default by minhag as before;
   `'consolation'` per the SA OC 425:1, `'roshChodesh'` per the Rema there, with Re'eh's
   haftara added on Ki Seitzei per MB 425:7).
-- *As built (2026-10-21):* in year 9999, `readingCycle(9999)` stops at the last Shabbos of
-  9999 (its schedule still counts the Shabbosos of Tishrei 10000), and `parshaFor` throws a
-  RangeError on the weekdays after that Shabbos, whose Shabbos is in year 10000.
 - *As built (2026-10-21):* `pirkeiAvos` with `until: 'shavuos'` (Kaf HaChaim 292:23) reads
   chapters 1–6 before Shavuos; a seventh Shabbos (Israel, when Pesach begins on Shabbos)
   returns null, since the source does not say what is read then.
 - *As built:* security reports go through GitHub's private vulnerability reporting; the code
   of conduct is Luach's own, short text.
+- *As built:* in year 9999, the last supported year, answers that need a date in year 10000
+  are left out rather than guessed: `readingCycle(9999)` stops at the last Shabbos of 9999 (its
+  joins still use the known weekday of 1 Tishrei 10000); `parshaFor` (and `dayInfo().parsha`)
+  is null for the few days whose coming Shabbos is in 10000. Leil Selichos and candle lighting
+  on 29 Elul 9999 are computed (Rosh Hashana 10000 is always Yom Tov).

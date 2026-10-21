@@ -167,6 +167,10 @@ describe('molad announcement and time formatting', () => {
     expect(s).toContain(`${m.clock.chalakim} chalak`);
     expect(moladAnnouncement(5787, Month.CHESHVAN, 'he')).toContain('חלקים');
   });
+  it('the doc example: Tuesday night is ליל רביעי (molad Teves 5784)', () => {
+    expect(moladAnnouncement(5784, Month.TEVES)).toBe('Tuesday night, 8:01 pm and 3 chalakim');
+    expect(moladAnnouncement(5784, Month.TEVES, 'he')).toBe('ליל רביעי, 20:01 ו־3 חלקים');
+  });
   it('formatTime in a zone', () => {
     const t = new Date(Date.UTC(2026, 9, 21, 19, 5, 30));
     expect(formatTime(t, 'Asia/Jerusalem')).toBe('22:05');

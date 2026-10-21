@@ -43,14 +43,14 @@ describe('year 9999', () => {
   });
 
   it('the last Shabbos of 9999 has its parsha, haftara and Pirkei Avos', () => {
-    expect(parshaFor(lastShabbos).parsha?.[0]).toBe('nitzavim');
+    expect(parshaFor(lastShabbos)?.parsha?.[0]).toBe('nitzavim');
     expect(haftaraFor(lastShabbos)?.key).toBe('consolation-7');
     expect(pirkeiAvos(lastShabbos)).not.toBeNull();
   });
 
   it('a weekday whose Shabbos is in year 10000 has no parsha to give', () => {
     const after = lastShabbos.next();
-    expect(() => parshaFor(after)).toThrow(RangeError);
+    expect(parshaFor(after)).toBeNull();
     expect(haftaraFor(after)).toBeNull();
   });
 });

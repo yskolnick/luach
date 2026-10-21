@@ -15,7 +15,10 @@ Yom Tov Sheni, Chol Hamoed and Isru Chag.
 Every event has the same flags, so you can filter: `yomTov`, `melachaForbidden`,
 `cholHamoed`, `fast` (`'major' | 'minor' | null`), `roshChodesh`, `modernIsraeli`, `minor`,
 `specialShabbos`, `erev`, `isruChag`, `optional`. Optional events are off by default:
-`behab`, `yomKippurKatan`, `modernIsraeli`, `shovavim`.
+`behab`, `yomKippurKatan`, `modernIsraeli`, `shovavim`. When Erev Rosh Chodesh is Friday,
+Yom Kippur Katan is on Thursday by default (Mishna Berura 417:4, for those who say Selichos);
+`yomKippurKatanOnFriday: 'friday'` keeps it on Friday (Magen Avraham 417:3; MB 417:4 for those
+who don't say Selichos).
 
 Moved fasts carry `moved: true` (Tisha B'Av on Sunday, Taanis Esther on Thursday, …).
 

@@ -115,7 +115,7 @@ export function toICalendar(start: CivilDate | HebrewDate, end: CivilDate | Hebr
     const c = d.toCivil();
     if (options.parsha !== false && d.isShabbos) {
       const r = parshaFor(d, { israel });
-      if (r.parsha) items.push({ uid: `${d.toString()}-parsha`, summary: `${rtl ? 'פרשת' : 'Parshas'} ${parshaName(r.parsha, locale)}`, categories: 'parsha', allDay: c });
+      if (r?.parsha) items.push({ uid: `${d.toString()}-parsha`, summary: `${rtl ? 'פרשת' : 'Parshas'} ${parshaName(r.parsha, locale)}`, categories: 'parsha', allDay: c });
     }
     for (const l of options.learning ?? []) {
       let text: string | null = null;

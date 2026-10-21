@@ -7,6 +7,7 @@
  */
 
 import { HebrewDate } from '../calendar/hebrew-date.js';
+import { MAX_DAYS } from '../calendar/year.js';
 import { formatIsoDate, type CivilDate } from '../time/civil.js';
 import { formatHebrewDate, monthName, weekdayName } from '../text/format.js';
 import { he } from '../locales/he.js';
@@ -68,7 +69,8 @@ export interface DayInfo {
   readonly israel: boolean;
   readonly events: readonly { id: string; name: string; flags: HolidayFlags; day?: number; candlesTonight?: number; moved?: boolean }[];
   /** This week's reading (the Shabbos on or after this day). */
-  readonly parsha: { readonly date: string; readonly ids: readonly ParshaId[] | null; readonly name: string | null; readonly holiday?: string };
+  /** The coming Shabbos's reading; null only in the last days of year 9999 (that Shabbos is in year 10000). */
+  readonly parsha: { readonly date: string; readonly ids: readonly ParshaId[] | null; readonly name: string | null; readonly holiday?: string } | null;
   readonly haftara: { readonly key: string; readonly reference: string | null } | null;
   readonly omer: { readonly day: number; readonly text: string; readonly textEnglish: string; readonly sefirah: string } | null;
   readonly tefillah: TefillahDay;
@@ -111,7 +113,8 @@ export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = 
       return (f as () => Zman).call(z).toJSON();
     });
     const today = holy(h, hopts);
-    const tomorrow = holy(h.next(), hopts);
+    // After 29 Elul 9999 (the last supported day) comes Rosh Hashana 10000, always Yom Tov.
+    const tomorrow = h.epochDays === MAX_DAYS || holy(h.next(), hopts);
     if (tomorrow && !today) candleLighting = z.candleLighting().toJSON();
     else if (tomorrow && today) candleLighting = z.candleLightingSecondNight().toJSON();
     if (today && !tomorrow) havdala = z.havdala().toJSON();
@@ -134,12 +137,14 @@ export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = 
       ...(e.candlesTonight !== undefined ? { candlesTonight: e.candlesTonight } : {}),
       ...(e.moved ? { moved: true } : {}),
     })),
-    parsha: {
-      date: formatIsoDate(reading.date.toCivil()),
-      ids: reading.parsha,
-      name: parshaName(reading.parsha, locale),
-      ...(reading.holiday ? { holiday: reading.holiday } : {}),
-    },
+    parsha: reading
+      ? {
+          date: formatIsoDate(reading.date.toCivil()),
+          ids: reading.parsha,
+          name: parshaName(reading.parsha, locale),
+          ...(reading.holiday ? { holiday: reading.holiday } : {}),
+        }
+      : null,
     haftara: haft ? { key: haft.key, reference: haft.reference } : null,
     omer: om ? { day: om, text: omerText(om), textEnglish: omerTextEnglish(om), sefirah: omerSefirah(om, style) } : null,
     tefillah: tefillahOn(h, { ...options.tefillah, israel }),

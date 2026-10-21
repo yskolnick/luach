@@ -68,7 +68,8 @@ const WEEKDAYS_HE = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמי
 
 /**
  * The molad as announced on Shabbos Mevorchim, in English or Hebrew, e.g.
- * "Tuesday night, 9:11 pm and 3 chalakim" / "ליל שלישי, 21:11 ו־3 חלקים". Times are the
+ * "Tuesday night, 8:01 pm and 3 chalakim" / "ליל רביעי, 20:01 ו־3 חלקים" (molad Teves 5784;
+ * the night after Tuesday is the night of Wednesday, ליל רביעי). Times are the
  * calendar's (Jerusalem mean time), not local clock time. Announcement customs vary (some
  * say "after" the hour, some use a 24-hour clock); this is a plain rendering of the facts.
  */

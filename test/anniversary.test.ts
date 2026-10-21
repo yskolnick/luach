@@ -40,6 +40,56 @@ describe('anniversary rules', () => {
     const b = barMitzvahDate({ year: 5777, month: Month.ADAR, day: 7 });
     expect([b.year, b.month, b.day]).toEqual([5790, Month.ADAR_II, 7]);
   });
+  it('born 30 Adar I, birthday in a common year: 1 Nisan (Magen Avraham 55:10; Mishna Berura 55:45)', () => {
+    const birth = { year: 5784, month: Month.ADAR_I, day: 30 };
+    expect(isLeapYear(5784)).toBe(true);
+    expect(isLeapYear(5797)).toBe(false);
+    const b = barMitzvahDate(birth);
+    expect([b.year, b.month, b.day]).toEqual([5797, Month.NISAN, 1]);
+    // Oracle: hebcal's birthday rule agrees.
+    const t = new HDate(HebrewCalendar.getBirthdayOrAnniversary(5797, new HDate(30, 12, 5784))!);
+    expect([t.getFullYear(), t.getMonth(), t.getDate()]).toEqual([5797, Month.NISAN, 1]);
+    // A yahrzeit keeps 30 Shevat (unchanged).
+    const y = anniversary(birth, 5797, { kind: 'yahrzeit' });
+    expect([y.month, y.day]).toEqual([Month.SHEVAT, 30]);
+  });
+  it('born in Adar I, birthday in a leap year: Adar I (Levush, default) or Adar II (Magen Avraham 55:10)', () => {
+    const birth = { year: 5784, month: Month.ADAR_I, day: 15 };
+    expect(isLeapYear(5790)).toBe(true);
+    const def = anniversary(birth, 5790, { kind: 'birthday' });
+    expect([def.month, def.day]).toEqual([Month.ADAR_I, 15]);
+    const lev = anniversary(birth, 5790, { kind: 'birthday', adarI: 'levush' });
+    expect([lev.month, lev.day]).toEqual([Month.ADAR_I, 15]);
+    const ma = anniversary(birth, 5790, { kind: 'birthday', adarI: 'magen-avraham' });
+    expect([ma.month, ma.day]).toEqual([Month.ADAR_II, 15]);
+    // 30 Adar I under the Magen Avraham: Adar II has 29 days, so 1 Nisan.
+    const ma30 = anniversary({ year: 5784, month: Month.ADAR_I, day: 30 }, 5790, { kind: 'birthday', adarI: 'magen-avraham' });
+    expect([ma30.month, ma30.day]).toEqual([Month.NISAN, 1]);
+    // Born in Adar II: Adar II either way.
+    const a2 = anniversary({ year: 5784, month: Month.ADAR_II, day: 15 }, 5790, { kind: 'birthday', adarI: 'magen-avraham' });
+    expect([a2.month, a2.day]).toEqual([Month.ADAR_II, 15]);
+    // A yahrzeit ignores the option: Adar I.
+    const yz = anniversary(birth, 5790, { kind: 'yahrzeit', adarI: 'magen-avraham' });
+    expect(yz.month).toBe(Month.ADAR_I);
+    // Bar mitzvah passes the option through (5782 and 5795 are both leap years).
+    expect(isLeapYear(5782) && isLeapYear(5795)).toBe(true);
+    const bm = barMitzvahDate({ year: 5782, month: Month.ADAR_I, day: 15 }, 13, { adarI: 'magen-avraham' });
+    expect([bm.year, bm.month, bm.day]).toEqual([5795, Month.ADAR_II, 15]);
+    const bmDefault = barMitzvahDate({ year: 5782, month: Month.ADAR_I, day: 15 });
+    expect([bmDefault.year, bmDefault.month, bmDefault.day]).toEqual([5795, Month.ADAR_I, 15]);
+  });
+  it('oracle: hebcal birthday matches the birthday defaults (5700–5800 births, 30 years)', () => {
+    let checked = 0;
+    for (let d = new HebrewDate(5700, 7, 1); d.year < 5800; d = d.addDays(5)) {
+      for (let target = d.year + 1; target <= d.year + 30; target += 4) {
+        const ours = anniversary(d, target, { kind: 'birthday' });
+        const t = new HDate(HebrewCalendar.getBirthdayOrAnniversary(target, new HDate(d.day, d.month, d.year))!);
+        expect([ours.year, ours.month, ours.day], `${d} → ${target}`).toEqual([t.getFullYear(), t.getMonth(), t.getDate()]);
+        checked++;
+      }
+    }
+    expect(checked).toBeGreaterThan(5000);
+  });
   it('oracle: hebcal yahrzeit matches the "firstAnniversary" + Adar I options (5700–5800 deaths, 40 years)', () => {
     let checked = 0;
     for (let d = new HebrewDate(5700, 7, 1); d.year < 5800; d = d.addDays(3)) {

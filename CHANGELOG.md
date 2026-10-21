@@ -48,6 +48,21 @@ All notable changes for users of the `luach` package. This project follows
   week, and settings; Hebrew and English, light and dark.
 
 ### Changed
+- A birthday or bar mitzvah for someone born on 30 Adar I, in a common year, is 1 Nisan
+  (was 30 Shevat; Magen Avraham 55:10, Mishna Berura 55:45). New option `adarI` for one born
+  in Adar I whose birthday falls in a leap year (Levush, the default, or Magen Avraham).
+- BeHaB counts from the first Shabbos after Rosh Chodesh (MB 492:3): when 1 Cheshvan or
+  1 Iyar is Shabbos the fasts are a week later than before.
+- Yom Kippur Katan: new option `yomKippurKatanOnFriday` (`'thursday'`, the default, or
+  `'friday'`) for an Erev Rosh Chodesh on Friday; moved days carry `moved: true`; the
+  citations now say what Magen Avraham 417:3 and Mishna Berura 417:4 each hold.
+- Every date in Hebrew year 9999 works: `holidaysForYear(9999)` and everything built on it
+  no longer throw. `parshaFor` returns `null` (and `dayInfo().parsha` is `null`) only for the
+  last days of 9999, whose coming Shabbos is in year 10000; `readingCycle(9999)` omits the
+  Shabbosos of year 10000.
+- `parseGematriya` rejects numerals not written the standard way (letters out of order,
+  repeated units or tens, יה/יו for 15/16, doubled geresh or gershayim) instead of adding up
+  the letters; every string `gematriya()` writes still parses, and thousands need a geresh.
 - The city-data files ship without source maps; the package is about half the size.
 - Hebrew zman labels carry a left-to-right mark (U+200E) after each degree sign, so the
   angle reads correctly in right-to-left text.

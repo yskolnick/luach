@@ -233,11 +233,11 @@ export function holidaysForYear(year: number, options: HolidayOptions = {}): Hol
   b.add('rosh-hashana-labehemos', d(Month.ELUL, 1), { minor: true });
   // Leil Selichos (Ashkenaz): the Motzaei Shabbos before Rosh Hashana, or a week earlier if
   // fewer than four days of selichos would remain (Rema OC 581:1; the four-day reason is MB 581:6). Dated on the Shabbos.
+  // Counted from Erev Rosh Hashana (29 Elul), so year 9999 needs no date in year 10000.
   {
-    // Counted from 29 Elul (Rosh Hashana is the next day), so year 9999 needs no year 10000.
     const erevRh = d(Month.ELUL, 29);
     let s = erevRh.addDays(-3).onOrBefore(SHABBAT);
-    if (erevRh.daysSince(s) + 1 < 5) s = s.addDays(-7);
+    if (erevRh.daysSince(s) < 4) s = s.addDays(-7);
     b.add('leil-selichos', s, { minor: true });
   }
   b.add('erev-rosh-hashana', d(Month.ELUL, 29), { erev: true });
@@ -253,21 +253,27 @@ export function holidaysForYear(year: number, options: HolidayOptions = {}): Hol
     if (options.shabbosMevorchim ?? true) {
       b.add('shabbos-mevorchim', start.prev().onOrBefore(SHABBAT), { specialShabbos: true }, { month: m, monthYear: year });
     }
-    // Yom Kippur Katan: the day before Rosh Chodesh, moved to Thursday if it falls on
-    // Friday or Shabbos; not kept before Tishrei, Cheshvan, Teves or Iyar (MB 417:4; Magen Avraham 417:3;
-    // the exclusions are common practice, not stated there).
+    // Yom Kippur Katan: the day before Rosh Chodesh. On Shabbos it moves to Thursday (Magen
+    // Avraham 417:3; MB 417:4). On Friday: Magen Avraham 417:3 keeps it on Friday; MB 417:4 says
+    // those who say Selichos fast on Thursday and those who don't on Friday. Default Thursday
+    // (`yomKippurKatanOnFriday`). Not kept before Tishrei, Cheshvan, Teves or Iyar (common
+    // practice, not stated in either).
     if (options.yomKippurKatan && m !== Month.CHESHVAN && m !== Month.TEVES && m !== Month.IYAR) {
-      let ykk = start.prev();
-      if (ykk.dayOfWeek === FRIDAY || ykk.dayOfWeek === SHABBAT) ykk = ykk.onOrBefore(THURSDAY);
-      b.add('yom-kippur-katan', ykk, { fast: 'minor', optional: true }, { month: m, monthYear: year });
+      const erev = start.prev();
+      const toThursday =
+        erev.dayOfWeek === SHABBAT || (erev.dayOfWeek === FRIDAY && (options.yomKippurKatanOnFriday ?? 'thursday') === 'thursday');
+      const ykk = toThursday ? erev.onOrBefore(THURSDAY) : erev;
+      b.add('yom-kippur-katan', ykk, { fast: 'minor', optional: true }, toThursday ? { month: m, monthYear: year, moved: true } : { month: m, monthYear: year });
     }
   }
   // Shabbos Mevorchim for Tishrei of next year is not said; nothing to add.
 
-  // ---- BeHaB: Monday, Thursday, Monday after the first Shabbos of Cheshvan and of Iyar (SA OC 492:1 with Rema; MB 492:3). ----
+  // ---- BeHaB: Monday, Thursday, Monday after the first Shabbos after Rosh Chodesh Cheshvan and
+  // Iyar (SA OC 492:1 with Rema; MB 492:3, "שבת הראשון שאחר ר"ח"). When the 1st is Shabbos it
+  // is Rosh Chodesh itself, so the count starts from the next Shabbos. ----
   if (options.behab) {
     for (const m of [Month.CHESHVAN, Month.IYAR]) {
-      const shabbos = d(m, 1).onOrAfter(SHABBAT);
+      const shabbos = d(m, 2).onOrAfter(SHABBAT);
       const mon1 = shabbos.onOrAfter(MONDAY);
       b.add('behab', mon1, { fast: 'minor', optional: true }, { day: 1, month: m });
       b.add('behab', mon1.onOrAfter(THURSDAY), { fast: 'minor', optional: true }, { day: 2, month: m });
@@ -393,7 +399,7 @@ function addCommemorations(b: Builder): void {
 const cache = new Map<string, HolidayEvent[]>();
 
 function cachedYear(year: number, options: HolidayOptions): HolidayEvent[] {
-  const key = `${year}|${options.israel ? 1 : 0}${options.modernIsraeli ? 1 : 0}${options.behab ? 1 : 0}${options.yomKippurKatan ? 1 : 0}${options.shabbosMevorchim === false ? 0 : 1}${options.shovavim ? 1 : 0}${options.israeliCommemorations ? 1 : 0}`;
+  const key = `${year}|${options.israel ? 1 : 0}${options.modernIsraeli ? 1 : 0}${options.behab ? 1 : 0}${options.yomKippurKatan ? 1 : 0}${options.yomKippurKatanOnFriday === 'friday' ? 1 : 0}${options.shabbosMevorchim === false ? 0 : 1}${options.shovavim ? 1 : 0}${options.israeliCommemorations ? 1 : 0}`;
   let v = cache.get(key);
   if (!v) {
     v = holidaysForYear(year, options);

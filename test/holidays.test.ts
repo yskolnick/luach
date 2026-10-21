@@ -82,6 +82,57 @@ describe('known dates (published calendars)', () => {
     const b = holidaysForYear(5787, { behab: true }).filter((e) => e.id === 'behab');
     expect(b.map((e) => e.date.dayOfWeek)).toEqual([1, 4, 1, 1, 4, 1]);
   });
+  it('Yom Kippur Katan when Erev Rosh Chodesh is Friday: Thursday (default) or Friday (MA 417:3; MB 417:4)', () => {
+    const ykk = (y: number, o: { yomKippurKatanOnFriday?: 'thursday' | 'friday' } = {}) =>
+      holidaysForYear(y, { yomKippurKatan: true, ...o }).filter((e) => e.id === 'yom-kippur-katan');
+    let fridays = 0;
+    let shabbosos = 0;
+    for (let y = 5780; y < 5800; y++) {
+      const def = ykk(y);
+      const thu = ykk(y, { yomKippurKatanOnFriday: 'thursday' });
+      const fri = ykk(y, { yomKippurKatanOnFriday: 'friday' });
+      expect(thu).toEqual(def);
+      expect(fri.length).toBe(def.length);
+      for (let i = 0; i < def.length; i++) {
+        const m = def[i]!.month!;
+        const first = new HebrewDate(y, m, 1);
+        const erev = first.prev().monthLength === 30 ? first.addDays(-2) : first.prev();
+        if (erev.dayOfWeek === 5) {
+          fridays++;
+          expect(def[i]!.date.equals(erev.addDays(-1))).toBe(true);
+          expect(def[i]!.moved).toBe(true);
+          expect(fri[i]!.date.equals(erev)).toBe(true);
+          expect(fri[i]!.moved).toBeUndefined();
+        } else if (erev.dayOfWeek === 6) {
+          // Erev Rosh Chodesh on Shabbos: Thursday either way (MA 417:3; MB 417:4).
+          shabbosos++;
+          expect(def[i]!.date.equals(erev.addDays(-2))).toBe(true);
+          expect(fri[i]!.date.equals(erev.addDays(-2))).toBe(true);
+        } else {
+          expect(fri[i]!.date.equals(erev)).toBe(true);
+          expect(def[i]!.date.equals(erev)).toBe(true);
+        }
+      }
+    }
+    expect(fridays).toBeGreaterThan(5);
+    expect(shabbosos).toBeGreaterThan(5);
+  });
+  it('BeHaB counts from the first Shabbos after Rosh Chodesh, not Rosh Chodesh itself (MB 492:3)', () => {
+    // 1 Cheshvan 5785 was Shabbos, 2 November 2024: the fasts are 11, 14 and 18 November.
+    expect(new HebrewDate(5785, Month.CHESHVAN, 1).isShabbos).toBe(true);
+    const iso = (y: number) => holidaysForYear(y, { behab: true }).filter((e) => e.id === 'behab').map((e) => formatIsoDate(e.date.toCivil()));
+    expect(iso(5785).slice(0, 3)).toEqual(['2024-11-11', '2024-11-14', '2024-11-18']);
+    // Every year: the Shabbos before the first Monday is the first Shabbos after the 1st.
+    for (let y = 5700; y < 5900; y++) {
+      for (const e of holidaysForYear(y, { behab: true }).filter((x) => x.id === 'behab' && x.day === 1)) {
+        const shabbos = e.date.addDays(-2);
+        const first = new HebrewDate(y, e.month!, 1);
+        expect(shabbos.isShabbos).toBe(true);
+        expect(shabbos.daysSince(first), `${y} ${e.month}`).toBeGreaterThanOrEqual(1);
+        expect(shabbos.daysSince(first), `${y} ${e.month}`).toBeLessThanOrEqual(7);
+      }
+    }
+  });
 });
 
 describe('names', () => {

@@ -193,7 +193,7 @@ export function haftaraFor(date: HebrewDate, options: HaftaraOptions = {}): Haft
   if (rcTomorrow && rcTomorrow.day === 1) return special('machar-chodesh', minhag);
 
   const reading = parshaFor(date, { israel });
-  if (!reading.parsha) return null;
+  if (!reading?.parsha) return null;
   const key = reading.parsha.join('-');
   if (minhag === 'ashkenaz' && key === 'kedoshim' && ownHaftaraDisplaced(date, 'acharei-mos', options)) {
     return make('acharei-mos', PARSHA_HAFTAROS['acharei-mos'], minhag);
@@ -208,7 +208,7 @@ const MICAH = 'Micah 7:18-20';
 /** Ashkenazi Shabbos Shuva: Hosea 14 and the verses added after it (MB 428:23). */
 function shuvaAshkenaz(date: HebrewDate, options: HaftaraOptions): Haftara {
   const add = options.shuvaAddition ?? 'dagulMervava';
-  const vayelech = parshaFor(date, { israel: options.israel ?? false }).parsha?.includes('vayelech') ?? false;
+  const vayelech = parshaFor(date, { israel: options.israel ?? false })?.parsha?.includes('vayelech') ?? false;
   const ending = add === 'micah' ? [MICAH] : add === 'joel' ? [JOEL] : add === 'both' ? [JOEL, MICAH] : vayelech ? [MICAH] : [JOEL];
   const segments = [HOSEA, ...ending];
   return { key: 'shabbos-shuva', minhag: 'ashkenaz', reference: segments.join('; '), segments };
@@ -223,7 +223,7 @@ function ownHaftaraDisplaced(date: HebrewDate, parsha: string, options: HaftaraO
   const israel = options.israel ?? false;
   for (let d = date.addDays(-7), n = 0; n < 3; d = d.addDays(-7), n++) {
     const r = parshaFor(d, { israel });
-    if (!r.parsha) continue;
+    if (!r?.parsha) continue;
     return r.parsha.join('-') === parsha && haftaraFor(d, options)?.key !== parsha;
   }
   return false;

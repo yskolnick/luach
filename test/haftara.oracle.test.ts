@@ -47,8 +47,8 @@ function norm(s: string | null | undefined): string | null {
  * docs/research/2026-10-21-haftaros.md and docs/accuracy.md. Keyed by Luach's haftara key.
  */
 const EXPLAINED: Record<string, string> = {
-  'ashkenaz kedoshim': 'Acharei Mos / Kedoshim: Luach follows the Rema, ArtScroll and the Ezras Torah luach (Kedoshim = Ezekiel 22:1-16); Hertz and hebcal swap them, and some end at 22:19',
-  'ashkenaz shabbos-shuva': 'Shabbos Shuva: Ashkenazim add Joel 2:15-27 (Luach) or Micah 7:18-20 (hebcal); both are in use',
+  'ashkenaz kedoshim': 'Kedoshim: Ezekiel 22 ends at 22:16 (Luach) or 22:19 (hebcal); both are in published lists',
+  'ashkenaz shabbos-shuva': 'Shabbos Shuva with Haazinu: Luach adds Joel 2:15-27 (Dagul Mervava, MB 428:23), hebcal Micah 7:18-20; both are in use',
   'ashkenaz shavuos-2': 'Shavuos day 2: Habakkuk 2:20 or 3:1 as the opening verse; both are in use',
   'sephardi shabbos-rosh-chodesh-elul': 'Rosh Chodesh Elul on Shabbos Re\'eh: Sephardim keep Re\'eh\'s haftara (research note); hebcal reads Isaiah 66',
   'sephardi ki-seitzei-after-rosh-chodesh-elul': 'Follows from the line above: Sephardim did not skip Re\'eh\'s haftara, so Ki Seitzei is not doubled',
@@ -64,8 +64,15 @@ export function diffs(israel: boolean, minhag: 'ashkenaz' | 'sephardi', from: nu
     const l = getLeyningOnDate(new HDate(d.day, d.month, d.year), israel) as { haftara?: string; sephardic?: string; name?: { en: string } } | undefined;
     const theirs = norm(minhag === 'sephardi' ? l?.sephardic ?? l?.haftara : l?.haftara);
     const h = haftaraFor(d, { israel, minhag });
-    if (h && EXPLAINED[`${minhag} ${h.key}`]) continue;
     const ours = norm(h?.reference);
+    // Only the end verse of Kedoshim's Ezekiel 22 is a variant; which haftara is read is checked.
+    // Shabbos Shuva: only Luach's Joel (with Haazinu) against hebcal's Micah is explained.
+    const shuvaChecked = h?.key === 'shabbos-shuva' && minhag === 'ashkenaz' && !(ours === 'hosea14:2-10|joel2:15-27' && theirs === 'hosea14:2-10|micah7:18-20');
+    if (shuvaChecked || (h?.key === 'kedoshim' && minhag === 'ashkenaz' && !(ours === 'ezekiel22:1-16' && theirs === 'ezekiel22:1-19'))) {
+      if (ours !== theirs) out.push(`${d} ${l?.name?.en ?? ''}: ours ${h.key} ${ours} | hebcal ${theirs}`);
+      continue;
+    }
+    if (h && EXPLAINED[`${minhag} ${h.key}`]) continue;
     if (ours !== theirs) out.push(`${d} ${l?.name?.en ?? ''}: ours ${h?.key} ${ours} | hebcal ${theirs}`);
   }
   return out;

@@ -27,3 +27,5 @@ export * from './holidays/names';
 export * from './holidays/omer';
 export * from './holidays/seasonal';
 export * from './holidays/tefillah';
+export * from './parsha/parsha';
+export * from './learning/bavli';

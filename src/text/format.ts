@@ -12,6 +12,7 @@ import { gematriya } from './gematriya.js';
 import { isolate } from './rtl.js';
 import { lookup, type Locale } from '../locales/types.js';
 import { he } from '../locales/he.js';
+import { localParts, type TimeZone } from '../time/zone.js';
 
 /** The name of a Hebrew month in `locale` (Adar I / Adar II in leap years). */
 export function monthName(month: number, year: number, locale: Locale = he): string {
@@ -63,4 +64,16 @@ export function formatHebrewDate(date: HebrewDateParts, options?: FormatOptions)
     s = `${weekdayName(dow, locale)}, ${s}`;
   }
   return options?.isolate && locale.dir === 'rtl' ? isolate(s, 'rtl') : s;
+}
+
+/**
+ * Formats an instant as wall-clock time in `timeZone`: "21:05" (default) or "9:05 pm".
+ * Uses the zone module (Intl, or a provider), not the device's zone.
+ */
+export function formatTime(instant: Date, timeZone: TimeZone, options?: { hour12?: boolean; seconds?: boolean }): string {
+  const p = localParts(instant.getTime(), timeZone);
+  const mm = String(p.minute).padStart(2, '0');
+  const ss = options?.seconds ? `:${String(p.second).padStart(2, '0')}` : '';
+  if (options?.hour12) return `${p.hour % 12 === 0 ? 12 : p.hour % 12}:${mm}${ss} ${p.hour < 12 ? 'am' : 'pm'}`;
+  return `${String(p.hour).padStart(2, '0')}:${mm}${ss}`;
 }

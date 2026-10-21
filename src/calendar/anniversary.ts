@@ -6,7 +6,7 @@
  * Ask your rav. This library calculates; it does not rule.
  *
  * 1. **Adar of a common year, observed in a leap year.** For a birthday or bar mitzvah
- *    the Shulchan Aruch (Orach Chaim 55:10) gives Adar II; that is the default for
+ *    the Rema (Orach Chaim 55:10, citing Mahari Mintz) gives Adar II; that is the default for
  *    `kind: 'birthday'`. For a yahrzeit the Mechaber (OC 568:7) gives Adar II and the
  *    Rema there gives Adar I, adding that some observe both; the default for
  *    `kind: 'yahrzeit'` is Adar I. Set `adarInLeapYear` to choose.

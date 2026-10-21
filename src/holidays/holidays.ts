@@ -153,9 +153,9 @@ export function holidaysForYear(year: number, options: HolidayOptions = {}): Hol
     b.add('purim-katan', d(Month.ADAR_I, 14), { minor: true });
     b.add('shushan-purim-katan', d(Month.ADAR_I, 15), { minor: true });
   }
-  // Shabbos Shekalim: the Shabbos on or before Rosh Chodesh Adar (Adar II in a leap year). SA OC 685:1.
+  // Shabbos Shekalim: the Shabbos on or before Rosh Chodesh Adar (Adar II in a leap year). SA OC 685:1, 5.
   b.add('shabbos-shekalim', d(am, 1).onOrBefore(SHABBAT), { specialShabbos: true });
-  // Shabbos Zachor: the Shabbos before Purim. SA OC 685:2.
+  // Shabbos Zachor: the Shabbos before Purim. SA OC 685:2, 5.
   b.add('shabbos-zachor', d(am, 14).prev().onOrBefore(SHABBAT), { specialShabbos: true });
   // Taanis Esther, 13 Adar; on Shabbos it moves back to Thursday (SA OC 686:2).
   {
@@ -169,7 +169,7 @@ export function holidaysForYear(year: number, options: HolidayOptions = {}): Hol
   // Purim Meshulash: when 15 Adar is Shabbos, Jerusalem spreads Shushan Purim over
   // Friday–Sunday (SA OC 688:6). The event marks the Sunday, 16 Adar, the third day.
   if (d(am, 15).isShabbos) b.add('purim-meshulash', d(am, 16), { minor: true });
-  // Shabbos Parah: the Shabbos before Shabbos HaChodesh. Shabbos HaChodesh: on or before 1 Nisan. SA OC 685:1.
+  // Shabbos Parah: the Shabbos before Shabbos HaChodesh. Shabbos HaChodesh: on or before 1 Nisan. SA OC 685:3–4, 6.
   const hachodesh = d(Month.NISAN, 1).onOrBefore(SHABBAT);
   b.add('shabbos-parah', hachodesh.addDays(-7), { specialShabbos: true });
   b.add('shabbos-hachodesh', hachodesh, { specialShabbos: true });
@@ -232,7 +232,7 @@ export function holidaysForYear(year: number, options: HolidayOptions = {}): Hol
   // ---- Elul ----
   b.add('rosh-hashana-labehemos', d(Month.ELUL, 1), { minor: true });
   // Leil Selichos (Ashkenaz): the Motzaei Shabbos before Rosh Hashana, or a week earlier if
-  // fewer than four days of selichos would remain (Rema OC 581:1). Dated on the Shabbos.
+  // fewer than four days of selichos would remain (Rema OC 581:1; the four-day reason is MB 581:6). Dated on the Shabbos.
   {
     const rh = new HebrewDate(year + 1, Month.TISHREI, 1);
     let s = rh.addDays(-4).onOrBefore(SHABBAT);
@@ -253,7 +253,8 @@ export function holidaysForYear(year: number, options: HolidayOptions = {}): Hol
       b.add('shabbos-mevorchim', start.prev().onOrBefore(SHABBAT), { specialShabbos: true }, { month: m, monthYear: year });
     }
     // Yom Kippur Katan: the day before Rosh Chodesh, moved to Thursday if it falls on
-    // Friday or Shabbos; not kept before Tishrei, Cheshvan, Teves or Iyar (as practised; see docs).
+    // Friday or Shabbos; not kept before Tishrei, Cheshvan, Teves or Iyar (MB 417:4; Magen Avraham 417:3;
+    // the exclusions are common practice, not stated there).
     if (options.yomKippurKatan && m !== Month.CHESHVAN && m !== Month.TEVES && m !== Month.IYAR) {
       let ykk = start.prev();
       if (ykk.dayOfWeek === FRIDAY || ykk.dayOfWeek === SHABBAT) ykk = ykk.onOrBefore(THURSDAY);
@@ -262,7 +263,7 @@ export function holidaysForYear(year: number, options: HolidayOptions = {}): Hol
   }
   // Shabbos Mevorchim for Tishrei of next year is not said; nothing to add.
 
-  // ---- BeHaB: Monday, Thursday, Monday after the first Shabbos of Cheshvan and of Iyar (SA OC 492:1). ----
+  // ---- BeHaB: Monday, Thursday, Monday after the first Shabbos of Cheshvan and of Iyar (SA OC 492:1 with Rema; MB 492:3). ----
   if (options.behab) {
     for (const m of [Month.CHESHVAN, Month.IYAR]) {
       const shabbos = d(m, 1).onOrAfter(SHABBAT);
@@ -292,17 +293,16 @@ function gregorianYearOf(date: HebrewDate): number {
 
 function addModernIsraeli(b: Builder): void {
   const flags: Partial<HolidayFlags> = { modernIsraeli: true, optional: true };
-  // Rules are applied as amended (dates in comments); Yom HaShoah's Friday/Sunday rule is
-  // applied to every year from 1951 (see DECISIONS.md, Q-05).
-  // Yom HaShoah: 27 Nisan (from 1951). If it falls on Friday it is moved to Thursday, and
-  // if on Sunday to Monday.
+  // Rules are applied from the year each was adopted (docs/research/2026-10-21-modern-israeli-days.md).
+  // Yom HaShoah: 27 Nisan (from 1951). If it falls on Friday it is moved to Thursday; from
+  // 1997 (Amendment No. 3), if on Sunday it is moved to Monday.
   {
     const base = b.d(Month.NISAN, 27);
     const greg = gregorianYearOf(base);
     if (greg >= 1951) {
       let day = base;
       if (base.dayOfWeek === FRIDAY) day = base.prev();
-      else if (base.dayOfWeek === SUNDAY) day = base.next();
+      else if (greg >= 1997 && base.dayOfWeek === SUNDAY) day = base.next();
       b.add('yom-hashoah', day, flags, day.equals(base) ? undefined : { moved: true });
     }
   }

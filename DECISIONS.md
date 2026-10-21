@@ -40,9 +40,11 @@ in a common year becomes 30 Shevat. **Until decided:** these defaults, documente
 defaults, not rulings.
 
 ### Q-05. Modern Israeli days before their amendments
-Yom HaShoah's rule (Friday → Thursday, Sunday → Monday) is applied to every year from
-1951; Yom HaAtzmaut's Monday → Tuesday rule only from 2004. Historical accuracy before the
-amendments is being researched (`docs/research/2026-10-21-modern-israeli-days.md`).
+Rules are applied from the year they were adopted
+(`docs/research/2026-10-21-modern-israeli-days.md`): Yom HaShoah Friday → Thursday from 1951
+and Sunday → Monday from 1997; Yom HaAtzmaut Monday → Tuesday from 2004. Not modelled: the
+1954 date of the Shabbos → Thursday rule for Yom HaAtzmaut (applied from 1949), and the
+uncertain 1950 date. The 7 October memorial day (24 Tishrei) is not built yet (HOL-16).
 **Until decided:** as described; these days are optional and off by default.
 
 ## Proposals
@@ -75,7 +77,8 @@ proleptic Gregorian avoids a silent calendar switch in 1582. ADR 0004.
 - *As built:* Purim Meshulash is listed on 16 Adar (the Sunday, third of its three days).
 - *As built:* Leil Selichos is listed on the Shabbos whose night begins Selichos (Ashkenaz).
 - *As built:* Yom Kippur Katan (optional) is not listed before Rosh Chodesh Tishrei, Cheshvan,
-  Teves or Iyar, and moves to Thursday from Friday/Shabbos.
+  Teves or Iyar (common practice; not stated in MB 417:4), and moves to Thursday from
+  Friday/Shabbos (MB 417:4).
 - *As built:* BeHaB (optional) is the Monday, Thursday and Monday after the first Shabbos of
   Cheshvan and of Iyar.
 - *As built:* the molad is read as Jerusalem mean time at longitude 35.2354° E when turned

@@ -126,6 +126,7 @@ All events carry flags: `yomTov`, `melachaForbidden`, `cholHamoed`, `fast` (`maj
 | OUT-09 | WebAssembly build | — | — | post-1.0 |
 | OUT-10 | Printable luach PDF | — | — | post-1.0 |
 | OUT-11 | Temporal adapters † | research | — | post-1.0 |
+| OUT-12 | A lighter way to compute one zman (importable definitions with one function), so an app pays only for the zmanim it uses (D-13) | — | size budget | post-1.0 |
 
 ## M7. Docs and demo
 

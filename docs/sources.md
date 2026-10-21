@@ -327,6 +327,7 @@ way](./rationale) (one section per entry).
 | [D-10](./rationale#d-10) | Israel or the diaspora from the place (P-06) | Decided |
 | [D-11](./rationale#d-11) | The shared tables are frozen (P-08) | Decided |
 | [D-12](./rationale#d-12) | API clean-up before 1.0 | Decided |
+| [D-13](./rationale#d-13) | One zman costs 10.6 KB for 1.0 | Decided |
 | [Q-00](./rationale#q-00) | Unmerged branches | Open questions |
 | [Q-01](./rationale#q-01) | Licence: Apache-2.0 with NOTICE, or MIT | Open questions |
 | [Q-02](./rationale#q-02) | How credit should read | Open questions |

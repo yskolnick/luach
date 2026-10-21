@@ -188,6 +188,18 @@ recorded as new entries; old ones are superseded, not erased.
 - **Confidence:** Not applicable.
 - **Open:** tracked in LOG.md until done.
 
+### D-13. One zman costs 10.6 KB for 1.0 {#d-13}
+
+- **What it does:** keeps one way to compute zmanim, `ZmanimCalendar`. Importing it costs
+  10.6 KB gzip, because a class carries all of its methods and their opinion texts.
+- **Why:** Yosef chose to keep it and revisit after 1.0. Luach is already about a quarter
+  of the size of the other zmanim libraries, and a lighter route can be added later without
+  breaking anyone; adding it now would grow the API just after it was trimmed.
+- **Sources:** DECISIONS.md D-13. Sizes measured with esbuild (minify, gzip) on one sunrise.
+- **Checked against:** `@hebcal/core` 44.8 KB and `kosher-zmanim` 49.0 KB, the same way.
+- **Confidence:** Not applicable.
+- **Open:** ROADMAP OUT-12, after 1.0.
+
 ## Open questions
 
 ### Q-00. Unmerged branches {#q-00}

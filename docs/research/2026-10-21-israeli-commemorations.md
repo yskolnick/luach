@@ -61,6 +61,7 @@ Moving-rule shorthand used below:
 - **Moving rule:** if 10 Iyar is Shabbat, observe on the following Sunday.
   - Statute, s.10(ג): "חל י׳ באייר בשבת, יקוים יום הרצל ביום א׳ שלאחריו."
   - Possible weekdays: 15 Nisan + 24 days (+3) gives Wed, Fri, Sun or Tue. So 10 Iyar is **never Shabbat** and the rule never fires. Friday is possible, and the law has no Friday rule.
+  - **Correction (2026-10-21, citation audit):** the line above is wrong. 10 Iyar is 25 days after 15 Nisan, so it falls on Thu, Sat, Mon or Wed. It is Shabbat whenever Pesach begins on Tuesday (10 Iyar 5784 was Saturday, 18 May 2024), and the Sunday rule does apply. The code was already right.
 - **Second date in the same law:** a state memorial ceremony on 20 Tammuz (Herzl's yahrzeit).
   - Statute, s.10א(ב): "חל כ׳ בתמוז ביום שישי, יתקיים טקס הזיכרון הממלכתי ביום חמישי שלפניו."
   - 20 Tammuz is 15 Nisan + 94 days (+3), so it is never Shabbat but can be Friday. Friday moves it to Thursday 19 Tammuz.

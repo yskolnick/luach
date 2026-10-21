@@ -261,3 +261,12 @@ describe('Israeli commemorations (optional)', () => {
     expect(y5785.moved).toBe(true);
   });
 });
+
+describe('Yom HaShoah weekday rules by year of adoption', () => {
+  it('Friday → Thursday only from the 1959 law', () => {
+    const at = (y: number) => holidaysForYear(y, { modernIsraeli: true }).find((e) => e.id === 'yom-hashoah')!;
+    expect(at(5714).date.day).toBe(27); // 1954: Friday, under the 1951 resolution alone
+    expect(at(5734).date.day).toBe(26); // 1974: Friday → Thursday
+    expect(at(5734).moved).toBe(true);
+  });
+});

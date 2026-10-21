@@ -67,6 +67,9 @@ and Sunday → Monday from 1997; Yom HaAtzmaut Monday → Tuesday from 2004. Not
 1954 date of the Shabbos → Thursday rule for Yom HaAtzmaut (applied from 1949), and the
 uncertain 1950 date. The 7 October memorial day (24 Tishrei) is not built yet (HOL-16).
 **Until decided:** as described; these days are optional and off by default.
+*Update 2026-10-21:* the Yom HaShoah Friday → Thursday rule now applies from 1959, the year of
+the law; the 1951 Knesset resolution had no weekday rule, so 1954 (27 Nisan on Friday) stays on
+Friday. Found by the citation audit (`docs/research/2026-10-21-citation-audit-code.md`).
 
 ### Q-06. The example citation in the brief
 The brief's example, "Magen Avraham, 72 minutes as 16.1°; Shulchan Aruch Harav 89:1", is

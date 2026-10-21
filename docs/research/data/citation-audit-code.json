@@ -156,7 +156,8 @@
   "status": "imprecise",
   "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.550.3",
   "quote": "כל ד' צומות הללו אם חלו להיו' בשבת נדחין ... הגה ואם חלו בע\"ש קורים בשחרית ומנחה ויחל",
-  "note": "550:3 itself includes 10 Teves among fasts pushed off Shabbos and only implies a Friday fast via the Rema. 'Never pushed off' is the Abudraham via Beis Yosef 550, and is moot: 10 Teves never falls on Shabbos in the fixed calendar."
+  "note": "550:3 itself includes 10 Teves among fasts pushed off Shabbos and only implies a Friday fast via the Rema. 'Never pushed off' is the Abudraham via Beis Yosef 550, and is moot: 10 Teves never falls on Shabbos in the fixed calendar.",
+  "resolution": "Comment now cites the Rema and the Abudraham via the Beis Yosef (2026-10-21)."
  },
  {
   "citation": "Shemos 15",
@@ -244,7 +245,8 @@
   "status": "imprecise",
   "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.470.2",
   "quote": "יש אומרי' שמתעני' הבכורו' ביום ה' ויש אומרים שאינם מתענים כלל: הגה אבל יש לנהוג כסברא הראשונה",
-  "note": "The Mechaber records a dispute; the Thursday ruling is the Rema's. Cite 'Rema OC 470:2'."
+  "note": "The Mechaber records a dispute; the Thursday ruling is the Rema's. Cite 'Rema OC 470:2'.",
+  "resolution": "Now cites Rema OC 470:2 (2026-10-21)."
  },
  {
   "citation": "SA OC 550:3; 552:10",
@@ -277,7 +279,8 @@
   "status": "imprecise",
   "url": "https://www.sefaria.org/Mishnah_Berurah.417.4",
   "quote": "אם חל ער\"ח ביום שבת מקדימין להתענות ביום ה' ואם חל ביום ו' אותן שאומרין סליחות יתענו ביום ה' ואותן שאין אומרין סליחות יתענו ביום ו'",
-  "note": "Friday->Thursday holds only for those who say selichos (MB); MA 417:3 says when RC is Shabbos one fasts on Friday. Code moves every Friday case; the month exclusions are uncited (code says so)."
+  "note": "Friday->Thursday holds only for those who say selichos (MB); MA 417:3 says when RC is Shabbos one fasts on Friday. Code moves every Friday case; the month exclusions are uncited (code says so).",
+  "resolution": "Option yomKippurKatanOnFriday added; citations corrected (2026-10-21)."
  },
  {
   "citation": "SA OC 492:1 with Rema; MB 492:3",
@@ -354,7 +357,8 @@
   "status": "wrong",
   "url": "https://he.wikisource.org/wiki/חוק_בנימין_זאב_הרצל_(ציון_זכרו_ופועלו)",
   "quote": "חל י׳ באייר בשבת, יקוים יום הרצל ביום א׳ שלאחריו",
-  "note": "Rule is right; the aside is false. 10 Iyar is Shabbos whenever Pesach is Tuesday: 10 Iyar 5784 = Sat 18 May 2024 (Luach itself returns 11 Iyar, moved). docs/research/2026-10-21-israeli-commemorations.md:252 repeats the error."
+  "note": "Rule is right; the aside is false. 10 Iyar is Shabbos whenever Pesach is Tuesday: 10 Iyar 5784 = Sat 18 May 2024 (Luach itself returns 11 Iyar, moved). docs/research/2026-10-21-israeli-commemorations.md:252 repeats the error.",
+  "resolution": "Comment and research note corrected (2026-10-21)."
  },
  {
   "citation": "Ben-Gurion law 1976",
@@ -654,7 +658,8 @@
   "status": "imprecise",
   "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.428.4",
   "quote": "לעולם קורין צו את אהרן קודם פסח בפשוט' ומצורע במעוברת חוץ מבה\"ח מעוברת (וה\"ש מעוברת) שקורים אחרי מות קודם הפסח",
-  "note": "Comment omits the SA's stated exception (Acharei Mos before Pesach). Code treats Metzora as a minimum, so output still reaches Acharei Mos (e.g. 5771, matches hebcal). 'Haazinu before Sukkos' is inferred from the RH-weekday discussion, not stated."
+  "note": "Comment omits the SA's stated exception (Acharei Mos before Pesach). Code treats Metzora as a minimum, so output still reaches Acharei Mos (e.g. 5771, matches hebcal). 'Haazinu before Sukkos' is inferred from the RH-weekday discussion, not stated.",
+  "resolution": "Comment now states the exception (2026-10-21)."
  },
  {
   "citation": "Rema OC 292:2",

@@ -10,11 +10,13 @@
  * Chukas–Balak, Matos–Masei, Nitzavim–Vayelech). The schedule is fixed by deadlines
  * (Tur and Shulchan Aruch OC 428:4):
  *
- * - in a common year Tzav is read before Pesach, in a leap year Metzora;
+ * - in a common year Tzav is read before Pesach, in a leap year Metzora, except in the leap
+ *   years the Shulchan Aruch names, when Acharei Mos is read before Pesach (so Metzora is a
+ *   minimum, not a fixed slot);
  * - Bamidbar before Shavuos;
  * - Devarim on the Shabbos before Tisha B'Av (Shabbos Chazon), Vaeschanan after it;
  * - Nitzavim before Rosh Hashana;
- * - Haazinu before Sukkos.
+ * - Haazinu before Sukkos (inferred from 428:4, not stated there).
  *
  * Pairs are joined only when the Shabbosos before a deadline cannot fit the parshiyos that
  * must be read by then, in a fixed order of preference. Israel and the diaspora diverge

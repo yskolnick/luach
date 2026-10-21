@@ -17,18 +17,18 @@ is cited, the claim, status, link, the decisive words) is in `data/citation-audi
 
 - **Wrong: Herzl Day.** The code's rule (10 Iyar on Shabbos moves to Sunday) matches the law,
   but its comment says 10 Iyar is never Shabbos. It is whenever Pesach begins on Tuesday: 10
-  Iyar 5784 was Shabbos, 18 May 2024, and Luach already moves it. The comment and the
-  commemorations research note are to be corrected.
+  Iyar 5784 was Shabbos, 18 May 2024, and Luach already moves it. **Fixed:** the comment, and a
+  dated correction in the commemorations research note.
 - **Imprecise: Asarah B'Teves.** SA OC 550:3 counts all four fasts as pushed off Shabbos; that
   10 Teves is never pushed off is the Abudraham, via the Beis Yosef on 550. Moot in practice:
-  10 Teves never falls on Shabbos in the fixed calendar.
+  10 Teves never falls on Shabbos in the fixed calendar. **Fixed:** the comment says so.
 - **Imprecise: Taanis Bechoros on Thursday.** The Mechaber records a dispute; Thursday is the
-  Rema's ruling (Rema OC 470:2).
+  Rema's ruling (Rema OC 470:2). **Fixed.**
 - **Imprecise: Yom Kippur Katan when Erev Rosh Chodesh is Friday.** MB 417:4 moves it to
-  Thursday only for those who say Selichos; Magen Avraham 417:3 keeps it on Friday. An option
-  is being added.
+  Thursday only for those who say Selichos; Magen Avraham 417:3 keeps it on Friday. **Fixed:**
+  option `yomKippurKatanOnFriday`, citations corrected.
 - **Imprecise: the parsha schedule (SA OC 428:4).** The comment omits the Shulchan Aruch's own
-  exception, Acharei Mos before Pesach in certain leap years. The code already handles it.
+  exception, Acharei Mos before Pesach in certain leap years. The code already handles it. **Fixed:** the comment.
 - **Imprecise: the Omer from 16 Nisan.** The verse says "the day after the sabbath"; the date
   is the halacha. **Fixed:** the comment now cites Shulchan Aruch OC 489:1.
 - **Not read:** the Daf Yomi page change for Shekalim from the eighth cycle, a historical fact.
@@ -45,4 +45,5 @@ Found by the same audit; each needs a source or an option:
   the modern Israeli days; who says "morid hatal"; the one-day Yom Tov boundary in
   `isInIsrael`; Machar Chodesh displaced by the four parshiyos or Chanukah; no Shabbos Mevorchim
   before Tishrei (could cite MB 417:1).
-- The Yom HaShoah Friday rule is applied from 1951; the law that set it dates from 1959.
+- The Yom HaShoah Friday rule was applied from 1951; the law that set it dates from 1959.
+  **Fixed:** applied from 1959 (Q-05 has a dated note).

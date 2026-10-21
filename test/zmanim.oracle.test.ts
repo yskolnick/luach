@@ -98,9 +98,11 @@ export async function compareCity(city: (typeof TEST_CITIES)[number], step = STE
   const kz = new KZ.ComplexZmanimCalendar(geo);
   const stats = new Map<string, OracleStats>();
   for (const [id] of PAIRS) stats.set(id, { city: city.name, zman: id, compared: 0, maxSeconds: 0, over60: 0, nullMismatch: 0, dayShifted: 0, unreachable: 0, grazing: [] });
-  for (let d = civilToDays(2025, 1, 1); d < civilToDays(2029, 1, 1); d += step) {
-    // Yield now and then so the test worker can talk to the runner during long runs.
-    if (d % 90 === 0) await new Promise((r) => setTimeout(r, 0));
+  const start = civilToDays(2025, 1, 1);
+  for (let d = start; d < civilToDays(2029, 1, 1); d += step) {
+    // Yield about every 90 days so the test worker can talk to the runner during long runs.
+    // (Counted from `start`: `d % 90` alone may never be 0 for a given start and step.)
+    if ((d - start) % 90 < step) await new Promise((r) => setTimeout(r, 0));
     const date = daysToCivil(d);
     const ours = new ZmanimCalendar(city, date, { rounding: false });
     // kosher-zmanim issue #37 moves some date-line cities a day ahead; ask it for the

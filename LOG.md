@@ -6,17 +6,30 @@ plans in [ROADMAP.md](ROADMAP.md) and user-facing changes in [CHANGELOG.md](CHAN
 
 ## Open
 
-- **First release (0.1.0).** Ready; Yosef publishes it from his own npm account
-  ([RELEASING.md](RELEASING.md)).
-- **Q-01** Licence: Apache-2.0 with NOTICE (current) or MIT.
-- **Q-02** How credit should read (current: "Built on Luach by Yosef Skolnick").
-- **Q-04** Anniversary defaults for Adar and the 30th of Cheshvan/Kislev.
-- **Q-05** Modern Israeli days in the years before their amendments.
-- **Q-06** A citation in the original project brief that was only partly accurate.
-- **P-05** Move the learning cycles that need a publisher's day-by-day table to after 1.0.
-- **P-08** Freeze the shared tables, so one caller's change cannot alter another's results.
+- **First release (0.1.0).** Yosef publishes it from his own npm account
+  ([RELEASING.md](RELEASING.md)), after the API clean-up below.
+- **Q-01** Licence: Apache-2.0 with NOTICE (current) or MIT. Yosef is not sure yet.
+- **Q-04** Anniversary defaults for Adar and the 30th of Cheshvan/Kislev: left open.
+- **API clean-up (D-12), in progress:** infer Israel from the place (D-10); stop exporting
+  internal helpers; shrink the cost of a single zman; source or give options for the rules
+  the code audit found without a source.
 - Private vulnerability reporting to be turned on in the repository settings
   ([SECURITY.md](SECURITY.md) points there).
+
+## 2026-10-21 (decisions)
+
+Yosef answered the open questions:
+- **D-06** P-05 deferred: the table-only learning cycles wait until after 1.0.
+- **D-07** Q-02: the credit line stays "Built on Luach by Yosef Skolnick".
+- **D-08** Q-05: modern Israeli days follow each law from its year, as built.
+- **D-09** Q-06 closed, and a rule: "We want accurate and source based".
+- **D-10** When a caller gives a place but not Israel or the diaspora, Luach decides from the
+  place.
+- **D-11** P-08: the shared tables are frozen (done; a breaking change, in the CHANGELOG).
+- **D-12** Before 1.0: a smaller bundle for one zman, no internal helpers in the public API,
+  and a source or an option for every rule that lacks one.
+
+Q-01 (licence) and Q-04 (anniversary defaults) stay open.
 
 ## 2026-10-21 (second session)
 

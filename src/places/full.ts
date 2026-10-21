@@ -6,6 +6,7 @@
  * @module luach/places-full
  */
 
+import { deepFreeze } from '../util/freeze.js';
 import { FULL_CITY_DATA } from './full-data.js';
 import { CITY_ROWS } from './cities-data.js';
 import { isInIsrael, LOCAL_CANDLE_LIGHTING, type Place } from './places.js';
@@ -41,7 +42,7 @@ export function fullPlaces(): readonly Place[] {
       ...(candles ? { candleLighting: candles } : {}),
     };
   });
-  return parsed;
+  return deepFreeze(parsed);
 }
 
 export { searchPlaces, isInIsrael, foldName, nameSkeleton, nearestPlace, distanceKm, type Place } from './places.js';

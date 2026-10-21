@@ -19,6 +19,12 @@
  *    Sephardim and Chabad when Sunday is also Rosh Chodesh), then Machar Chodesh.
  * 8. Otherwise the parsha's own; for joined parshiyos the second one's, except Acharei
  *    Mos–Kedoshim, where Ashkenazim and Chabad read Acharei Mos's (Rema OC 428:8).
+ *    Ashkenazim read Kedoshim's "Hatishpot" (Ezekiel 22) only because Acharei Mos's "Halo
+ *    kivnei kushiyim" (Amos 9) was already read; so when Acharei Mos fell on Machar Chodesh,
+ *    Kedoshim reads Amos 9 (MB 428:26, citing R. Akiva Eiger: "וה"ה אם שבת פ' אחרי היה
+ *    ער"ח ומפטירין מחר חודש דמפטירין בשבת פרשת קדושים הלוא כבני כושיים"). The MB names
+ *    Machar Chodesh; Luach applies its reason to any special haftara that displaced Acharei
+ *    Mos's, such as Shabbos HaGadol (*as built*).
  *
  * @packageDocumentation
  */
@@ -146,7 +152,25 @@ export function haftaraFor(date: HebrewDate, options: HaftaraOptions = {}): Haft
   const reading = parshaFor(date, { israel });
   if (!reading.parsha) return null;
   const key = reading.parsha.join('-');
+  if (minhag === 'ashkenaz' && key === 'kedoshim' && ownHaftaraDisplaced(date, 'acharei-mos', options)) {
+    return make('acharei-mos', PARSHA_HAFTAROS['acharei-mos'], minhag);
+  }
   return make(key, PARSHA_HAFTAROS[key], minhag);
+}
+
+/**
+ * Whether the parsha read before `date` (skipping Shabbosos of Yom Tov) was `parsha`, read
+ * alone, and its own haftara gave way to a special one (Machar Chodesh, Shabbos HaGadol,
+ * Rosh Chodesh).
+ */
+function ownHaftaraDisplaced(date: HebrewDate, parsha: string, options: HaftaraOptions): boolean {
+  const israel = options.israel ?? false;
+  for (let d = date.addDays(-7), n = 0; n < 3; d = d.addDays(-7), n++) {
+    const r = parshaFor(d, { israel });
+    if (!r.parsha) continue;
+    return r.parsha.join('-') === parsha && haftaraFor(d, options)?.key !== parsha;
+  }
+  return false;
 }
 
 /** The haftara at Mincha of a fast day (Ashkenaz and Chabad on all public fasts; Tisha B'Av for all who read it). */

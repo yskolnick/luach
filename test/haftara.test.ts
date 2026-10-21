@@ -28,6 +28,20 @@ describe('haftara', () => {
     expect(fastMinchaHaftara(new HebrewDate(5786, Month.NISAN, 14))).toBeNull();
     expect(fastMinchaHaftara(new HebrewDate(5785, Month.NISAN, 12))).toBeNull(); // moved to Thursday
   });
+  it('Kedoshim reads Acharei Mos\'s haftara when Acharei Mos\'s was displaced (MB 428:26)', () => {
+    // 5700: Acharei Mos is Shabbos HaGadol (12 Nisan), Kedoshim is 26 Nisan.
+    const k5700 = haftaraFor(new HebrewDate(5700, Month.NISAN, 26))!;
+    expect(k5700.reference).toBe('Amos 9:7-15');
+    expect(k5700.key).toBe('acharei-mos');
+    // 5782: Acharei Mos on 29 Nisan reads Machar Chodesh (the case MB 428:26 names).
+    expect(haftaraFor(new HebrewDate(5782, Month.NISAN, 29))?.key).toBe('machar-chodesh');
+    expect(haftaraFor(new HebrewDate(5782, Month.IYAR, 6))?.reference).toBe('Amos 9:7-15');
+    // 5784: Acharei Mos read its own haftara, so Kedoshim reads Ezekiel 22.
+    expect(haftaraFor(new HebrewDate(5784, Month.NISAN, 26))?.reference).toBe('Amos 9:7-15');
+    expect(haftaraFor(new HebrewDate(5784, Month.IYAR, 3))?.reference).toBe('Ezekiel 22:1-16');
+    // Only Ashkenaz: Sephardim read Ezekiel 22 on Acharei Mos and Ezekiel 20 on Kedoshim.
+    expect(haftaraFor(new HebrewDate(5700, Month.NISAN, 26), { minhag: 'sephardi' })?.reference).toBe('Ezekiel 20:2-20');
+  });
   it('Teimani gaps are null, not guessed', () => {
     const d = HebrewDate.fromGregorian(2026, 11, 7); // Chayei Sarah
     const t = haftaraFor(d, { minhag: 'teimani' })!;

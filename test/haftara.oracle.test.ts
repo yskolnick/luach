@@ -47,7 +47,7 @@ function norm(s: string | null | undefined): string | null {
  * docs/research/2026-10-21-haftaros.md and docs/accuracy.md. Keyed by Luach's haftara key.
  */
 const EXPLAINED: Record<string, string> = {
-  'ashkenaz kedoshim': 'Acharei Mos / Kedoshim: Luach follows the Rema, ArtScroll and the Ezras Torah luach (Kedoshim = Ezekiel 22:1-16); Hertz and hebcal swap them, and some end at 22:19',
+  'ashkenaz kedoshim': 'Kedoshim: Ezekiel 22 ends at 22:16 (Luach) or 22:19 (hebcal); both are in published lists',
   'ashkenaz shabbos-shuva': 'Shabbos Shuva: Ashkenazim add Joel 2:15-27 (Luach) or Micah 7:18-20 (hebcal); both are in use',
   'ashkenaz shavuos-2': 'Shavuos day 2: Habakkuk 2:20 or 3:1 as the opening verse; both are in use',
   'sephardi shabbos-rosh-chodesh-elul': 'Rosh Chodesh Elul on Shabbos Re\'eh: Sephardim keep Re\'eh\'s haftara (research note); hebcal reads Isaiah 66',
@@ -64,8 +64,13 @@ export function diffs(israel: boolean, minhag: 'ashkenaz' | 'sephardi', from: nu
     const l = getLeyningOnDate(new HDate(d.day, d.month, d.year), israel) as { haftara?: string; sephardic?: string; name?: { en: string } } | undefined;
     const theirs = norm(minhag === 'sephardi' ? l?.sephardic ?? l?.haftara : l?.haftara);
     const h = haftaraFor(d, { israel, minhag });
-    if (h && EXPLAINED[`${minhag} ${h.key}`]) continue;
     const ours = norm(h?.reference);
+    // Only the end verse of Kedoshim's Ezekiel 22 is a variant; which haftara is read is checked.
+    if (h?.key === 'kedoshim' && minhag === 'ashkenaz' && !(ours === 'ezekiel22:1-16' && theirs === 'ezekiel22:1-19')) {
+      if (ours !== theirs) out.push(`${d} ${l?.name?.en ?? ''}: ours ${h.key} ${ours} | hebcal ${theirs}`);
+      continue;
+    }
+    if (h && EXPLAINED[`${minhag} ${h.key}`]) continue;
     if (ours !== theirs) out.push(`${d} ${l?.name?.en ?? ''}: ours ${h?.key} ${ours} | hebcal ${theirs}`);
   }
   return out;

@@ -50,13 +50,18 @@ two). Explained differences — genuine variants between published lists, all do
 
 | Minhag | Haftara | Luach | hebcal | Why |
 |---|---|---|---|---|
-| Ashkenaz | Kedoshim | Ezekiel 22:1-16 | Amos 9:7-15 / Ezekiel 22:1-19 | Rema, ArtScroll, Ezras Torah luach vs Hertz and others |
+| Ashkenaz | Kedoshim | Ezekiel 22:1-16 | Ezekiel 22:1-19 | where the haftara ends; both are in published lists |
 | Ashkenaz | Shabbos Shuva | Hosea 14 + Joel 2:15-27 | Hosea 14 + Micah 7:18-20 | both customs exist |
 | Both | Shavuos day 2 | Habakkuk 2:20-3:19 | Habakkuk 3:1-19 | both customs exist |
 | Sephardi | Re'eh on Rosh Chodesh Elul, and Ki Seitzei after it | Re'eh's own; Ki Seitzei not doubled | Isaiah 66; doubled | Sephardi practice per the research note |
 | Sephardi | Shabbos Rosh Chodesh when Sunday is also Rosh Chodesh | adds Machar Chodesh's first and last verses | does not | SA OC 425:1 (Sephardim, Chabad) vs Rema |
 | Sephardi | Rosh Chodesh Av | no Isaiah 66 verses | adds them | Chabad adds them; Sephardim do not |
 | Sephardi | Simchas Torah | Joshua 1:1-9 | Joshua 1:1-18 | Sephardi lists end at 1:9 |
+
+Acharei Mos and Kedoshim are not a variant between the two: both read Amos 9:7-15 on Acharei
+Mos and Ezekiel 22 on Kedoshim, and when Acharei Mos's haftara was displaced (by Machar
+Chodesh or Shabbos HaGadol), both read Amos 9:7-15 on Kedoshim (MB 428:26, citing R. Akiva
+Eiger). The test checks which haftara Kedoshim reads; only the end verse is explained.
 
 ## Zmanim
 

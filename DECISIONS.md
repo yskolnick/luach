@@ -170,6 +170,11 @@ See ADR 0005. **Default until decided:** as proposed.
   in one step by `npm run release:version`.
 - *As built:* the city-data files ship without source maps (they are generated tables), which
   halves the package.
+- *As built (2026-10-21), superseding the Kedoshim part of the haftara-defaults entry above:*
+  Ashkenazi Kedoshim is Ezekiel 22:1-16, except when Acharei Mos's own haftara (Amos 9:7-15)
+  was displaced: then Kedoshim reads Amos 9:7-15 (MB 428:26, citing R. Akiva Eiger, who names
+  Machar Chodesh; Luach applies the same reason to Shabbos HaGadol and Rosh Chodesh). This is
+  not a Rema-vs-Hertz swap: `@hebcal/leyning` agrees, apart from ending Ezekiel 22 at 22:19.
 - *As built (2026-10-21):* `pirkeiAvos` with `until: 'shavuos'` (Kaf HaChaim 292:23) reads
   chapters 1–6 before Shavuos; a seventh Shabbos (Israel, when Pesach begins on Shabbos)
   returns null, since the source does not say what is read then.

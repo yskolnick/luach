@@ -61,6 +61,15 @@ Anything the code does that nobody chose is marked **As built** (see the end of 
 - The Linux Hermes CLI (`hermes-engine-cli`) has no `Intl` and no `class` syntax. On phones, Hermes gets `Intl` from the platform.
 - Until decided: CI runs the whole non-time-zone suite on Hermes, and checks that time-zone code works there through a caller-supplied provider. Library code avoids `class`.
 
+### Q-12. Learning cycles that need a table or a decision
+- Research (docs/research/2026-10-21-learning-cycles.md) found that these are not rule-based, or not public:
+  Sefer HaMitzvos daily (Chabad's table, all rights reserved); Chofetz Chaim and Shemiras HaLashon yomi (a fixed
+  table by Hebrew date, published in a copyrighted book); Tanya Yomi (Hayom Yom table, Kehot 1943); Halacha Yomis
+  (no public start date); Daf HaYomi B'Halacha (Dirshu's page map not public); Amud Yomi (day mapping does not match
+  Dirshu's published anchor by one day); the Schottenstein Yerushalmi cycle (skip days and order not published).
+- Until decided: not shipped; marked blocked in the roadmap. Options for Yosef: get permission to use a table
+  (Chabad, the Chofetz Chaim Heritage Foundation, Dirshu, ArtScroll), or approve deferring them past 1.0.
+
 ## Proposals
 
 ### P-01. Licence Apache-2.0 with a NOTICE naming Yosef

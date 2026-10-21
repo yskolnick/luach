@@ -53,6 +53,16 @@ for (const loc of ['diaspora', 'israel']) {
 }
 p();
 
+p('## Learning cycles');
+p();
+for (const key of ['dafyomi', 'dafweekly', 'yerushalmi-vilna']) {
+  const r = read(`learning-${key}`);
+  if (r) p(`- ${r.cycle}: ${r.days.toLocaleString('en')} days vs ${r.oracle}: **${r.differences} differences**.`);
+}
+const lt = read('learning-text');
+if (lt) for (const [name, r] of Object.entries(lt)) if (name !== 'oracle') p(`- ${name}: ${r.days.toLocaleString('en')} days vs ${lt.oracle}: **${r.differences} differences** (after mapping spelling variants such as Berachos/Berachot).`);
+p();
+
 p('## Zmanim');
 p();
 const kz = read('zmanim-kosher-zmanim');

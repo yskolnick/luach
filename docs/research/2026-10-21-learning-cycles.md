@@ -1,7 +1,7 @@
 # Daily learning cycles: rules, anchors and structure (research note, 2026-10-21)
 
 Scope: the facts Luach needs to compute ten learning schedules, with machine data in
-`/tmp/claude-0/learning-cycles.json` (to be copied into the repo when the feature lands). Nothing here comes
+a companion `learning-cycles.json` (to be copied into the repo when the feature lands). Nothing here comes
 from hebcal (any package, including @hebcal/learning), KosherJava, kosher-zmanim or Calendrical
 Calculations. Web searches sometimes returned hebcal blog or package pages; they were not opened, and
 nothing below depends on them.

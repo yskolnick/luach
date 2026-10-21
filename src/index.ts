@@ -35,3 +35,4 @@ export { isInIsrael } from './places/israel.js';
 export { hallel } from './holidays/hallel.js';
 export * from './day/day.js';
 export * from './ical/ical.js';
+export * from './learning/learning.js';

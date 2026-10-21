@@ -59,16 +59,16 @@ All events carry flags: `yomTov` (melacha forbidden), `cholHamoed`, `fast` (`maj
 | PAR-02 | `null` on Shabbos that is Yom Tov / Chol Hamoed, with the special reading | SA OC 488, 490, 663 | oracle | done |
 | PAR-03 | Haftara by minhag (Ashkenaz, Sephardi, Chabad; Teimani only with a source), special haftaros; references only | SA OC 284, 425, 428; Mishna Berura | hand-entered from a printed Chumash (named per test) | planned |
 | PAR-04 | Pirkei Avos chapter on summer Shabbosim, with cycle customs | Rema OC 292:2 | hand-entered | planned |
-| LRN-01 | Daf Yomi Bavli (from 11 Sept 1923) | published cycle | oracle @hebcal/learning (BSD) | planned |
-| LRN-02 | Daf Yomi Yerushalmi, Vilna and Schottenstein (if a public table exists) | published cycle | oracle | planned |
-| LRN-03 | Mishna Yomis | published cycle | oracle | planned |
-| LRN-04 | Rambam 3 chapters, 1 chapter; Sefer HaMitzvos | published cycle (Chabad) | oracle | planned |
-| LRN-05 | Nach Yomi | published cycle | oracle | planned |
-| LRN-06 | Chofetz Chaim and Shemiras HaLashon yomi | published cycle | oracle / hand-entered | planned |
-| LRN-07 | Tanya Yomi | published cycle | oracle | planned |
-| LRN-08 | Halacha Yomis (Mishna Berura) | published cycle | hand-entered | planned |
-| LRN-09 | Daf HaShavua, Amud Yomi | published cycles | hand-entered | planned |
-| LRN-10 | Siyum dates for each cycle | derived | unit | planned |
+| LRN-01 | Daf Yomi Bavli (from 11 Sept 1923; Shekalim 13 dafim before cycle 8) | published cycle | oracle @hebcal/learning 1923–2100 | done |
+| LRN-02 | Daf Yomi Yerushalmi, Vilna (from 2 Feb 1980; skips Yom Kippur and Tisha B'Av). Schottenstein cycle: Q-12 | published cycle | oracle 1980–2060 | done (Vilna); Schottenstein blocked (Q-12) |
+| LRN-03 | Mishna Yomis (from the 2010 cycle; earlier start not public) | published cycle; Sefaria structure | oracle 2010–2040 | done |
+| LRN-04 | Rambam 3 chapters, 1 chapter (from 27 Nisan 5744); Sefer HaMitzvos: Q-12 | Chabad cycle; Sefaria structure | oracle 1984–2040 | done (3 and 1); Sefer HaMitzvos blocked (Q-12) |
+| LRN-05 | Nach Yomi (OU, from 1 Nov 2007) | published cycle | oracle 2007–2040 | done |
+| LRN-06 | Chofetz Chaim and Shemiras HaLashon yomi | published table (copyrighted) | — | blocked (Q-12) |
+| LRN-07 | Tanya Yomi | Hayom Yom table (copyrighted) | — | blocked (Q-12) |
+| LRN-08 | Halacha Yomis (Mishna Berura) | no public start/structure | — | blocked (Q-12) |
+| LRN-09 | Daf HaShavua (done); Amud Yomi (Dirshu, day mapping unresolved: Q-12) | published cycles | oracle 2005–2060 | done (Daf HaShavua); Amud Yomi blocked (Q-12) |
+| LRN-10 | Siyum dates for each cycle (`cycleStart` / `cycleEnd`) | derived | unit, published dates | done |
 
 ## M4. Zmanim
 

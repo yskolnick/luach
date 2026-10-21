@@ -18,6 +18,7 @@ import { type Holiday, holidayName, holidaysOn, type HolidayOptions } from '../h
 import { type Location, parshaOn, readingName } from '../parsha/parsha.js';
 import { toZoned } from '../time/zone.js';
 import { fastTimes } from '../zmanim/fasts.js';
+import { dafHaShavua, dafYomi, mishnaYomis, nachYomi, rambam1, rambam3, yerushalmiYomi } from '../learning/learning.js';
 import * as Z from '../zmanim/zmanim.js';
 
 /** The zmanim included by default, keyed by name. A default list, not a ruling: pass `zmanim` to choose. */
@@ -86,6 +87,8 @@ export interface DayInfo {
   candleLighting: DayZman | null;
   havdala: DayZman | null;
   fast: { begins: DayZman; ends: DayZman } | null;
+  /** Today's portion in each learning cycle (null before a cycle began, or on a day it skips). */
+  learning: Record<'dafYomi' | 'yerushalmi' | 'mishnaYomis' | 'rambam3' | 'rambam1' | 'nachYomi' | 'dafHaShavua', { text: string; textHebrew: string } | null>;
 }
 
 function iso(n: DayNumber): string {
@@ -102,6 +105,8 @@ function dayZman(z: Z.Zman, loc: Z.GeoLocation, opts: Z.ZmanOptions): DayZman {
   const j = z.toJSON();
   return { ...j, local };
 }
+
+const brief = (p: { text: string; textHebrew: string } | null) => (p ? { text: p.text, textHebrew: p.textHebrew } : null);
 
 /** Everything about a civil date at a place. */
 export function getDay(date: Z.DateInput, options: DayOptions): DayInfo {
@@ -171,5 +176,14 @@ export function getDay(date: Z.DateInput, options: DayOptions): DayInfo {
     candleLighting,
     havdala,
     fast: ft ? { begins: dayZman(ft.begins, loc, zo), ends: dayZman(ft.ends, loc, zo) } : null,
+    learning: {
+      dafYomi: brief(dafYomi(n)),
+      yerushalmi: brief(yerushalmiYomi(n)),
+      mishnaYomis: brief(mishnaYomis(n)),
+      rambam3: brief(rambam3(n)),
+      rambam1: brief(rambam1(n)),
+      nachYomi: brief(nachYomi(n)),
+      dafHaShavua: brief(dafHaShavua(n)),
+    },
   };
 }

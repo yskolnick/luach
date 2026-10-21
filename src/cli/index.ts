@@ -148,6 +148,9 @@ function printDay(n: L.DayNumber, a: Args, zmanimOnly = false): void {
     out(`Parsha: ${day.parsha.name}${day.parsha.shabbos !== day.gregorian ? ` (Shabbos ${day.parsha.shabbos})` : ''}`);
     if (day.omer) out(`Omer: ${day.omer.textEnglish} ${day.omer.sefirah}`);
     if (day.molad) out(day.molad);
+    const l = day.learning;
+    out(`Daf Yomi: ${l.dafYomi?.text ?? '—'} · Yerushalmi: ${l.yerushalmi?.text.replace('Yerushalmi ', '') ?? '—'} · Mishna Yomis: ${l.mishnaYomis?.text ?? '—'}`);
+    out(`Rambam: ${l.rambam3?.text ?? '—'} · Nach Yomi: ${l.nachYomi?.text ?? '—'}`);
   }
   out('');
   out('Zmanim — each line names its opinion. Ask your rav.');

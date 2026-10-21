@@ -1,0 +1,22 @@
+/** Test cities: hemisphere, DST, date line and high latitude. Coordinates are public facts. */
+export const TEST_CITIES = [
+  { name: 'Jerusalem', latitude: 31.778, longitude: 35.2354, timeZone: 'Asia/Jerusalem' },
+  { name: 'Bnei Brak', latitude: 32.0807, longitude: 34.8338, timeZone: 'Asia/Jerusalem' },
+  { name: 'Brooklyn', latitude: 40.6782, longitude: -73.9442, timeZone: 'America/New_York' },
+  { name: 'Lakewood', latitude: 40.0821, longitude: -74.2097, timeZone: 'America/New_York' },
+  { name: 'Los Angeles', latitude: 34.0522, longitude: -118.2437, timeZone: 'America/Los_Angeles' },
+  { name: 'Toronto', latitude: 43.6532, longitude: -79.3832, timeZone: 'America/Toronto' },
+  { name: 'Mexico City', latitude: 19.4326, longitude: -99.1332, timeZone: 'America/Mexico_City' },
+  { name: 'London', latitude: 51.5074, longitude: -0.1278, timeZone: 'Europe/London' },
+  { name: 'Manchester', latitude: 53.4808, longitude: -2.2426, timeZone: 'Europe/London' },
+  { name: 'Antwerp', latitude: 51.2194, longitude: 4.4025, timeZone: 'Europe/Brussels' },
+  { name: 'Paris', latitude: 48.8566, longitude: 2.3522, timeZone: 'Europe/Paris' },
+  { name: 'Johannesburg', latitude: -26.2041, longitude: 28.0473, timeZone: 'Africa/Johannesburg' },
+  { name: 'Melbourne', latitude: -37.8136, longitude: 144.9631, timeZone: 'Australia/Melbourne' },
+  { name: 'Sydney', latitude: -33.8688, longitude: 151.2093, timeZone: 'Australia/Sydney' },
+  { name: 'Auckland', latitude: -36.8485, longitude: 174.7633, timeZone: 'Pacific/Auckland' },
+  { name: 'Chatham', latitude: -43.9535, longitude: -176.5597, timeZone: 'Pacific/Chatham' },
+  { name: 'Anchorage', latitude: 61.2181, longitude: -149.9003, timeZone: 'America/Anchorage' },
+  { name: 'Reykjavik', latitude: 64.1466, longitude: -21.9426, timeZone: 'Atlantic/Reykjavik' },
+  { name: 'Tromsø', latitude: 69.6492, longitude: 18.9553, timeZone: 'Europe/Oslo' },
+] as const;

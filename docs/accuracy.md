@@ -29,7 +29,28 @@ Identical to `@hebcal/core` on every Shabbos 5660–6000, Israel and diaspora.
 
 ## Learning
 
-Daf Yomi (Bavli): identical to `@hebcal/learning` on every day 1923-09-11 to 2240-12-31.
+- Daf Yomi (Bavli): identical to `@hebcal/learning` on every day 1923-09-11 to 2240-12-31.
+- Yerushalmi Yomi (Vilna) 1980–2060, Amud HaYomi 2023–2037, Daf HaShavua 2005–2060, Mishna
+  Yomis 1990–2060, Rambam one and three chapters 1985–2060 (chapter days), Nach Yomi
+  2007–2060, Sefer HaMitzvos day numbers 1985–2060: identical to `@hebcal/learning` every
+  day. Intro-day labels for the Rambam differ in wording only.
+
+## Haftara
+
+Every Shabbos 5660–6000, Ashkenaz and Sephardi, Israel and diaspora, against
+`@hebcal/leyning`, ignoring notation (a repeated last verse; contiguous ranges written as
+two). Explained differences — genuine variants between published lists, all documented in
+`docs/research/2026-10-21-haftaros.md`:
+
+| Minhag | Haftara | Luach | hebcal | Why |
+|---|---|---|---|---|
+| Ashkenaz | Kedoshim | Ezekiel 22:1-16 | Amos 9:7-15 / Ezekiel 22:1-19 | Rema, ArtScroll, Ezras Torah luach vs Hertz and others |
+| Ashkenaz | Shabbos Shuva | Hosea 14 + Joel 2:15-27 | Hosea 14 + Micah 7:18-20 | both customs exist |
+| Both | Shavuos day 2 | Habakkuk 2:20-3:19 | Habakkuk 3:1-19 | both customs exist |
+| Sephardi | Re'eh on Rosh Chodesh Elul, and Ki Seitzei after it | Re'eh's own; Ki Seitzei not doubled | Isaiah 66; doubled | Sephardi practice per the research note |
+| Sephardi | Shabbos Rosh Chodesh when Sunday is also Rosh Chodesh | adds Machar Chodesh's first and last verses | does not | SA OC 425:1 (Sephardim, Chabad) vs Rema |
+| Sephardi | Rosh Chodesh Av | no Isaiah 66 verses | adds them | Chabad adds them; Sephardim do not |
+| Sephardi | Simchas Torah | Joshua 1:1-9 | Joshua 1:1-18 | Sephardi lists end at 1:9 |
 
 ## Zmanim
 

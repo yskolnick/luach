@@ -35,3 +35,5 @@ export * from './zmanim/solar';
 export * from './zmanim/usno';
 export * from './zmanim/calendar';
 export * from './zmanim/day';
+export * from './learning/cycles';
+export * from './parsha/haftara';

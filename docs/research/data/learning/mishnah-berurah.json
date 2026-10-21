@@ -1,0 +1,57 @@
+{
+  "cycle": "Mishnah Berurah, standard pagination by chelek (volume), as used by Dirshu Daf HaYomi B'Halacha and Mifal Shonei Halachos",
+  "status": "PARTIAL - the last page of chelek 6 is not established; page-to-siman mapping is not included (needs the edition)",
+  "units": [
+    {
+      "chelek": 1,
+      "he": "חלק א",
+      "firstAmud": "2a",
+      "lastAmud": "151b",
+      "simanim": "1-127"
+    },
+    {
+      "chelek": 2,
+      "he": "חלק ב",
+      "firstAmud": "2a",
+      "lastAmud": "154b",
+      "simanim": "128-241"
+    },
+    {
+      "chelek": 3,
+      "he": "חלק ג",
+      "firstAmud": "2a",
+      "lastAmud": "195b",
+      "simanim": "242-344",
+      "note": "Dirshu bechina 46 ends at siman 345 'siyum chelek 3'"
+    },
+    {
+      "chelek": 4,
+      "he": "חלק ד",
+      "firstAmud": "196a",
+      "lastAmud": "289b",
+      "simanim": "345-428",
+      "note": "Paginated continuously from chelek 3"
+    },
+    {
+      "chelek": 5,
+      "he": "חלק ה",
+      "firstAmud": "2a",
+      "lastAmud": "153a",
+      "simanim": "429-529"
+    },
+    {
+      "chelek": 6,
+      "he": "חלק ו",
+      "firstAmud": "2a",
+      "lastAmud": null,
+      "simanim": "530-697"
+    }
+  ],
+  "simanimNote": "Siman ranges per chelek are the commonly printed division, written from general knowledge and NOT checked against a printed edition, apart from the chelek 3/4 boundary (Dirshu bechina 46: 'until siman 345, siyum chelek 3') and siman 446 falling in chelek 5 (Dirshu 5787 calendar). Verify before use.",
+  "sources": [
+    "https://dafyomi.co.il/calendars/yomi/ymi-indx5786.htm",
+    "https://dafhalacha.com/about-dhb/",
+    "https://dafhalacha.com/wp-content/uploads/2026/09/Full-Size-Calendar-5787.pdf"
+  ],
+  "research": "docs/research/2026-10-21-learning-cycles.md"
+}

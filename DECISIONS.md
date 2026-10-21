@@ -22,7 +22,8 @@ date-picker widget; Luach is a calculation library with no UI (see README).
 
 ### Q-00. Unmerged branches
 Branches with work not yet on `main`:
-- `m2-holidays`: M2 holidays and special days (in progress).
+- `m3-parsha`: M3 part 1 (PR #3).
+- `m4-zmanim`: M4 zmanim (PR #4, stacked on #3).
 
 ### Q-01. Licence: Apache-2.0 with NOTICE, or MIT
 See P-01. **Until decided:** Apache-2.0 with a `NOTICE` file.
@@ -77,6 +78,14 @@ and the Rambam. ADR 0004. **Default until decided:** as proposed.
 proleptic Gregorian avoids a silent calendar switch in 1582. ADR 0004.
 **Default until decided:** as proposed.
 
+### P-05. Move table-only learning cycles after 1.0
+Chofetz Chaim / Shemiras HaLashon yomi, Tanya yomi, the mitzvos of each Sefer HaMitzvos
+day, the Schottenstein Yerushalmi cycle, and Dirshu's Daf HaYomi B'Halacha cannot be computed
+from structure: each needs a published day-by-day table (or, for Schottenstein, seven
+tractate lengths not yet found). **Why:** shipping a publisher's table needs its licence or
+permission; a guess would be wrong. **Default until decided:** listed as post-1.0 in the
+roadmap. Yosef may instead approve deferring them, or obtaining permission to ship tables.
+
 ## As built
 
 - *As built:* `gematriya()` writes an exact multiple of 1000 like its units digit (א׳ is 1
@@ -106,5 +115,12 @@ proleptic Gregorian avoids a silent calendar switch in 1582. ADR 0004.
 - *As built:* the Hebrew date at an instant changes at sunset by default (`hebrewDateAt`).
 - *As built:* the horizon dip for elevation uses the earth's mean radius, 6,371 km.
 - *As built:* high-latitude fallbacks (`nearestDay`, `halfNight`) are off by default.
+- *As built:* haftara defaults: Ashkenaz; Shabbos HaGadol's haftara always (Ashkenaz and
+  Sephardi), only when Erev Pesach is Shabbos (Chabad), never (Teimani); Ashkenazi Kedoshim
+  is Ezekiel 22:1-16 (Rema, ArtScroll, Ezras Torah luach) where some lists swap it with Amos.
+- *As built:* Daf HaShavua runs Sunday–Shabbos from 6 March 2005 (back-computed; low confidence).
+- *As built:* Mishna Yomis cycles before the 14th (2021) are counted back from it.
+- *As built:* Amud HaYomi returns null after Me'ilah 22a (2038) until Dirshu publishes how
+  Kinnim, Tamid and Middos are learned.
 - *As built:* the plain-English locale (`en`) uses "Tishri, Heshvan, Iyyar" spellings and
   "Saturday".

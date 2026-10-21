@@ -66,18 +66,20 @@ All events carry flags: `yomTov`, `melachaForbidden`, `cholHamoed`, `fast` (`maj
 
 | ID | Spec | Source | Test | Status |
 |---|---|---|---|---|
-| PAR-01 | Weekly parsha in Israel and diaspora, doubled parshiyos, split weeks; `null` on Yom Tov / Chol Hamoed Shabbos with the special reading | Tur/SA OC 428:4 | oracle: hebcal 50 years both | planned |
-| PAR-02 | Haftara by minhag (Ashkenaz, Sephardi, Chabad; Teimani where sourced), special haftaros; references only | Chumash haftara tables; SA OC 425, 428:8 | unit against published lists | planned |
-| PAR-03 | Pirkei Avos chapter on summer Shabbosim, with the cycle custom | SA OC 292:2 (Rema) | unit | planned |
-| LRN-01 | Daf Yomi Bavli (Vilna) with siyum dates | first cycle 11 Sep 1923 | oracle: hebcal daf yomi | planned |
-| LRN-02 | Daf Yomi Yerushalmi (Vilna and Schottenstein editions) | published cycle starts | oracle: @hebcal/learning if installable, else published | planned |
-| LRN-03 | Mishna Yomis | published start | published + oracle | planned |
-| LRN-04 | Rambam 3 chapters, 1 chapter, Sefer HaMitzvos | published cycle start (1984) | published + oracle | planned |
-| LRN-05 | Nach Yomi | published start | published | planned |
-| LRN-06 | Chofetz Chaim / Shemiras HaLashon yomi | published calendar | published | planned |
-| LRN-07 | Tanya Yomi | Chabad published | published | planned |
-| LRN-08 | Halacha Yomis (Mishna Berura) | published | published | planned |
-| LRN-09 | Daf HaShavua, Amud Yomi | published | published | planned |
+| PAR-01 | Weekly parsha in Israel and diaspora, doubled parshiyos, split weeks; `null` on Yom Tov / Chol Hamoed Shabbos with the special reading | Tur/SA OC 428:4 | oracle: hebcal 50 years both | done |
+| PAR-02 | Haftara by minhag (Ashkenaz, Sephardi, Chabad; Teimani where sourced), special haftaros and precedence; references only | SA OC 425, 428:8, 684, 685; research note | oracle: @hebcal/leyning every Shabbos 5660–6000 (explained variants) | done |
+| PAR-03 | Pirkei Avos chapter on summer Shabbosim, with the cycle custom | SA OC 292:2 (Rema) | unit | done |
+| LRN-01 | Daf Yomi Bavli (Vilna) with siyum dates | first cycle 11 Sep 1923 | oracle: hebcal daf yomi | done |
+| LRN-02 | Daf Yomi Yerushalmi, Vilna edition (pauses on Yom Kippur and Tisha B'Av) | cycle start 15 Shevat 5740 | oracle: @hebcal/learning 1980–2060 | done |
+| LRN-02b | Daf Yomi Yerushalmi, Schottenstein edition | needs seven tractate lengths (research note) | — | post-1.0 (P-05) |
+| LRN-03 | Mishna Yomis | published start | published + oracle | done |
+| LRN-04 | Rambam 3 chapters and 1 chapter; Sefer HaMitzvos day number | cycle start 27 Nisan 5744 | oracle: @hebcal/learning 1985–2060 | done |
+| LRN-04b | Sefer HaMitzvos: the mitzvos of each day | published Chabad table | — | post-1.0 (P-05) |
+| LRN-05 | Nach Yomi | published start | published | done |
+| LRN-06 | Chofetz Chaim / Shemiras HaLashon yomi | published date-keyed table | — | post-1.0 (P-05) |
+| LRN-07 | Tanya Yomi | published date-keyed table (Chabad) | — | post-1.0 (P-05) |
+| LRN-08 | Halacha Yomis (Mishna Berura: Dirshu Daf HaYomi B'Halacha) | Dirshu's luach has irregular days | — | post-1.0 (P-05) |
+| LRN-09 | Daf HaShavua, Amud HaYomi (Dirshu) | research note | oracle: @hebcal/learning | done |
 
 ## M4. Zmanim
 

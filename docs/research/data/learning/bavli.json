@@ -1,0 +1,310 @@
+{
+  "cycle": "Talmud Bavli, Vilna Shas pagination, as used by Daf Yomi, Amud HaYomi and Daf HaShavua",
+  "unitOrder": "Daf Yomi order (Shekalim between Pesachim and Yoma; Moed order Pesachim, Shekalim, Yoma, Sukkah, Beitzah, Rosh Hashanah, Taanit, Megillah, Moed Katan, Chagigah)",
+  "totalDafimDafYomi": 2711,
+  "fields": {
+    "firstDaf": "first daf learned (always 2)",
+    "lastDaf": "last daf learned in Daf Yomi",
+    "lastAmud": "last amud with text (Sefaria shape length); used for Amud HaYomi"
+  },
+  "sources": [
+    "https://www.sefaria.org/api/shape/Bavli",
+    "https://en.wikipedia.org/wiki/Daf_Yomi",
+    "https://amudhayomi.com/wp-content/uploads/2025/12/Dirshu-Amud-HaYomi-Luach-10-20-25-HR.pdf",
+    "https://dafhalacha.com/wp-content/uploads/2026/09/Full-Size-Calendar-5787.pdf"
+  ],
+  "licenceNote": "Structure (counts only) read from Sefaria's public API (api/shape, api/v2/raw/index). Counts and orderings are facts; no text was copied. Sefaria texts carry per-text licences; no text is used here.",
+  "research": "docs/research/2026-10-21-learning-cycles.md",
+  "units": [
+    {
+      "name": "Berakhot",
+      "he": "ברכות",
+      "firstDaf": 2,
+      "lastDaf": 64,
+      "lastAmud": "64a"
+    },
+    {
+      "name": "Shabbat",
+      "he": "שבת",
+      "firstDaf": 2,
+      "lastDaf": 157,
+      "lastAmud": "157b"
+    },
+    {
+      "name": "Eruvin",
+      "he": "עירובין",
+      "firstDaf": 2,
+      "lastDaf": 105,
+      "lastAmud": "105a"
+    },
+    {
+      "name": "Pesachim",
+      "he": "פסחים",
+      "firstDaf": 2,
+      "lastDaf": 121,
+      "lastAmud": "121b"
+    },
+    {
+      "name": "Shekalim",
+      "he": "שקלים",
+      "firstDaf": 2,
+      "lastDaf": 22,
+      "lastAmud": "22b",
+      "note": "Not in the Bavli; the Yerushalmi tractate printed in the Vilna Shas (22 dafim). Daf Yomi used a 13-daf edition until the 8th cycle (1975)."
+    },
+    {
+      "name": "Yoma",
+      "he": "יומא",
+      "firstDaf": 2,
+      "lastDaf": 88,
+      "lastAmud": "88a"
+    },
+    {
+      "name": "Sukkah",
+      "he": "סוכה",
+      "firstDaf": 2,
+      "lastDaf": 56,
+      "lastAmud": "56b"
+    },
+    {
+      "name": "Beitzah",
+      "he": "ביצה",
+      "firstDaf": 2,
+      "lastDaf": 40,
+      "lastAmud": "40b"
+    },
+    {
+      "name": "Rosh Hashanah",
+      "he": "ראש השנה",
+      "firstDaf": 2,
+      "lastDaf": 35,
+      "lastAmud": "35a"
+    },
+    {
+      "name": "Taanit",
+      "he": "תענית",
+      "firstDaf": 2,
+      "lastDaf": 31,
+      "lastAmud": "31a"
+    },
+    {
+      "name": "Megillah",
+      "he": "מגילה",
+      "firstDaf": 2,
+      "lastDaf": 32,
+      "lastAmud": "32a"
+    },
+    {
+      "name": "Moed Katan",
+      "he": "מועד קטן",
+      "firstDaf": 2,
+      "lastDaf": 29,
+      "lastAmud": "29a"
+    },
+    {
+      "name": "Chagigah",
+      "he": "חגיגה",
+      "firstDaf": 2,
+      "lastDaf": 27,
+      "lastAmud": "27a"
+    },
+    {
+      "name": "Yevamot",
+      "he": "יבמות",
+      "firstDaf": 2,
+      "lastDaf": 122,
+      "lastAmud": "122b"
+    },
+    {
+      "name": "Ketubot",
+      "he": "כתובות",
+      "firstDaf": 2,
+      "lastDaf": 112,
+      "lastAmud": "112b"
+    },
+    {
+      "name": "Nedarim",
+      "he": "נדרים",
+      "firstDaf": 2,
+      "lastDaf": 91,
+      "lastAmud": "91b"
+    },
+    {
+      "name": "Nazir",
+      "he": "נזיר",
+      "firstDaf": 2,
+      "lastDaf": 66,
+      "lastAmud": "66b"
+    },
+    {
+      "name": "Sotah",
+      "he": "סוטה",
+      "firstDaf": 2,
+      "lastDaf": 49,
+      "lastAmud": "49b"
+    },
+    {
+      "name": "Gittin",
+      "he": "גיטין",
+      "firstDaf": 2,
+      "lastDaf": 90,
+      "lastAmud": "90b"
+    },
+    {
+      "name": "Kiddushin",
+      "he": "קידושין",
+      "firstDaf": 2,
+      "lastDaf": 82,
+      "lastAmud": "82b"
+    },
+    {
+      "name": "Bava Kamma",
+      "he": "בבא קמא",
+      "firstDaf": 2,
+      "lastDaf": 119,
+      "lastAmud": "119b"
+    },
+    {
+      "name": "Bava Metzia",
+      "he": "בבא מציעא",
+      "firstDaf": 2,
+      "lastDaf": 119,
+      "lastAmud": "119a"
+    },
+    {
+      "name": "Bava Batra",
+      "he": "בבא בתרא",
+      "firstDaf": 2,
+      "lastDaf": 176,
+      "lastAmud": "176b"
+    },
+    {
+      "name": "Sanhedrin",
+      "he": "סנהדרין",
+      "firstDaf": 2,
+      "lastDaf": 113,
+      "lastAmud": "113b"
+    },
+    {
+      "name": "Makkot",
+      "he": "מכות",
+      "firstDaf": 2,
+      "lastDaf": 24,
+      "lastAmud": "24b"
+    },
+    {
+      "name": "Shevuot",
+      "he": "שבועות",
+      "firstDaf": 2,
+      "lastDaf": 49,
+      "lastAmud": "49b"
+    },
+    {
+      "name": "Avodah Zarah",
+      "he": "עבודה זרה",
+      "firstDaf": 2,
+      "lastDaf": 76,
+      "lastAmud": "76b"
+    },
+    {
+      "name": "Horayot",
+      "he": "הוריות",
+      "firstDaf": 2,
+      "lastDaf": 14,
+      "lastAmud": "14a"
+    },
+    {
+      "name": "Zevachim",
+      "he": "זבחים",
+      "firstDaf": 2,
+      "lastDaf": 120,
+      "lastAmud": "120b"
+    },
+    {
+      "name": "Menachot",
+      "he": "מנחות",
+      "firstDaf": 2,
+      "lastDaf": 110,
+      "lastAmud": "110a"
+    },
+    {
+      "name": "Chullin",
+      "he": "חולין",
+      "firstDaf": 2,
+      "lastDaf": 142,
+      "lastAmud": "142a"
+    },
+    {
+      "name": "Bekhorot",
+      "he": "בכורות",
+      "firstDaf": 2,
+      "lastDaf": 61,
+      "lastAmud": "61a"
+    },
+    {
+      "name": "Arakhin",
+      "he": "ערכין",
+      "firstDaf": 2,
+      "lastDaf": 34,
+      "lastAmud": "34a"
+    },
+    {
+      "name": "Temurah",
+      "he": "תמורה",
+      "firstDaf": 2,
+      "lastDaf": 34,
+      "lastAmud": "34a"
+    },
+    {
+      "name": "Keritot",
+      "he": "כריתות",
+      "firstDaf": 2,
+      "lastDaf": 28,
+      "lastAmud": "28b"
+    },
+    {
+      "name": "Meilah",
+      "he": "מעילה",
+      "firstDaf": 2,
+      "lastDaf": 37,
+      "lastAmud": "37b",
+      "note": "Daf Yomi treats Meilah 2-22 plus the Mishnah-only tractates Kinnim, Tamid and Middot (printed with Gemara/commentary on dafim 22-37) as one 36-day block.",
+      "parts": [
+        {
+          "name": "Meilah",
+          "he": "מעילה",
+          "firstDaf": 2,
+          "lastDaf": 22
+        },
+        {
+          "name": "Kinnim",
+          "he": "קינים",
+          "firstDaf": 23,
+          "lastDaf": 25,
+          "note": "Kinnim begins on 22a and ends on 25a; Dirshu's luach labels daf 25 as Tamid, Steinsaltz/Sefaria label it Kinnim 25"
+        },
+        {
+          "name": "Tamid",
+          "he": "תמיד",
+          "firstDaf": 26,
+          "lastDaf": 33,
+          "note": "Tamid begins on 25b; Dirshu labels 25-33 as Tamid"
+        },
+        {
+          "name": "Middot",
+          "he": "מדות",
+          "firstDaf": 34,
+          "lastDaf": 37
+        }
+      ],
+      "amudYomiLastAmudVerified": "22a (Meilah only; Amud HaYomi handling of Kinnim/Tamid/Middot not yet published)"
+    },
+    {
+      "name": "Niddah",
+      "he": "נדה",
+      "firstDaf": 2,
+      "lastDaf": 73,
+      "lastAmud": "73a"
+    }
+  ]
+}

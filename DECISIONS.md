@@ -158,6 +158,10 @@ See ADR 0005. **Default until decided:** as proposed.
   sunrise, Shema (MGA 72, Gra), Tefilla (Gra), chatzos, Mincha Gedola (later of two), Mincha
   Ketana and Plag (Gra), sunset, tzeis 8.5° and Rabbeinu Tam: a common set, not a ruling.
 - *As built:* the CLI prints Ashkenazi names by default (`--locale` changes it).
+- *As built:* the CLI's `--city` searches the built-in places, then (only when none matches by
+  name or prefix) the full table, loaded on demand; `--lat/--lon` need `--tz` (the computer's
+  own zone is never assumed); `--elevation <m>` turns on elevation-adjusted sunrise and sunset
+  (`useElevation`) and says so in the output.
 - *As built:* iCal events are all-day for holidays, parsha and learning, and zero-length at the
   instant for candle lighting, havdala and zmanim.
 - *As built:* Israeli commemorations (option `israeliCommemorations`) are listed from the

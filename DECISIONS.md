@@ -47,6 +47,14 @@ and Sunday → Monday from 1997; Yom HaAtzmaut Monday → Tuesday from 2004. Not
 uncertain 1950 date. The 7 October memorial day (24 Tishrei) is not built yet (HOL-16).
 **Until decided:** as described; these days are optional and off by default.
 
+### Q-06. The example citation in the brief
+The brief's example, "Magen Avraham, 72 minutes as 16.1°; Shulchan Aruch Harav 89:1", is
+only partly accurate (`docs/research/2026-10-21-zmanim-opinions.md`): the Magen Avraham
+(OC 58:1) says the day runs from alos, not 72 minutes or 16.1°; 72 minutes is 4 mil of
+18 minutes (Pesachim 94a; SA OC 459:2); 16.1° is a modern Jerusalem-equinox conversion;
+and Shulchan Aruch HaRav 89:1 gives no minutes (459:10 makes a mil 24 minutes). **Until
+decided:** Luach cites each part separately, as in `src/zmanim/opinions.ts`.
+
 ## Proposals
 
 ### P-01. Apache-2.0 with a NOTICE file
@@ -87,5 +95,16 @@ proleptic Gregorian avoids a silent calendar switch in 1582. ADR 0004.
   and from Rosh Chodesh Sivan through 12 Sivan; both are options.
 - *As built:* the Omer count text defaults to Nusach Ashkenaz wording; Sefard and Edot
   HaMizrach are options.
+- *As built:* zmanim default to sea-level sunrise and sunset (`useElevation: false`);
+  degree-based zmanim are always at sea level.
+- *As built:* rounding is on by default (earliest times up, deadlines down).
+- *As built:* candle lighting defaults to 18 minutes; havdala and second-night candles to 8.5°.
+- *As built:* Mincha Gedola (Gra) is 6.5 seasonal hours after sunrise; "30 minutes" is after
+  astronomical chatzos; chatzos is the solar transit.
+- *As built:* Plag HaMincha per the Levush is the Gra's calculation (Magen Avraham 233:3).
+- *As built:* fasts begin at alos 72 minutes (rounded down) and end at 7.083° by default.
+- *As built:* the Hebrew date at an instant changes at sunset by default (`hebrewDateAt`).
+- *As built:* the horizon dip for elevation uses the earth's mean radius, 6,371 km.
+- *As built:* high-latitude fallbacks (`nearestDay`, `halfNight`) are off by default.
 - *As built:* the plain-English locale (`en`) uses "Tishri, Heshvan, Iyyar" spellings and
   "Saturday".

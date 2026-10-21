@@ -17,3 +17,10 @@ All notable changes for users of the `luach` package. This project follows
   BeHaB, Yom Kippur Katan and modern Israeli days; names in all four locales (`holidayName`).
 - Omer day, count text (three nuschaos) and sefirah; v'sein tal umatar and mashiv haruach
   seasons; Birkas HaChama; Kiddush Levana times; Tachanun, Hallel and other tefillah changes.
+- Weekly parsha for Israel and the diaspora (`parshaFor`, `readingCycle`, `parshaName`),
+  Pirkei Avos chapters, Shabbos Shira, Shovavim, and Daf Yomi (`dafYomi`).
+- Zmanim (`ZmanimCalendar`): NOAA solar calculator with a second (USNO) algorithm, sea
+  level and elevation, and a named function for every opinion, each returning a `Zman`
+  with its opinion, source and rounding; `null` with a reason when the sun does not reach
+  an angle; optional high-latitude fallbacks; labels in Hebrew and English (`zmanLabel`).
+- `hebrewDateAt`, `fastTimes` and `isMelachaForbiddenAt` for zmanim-aware questions.

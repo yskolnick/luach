@@ -7,7 +7,7 @@
  */
 
 import { FULL_CITY_DATA } from './full-data.js';
-import { isInIsrael, type Place } from './places.js';
+import { isInIsrael, LOCAL_CANDLE_LIGHTING, type Place } from './places.js';
 
 let parsed: Place[] | null = null;
 
@@ -18,6 +18,7 @@ export function fullPlaces(): readonly Place[] {
     const [id, name, ascii, he, lat, lon, elev, tz, cc, , pop] = line.split('\t');
     const latitude = Number(lat);
     const longitude = Number(lon);
+    const candles = LOCAL_CANDLE_LIGHTING[Number(id)];
     return {
       id: `geonames:${id}`,
       name: name!,
@@ -30,6 +31,7 @@ export function fullPlaces(): readonly Place[] {
       aliases: ascii ? [ascii] : [],
       israel: isInIsrael(latitude, longitude),
       population: Number(pop) || 0,
+      ...(candles ? { candleLighting: candles } : {}),
     };
   });
   return parsed;

@@ -132,7 +132,12 @@ function printDay(date: CivilDate, flags: Record<string, string | true>): void {
     line('  Zmanim:');
     for (const z of info.zmanim) line(`    ${(z.local ?? '—').padEnd(6)} ${zmanLabel(z.id, locale)}`);
   }
-  if (info.candleLighting) line(`  Candle lighting: ${info.candleLighting.local}`);
+  if (info.candleLighting) {
+    const c = info.candleLighting;
+    const custom = c.id === 'candle-lighting' && loc?.candleLighting;
+    const note = custom ? `  (${c.opinion}; ${custom.source})` : c.id === 'candle-lighting' ? '  (18 minutes before sunset, the common default)' : '';
+    line(`  Candle lighting: ${c.local}${note}`);
+  }
   if (info.havdala) line(`  Havdala: ${info.havdala.local}`);
   if (info.fast) line(`  Fast: ${info.fast.begins.local} – ${info.fast.ends.local}`);
   line('  Ask your rav. Each time follows a named opinion; see --json for sources.');

@@ -39,7 +39,36 @@ export interface Place extends GeoLocation {
   readonly aliases: readonly string[];
   /** Population, where known (full dataset). */
   readonly population?: number;
+  /**
+   * The local candle-lighting custom, where Luach has a published source for it (see
+   * {@link LOCAL_CANDLE_LIGHTING}). Absent elsewhere: the caller's choice, or 18 minutes.
+   */
+  readonly candleLighting?: CandleLightingCustom;
 }
+
+/** A place's documented candle-lighting custom. */
+export interface CandleLightingCustom {
+  /** Minutes before sunset. */
+  readonly minutes: number;
+  /** Whose custom, e.g. "the custom of Jerusalem". */
+  readonly custom: string;
+  /** Where it is documented. */
+  readonly source: string;
+}
+
+const PENINEI_SHABBAT_3_2 = 'Peninei Halakha, Shabbat 3:2 (R. Eliezer Melamed; ph.yhb.org.il/en/01-03-02)';
+
+/**
+ * Candle-lighting customs that differ from the common 18 minutes, by GeoNames id, set only
+ * where a published source was read. They apply to the city itself, not its surroundings.
+ * Peninei Halakha, Shabbat 3:2: "In Jerusalem the custom is to light candles forty minutes
+ * before shki'a, in Haifa thirty minutes before, and in Tel Aviv and most other Israeli
+ * cities twenty minutes before."
+ */
+export const LOCAL_CANDLE_LIGHTING: Readonly<Record<number, CandleLightingCustom>> = {
+  281184: { minutes: 40, custom: 'the custom of Jerusalem', source: `${PENINEI_SHABBAT_3_2}; Peninei Halakha, Zemanim 13:5 n. 11` },
+  294801: { minutes: 30, custom: 'the custom of Haifa', source: PENINEI_SHABBAT_3_2 },
+};
 
 // ------------------------------------------------------------ Israel boundary
 
@@ -75,8 +104,9 @@ export function isInIsrael(latitude: number, longitude: number): boolean {
 // ------------------------------------------------------------ the built-in table
 
 function fromRow(r: CityRow): Place {
-  const [id, name, nameHe, latitude, longitude, elevation, timeZone, country, aliases] = r;
-  return { id, name, nameHe, latitude, longitude, elevation, timeZone, country, aliases, israel: isInIsrael(latitude, longitude) };
+  const [id, name, nameHe, latitude, longitude, elevation, timeZone, country, aliases, geonameId] = r;
+  const candles = LOCAL_CANDLE_LIGHTING[geonameId];
+  return { id, name, nameHe, latitude, longitude, elevation, timeZone, country, aliases, israel: isInIsrael(latitude, longitude), ...(candles ? { candleLighting: candles } : {}) };
 }
 
 let cities: Place[] | null = null;

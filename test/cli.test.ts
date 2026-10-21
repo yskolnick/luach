@@ -32,6 +32,12 @@ describe('cli', () => {
     expect(run(['ics', '2027-01-01', '2027-01-31']).out).toContain('BEGIN:VCALENDAR');
     expect(run(['cities', 'bene beraq']).out).toContain('bnei-brak');
   });
+  it("a city's candle-lighting custom, labelled with its source", () => {
+    const out = run(['date', '2026-10-23', '--city', 'Jerusalem']).out;
+    const line = out.split('\n').find((l) => l.includes('Candle lighting'))!;
+    expect(line).toMatch(/Candle lighting: 17:1\d/);
+    expect(line).toMatch(/40 minutes.*Jerusalem.*Peninei Halakha/);
+  });
   it('help and unknown commands', () => {
     expect(run(['--help']).code).toBe(0);
     expect(run([]).code).toBe(1);

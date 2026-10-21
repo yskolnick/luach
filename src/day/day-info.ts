@@ -28,8 +28,14 @@ import type { Zman } from '../zmanim/zman.js';
 /** `$id` of the JSON Schema for {@link DayInfo}. */
 export const DAY_INFO_SCHEMA_ID = 'https://github.com/yskolnick/luach/blob/main/docs/schema/day.schema.json';
 
-/** A place for {@link dayInfo}: a GeoLocation, optionally with a name and an Israel flag. */
-export type DayLocation = GeoLocation & { readonly israel?: boolean };
+/**
+ * A place for {@link dayInfo}: a GeoLocation, optionally with a name, an Israel flag and a
+ * documented local candle-lighting custom (as on a built-in `Place`).
+ */
+export type DayLocation = GeoLocation & {
+  readonly israel?: boolean;
+  readonly candleLighting?: { readonly minutes: number; readonly custom: string; readonly source: string };
+};
 
 /** Options for {@link dayInfo}. */
 export interface DayInfoOptions extends ZmanimOptions {
@@ -112,7 +118,13 @@ export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = 
     });
     const today = holy(h, hopts);
     const tomorrow = holy(h.next(), hopts);
-    if (tomorrow && !today) candleLighting = z.candleLighting().toJSON();
+    // The place's documented custom applies when the caller has not chosen the minutes.
+    const custom = options.candleLightingMinutes === undefined ? options.location.candleLighting : undefined;
+    if (tomorrow && !today) {
+      candleLighting = custom
+        ? { ...z.candleLighting(custom.minutes).toJSON(), opinion: `Candle lighting ${custom.minutes} minutes before sunset, ${custom.custom}`, source: `${custom.source}; Shulchan Aruch OC 261:2 (tosefes Shabbos)` }
+        : z.candleLighting().toJSON();
+    }
     else if (tomorrow && today) candleLighting = z.candleLightingSecondNight().toJSON();
     if (today && !tomorrow) havdala = z.havdala().toJSON();
     const ft = fastTimes(h, options.location, { ...options, ...hopts });

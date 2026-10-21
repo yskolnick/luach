@@ -127,6 +127,14 @@ See ADR 0005. **Default until decided:** as proposed.
   degree-based zmanim are always at sea level.
 - *As built:* rounding is on by default (earliest times up, deadlines down).
 - *As built:* candle lighting defaults to 18 minutes; havdala and second-night candles to 8.5°.
+- *As built:* a place may carry its documented candle-lighting custom, and the day view (and
+  so the CLI and iCal) uses it when the caller has not set `candleLightingMinutes`, labelled
+  with the custom and its source. Set only where a source was read: Jerusalem 40 and Haifa 30
+  (Peninei Halakha, Shabbat 3:2; Jerusalem also Zemanim 13:5 n. 11). Not set: Zichron Yaakov 30
+  (not verified: no source found beyond other software's settings); Petach Tikva 40 (one article
+  by R. Eliezer Melamed, "Adding Sanctity to the Sabbath", says so; his Peninei Halakha does not);
+  the Shomron 30 (same article; a region, not a city). Lu'ach Eretz Yisrael is reported to give
+  Jerusalem 25 (not verified).
 - *As built:* Mincha Gedola (Gra) is 6.5 seasonal hours after sunrise; "30 minutes" is after
   astronomical chatzos; chatzos is the solar transit.
 - *As built:* Plag HaMincha per the Levush is the Gra's calculation (Magen Avraham 233:3).

@@ -159,6 +159,12 @@ See ADR 0005. **Default until decided:** as proposed.
   and Nazareth (Nof HaGalil would be the Jewish town; not added).
 - *As built:* place search ranks exact, prefix, transliteration-skeleton, then substring
   matches, with larger places first on ties.
+- *As built:* (adds to the entry above) a transliteration match needs a skeleton of at least
+  four consonants, and a skeleton-prefix match must cover three quarters of the name, so
+  "Tzfat", "Boro Park" and "Emmanuel" no longer find Zefta, a São Paulo district or Manila.
+  The full table carries the built-in table's spellings for the same GeoNames city and every
+  non-historic Hebrew name GeoNames has. The CLI takes a loose full-table match only when no
+  built-in place matches at all.
 - *As built:* the day view's default zmanim are alos 72 min and 16.1°, misheyakir 11°,
   sunrise, Shema (MGA 72, Gra), Tefilla (Gra), chatzos, Mincha Gedola (later of two), Mincha
   Ketana and Plag (Gra), sunset, tzeis 8.5° and Rabbeinu Tam: a common set, not a ruling.

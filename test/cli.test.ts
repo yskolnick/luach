@@ -62,6 +62,10 @@ describe('cli', () => {
     // The full table is a dynamic import, so the CLI does not carry it.
     expect(readFileSync('src/cli/cli.ts', 'utf8')).not.toMatch(/from '\.\.\/places\/full/);
   });
+  it('--city prefers any built-in match to a loose full-table match', async () => {
+    expect((await runAsync(['zmanim', '2027-03-14', '--city', 'Emmanuel'])).out).toContain('Asia/Jerusalem');
+    expect((await runAsync(['zmanim', '2027-03-14', '--city', 'Kiryat Ata'])).out).toContain('Asia/Jerusalem');
+  });
   it('--lat/--lon need --tz', () => {
     expect(() => run(['zmanim', '2027-03-14', '--lat', '40.08', '--lon', '-74.21'])).toThrow(/--tz/);
     expect(() => run(['date', '2027-03-14', '--lat', '40.08', '--lon', '-74.21'])).toThrow(/--tz/);

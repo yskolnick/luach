@@ -112,8 +112,17 @@ function builtInCity(city: string): Place | undefined {
   return p && (p.id === city || strongMatch(p, city)) ? p : undefined;
 }
 
+/**
+ * A built-in name or prefix match; then a full-table name or prefix match; then any built-in
+ * match; then any full-table match. A loose (transliteration or substring) match in the full
+ * table never beats a built-in place.
+ */
 function findCity(city: string): Place | undefined {
-  return builtInCity(city) ?? (fullTable && searchPlaces(city, { places: fullTable })[0]) ?? searchPlaces(city)[0];
+  const strong = builtInCity(city);
+  if (strong) return strong;
+  const full = fullTable ? searchPlaces(city, { places: fullTable })[0] : undefined;
+  if (full && strongMatch(full, city)) return full;
+  return searchPlaces(city)[0] ?? full;
 }
 
 /** Metres from --elevation, `true` for bare --elevation, or undefined. */

@@ -144,7 +144,8 @@ export function foldName(s: string): string {
 
 /**
  * A rough consonant skeleton for matching transliterations: "Bnei Brak" and "Bene Beraq"
- * both become "bnbrk"; "Petach Tikvah" and "Petah Tiqwa" become "pthtkv".
+ * both become "bnbrk"; "Petach Tikvah" and "Petah Tiqwa" become "pthtkv". Doubled letters
+ * are merged before the vowels go, so "Kiryat Ata" (krtt) stays apart from "Qurayyat" (krt).
  */
 export function nameSkeleton(s: string): string {
   return foldName(s)
@@ -154,9 +155,12 @@ export function nameSkeleton(s: string): string {
     .replace(/ph/g, 'f')
     .replace(/tz|ts/g, 'z')
     .replace(/h$/, '')
-    .replace(/[aeiouy]/g, '')
-    .replace(/(.)\1+/g, '$1');
+    .replace(/(.)\1+/g, '$1')
+    .replace(/[aeiouy]/g, '');
 }
+
+/** Shortest skeleton that may match on its own: three consonants match too much ("Emmanuel" and "Manila" are both "mnl"). */
+const MIN_SKELETON = 4;
 
 /** Options for {@link searchPlaces}. */
 export interface SearchOptions {
@@ -169,7 +173,9 @@ export interface SearchOptions {
 /**
  * Finds places by name: exact matches first, then prefix matches, then transliteration
  * matches (see {@link nameSkeleton}), then substrings. Hebrew queries match Hebrew names.
- * Ties go to larger places.
+ * Ties go to larger places. A transliteration match needs a skeleton of at least four
+ * consonants, and a skeleton-prefix match must cover most of the name, so a short or loose
+ * resemblance finds nothing rather than the wrong city.
  */
 export function searchPlaces(query: string, options: SearchOptions = {}): Place[] {
   const q = foldName(query);
@@ -184,9 +190,12 @@ export function searchPlaces(query: string, options: SearchOptions = {}): Place[
       const f = foldName(n);
       if (f === q) score = Math.max(score, 100);
       else if (f.startsWith(q)) score = Math.max(score, 80);
-      else if (qs.length >= 3 && nameSkeleton(n) === qs) score = Math.max(score, 70);
+      else if (qs.length >= MIN_SKELETON && nameSkeleton(n) === qs) score = Math.max(score, 70);
       else if (q.length >= 3 && f.includes(q)) score = Math.max(score, 50);
-      else if (qs.length >= 4 && nameSkeleton(n).startsWith(qs)) score = Math.max(score, 40);
+      else if (qs.length >= MIN_SKELETON + 1) {
+        const ns = nameSkeleton(n);
+        if (ns.startsWith(qs) && qs.length >= 0.75 * ns.length) score = Math.max(score, 40);
+      }
     }
     if (score) scored.push({ p, score: score + Math.min(9, Math.log10((p.population ?? 0) + 1)) });
   }

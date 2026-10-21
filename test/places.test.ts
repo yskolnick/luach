@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { searchPlaces, getPlace, isInIsrael, builtInPlaces, nameSkeleton, nearestPlace, ZmanimCalendar } from '../src/index';
+import { searchPlaces, getPlace, isInIsrael, builtInPlaces, nameSkeleton, nearestPlace, ZmanimCalendar, type Place } from '../src/index';
 import { fullPlaces } from '../src/places/full';
 
 describe('isInIsrael', () => {
@@ -57,6 +57,26 @@ describe('search', () => {
     expect(all.length).toBeGreaterThan(30000);
     const r = searchPlaces('Manchester', { places: all, limit: 3 });
     expect(r[0]?.country).toBe('GB');
+  });
+  it('no confident wrong answers from transliteration matching', () => {
+    const all = fullPlaces();
+    const top = (q: string, places?: readonly Place[]) => searchPlaces(q, places ? { places } : {})[0];
+    // Built-in spellings carry over to the same city in the full table.
+    expect(top('Tzfat', all)?.id).toBe('geonames:293100');
+    expect(top('Boro Park', all)?.id).toBe('geonames:5109790');
+    expect(top('Boro Park')?.id).toBe('borough-park');
+    expect(top('Emmanuel')?.id).toBe('immanuel');
+    // Too short or too loose a consonant skeleton is no match at all.
+    expect(top('Emmanuel', all)?.country).not.toBe('PH');
+    expect(top('Tzfat', all)?.country).not.toBe('EG');
+    expect(top('Kiryat Ata', all)?.id).toBe('geonames:293845');
+  });
+  it('the full table keeps every Hebrew name GeoNames has', () => {
+    const all = fullPlaces();
+    expect(searchPlaces('קופנהגן', { places: all })[0]?.country).toBe('DK');
+    expect(searchPlaces('קופנהאגן', { places: all })[0]?.country).toBe('DK');
+    expect(searchPlaces('סיאול', { places: all })[0]?.country).toBe('KR');
+    expect(searchPlaces('סאול', { places: all })[0]?.country).toBe('KR');
   });
   it('nearest place', () => {
     expect(nearestPlace(40.09, -74.21)?.place.id).toBe('lakewood');

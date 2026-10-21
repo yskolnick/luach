@@ -54,6 +54,9 @@ All notable changes for users of the `luach` package. This project follows
 - CLI: `--city` also searches every city of 15,000+ people when the built-in table has no
   match; `--lat/--lon` need `--tz`; `--elevation <m>` (or `=<m>`) turns on
   elevation-adjusted sunrise and sunset.
+- Place search: short or loose transliteration resemblances no longer return a wrong city
+  ("Tzfat", "Boro Park", "Emmanuel"); the full table knows the built-in spellings and every
+  Hebrew name GeoNames has (e.g. both "סיאול" and "סאול").
 - `isInIsrael`: the outline is redrawn near the borders (Yotvata, Ramat Magshimim, Hamat
   Gader and Ghajar are inside; Egyptian Rafah is outside).
 - The city-data files ship without source maps; the package is about half the size.

@@ -38,6 +38,17 @@ birthdays, `'firstAnniversary'` for yahrzeits and `'nextMonth'` for birthdays; 3
 in a common year becomes 30 Shevat. **Until decided:** these defaults, documented as
 defaults, not rulings.
 
+*Note, 2026-10-21:* the birthday default for 30 Adar I observed in a common year changed
+from 30 Shevat to 1 Nisan (a bar mitzvah a month early was a wrong date, not a custom).
+Magen Avraham OC 55:10 and Mishna Berura 55:45: when the 30th does not exist, the age is not
+complete until the 1st of the next month ("עדיין לא מלאה לו שנה ... דבעי' י"ג שנים שלימים");
+MB 55:44: one born in Adar I counts from Adar, not Shevat. The same rule now applies to any
+birthday whose day is missing (30 Adar I under the Adar II option below). Yahrzeits keep
+30 Shevat. Also added: for a birthday of someone born in Adar I, observed in a leap year,
+`adarI: 'levush'` (Adar I; Levush OC 685 as cited by MA 55:10; MB 55:43, "the consensus of the
+later authorities, against the Magen Avraham") or `'magen-avraham'` (Adar II; MA 55:10,
+"נעשה ב"מ באדר שני"). **Until decided:** `'levush'`, the behaviour before the option existed.
+
 ### Q-05. Modern Israeli days before their amendments
 Rules are applied from the year they were adopted
 (`docs/research/2026-10-21-modern-israeli-days.md`): Yom HaShoah Friday → Thursday from 1951

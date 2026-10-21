@@ -37,6 +37,10 @@ anniversary({ year: 5786, month: Month.ADAR, day: 10 }, 5787, { kind: 'birthday'
 
 Adar in a leap year and the 30th of Cheshvan/Kislev have customs; both are options
 (`adarInLeapYear`, `missingThirtieth`), with sources in the function's documentation.
+A birthday for someone born in Adar I, in a leap year, is Adar I by default (the Levush;
+Mishna Berura 55:43) or Adar II with `adarI: 'magen-avraham'` (Magen Avraham 55:10). A
+birthday whose day is missing (30 Adar I in a common year) is the 1st of the next month,
+1 Nisan (Magen Avraham 55:10; Mishna Berura 55:45).
 
 ## Gematriya and names
 

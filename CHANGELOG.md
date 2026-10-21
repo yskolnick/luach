@@ -48,6 +48,9 @@ All notable changes for users of the `luach` package. This project follows
   week, and settings; Hebrew and English, light and dark.
 
 ### Changed
+- A birthday or bar mitzvah for someone born on 30 Adar I, in a common year, is 1 Nisan
+  (was 30 Shevat; Magen Avraham 55:10, Mishna Berura 55:45). New option `adarI` for one born
+  in Adar I whose birthday falls in a leap year (Levush, the default, or Magen Avraham).
 - The city-data files ship without source maps; the package is about half the size.
 - Hebrew zman labels carry a left-to-right mark (U+200E) after each degree sign, so the
   angle reads correctly in right-to-left text.

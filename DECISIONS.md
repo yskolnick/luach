@@ -184,6 +184,9 @@ See ADR 0005. **Default until decided:** as proposed.
   primary where there is no custom) and `roshChodeshElul` (default by minhag as before;
   `'consolation'` per the SA OC 425:1, `'roshChodesh'` per the Rema there, with Re'eh's
   haftara added on Ki Seitzei per MB 425:7).
+- *As built (2026-10-21):* in year 9999, `readingCycle(9999)` stops at the last Shabbos of
+  9999 (its schedule still counts the Shabbosos of Tishrei 10000), and `parshaFor` throws a
+  RangeError on the weekdays after that Shabbos, whose Shabbos is in year 10000.
 - *As built (2026-10-21):* `pirkeiAvos` with `until: 'shavuos'` (Kaf HaChaim 292:23) reads
   chapters 1–6 before Shavuos; a seventh Shabbos (Israel, when Pesach begins on Shabbos)
   returns null, since the source does not say what is read then.

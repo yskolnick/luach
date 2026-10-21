@@ -1,0 +1,94 @@
+{
+  "name": "luach",
+  "version": "0.0.0",
+  "description": "Hebrew calendar and zmanim: dates, holidays, parsha, learning cycles and halachic times, with every opinion named and sourced.",
+  "main": "./dist/index.cjs",
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run --exclude test/oracle/**",
+    "test:oracle": "vitest run test/oracle",
+    "test:hermes": "node scripts/hermes-test.mjs",
+    "check:licenses": "node scripts/check-licenses.mjs",
+    "check:size": "node scripts/check-size.mjs",
+    "check": "npm run typecheck && npm run lint && npm test && npm run build && npm run test:hermes && npm run check:licenses && npm run check:size"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yskolnick/luach.git"
+  },
+  "keywords": [
+    "hebrew",
+    "jewish",
+    "calendar",
+    "luach",
+    "zmanim",
+    "halacha",
+    "parsha",
+    "daf-yomi",
+    "holidays",
+    "shabbat"
+  ],
+  "author": "Yosef Skolnick",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/yskolnick/luach/issues"
+  },
+  "homepage": "https://github.com/yskolnick/luach#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@hebcal/core": "^6.14.6",
+    "@hebcal/learning": "^6.12.2",
+    "@types/node": "^26.6.5",
+    "astronomy-engine": "^2.1.19",
+    "eslint": "^9.39.5",
+    "fast-check": "^4.10.2",
+    "hermes-engine-cli": "^0.12.0",
+    "kosher-zmanim": "^0.9.0",
+    "tsup": "^9.0.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.72.0",
+    "vitest": "^3.2.7"
+  },
+  "type": "module",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./cities-full": {
+      "import": {
+        "types": "./dist/cities-full.d.ts",
+        "default": "./dist/cities-full.js"
+      },
+      "require": {
+        "types": "./dist/cities-full.d.cts",
+        "default": "./dist/cities-full.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "luach": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "NOTICE",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  }
+}

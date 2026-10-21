@@ -1,0 +1,16 @@
+Luach
+Copyright 2026 Yosef Skolnick
+
+Built on Luach by Yosef Skolnick.
+https://github.com/yskolnick/luach
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+If you redistribute Luach, or software that includes it, you must include this
+NOTICE text (Apache-2.0, section 4(d)).
+
+Third-party data included in this package:
+
+- City coordinates, elevations and time zones derived from GeoNames
+  (https://www.geonames.org), licensed under Creative Commons Attribution 4.0
+  (https://creativecommons.org/licenses/by/4.0/). Changes: selected cities,
+  rounded values, added Hebrew names and an Israel flag.

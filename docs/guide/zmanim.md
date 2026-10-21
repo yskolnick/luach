@@ -26,7 +26,10 @@ gives exact times.
 In London in June the sun never gets 16.1° below the horizon. Then `time` is `null` and
 `reason` is `"sun-always-above"`; zmanim that depend on it get `"depends-on-missing-zman"`.
 Luach never makes a time up. Optional fallbacks (`highLatitudeFallback: 'nearestDay' | 'halfNight'`)
-are off by default and marked in `fallback` when used.
+are off by default and marked in `fallback` when used. They apply only when the sun does not
+get low enough (`"sun-always-above"`, summer nights). In polar night, when the sun never rises
+high enough (`"sun-always-below"`), there is no dawn or nightfall to stand in for, so the time
+stays `null` with that reason even with a fallback on.
 
 ## Elevation
 

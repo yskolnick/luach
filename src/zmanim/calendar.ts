@@ -58,12 +58,14 @@ export interface ZmanimOptions {
   /** Minutes after sunset for Ateret Torah's tzeis. Default 40. */
   ateretTorahMinutes?: number;
   /**
-   * What to do when the sun does not reach an angle (high latitudes):
+   * What to do when the sun does not get low enough to reach an angle (high-latitude summer
+   * nights, reason `'sun-always-above'`):
    * - `'none'` (default): return `null` with the reason;
    * - `'nearestDay'`: use the same offset from solar noon as on the nearest day when the
    *   angle is reached;
    * - `'halfNight'`: use solar midnight (the sun's lowest point).
-   * Fallback times are marked in `Zman.fallback`.
+   * Fallback times are marked in `Zman.fallback`. When the sun never rises high enough
+   * (polar night, `'sun-always-below'`) no fallback applies and the time stays `null`.
    */
   highLatitudeFallback?: 'none' | 'nearestDay' | 'halfNight';
   /** Solar algorithm. Default `'noaa'`; `'usno'` is offered for cross-checking. */
@@ -130,7 +132,10 @@ export class ZmanimCalendar {
     const hit = this.cache.get(key);
     if (hit) return hit;
     let r: Raw & { fallback?: string } = this.event(90 + degrees, rising);
-    if ('reason' in r) {
+    // A fallback only stands in for a twilight that never gets dark enough (summer nights).
+    // When the sun never rises high enough (polar night) there is no dawn or nightfall to
+    // approximate, and any time would be invented: the null and its reason stay.
+    if ('reason' in r && r.reason === 'sun-always-above') {
       const mode = this.options.highLatitudeFallback;
       if (mode === 'halfNight') {
         r = { time: this.solarMidnight(rising), fallback: 'Solar midnight (the sun\'s lowest point), used because the sun does not reach this angle' } as Raw & { fallback: string };

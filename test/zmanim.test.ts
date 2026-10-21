@@ -71,6 +71,27 @@ describe('high latitude', () => {
     expect(near.time).not.toBeNull();
     expect(near.fallback).toMatch(/nearest day/);
   });
+  it('fallbacks never replace a time when the sun stays too low (polar night)', () => {
+    // Svalbard at the winter solstice: the sun stays below about 11.7° under the horizon, so it
+    // never rises to 11° or 8.5°. Solar midnight or another day's offset would be an invented
+    // misheyakir or tzeis. (It does pass 16.1°, so alos 16.1° is a real time.)
+    const svalbard = { latitude: 78.22, longitude: 15.65, timeZone: 'Arctic/Longyearbyen' };
+    for (const mode of ['halfNight', 'nearestDay'] as const) {
+      const z = new ZmanimCalendar(svalbard, { year: 2026, month: 12, day: 21 }, { highLatitudeFallback: mode });
+      for (const m of [z.misheyakir11(), z.misheyakir10Point2(), z.tzeis8Point5(), z.tzeis7Point083()]) {
+        expect(m.time, `${mode} ${m.id}`).toBeNull();
+        expect(m.fallback, `${mode} ${m.id}`).toBeUndefined();
+      }
+      expect(z.misheyakir11().reason).toBe('sun-always-below');
+      expect(z.tzeis8Point5().reason).toBe('sun-always-below');
+      expect(z.alos16Point1().time).not.toBeNull();
+      expect(z.alos16Point1().fallback).toBeUndefined();
+    }
+    // The same place at midsummer: the sun stays too high, so the fallback applies.
+    const summer = new ZmanimCalendar(svalbard, { year: 2027, month: 6, day: 21 }, { highLatitudeFallback: 'halfNight' }).misheyakir11();
+    expect(summer.time).not.toBeNull();
+    expect(summer.fallback).toMatch(/Solar midnight/);
+  });
 });
 
 describe('elevation', () => {

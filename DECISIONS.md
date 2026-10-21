@@ -172,3 +172,7 @@ See ADR 0005. **Default until decided:** as proposed.
   halves the package.
 - *As built:* security reports go through GitHub's private vulnerability reporting; the code
   of conduct is Luach's own, short text.
+- *As built (adds to "high-latitude fallbacks are off by default"):* when turned on,
+  `nearestDay` and `halfNight` replace a time only when the sun does not get low enough
+  (`sun-always-above`, summer nights). In polar night (`sun-always-below`) the time stays
+  `null` with its reason, since any time would be invented.

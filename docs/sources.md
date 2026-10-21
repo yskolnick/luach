@@ -218,28 +218,28 @@ the code. Zmanim are in the table above; verse references for haftaros are in
 | [`src/time/zone.ts:63`](https://github.com/yskolnick/luach/blob/main/src/time/zone.ts#L63) | Throws a RangeError if `zone` is not an IANA zone name this runtime knows. |
 | [`src/zmanim/calendar.ts:16`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L16) | The day is the civil date in the location's IANA time zone. The sun is followed from that day's local noon, so places near the date line (Chatham, Auckland, Sydney) get their own day's times. |
 | [`src/zmanim/calendar.ts:40`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L40) | IANA zone name (e.g. "Asia/Jerusalem") or a provider. |
-| [`src/zmanim/calendar.ts:295`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L295) | Seasonal hour of the Magen Avraham, 72 fixed minutes. |
-| [`src/zmanim/calendar.ts:297`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L297) | Seasonal hour of the Magen Avraham, 90 fixed minutes. |
-| [`src/zmanim/calendar.ts:299`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L299) | Seasonal hour of the Magen Avraham, 72 proportional minutes. |
-| [`src/zmanim/calendar.ts:301`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L301) | Seasonal hour of the Magen Avraham, 90 proportional minutes. |
-| [`src/zmanim/calendar.ts:303`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L303) | Seasonal hour of the Magen Avraham, 16.1°. |
-| [`src/zmanim/calendar.ts:314`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L314) | Latest Shema, Magen Avraham (72 fixed minutes). |
-| [`src/zmanim/calendar.ts:316`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L316) | Latest Shema, Magen Avraham (90 fixed minutes). |
-| [`src/zmanim/calendar.ts:318`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L318) | Latest Shema, Magen Avraham (72 proportional minutes). |
-| [`src/zmanim/calendar.ts:320`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L320) | Latest Shema, Magen Avraham (90 proportional minutes). |
-| [`src/zmanim/calendar.ts:322`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L322) | Latest Shema, Magen Avraham (16.1°). |
-| [`src/zmanim/calendar.ts:330`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L330) | Latest Shacharis, Magen Avraham (72 fixed minutes). |
-| [`src/zmanim/calendar.ts:332`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L332) | Latest Shacharis, Magen Avraham (90 fixed minutes). |
-| [`src/zmanim/calendar.ts:334`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L334) | Latest Shacharis, Magen Avraham (72 proportional minutes). |
-| [`src/zmanim/calendar.ts:336`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L336) | Latest Shacharis, Magen Avraham (90 proportional minutes). |
-| [`src/zmanim/calendar.ts:338`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L338) | Latest Shacharis, Magen Avraham (16.1°). |
-| [`src/zmanim/calendar.ts:357`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L357) | Mincha Gedola, Magen Avraham (72 fixed minutes): 6.5 hours into the MGA day. |
-| [`src/zmanim/calendar.ts:363`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L363) | Mincha Ketana, Magen Avraham (72 fixed minutes). |
-| [`src/zmanim/calendar.ts:369`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L369) | Plag HaMincha, Magen Avraham (72 fixed minutes). |
-| [`src/zmanim/calendar.ts:371`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L371) | Plag HaMincha, Magen Avraham (16.1°). |
-| [`src/zmanim/calendar.ts:376`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L376) | Plag HaMincha, Levush: the same calculation as the Gra (see the source note). |
-| [`src/zmanim/calendar.ts:436`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L436) | Latest time to eat chametz, Magen Avraham 72 (only on 14 Nisan). |
-| [`src/zmanim/calendar.ts:440`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L440) | Latest time to burn chametz, Magen Avraham 72 (only on 14 Nisan). |
+| [`src/zmanim/calendar.ts:300`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L300) | Seasonal hour of the Magen Avraham, 72 fixed minutes. |
+| [`src/zmanim/calendar.ts:302`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L302) | Seasonal hour of the Magen Avraham, 90 fixed minutes. |
+| [`src/zmanim/calendar.ts:304`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L304) | Seasonal hour of the Magen Avraham, 72 proportional minutes. |
+| [`src/zmanim/calendar.ts:306`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L306) | Seasonal hour of the Magen Avraham, 90 proportional minutes. |
+| [`src/zmanim/calendar.ts:308`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L308) | Seasonal hour of the Magen Avraham, 16.1°. |
+| [`src/zmanim/calendar.ts:319`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L319) | Latest Shema, Magen Avraham (72 fixed minutes). |
+| [`src/zmanim/calendar.ts:321`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L321) | Latest Shema, Magen Avraham (90 fixed minutes). |
+| [`src/zmanim/calendar.ts:323`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L323) | Latest Shema, Magen Avraham (72 proportional minutes). |
+| [`src/zmanim/calendar.ts:325`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L325) | Latest Shema, Magen Avraham (90 proportional minutes). |
+| [`src/zmanim/calendar.ts:327`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L327) | Latest Shema, Magen Avraham (16.1°). |
+| [`src/zmanim/calendar.ts:335`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L335) | Latest Shacharis, Magen Avraham (72 fixed minutes). |
+| [`src/zmanim/calendar.ts:337`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L337) | Latest Shacharis, Magen Avraham (90 fixed minutes). |
+| [`src/zmanim/calendar.ts:339`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L339) | Latest Shacharis, Magen Avraham (72 proportional minutes). |
+| [`src/zmanim/calendar.ts:341`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L341) | Latest Shacharis, Magen Avraham (90 proportional minutes). |
+| [`src/zmanim/calendar.ts:343`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L343) | Latest Shacharis, Magen Avraham (16.1°). |
+| [`src/zmanim/calendar.ts:362`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L362) | Mincha Gedola, Magen Avraham (72 fixed minutes): 6.5 hours into the MGA day. |
+| [`src/zmanim/calendar.ts:368`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L368) | Mincha Ketana, Magen Avraham (72 fixed minutes). |
+| [`src/zmanim/calendar.ts:374`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L374) | Plag HaMincha, Magen Avraham (72 fixed minutes). |
+| [`src/zmanim/calendar.ts:376`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L376) | Plag HaMincha, Magen Avraham (16.1°). |
+| [`src/zmanim/calendar.ts:381`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L381) | Plag HaMincha, Levush: the same calculation as the Gra (see the source note). |
+| [`src/zmanim/calendar.ts:441`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L441) | Latest time to eat chametz, Magen Avraham 72 (only on 14 Nisan). |
+| [`src/zmanim/calendar.ts:445`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L445) | Latest time to burn chametz, Magen Avraham 72 (only on 14 Nisan). |
 | [`src/zmanim/solar.ts:2`](https://github.com/yskolnick/luach/blob/main/src/zmanim/solar.ts#L2) | The position of the sun and the times it crosses a given altitude, after the NOAA Solar Calculator (NOAA Global Monitoring Laboratory; a US Government work in the public domain), which implements the low-precision solar theory in Jean Meeus, *Astronomical Algorithms*, chapters 25 and 28. Accuracy is about a minute for latitudes within ±72°. |
 | [`src/zmanim/usno.ts:16`](https://github.com/yskolnick/luach/blob/main/src/zmanim/usno.ts#L16) | Sun at `zenith` on the solar day nearest `transit` (an approximate local noon instant), rising or setting, by the USNO method. |
 

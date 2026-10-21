@@ -10,11 +10,12 @@ Nothing ships unless its licence allows redistribution with credit.
 | Month and weekday names | `src/locales/*.ts` | Common usage; written for Luach | Apache-2.0 (ours) | — |
 | Time-zone rules | not shipped; read at run time from the platform's `Intl` (IANA tz database) | IANA | Public domain | — |
 
+| Text structure for learning cycles (tractate lengths, mishnayos per chapter, Rambam chapters, Nach chapters) | `src/learning/data.ts`, `src/learning/bavli.ts` | Counts and order from Sefaria's public structure API, checked against the cycles' published calendars (dafyomi.co.il, Dirshu, OU, Chabad.org) | Facts (not copyrightable); no text copied | research note 2026-10-21-learning-cycles |
+| Haftara references by minhag | `src/parsha/haftaros-data.ts` | Wikipedia (EN/HE), AlHaTorah survey, Chabad.org dated pages, Sefaria calendar API (cross-check), Shulchan Aruch | Facts (verse references); no text | research note 2026-10-21-haftaros |
+
 Datasets planned (not yet shipped):
 
 | Data | Source | Licence | Notes |
 |---|---|---|---|
 | City table (coordinates, elevation, zone) | GeoNames | CC-BY 4.0 | credit in NOTICE when shipped |
 | Solar position formulas | NOAA Solar Calculator | US government work, public domain | method re-implemented |
-| Learning-cycle start dates and tractate lengths | published calendars of each cycle | facts (not copyrightable) | sources listed per cycle |
-| Haftara references | published Chumashim (references only, no text) | facts | sources listed per minhag |

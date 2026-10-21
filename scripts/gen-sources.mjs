@@ -93,6 +93,8 @@ function decisions() {
     if (s) section = s[1].trim();
     const d = line.match(/^###\s+([A-Z]+-\d+)\.\s+(.+)$/);
     if (d) out.push({ id: d[1], title: d[2].trim(), section });
+    const ab = line.match(/^- \*\*(AB-\d+)\*\*\s+\*As built[^*]*\*:?\s*(.+)$/);
+    if (ab) out.push({ id: ab[1], title: ab[2].trim().replace(/\s+\S*$/, ' …'), section });
   }
   return out;
 }
@@ -212,8 +214,10 @@ export function render() {
   o += 'Yosef Skolnick decides. A *Decided* entry quotes his words; a proposal (P) or question (Q)\n';
   o += 'carries a default that is in effect until he answers; *As built* marks choices nobody made\n';
   o += `explicitly. Full text: ${link('DECISIONS.md')}.\n\n`;
+  o += 'Why each one was made, its sources and how confident the reasoning is: [Why it works this\n';
+  o += 'way](./rationale) (one section per entry).\n\n';
   o += '| Id | Decision | Status |\n|---|---|---|\n';
-  for (const d of decisions()) o += `| ${d.id} | ${esc(d.title)} | ${esc(d.section)} |\n`;
+  for (const d of decisions()) o += `| [${d.id}](./rationale#${d.id.toLowerCase()}) | ${esc(d.title)} | ${esc(d.section)} |\n`;
   o += '\n';
   o += '### Architecture decision records\n\n';
   for (const f of readdirSync('docs/decisions').filter((n) => /^\d{4}-.*\.md$/.test(n)).sort()) {

@@ -13,6 +13,8 @@ export default defineConfig({
   themeConfig: {
     nav: [
       { text: 'Guide', link: '/guide/getting-started' },
+      { text: 'Zmanim sources', link: '/halacha/zmanim' },
+      { text: 'Why it works this way', link: '/rationale' },
       { text: 'Sources', link: '/sources' },
       { text: 'Accuracy', link: '/accuracy' },
       { text: 'API', link: '/api/' },
@@ -40,6 +42,7 @@ export default defineConfig({
           items: [
             { text: 'Notes', link: '/halacha/' },
             { text: 'Zmanim and sources', link: '/halacha/zmanim' },
+            { text: 'Why it works this way', link: '/rationale' },
           ],
         },
         {

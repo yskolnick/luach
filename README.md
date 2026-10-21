@@ -8,7 +8,7 @@ Node, browsers, Deno, Bun and React Native.
 > Every zman names the opinion it follows and its source. Defaults are conveniences, not
 > rulings.
 
-**Status:** in development. See [ROADMAP.md](ROADMAP.md) for what is built.
+**Status:** ready for a first release. See [ROADMAP.md](ROADMAP.md) for what is built and [LOG.md](LOG.md) for progress and open questions.
 
 ## Install
 

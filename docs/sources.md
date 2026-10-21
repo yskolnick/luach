@@ -158,9 +158,9 @@ the code. Zmanim are in the table above; verse references for haftaros are in
 
 | Where | Citation |
 |---|---|
-| [`src/calendar/anniversary.ts:8`](https://github.com/yskolnick/luach/blob/main/src/calendar/anniversary.ts#L8) | 1. **Adar of a common year, observed in a leap year.** For a birthday or bar mitzvah the Rema (Orach Chaim 55:10, citing Mahari Mintz) gives Adar II; that is the default for `kind: 'birthday'`. For a yahrzeit the Mechaber (OC 568:7) gives Adar II and the Rema there gives Adar I, adding that some observe both; the default for `kind: 'yahrzeit'` is Adar I. Set `adarInLeapYear` to choose. 2. **Adar I or Adar II of a leap year, observed in a common year:** Adar. For a yahrzeit, 30 Adar I (the first day of Rosh Chodesh Adar II) becomes 30 Shevat, the first day of Rosh Chodesh Adar in a common year (*as built*; see DECISIONS.md). For a birthday it becomes 1 Nisan: when the 30th does not exist, the year is not complete until the 1st of the next month (Magen Avraham OC 55:10; Mishna Berura 55:45, and 55:44: one born in Adar I counts from Adar, not Shevat). This applies to every birthday whose day is missing in the target month. 3. **Born in Adar I, birthday in a leap year** (`kind: 'birthday'` only). `adarI: 'levush'` keeps Adar I: the Levush (OC 685, as cited by the Magen Avraham), and Mishna Berura 55:43, "the consensus of the later authorities, against the Magen Avraham". `adarI: 'magen-avraham'` gives Adar II: Magen Avraham 55:10 argues that the twelfth year was a common year, so thirteen full years end only in Adar II ("נעשה ב"מ באדר שני"). Default: `'levush'` (*as built*; see DECISIONS.md Q-04). A yahrzeit in Adar I stays in Adar I. 4. **The 30th of Cheshvan or Kislev, in a year when that month has 29 days.** `'nextMonth'` moves it to the 1st of the following month (the second day of the same Rosh Chodesh); `'firstAnniversary'` keeps the 30th whenever it exists, and otherwise follows the first anniversary: if the month had only 29 days in the year after the event, the 29th; if it had 30, the 1st of the next month. Defaults: `'nextMonth'` for birthdays, `'firstAnniversary'` for yahrzeits (*as built*; see DECISIONS.md). |
-| [`src/calendar/anniversary.ts:49`](https://github.com/yskolnick/luach/blob/main/src/calendar/anniversary.ts#L49) | Birthdays only: born in Adar I, observed in a leap year. `'levush'` (default): Adar I (Levush OC 685; Mishna Berura 55:43). `'magen-avraham'`: Adar II (Magen Avraham OC 55:10). |
-| [`src/calendar/anniversary.ts:93`](https://github.com/yskolnick/luach/blob/main/src/calendar/anniversary.ts#L93) | A birthday whose 30th is missing (30 Adar I in Adar or Adar II): the age is not complete until the 1st of the next month (Magen Avraham OC 55:10; Mishna Berura 55:45). Adar is never the last month of the year, so the next day stays in `year`. |
+| [`src/calendar/anniversary.ts:8`](https://github.com/yskolnick/luach/blob/main/src/calendar/anniversary.ts#L8) | 1. **Adar of a common year, observed in a leap year.** For a birthday or bar mitzvah the Rema (Orach Chaim 55:10, citing Mahari Mintz) gives Adar II; that is the default for `kind: 'birthday'`. For a yahrzeit the Mechaber (OC 568:7) gives Adar II and the Rema there gives Adar I, adding that some observe both; the default for `kind: 'yahrzeit'` is Adar I. Set `adarInLeapYear` to choose. 2. **Adar I or Adar II of a leap year, observed in a common year:** Adar. For a yahrzeit, 30 Adar I (the first day of Rosh Chodesh Adar II) becomes 30 Shevat, the first day of Rosh Chodesh Adar in a common year (MB 568:42; Magen Avraham 568:20 gives the mirror case; *as built*; see DECISIONS.md). For a birthday it becomes 1 Nisan: when the 30th does not exist, the year is not complete until the 1st of the next month (Magen Avraham OC 55:10; Mishna Berura 55:45, and 55:44: one born in Adar I counts from Adar, not Shevat). This applies to every birthday whose day is missing in the target month. 3. **Born in Adar I, birthday in a leap year** (`kind: 'birthday'` only). `adarI: 'levush'` keeps Adar I: the Levush (OC 685, as cited by the Magen Avraham), and Mishna Berura 55:43, "the consensus of the later authorities, against the Magen Avraham". `adarI: 'magen-avraham'` gives Adar II: Magen Avraham 55:10 argues that the twelfth year was a common year, so thirteen full years end only in Adar II ("נעשה ב"מ באדר שני"). Default: `'levush'` (*as built*; see DECISIONS.md Q-04). A yahrzeit in Adar I stays in Adar I. 4. **The 30th of Cheshvan or Kislev, in a year when that month has 29 days.** `'nextMonth'` moves it to the 1st of the following month (the second day of the same Rosh Chodesh); `'firstAnniversary'` keeps the 30th whenever it exists, and otherwise follows the first anniversary: if the month had only 29 days in the year after the event, the 29th; if it had 30, the 1st of the next month (Magen Avraham 568:20, brought in MB 568:42). Defaults: `'nextMonth'` for birthdays, `'firstAnniversary'` for yahrzeits (*as built*; see DECISIONS.md). |
+| [`src/calendar/anniversary.ts:51`](https://github.com/yskolnick/luach/blob/main/src/calendar/anniversary.ts#L51) | Birthdays only: born in Adar I, observed in a leap year. `'levush'` (default): Adar I (Levush OC 685; Mishna Berura 55:43). `'magen-avraham'`: Adar II (Magen Avraham OC 55:10). |
+| [`src/calendar/anniversary.ts:95`](https://github.com/yskolnick/luach/blob/main/src/calendar/anniversary.ts#L95) | A birthday whose 30th is missing (30 Adar I in Adar or Adar II): the age is not complete until the 1st of the next month (Magen Avraham OC 55:10; Mishna Berura 55:45). Adar is never the last month of the year, so the next day stays in `year`. |
 | [`src/calendar/molad.ts:4`](https://github.com/yskolnick/luach/blob/main/src/calendar/molad.ts#L4) | Rambam, Hilchos Kiddush HaChodesh 6:2–8. Times are in the calendar's hours, which are counted from 6 pm of the evening before; the announced clock time is the same instant read on a 24-hour clock starting at midnight. Both are given. These are mean Jerusalem times (the calendar's reckoning), not local clock time. |
 | [`src/calendar/months.ts:4`](https://github.com/yskolnick/luach/blob/main/src/calendar/months.ts#L4) | Months are numbered as the Torah counts them, from Nisan (Shemos 12:2; Rambam, Hilchos Kiddush HaChodesh 1:1 ff.): Nisan = 1 … Elul = 6, Tishrei = 7 … Shevat = 11, Adar = 12. In a leap year 12 is Adar I (Adar Rishon) and 13 is Adar II (Adar Sheni). The year itself begins on 1 Tishrei. |
 | [`src/calendar/year.ts:2`](https://github.com/yskolnick/luach/blob/main/src/calendar/year.ts#L2) | The fixed Hebrew calendar, computed from the rules in the Rambam, Hilchos Kiddush HaChodesh, chapters 6–8. |
@@ -310,24 +310,86 @@ Yosef Skolnick decides. A *Decided* entry quotes his words; a proposal (P) or qu
 carries a default that is in effect until he answers; *As built* marks choices nobody made
 explicitly. Full text: [`DECISIONS.md`](https://github.com/yskolnick/luach/blob/main/DECISIONS.md).
 
+Why each one was made, its sources and how confident the reasoning is: [Why it works this
+way](./rationale) (one section per entry).
+
 | Id | Decision | Status |
 |---|---|---|
-| D-01 | The name is Luach | Decided |
-| D-04 | One implementation: `main` | Decided |
-| Q-00 | Unmerged branches | Open questions |
-| Q-01 | Licence: Apache-2.0 with NOTICE, or MIT | Open questions |
-| Q-02 | How credit should read | Open questions |
-| Q-04 | Anniversary rules (30 Adar I, 30 Cheshvan/Kislev defaults) | Open questions |
-| Q-05 | Modern Israeli days before their amendments | Open questions |
-| Q-06 | The example citation in the brief | Open questions |
-| P-01 | Apache-2.0 with a NOTICE file | Proposals |
-| P-02 | Zero runtime dependencies; TypeScript, tsup, Vitest, ESLint | Proposals |
-| P-03 | Days counted from 1970-01-01; months numbered from Nisan | Proposals |
-| P-04 | Supported range: Hebrew years 1–9999, proleptic Gregorian | Proposals |
-| P-05 | Move table-only learning cycles after 1.0 | Proposals |
-| P-06 | What `isInIsrael` covers | Proposals |
-| P-07 | Per-module ESM output and name tables | Proposals |
-| P-08 | Freeze the shared tables | Proposals |
+| [D-01](./rationale#d-01) | The name is Luach | Decided |
+| [D-02](./rationale#d-02) | Commits name the models that wrote and checked them; no session links | Decided |
+| [D-03](./rationale#d-03) | A public project log | Decided |
+| [D-04](./rationale#d-04) | A rationale page tied to every decision | Decided |
+| [D-05](./rationale#d-05) | One implementation: `main` | Decided |
+| [Q-00](./rationale#q-00) | Unmerged branches | Open questions |
+| [Q-01](./rationale#q-01) | Licence: Apache-2.0 with NOTICE, or MIT | Open questions |
+| [Q-02](./rationale#q-02) | How credit should read | Open questions |
+| [Q-04](./rationale#q-04) | Anniversary rules (30 Adar I, 30 Cheshvan/Kislev defaults) | Open questions |
+| [Q-05](./rationale#q-05) | Modern Israeli days before their amendments | Open questions |
+| [Q-06](./rationale#q-06) | The example citation in the brief | Open questions |
+| [P-01](./rationale#p-01) | Apache-2.0 with a NOTICE file | Proposals |
+| [P-02](./rationale#p-02) | Zero runtime dependencies; TypeScript, tsup, Vitest, ESLint | Proposals |
+| [P-03](./rationale#p-03) | Days counted from 1970-01-01; months numbered from Nisan | Proposals |
+| [P-04](./rationale#p-04) | Supported range: Hebrew years 1–9999, proleptic Gregorian | Proposals |
+| [P-05](./rationale#p-05) | Move table-only learning cycles after 1.0 | Proposals |
+| [P-06](./rationale#p-06) | What `isInIsrael` covers | Proposals |
+| [P-07](./rationale#p-07) | Per-module ESM output and name tables | Proposals |
+| [P-08](./rationale#p-08) | Freeze the shared tables | Proposals |
+| [AB-01](./rationale#ab-01) | `gematriya()` writes an exact multiple of 1000 like its units digit (א׳ is … | As built |
+| [AB-02](./rationale#ab-02) | `formatHebrewDate()` omits the year's thousands by default … | As built |
+| [AB-03](./rationale#ab-03) | Purim Meshulash is listed on 16 Adar (the Sunday, third of its three … | As built |
+| [AB-04](./rationale#ab-04) | Leil Selichos is listed on the Shabbos whose night begins Selichos … | As built |
+| [AB-05](./rationale#ab-05) | Yom Kippur Katan (optional) is not listed before Rosh Chodesh Tishrei, … | As built |
+| [AB-06](./rationale#ab-06) | BeHaB (optional) is the Monday, Thursday and Monday after the first Shabbos … | As built |
+| [AB-07](./rationale#ab-07) | the molad is read as Jerusalem mean time at longitude 35.2354° E when … | As built |
+| [AB-08](./rationale#ab-08) | Tachanun defaults: no Tachanun from Erev Yom Kippur through the end of … | As built |
+| [AB-09](./rationale#ab-09) | the Omer count text defaults to Nusach Ashkenaz wording; Sefard and … | As built |
+| [AB-10](./rationale#ab-10) | zmanim default to sea-level sunrise and sunset (`useElevation: … | As built |
+| [AB-11](./rationale#ab-11) | rounding is on by default (earliest times up, deadlines … | As built |
+| [AB-12](./rationale#ab-12) | candle lighting defaults to 18 minutes; havdala and second-night candles to … | As built |
+| [AB-13](./rationale#ab-13) | Mincha Gedola (Gra) is 6.5 seasonal hours after sunrise; "30 minutes" is … | As built |
+| [AB-14](./rationale#ab-14) | Plag HaMincha per the Levush is the Gra's calculation (Magen Avraham … | As built |
+| [AB-15](./rationale#ab-15) | fasts begin at alos 72 minutes (rounded down) and end at 7.083° by … | As built |
+| [AB-16](./rationale#ab-16) | the Hebrew date at an instant changes at sunset by default … | As built |
+| [AB-17](./rationale#ab-17) | the horizon dip for elevation uses the earth's mean radius, 6,371 … | As built |
+| [AB-18](./rationale#ab-18) | high-latitude fallbacks (`nearestDay`, `halfNight`) are off by … | As built |
+| [AB-19](./rationale#ab-19) | haftara defaults: Ashkenaz; Shabbos HaGadol's haftara always (Ashkenaz … | As built |
+| [AB-20](./rationale#ab-20) | Daf HaShavua runs Sunday–Shabbos from 6 March 2005 (back-computed; low … | As built |
+| [AB-21](./rationale#ab-21) | Mishna Yomis cycles before the 14th (2021) are counted back from … | As built |
+| [AB-22](./rationale#ab-22) | Amud HaYomi returns null after Me'ilah 22a (2038) until Dirshu publishes … | As built |
+| [AB-23](./rationale#ab-23) | the built-in city table (about 150 places) was chosen for Luach: cities … | As built |
+| [AB-24](./rationale#ab-24) | place search ranks exact, prefix, transliteration-skeleton, then … | As built |
+| [AB-25](./rationale#ab-25) | the day view's default zmanim are alos 72 min and 16.1°, misheyakir … | As built |
+| [AB-26](./rationale#ab-26) | the CLI prints Ashkenazi names by default (`--locale` changes … | As built |
+| [AB-27](./rationale#ab-27) | iCal events are all-day for holidays, parsha and learning, and zero-length at … | As built |
+| [AB-28](./rationale#ab-28) | Israeli commemorations (option `israeliCommemorations`) are listed from … | As built |
+| [AB-29](./rationale#ab-29) | the plain-English locale (`en`) uses "Tishri, Heshvan, Iyyar" spellings … | As built |
+| [AB-30](./rationale#ab-30) | the demo app opens on Jerusalem with Ashkenazi names until the user picks … | As built |
+| [AB-31](./rationale#ab-31) | Hebrew zman labels put a left-to-right mark after each degree sign so … | As built |
+| [AB-32](./rationale#ab-32) | before 1.0, a patch release fixes bugs only; anything that changes an API, … | As built |
+| [AB-33](./rationale#ab-33) | `npm publish` runs `npm run check` first (`prepublishOnly`); the version is … | As built |
+| [AB-34](./rationale#ab-34) | the city-data files ship without source maps (they are generated tables), … | As built |
+| [AB-35](./rationale#ab-35) | security reports go through GitHub's private vulnerability reporting; the … | As built |
+| [AB-36](./rationale#ab-36) | Pirkei Avos defaults to one chapter a week on the summer … | As built |
+| [AB-37](./rationale#ab-37) | when | As built |
+| [AB-38](./rationale#ab-38) | BeHaB is the Monday, Thursday … | As built |
+| [AB-39](./rationale#ab-39) | a place may carry its documented candle-lighting … | As built |
+| [AB-40](./rationale#ab-40) | Plag HaMincha per … | As built |
+| [AB-41](./rationale#ab-41) | the built-in table has 197 places: … | As built |
+| [AB-42](./rationale#ab-42) | a transliteration match needs a skeleton of at … | As built |
+| [AB-43](./rationale#ab-43) | the CLI's `--city` searches the built-in places, then (only when … | As built |
+| [AB-44](./rationale#ab-44) | Ashkenazi … | As built |
+| [AB-45](./rationale#ab-45) | Ashkenazi Shabbos Shuva adds Micah 7:18-20 when the … | As built |
+| [AB-46](./rationale#ab-46) | haftara options `roshChodeshAv` (default … | As built |
+| [AB-47](./rationale#ab-47) | `pirkeiAvos` skips Shabbos Erev Tisha … | As built |
+| [AB-48](./rationale#ab-48) | in year 9999, the last supported year, answers that need a date in … | As built |
+| [AB-49](./rationale#ab-49) | when turned on, `nearestDay` and `halfNight` replace … | As built |
+| [AB-50](./rationale#ab-50) | caller-supplied angles for havdala and second-night candles must be … | As built |
+| [AB-51](./rationale#ab-51) | UTC offsets from `Intl` are not rounded to whole minutes … | As built |
+| [AB-52](./rationale#ab-52) | the day JSON Schema ships in the package as … | As built |
+| [AB-53](./rationale#ab-53) | the import and licence checks read code with a small tokenizer of … | As built |
+| [AB-54](./rationale#ab-54) | CI builds once and smoke-tests the built package on Node 18, 20 and … | As built |
+| [AB-55](./rationale#ab-55) | the example server's `/calendar.ics` serves at most 400 days with a … | As built |
+| [AB-56](./rationale#ab-56) | the day view on a Shabbos before Tisha B'Av postponed to Sunday … | As built |
 
 ### Architecture decision records
 

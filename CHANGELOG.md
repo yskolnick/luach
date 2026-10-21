@@ -75,6 +75,8 @@ All notable changes for users of the `luach` package. This project follows
   Hebrew name GeoNames has (e.g. both "סיאול" and "סאול").
 - `isInIsrael`: the outline is redrawn near the borders (Yotvata, Ramat Magshimim, Hamat
   Gader and Ghajar are inside; Egyptian Rafah is outside).
+- Three zmanim defined by 16.1° (Shema, Shacharis and Plag of the Magen Avraham) were
+  labelled "16.1 min"; they now read "16.1°".
 - The city-data files ship without source maps; the package is about half the size.
 - Hebrew zman labels carry a left-to-right mark (U+200E) after each degree sign, so the
   angle reads correctly in right-to-left text.

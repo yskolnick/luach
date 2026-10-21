@@ -10,6 +10,11 @@ Yosef Skolnick decides everything about Luach. This file holds:
 Entries are added and superseded, never rewritten. Architecture, tooling, dependency and
 licence choices also have an ADR in `docs/decisions/`.
 
+Every entry has a matching section in [docs/rationale.md](docs/rationale.md), written by the
+AI that built the code: why it was done this way, the sources, how confident the reasoning
+is, and what would change it. A test fails if an entry has no rationale. *As built* entries
+are numbered AB-nn (numbers added 2026-10-21; the text is unchanged).
+
 ## Decided
 
 ### D-01. The name is Luach
@@ -18,20 +23,45 @@ The name was free on npm on 2026-10-21; Yosef has since reserved it (a placehold
 held for npm's staged-release review). An unrelated package, `luach-picker`, is a browser
 date-picker widget; Luach is a calculation library with no UI (see README).
 
-### D-04. One implementation: `main`
+### D-02. Commits name the models that wrote and checked them; no session links
+Yosef: "All commits on this repo can say which model worked on it and which checked it
+since it is a public repo and we want transparency." Commits end with a `Co-Authored-By:`
+line naming the model that wrote the change, and may add a line naming the model that
+checked it. Session links stay out: on 2026-10-21 the `Claude-Session:` lines were removed
+from every commit on `main` (history rewritten and force-pushed; file contents unchanged)
+and from the pull-request descriptions. This supersedes, for commit messages only, the
+earlier rule against model names in the repository.
+
+### D-03. A public project log
+Yosef: "I would like a log to be in here also. Nothing personal at all should be there but
+updates and decisions that are relevant should be shown to people". `LOG.md` records each
+working session's updates, decisions and open questions. Personal notes and conversation
+records stay in the private records repository.
+
+### D-04. A rationale page tied to every decision
+Yosef: "an ai generated sources page for why the ai is doing it a particular way. This
+should tie to every decision. It should be a document that scholars can look at at analyze
+and fix". [docs/rationale.md](docs/rationale.md) has one section per entry in this file: what
+the code does, why, the sources (with how far each was verified), what it was checked
+against, a confidence level, and what is open. A test fails if any entry lacks a section.
+Scholars challenge an entry with the "Challenge a decision or source" issue template.
+
+### D-05. One implementation: `main`
 Two sessions built Luach in parallel on 2026-10-21. Yosef: "Keep main and see where this code
 is better, add that". The second implementation is kept, unmerged, on the branch
-`archive/parallel-implementation-2026-10-21`; what it did better is ported to `main` in
-small pull requests, each with its tests. (D-02 and D-03 are in the public-log pull request.)
+`archive/parallel-implementation-2026-10-21`; what it did better was ported to `main`
+(yskolnick/luach#14), each change with its tests. The same request led to
+[docs/sources.md](docs/sources.md), generated from the code: Yosef: "Write up a sources and
+decisions document about where times came from and cite and source every decision and
+document etc. This is being built in public".
 
 ## Open questions
 
 ### Q-00. Unmerged branches
 Branches with work not yet on `main` (2026-10-21):
-- `public-log`: the public LOG.md and D-02, D-03 (its own pull request).
-- `claude/port-to-main`: fixes and the sources page ported under D-04.
+- `claude/port-to-main`: the ports under D-05 (yskolnick/luach#14).
 - `archive/parallel-implementation-2026-10-21`: the second implementation, kept for reference
-  (D-04); not to be merged. `claude/exciting-clarke-64dzwd` holds the same commits and can be
+  (D-05); not to be merged. `claude/exciting-clarke-64dzwd` holds the same commits and can be
   deleted.
 
 ### Q-01. Licence: Apache-2.0 with NOTICE, or MIT
@@ -67,6 +97,7 @@ and Sunday → Monday from 1997; Yom HaAtzmaut Monday → Tuesday from 2004. Not
 1954 date of the Shabbos → Thursday rule for Yom HaAtzmaut (applied from 1949), and the
 uncertain 1950 date. The 7 October memorial day (24 Tishrei) is not built yet (HOL-16).
 **Until decided:** as described; these days are optional and off by default.
+
 *Update 2026-10-21:* the Yom HaShoah Friday → Thursday rule now applies from 1959, the year of
 the law; the 1951 Knesset resolution had no weekday rule, so 1954 (27 Nisan on Friday) stays on
 Friday. Found by the citation audit (`docs/research/2026-10-21-citation-audit-code.md`).
@@ -129,156 +160,162 @@ server or app shares one copy. **Default until decided:** not frozen;
 
 ## As built
 
-- *As built:* `gematriya()` writes an exact multiple of 1000 like its units digit (א׳ is 1
+- **AB-01** *As built:* `gematriya()` writes an exact multiple of 1000 like its units digit (א׳ is 1
   or 1000); `parseGematriya('א׳')` returns 1.
-- *As built:* `formatHebrewDate()` omits the year's thousands by default (תשפ״ז).
-- *As built:* Purim Meshulash is listed on 16 Adar (the Sunday, third of its three days).
-- *As built:* Leil Selichos is listed on the Shabbos whose night begins Selichos (Ashkenaz).
-- *As built:* Yom Kippur Katan (optional) is not listed before Rosh Chodesh Tishrei, Cheshvan,
+- **AB-02** *As built:* `formatHebrewDate()` omits the year's thousands by default (תשפ״ז).
+- **AB-03** *As built:* Purim Meshulash is listed on 16 Adar (the Sunday, third of its three days).
+- **AB-04** *As built:* Leil Selichos is listed on the Shabbos whose night begins Selichos (Ashkenaz).
+- **AB-05** *As built:* Yom Kippur Katan (optional) is not listed before Rosh Chodesh Tishrei, Cheshvan,
   Teves or Iyar (common practice; not stated in MB 417:4), and moves to Thursday from
   Friday/Shabbos (MB 417:4).
-- *As built (supersedes the Yom Kippur Katan entry above as to its sources, 2026-10-21):* when
+- **AB-06** *As built:* BeHaB (optional) is the Monday, Thursday and Monday after the first Shabbos of
+  Cheshvan and of Iyar.
+- **AB-07** *As built:* the molad is read as Jerusalem mean time at longitude 35.2354° E when turned
+  into an instant (Kiddush Levana times).
+- **AB-08** *As built:* Tachanun defaults: no Tachanun from Erev Yom Kippur through the end of Tishrei,
+  and from Rosh Chodesh Sivan through 12 Sivan; both are options.
+- **AB-09** *As built:* the Omer count text defaults to Nusach Ashkenaz wording; Sefard and Edot
+  HaMizrach are options.
+- **AB-10** *As built:* zmanim default to sea-level sunrise and sunset (`useElevation: false`);
+  degree-based zmanim are always at sea level.
+- **AB-11** *As built:* rounding is on by default (earliest times up, deadlines down).
+- **AB-12** *As built:* candle lighting defaults to 18 minutes; havdala and second-night candles to 8.5°.
+- **AB-13** *As built:* Mincha Gedola (Gra) is 6.5 seasonal hours after sunrise; "30 minutes" is after
+  astronomical chatzos; chatzos is the solar transit.
+- **AB-14** *As built:* Plag HaMincha per the Levush is the Gra's calculation (Magen Avraham 233:3).
+- **AB-15** *As built:* fasts begin at alos 72 minutes (rounded down) and end at 7.083° by default.
+- **AB-16** *As built:* the Hebrew date at an instant changes at sunset by default (`hebrewDateAt`).
+- **AB-17** *As built:* the horizon dip for elevation uses the earth's mean radius, 6,371 km.
+- **AB-18** *As built:* high-latitude fallbacks (`nearestDay`, `halfNight`) are off by default.
+- **AB-19** *As built:* haftara defaults: Ashkenaz; Shabbos HaGadol's haftara always (Ashkenaz and
+  Sephardi), only when Erev Pesach is Shabbos (Chabad), never (Teimani); Ashkenazi Kedoshim
+  is Ezekiel 22:1-16 (Rema, ArtScroll, Ezras Torah luach) where some lists swap it with Amos.
+- **AB-20** *As built:* Daf HaShavua runs Sunday–Shabbos from 6 March 2005 (back-computed; low confidence).
+- **AB-21** *As built:* Mishna Yomis cycles before the 14th (2021) are counted back from it.
+- **AB-22** *As built:* Amud HaYomi returns null after Me'ilah 22a (2038) until Dirshu publishes how
+  Kinnim, Tamid and Middos are learned.
+- **AB-23** *As built:* the built-in city table (about 150 places) was chosen for Luach: cities with
+  Jewish communities, plus the test cities for high latitude and the date line. Israeli
+  communities that GeoNames puts in Asia/Hebron are given Asia/Jerusalem, the time they keep.
+- **AB-24** *As built:* place search ranks exact, prefix, transliteration-skeleton, then substring
+  matches, with larger places first on ties.
+- **AB-25** *As built:* the day view's default zmanim are alos 72 min and 16.1°, misheyakir 11°,
+  sunrise, Shema (MGA 72, Gra), Tefilla (Gra), chatzos, Mincha Gedola (later of two), Mincha
+  Ketana and Plag (Gra), sunset, tzeis 8.5° and Rabbeinu Tam: a common set, not a ruling.
+- **AB-26** *As built:* the CLI prints Ashkenazi names by default (`--locale` changes it).
+- **AB-27** *As built:* iCal events are all-day for holidays, parsha and learning, and zero-length at the
+  instant for candle lighting, havdala and zmanim.
+- **AB-28** *As built:* Israeli commemorations (option `israeliCommemorations`) are listed from the
+  year of each law; Yom HaAliyah on 7 Cheshvan only; Begin Day on 4 Adar II in a leap year
+  (the law says "4 Adar"; Begin died on 4 Adar II); Chag HaBanot on 1 Teves.
+- **AB-29** *As built:* the plain-English locale (`en`) uses "Tishri, Heshvan, Iyyar" spellings and
+  "Saturday".
+- **AB-30** *As built:* the demo app opens on Jerusalem with Ashkenazi names until the user picks a
+  place or language; its opinion pickers offer alos 72 min / 16.1° / 90 min; Shema Gra / MGA 72 /
+  MGA 16.1° / Baal HaTanya; tzeis 8.5° / 7.083° / 50 min / Rabbeinu Tam (first of each is
+  selected). "Use my location" runs on the device only and keeps
+  nothing.
+- **AB-31** *As built:* Hebrew zman labels put a left-to-right mark after each degree sign so "16.1°"
+  does not flip in right-to-left text.
+- **AB-32** *As built:* before 1.0, a patch release fixes bugs only; anything that changes an API, a
+  default or a calculated result someone may depend on is a minor release (`RELEASING.md`).
+- **AB-33** *As built:* `npm publish` runs `npm run check` first (`prepublishOnly`); the version is set
+  in one step by `npm run release:version`.
+- **AB-34** *As built:* the city-data files ship without source maps (they are generated tables), which
+  halves the package.
+- **AB-35** *As built:* security reports go through GitHub's private vulnerability reporting; the code
+  of conduct is Luach's own, short text.
+- **AB-36** *As built:* Pirkei Avos defaults to one chapter a week on the summer Shabbosim
+  (`cycle: 'single'`); doubling up at the end is an option.
+- **AB-37** *As built (supersedes AB-05 as to its sources, 2026-10-21):* when
   Erev Rosh Chodesh is Shabbos, Yom Kippur Katan is on Thursday (Magen Avraham 417:3: Rosh
   Chodesh on Sunday, fast on Thursday; MB 417:4). When it is Friday the sources differ: Magen
   Avraham 417:3 keeps it on Friday ("ואם חל ר"ח בשבת מתענין ביום ו'"); MB 417:4 says those who
   say Selichos fast on Thursday and those who don't on Friday. Option `yomKippurKatanOnFriday`:
   `'thursday'` (default, the behaviour before the option existed; @hebcal/core, the test oracle,
-  agrees) or `'friday'`. The default is a
-  default, not a ruling. The exclusions are as before.
-- *As built:* BeHaB (optional) is the Monday, Thursday and Monday after the first Shabbos of
-  Cheshvan and of Iyar.
-- *As built (supersedes the BeHaB entry above, 2026-10-21):* BeHaB is the Monday, Thursday and
+  agrees) or `'friday'`. The default is a default, not a ruling. The exclusions are as before.
+- **AB-38** *As built (supersedes AB-06, 2026-10-21):* BeHaB is the Monday, Thursday and
   Monday after the first Shabbos *after* Rosh Chodesh (MB 492:3, "שבת הראשון שאחר ר"ח"). When
   1 Cheshvan or 1 Iyar is Shabbos, that Shabbos is Rosh Chodesh and is not counted (5785:
   11, 14 and 18 November 2024, not 4, 7 and 11 November).
-- *As built:* the molad is read as Jerusalem mean time at longitude 35.2354° E when turned
-  into an instant (Kiddush Levana times).
-- *As built:* Tachanun defaults: no Tachanun from Erev Yom Kippur through the end of Tishrei,
-  and from Rosh Chodesh Sivan through 12 Sivan; both are options.
-- *As built:* the Omer count text defaults to Nusach Ashkenaz wording; Sefard and Edot
-  HaMizrach are options.
-- *As built:* zmanim default to sea-level sunrise and sunset (`useElevation: false`);
-  degree-based zmanim are always at sea level.
-- *As built:* rounding is on by default (earliest times up, deadlines down).
-- *As built:* candle lighting defaults to 18 minutes; havdala and second-night candles to 8.5°.
-- *As built:* a place may carry its documented candle-lighting custom, and the day view (and
-  so the CLI and iCal) uses it when the caller has not set `candleLightingMinutes`, labelled
-  with the custom and its source. Set only where a source was read: Jerusalem 40 and Haifa 30
-  (Peninei Halakha, Shabbat 3:2; Jerusalem also Zemanim 13:5 n. 11). Not set: Zichron Yaakov 30
-  (not verified: no source found beyond other software's settings); Petach Tikva 40 (one article
-  by R. Eliezer Melamed, "Adding Sanctity to the Sabbath", says so; his Peninei Halakha does not);
-  the Shomron 30 (same article; a region, not a city). Lu'ach Eretz Yisrael is reported to give
-  Jerusalem 25 (not verified).
-- *As built:* Mincha Gedola (Gra) is 6.5 seasonal hours after sunrise; "30 minutes" is after
-  astronomical chatzos; chatzos is the solar transit.
-- *As built:* Plag HaMincha per the Levush is the Gra's calculation (Magen Avraham 233:3).
-- *As built (2026-10-21, supersedes the line above's source):* Plag HaMincha per the Levush is
-  computed as the Gra's. The source is Levush OC 267 as reported in Biur Halacha 261:2
+- **AB-39** *As built (adds to AB-12):* a place may carry its documented candle-lighting custom,
+  and the day view (and so the CLI and iCal) uses it when the caller has not set
+  `candleLightingMinutes`, labelled with the custom and its source. Set only where a source was
+  read: Jerusalem 40 and Haifa 30 (Peninei Halakha, Shabbat 3:2; Jerusalem also Zemanim 13:5
+  n. 11). Not set: Zichron Yaakov 30 (not verified: no source found beyond other software's
+  settings); Petach Tikva 40 (one article by R. Eliezer Melamed, "Adding Sanctity to the
+  Sabbath", says so; his Peninei Halakha does not); the Shomron 30 (same article; a region, not
+  a city). Lu'ach Eretz Yisrael is reported to give Jerusalem 25 (not verified).
+- **AB-40** *As built (supersedes AB-14 as to its source, 2026-10-21):* Plag HaMincha per the
+  Levush is computed as the Gra's. The source is Levush OC 267 as reported in Biur Halacha 261:2
   ("1¼ hours before sunset"); Magen Avraham 233:3 reads the Levush as counting from tzeis.
-  See the citation audit in `docs/research/2026-10-21-citation-audit-zmanim.md`.
-- *As built:* fasts begin at alos 72 minutes (rounded down) and end at 7.083° by default.
-- *As built:* the Hebrew date at an instant changes at sunset by default (`hebrewDateAt`).
-- *As built:* the horizon dip for elevation uses the earth's mean radius, 6,371 km.
-- *As built:* high-latitude fallbacks (`nearestDay`, `halfNight`) are off by default.
-- *As built:* haftara defaults: Ashkenaz; Shabbos HaGadol's haftara always (Ashkenaz and
-  Sephardi), only when Erev Pesach is Shabbos (Chabad), never (Teimani); Ashkenazi Kedoshim
-  is Ezekiel 22:1-16 (Rema, ArtScroll, Ezras Torah luach) where some lists swap it with Amos.
-- *As built:* Daf HaShavua runs Sunday–Shabbos from 6 March 2005 (back-computed; low confidence).
-- *As built:* Mishna Yomis cycles before the 14th (2021) are counted back from it.
-- *As built:* Amud HaYomi returns null after Me'ilah 22a (2038) until Dirshu publishes how
-  Kinnim, Tamid and Middos are learned.
-- *As built:* the built-in city table (about 150 places) was chosen for Luach: cities with
-  Jewish communities, plus the test cities for high latitude and the date line. Israeli
-  communities that GeoNames puts in Asia/Hebron are given Asia/Jerusalem, the time they keep.
-- *As built:* (supersedes the count above) the built-in table has 197 places: the 144 above
-  plus 51 cities with Jewish communities from the retired implementation's table (Toms River,
-  Spring Valley, Queens, Boca Raton, Skokie, Salford, Durban, Calgary, Montevideo, Brisbane, …)
-  and Borough Park and Immanuel. Left out from that table: Cairo (almost no community today)
-  and Nazareth (Nof HaGalil would be the Jewish town; not added).
-- *As built:* place search ranks exact, prefix, transliteration-skeleton, then substring
-  matches, with larger places first on ties.
-- *As built:* (adds to the entry above) a transliteration match needs a skeleton of at least
+  See `docs/research/2026-10-21-citation-audit-zmanim.md`.
+- **AB-41** *As built (supersedes the count in AB-23):* the built-in table has 197 places: the
+  144 before plus 51 cities with Jewish communities from the retired implementation's table
+  (Toms River, Spring Valley, Queens, Boca Raton, Skokie, Salford, Durban, Calgary, Montevideo,
+  Brisbane, …) and Borough Park and Immanuel. Left out from that table: Cairo (almost no
+  community today) and Nazareth (Nof HaGalil would be the Jewish town; not added).
+- **AB-42** *As built (adds to AB-24):* a transliteration match needs a skeleton of at least
   four consonants, and a skeleton-prefix match must cover three quarters of the name, so
   "Tzfat", "Boro Park" and "Emmanuel" no longer find Zefta, a São Paulo district or Manila.
   The full table carries the built-in table's spellings for the same GeoNames city and every
   non-historic Hebrew name GeoNames has. The CLI takes a loose full-table match only when no
   built-in place matches at all.
-- *As built:* the day view's default zmanim are alos 72 min and 16.1°, misheyakir 11°,
-  sunrise, Shema (MGA 72, Gra), Tefilla (Gra), chatzos, Mincha Gedola (later of two), Mincha
-  Ketana and Plag (Gra), sunset, tzeis 8.5° and Rabbeinu Tam: a common set, not a ruling.
-- *As built:* the CLI prints Ashkenazi names by default (`--locale` changes it).
-- *As built:* the CLI's `--city` searches the built-in places, then (only when none matches by
-  name or prefix) the full table, loaded on demand; `--lat/--lon` need `--tz` (the computer's
-  own zone is never assumed); `--elevation <m>` turns on elevation-adjusted sunrise and sunset
-  (`useElevation`) and says so in the output.
-- *As built:* iCal events are all-day for holidays, parsha and learning, and zero-length at the
-  instant for candle lighting, havdala and zmanim.
-- *As built:* Israeli commemorations (option `israeliCommemorations`) are listed from the
-  year of each law; Yom HaAliyah on 7 Cheshvan only; Begin Day on 4 Adar II in a leap year
-  (the law says "4 Adar"; Begin died on 4 Adar II); Chag HaBanot on 1 Teves.
-- *As built:* the plain-English locale (`en`) uses "Tishri, Heshvan, Iyyar" spellings and
-  "Saturday".
-- *As built:* the demo app opens on Jerusalem with Ashkenazi names until the user picks a
-  place or language; its opinion pickers offer alos 72 min / 16.1° / 90 min; Shema Gra / MGA 72 /
-  MGA 16.1° / Baal HaTanya; tzeis 8.5° / 7.083° / 50 min / Rabbeinu Tam (first of each is
-  selected). "Use my location" runs on the device only and keeps
-  nothing.
-- *As built:* Hebrew zman labels put a left-to-right mark after each degree sign so "16.1°"
-  does not flip in right-to-left text.
-- *As built:* before 1.0, a patch release fixes bugs only; anything that changes an API, a
-  default or a calculated result someone may depend on is a minor release (`RELEASING.md`).
-- *As built:* `npm publish` runs `npm run check` first (`prepublishOnly`); the version is set
-  in one step by `npm run release:version`.
-- *As built:* the city-data files ship without source maps (they are generated tables), which
-  halves the package.
-- *As built (2026-10-21), superseding the Kedoshim part of the haftara-defaults entry above:*
-  Ashkenazi Kedoshim is Ezekiel 22:1-16, except when Acharei Mos's own haftara (Amos 9:7-15)
-  was displaced: then Kedoshim reads Amos 9:7-15 (MB 428:26, citing R. Akiva Eiger, who names
-  Machar Chodesh; Luach applies the same reason to Shabbos HaGadol and Rosh Chodesh). This is
-  not a Rema-vs-Hertz swap: `@hebcal/leyning` agrees, apart from ending Ezekiel 22 at 22:19.
-- *As built (2026-10-21):* Ashkenazi Shabbos Shuva adds Micah 7:18-20 when the parsha is
-  Vayelech and Joel 2:15-27 when it is Haazinu (the Dagul Mervava, MB 428:23), where it always
-  added Joel. Option `shuvaAddition`: `'micah'`, `'joel'` or `'both'` (Prague; Luach puts Joel
+- **AB-43** *As built:* the CLI's `--city` searches the built-in places, then (only when none
+  matches by name or prefix) the full table, loaded on demand; `--lat/--lon` need `--tz` (the
+  computer's own zone is never assumed); `--elevation <m>` turns on elevation-adjusted sunrise
+  and sunset (`useElevation`) and says so in the output.
+- **AB-44** *As built (supersedes the Kedoshim part of AB-19, 2026-10-21):* Ashkenazi Kedoshim
+  is Ezekiel 22:1-16, except when Acharei Mos's own haftara (Amos 9:7-15) was displaced: then
+  Kedoshim reads Amos 9:7-15 (MB 428:26, citing R. Akiva Eiger, who names Machar Chodesh; Luach
+  applies the same reason to Shabbos HaGadol and Rosh Chodesh). This is not a Rema-vs-Hertz
+  swap: `@hebcal/leyning` agrees, apart from ending Ezekiel 22 at 22:19.
+- **AB-45** *As built (2026-10-21):* Ashkenazi Shabbos Shuva adds Micah 7:18-20 when the parsha
+  is Vayelech and Joel 2:15-27 when it is Haazinu (the Dagul Mervava, MB 428:23), where it
+  always added Joel. Option `shuvaAddition`: `'micah'`, `'joel'` or `'both'` (Luach puts Joel
   before Micah, in book order, which the MB does not specify).
-- *As built (2026-10-21):* haftara options `roshChodeshAv` (default `'affliction'`, Shim'u, per
-  MB 425:8 following the Gra; `'roshChodesh'`, Isaiah 66, which the Rema OC 425:1 calls
-  primary where there is no custom) and `roshChodeshElul` (default by minhag as before;
+- **AB-46** *As built (2026-10-21):* haftara options `roshChodeshAv` (default `'affliction'`,
+  Shim'u, per MB 425:8 following the Gra; `'roshChodesh'`, Isaiah 66, which the Rema OC 425:1
+  calls primary where there is no custom) and `roshChodeshElul` (default by minhag as before;
   `'consolation'` per the SA OC 425:1, `'roshChodesh'` per the Rema there, with Re'eh's
   haftara added on Ki Seitzei per MB 425:7).
-- *As built (2026-10-21):* `pirkeiAvos` with `until: 'shavuos'` (Kaf HaChaim 292:23) reads
-  chapters 1–6 before Shavuos; a seventh Shabbos (Israel, when Pesach begins on Shabbos)
-  returns null, since the source does not say what is read then.
-- *As built:* security reports go through GitHub's private vulnerability reporting; the code
-  of conduct is Luach's own, short text.
-- *As built:* in year 9999, the last supported year, answers that need a date in year 10000
-  are left out rather than guessed: `readingCycle(9999)` stops at the last Shabbos of 9999 (its
-  joins still use the known weekday of 1 Tishrei 10000); `parshaFor` (and `dayInfo().parsha`)
-  is null for the few days whose coming Shabbos is in 10000. Leil Selichos and candle lighting
-  on 29 Elul 9999 are computed (Rosh Hashana 10000 is always Yom Tov).
-- *As built (adds to "high-latitude fallbacks are off by default"):* when turned on,
-  `nearestDay` and `halfNight` replace a time only when the sun does not get low enough
-  (`sun-always-above`, summer nights). In polar night (`sun-always-below`) the time stays
-  `null` with its reason, since any time would be invented.
-- *As built:* caller-supplied angles for havdala and second-night candles must be more than
-  0.833° (sunset) and at most 30° below the horizon; minutes after sunset more than 0 and at
-  most 180; candle-lighting minutes 0–180. Anything else, or a non-finite number, throws a
+- **AB-47** *As built (adds to AB-36, 2026-10-21):* `pirkeiAvos` skips Shabbos Erev Tisha B'Av
+  (8 Av; Rema OC 553:2). With `until: 'shavuos'` (Kaf HaChaim 292:23) it reads chapters 1–6
+  before Shavuos; a seventh Shabbos (Israel, when Pesach begins on Shabbos) returns null, since
+  the source does not say what is read then.
+- **AB-48** *As built:* in year 9999, the last supported year, answers that need a date in year
+  10000 are left out rather than guessed: `readingCycle(9999)` stops at the last Shabbos of 9999
+  (its joins still use the known weekday of 1 Tishrei 10000); `parshaFor` (and
+  `dayInfo().parsha`) is null for the few days whose coming Shabbos is in 10000. Leil Selichos
+  and candle lighting on 29 Elul 9999 are computed (Rosh Hashana 10000 is always Yom Tov).
+- **AB-49** *As built (adds to AB-18):* when turned on, `nearestDay` and `halfNight` replace a
+  time only when the sun does not get low enough (`sun-always-above`, summer nights). In polar
+  night (`sun-always-below`) the time stays `null` with its reason, since any time would be
+  invented.
+- **AB-50** *As built:* caller-supplied angles for havdala and second-night candles must be more
+  than 0.833° (sunset) and at most 30° below the horizon; minutes after sunset more than 0 and
+  at most 180; candle-lighting minutes 0–180. Anything else, or a non-finite number, throws a
   `RangeError` (`DEPRESSION_RANGE`, `MINUTES_RANGE`).
-- *As built:* UTC offsets from `Intl` are not rounded to whole minutes (historical local mean
-  time has seconds), and rounded zmanim are rounded to whole minutes of the local clock, which
-  is the same as UTC minutes for every zone with a whole-minute offset.
-- *As built:* the day JSON Schema ships in the package as `luach/schema/day.schema.json`
+- **AB-51** *As built:* UTC offsets from `Intl` are not rounded to whole minutes (historical
+  local mean time has seconds), and rounded zmanim are rounded to whole minutes of the local
+  clock, which is the same as UTC minutes for every zone with a whole-minute offset.
+- **AB-52** *As built:* the day JSON Schema ships in the package as `luach/schema/day.schema.json`
   (`docs/schema/` keeps an identical copy, checked by a test). Its `$id`, and `$schema` in
   every `dayInfo()` object, is
-  `https://raw.githubusercontent.com/yskolnick/luach/main/schema/day.schema.json`, a URL
-  that serves the JSON (the earlier GitHub `blob/` URL served a web page). Every object in
-  the schema with a fixed shape, including `learning`, is closed (`additionalProperties: false`).
-- *As built:* the import and licence checks read code with a small tokenizer of their own
-  (`scripts/lib/js-scan.mjs`), fail on `createRequire`, computed `import()`/`require()` and
+  `https://raw.githubusercontent.com/yskolnick/luach/main/schema/day.schema.json`, a URL that
+  serves the JSON (the earlier GitHub `blob/` URL served a web page). Every object in the schema
+  with a fixed shape, including `learning`, is closed (`additionalProperties: false`).
+- **AB-53** *As built:* the import and licence checks read code with a small tokenizer of their
+  own (`scripts/lib/js-scan.mjs`), fail on `createRequire`, computed `import()`/`require()` and
   devDependency names in strings, and check the built `dist/` for oracle text and package
   imports; `npm run check` builds before the licence check (ADR 0006).
-- *As built:* CI builds once and smoke-tests the built package on Node 18, 20 and 22 (ESM,
-  CommonJS, the `exports` map and the CLI), in Bun (ESM and CommonJS), in Deno (ESM) and
+- **AB-54** *As built:* CI builds once and smoke-tests the built package on Node 18, 20 and 22
+  (ESM, CommonJS, the `exports` map and the CLI), in Bun (ESM and CommonJS), in Deno (ESM) and
   in headless Chromium (`test/runtimes/`, ADR 0007).
-- *As built:* the example server's `/calendar.ics` serves at most 400 days with a place
-  (candle lighting and havdala make each day costly) and 5 × 366 days without, answering
-  a longer range with 400 Bad Request.
+- **AB-55** *As built:* the example server's `/calendar.ics` serves at most 400 days with a place
+  (candle lighting and havdala make each day costly) and 5 × 366 days without, answering a
+  longer range with 400 Bad Request.
+- **AB-56** *As built:* the day view on a Shabbos before Tisha B'Av postponed to Sunday gives
+  `shabbosEnds` (when Shabbos ends; not havdala) and `fastBeginsTonight`, and havdala over a cup
+  when the fast ends on Sunday night (SA OC 556:1; MB 556:2). `fastBeginsTonight` is also set on
+  Erev Yom Kippur and Erev Tisha B'Av.

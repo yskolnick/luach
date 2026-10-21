@@ -68,7 +68,7 @@ Eiger). The test checks which haftara Kedoshim reads; only the end verse is expl
 - The NOAA implementation agrees with `astronomy-engine` (MIT) on sunrise and sunset within
   1 minute in 6 cities at latitudes up to 64°, 2025–2028; the second (USNO) algorithm agrees
   with it within 2 minutes up to ±60°.
-- Against kosher-zmanim (test-only): 52 zmanim, 19 cities, every day of 2025–2028 —
+- Against kosher-zmanim (test-only): 51 zmanim, 19 cities, every day of 2025–2028 —
   1.37 million compared values, **largest difference 60 seconds**. Full table:
   [accuracy-zmanim.md](accuracy-zmanim.md).
 

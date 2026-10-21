@@ -115,7 +115,7 @@ All events carry flags: `yomTov`, `melachaForbidden`, `cholHamoed`, `fast` (`maj
 
 | ID | Spec | Source | Test | Status |
 |---|---|---|---|---|
-| OUT-01 | ESM (per module, tree-shakable) + CJS + types; Node, browser, Deno, Bun, React Native (Hermes) | ADR 0005 | CI: Node 20/22, three machine zones, size budgets per feature, Hermes run (output identical to Node) | in progress (Deno/Bun smoke tests planned) |
+| OUT-01 | ESM (per module, tree-shakable) + CJS + types; Node, browser, Deno, Bun, React Native (Hermes) | ADR 0005 | CI: Node 20/22, three machine zones, size budgets per feature, Hermes run (output identical to Node); Deno and Bun smoke tests | done |
 | OUT-02 | iCal (.ics) export for holidays, zmanim, learning | RFC 5545 | unit + validator | done |
 | OUT-03 | "Everything about this day" JSON + JSON Schema | — | schema validation test | done |
 | OUT-04 | CLI: `luach today --city`, `luach zmanim DATE --lat --lon` | — | unit | done |

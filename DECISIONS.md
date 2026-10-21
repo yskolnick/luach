@@ -10,6 +10,11 @@ Yosef Skolnick decides everything about Luach. This file holds:
 Entries are added and superseded, never rewritten. Architecture, tooling, dependency and
 licence choices also have an ADR in `docs/decisions/`.
 
+Every entry has a matching section in [docs/rationale.md](docs/rationale.md), written by the
+AI that built the code: why it was done this way, the sources, how confident the reasoning
+is, and what would change it. A test fails if an entry has no rationale. *As built* entries
+are numbered AB-nn (numbers added 2026-10-21; the text is unchanged).
+
 ## Decided
 
 ### D-01. The name is Luach
@@ -111,68 +116,68 @@ See ADR 0005. **Default until decided:** as proposed.
 
 ## As built
 
-- *As built:* `gematriya()` writes an exact multiple of 1000 like its units digit (א׳ is 1
+- **AB-01** *As built:* `gematriya()` writes an exact multiple of 1000 like its units digit (א׳ is 1
   or 1000); `parseGematriya('א׳')` returns 1.
-- *As built:* `formatHebrewDate()` omits the year's thousands by default (תשפ״ז).
-- *As built:* Purim Meshulash is listed on 16 Adar (the Sunday, third of its three days).
-- *As built:* Leil Selichos is listed on the Shabbos whose night begins Selichos (Ashkenaz).
-- *As built:* Yom Kippur Katan (optional) is not listed before Rosh Chodesh Tishrei, Cheshvan,
+- **AB-02** *As built:* `formatHebrewDate()` omits the year's thousands by default (תשפ״ז).
+- **AB-03** *As built:* Purim Meshulash is listed on 16 Adar (the Sunday, third of its three days).
+- **AB-04** *As built:* Leil Selichos is listed on the Shabbos whose night begins Selichos (Ashkenaz).
+- **AB-05** *As built:* Yom Kippur Katan (optional) is not listed before Rosh Chodesh Tishrei, Cheshvan,
   Teves or Iyar (common practice; not stated in MB 417:4), and moves to Thursday from
   Friday/Shabbos (MB 417:4).
-- *As built:* BeHaB (optional) is the Monday, Thursday and Monday after the first Shabbos of
+- **AB-06** *As built:* BeHaB (optional) is the Monday, Thursday and Monday after the first Shabbos of
   Cheshvan and of Iyar.
-- *As built:* the molad is read as Jerusalem mean time at longitude 35.2354° E when turned
+- **AB-07** *As built:* the molad is read as Jerusalem mean time at longitude 35.2354° E when turned
   into an instant (Kiddush Levana times).
-- *As built:* Tachanun defaults: no Tachanun from Erev Yom Kippur through the end of Tishrei,
+- **AB-08** *As built:* Tachanun defaults: no Tachanun from Erev Yom Kippur through the end of Tishrei,
   and from Rosh Chodesh Sivan through 12 Sivan; both are options.
-- *As built:* the Omer count text defaults to Nusach Ashkenaz wording; Sefard and Edot
+- **AB-09** *As built:* the Omer count text defaults to Nusach Ashkenaz wording; Sefard and Edot
   HaMizrach are options.
-- *As built:* zmanim default to sea-level sunrise and sunset (`useElevation: false`);
+- **AB-10** *As built:* zmanim default to sea-level sunrise and sunset (`useElevation: false`);
   degree-based zmanim are always at sea level.
-- *As built:* rounding is on by default (earliest times up, deadlines down).
-- *As built:* candle lighting defaults to 18 minutes; havdala and second-night candles to 8.5°.
-- *As built:* Mincha Gedola (Gra) is 6.5 seasonal hours after sunrise; "30 minutes" is after
+- **AB-11** *As built:* rounding is on by default (earliest times up, deadlines down).
+- **AB-12** *As built:* candle lighting defaults to 18 minutes; havdala and second-night candles to 8.5°.
+- **AB-13** *As built:* Mincha Gedola (Gra) is 6.5 seasonal hours after sunrise; "30 minutes" is after
   astronomical chatzos; chatzos is the solar transit.
-- *As built:* Plag HaMincha per the Levush is the Gra's calculation (Magen Avraham 233:3).
-- *As built:* fasts begin at alos 72 minutes (rounded down) and end at 7.083° by default.
-- *As built:* the Hebrew date at an instant changes at sunset by default (`hebrewDateAt`).
-- *As built:* the horizon dip for elevation uses the earth's mean radius, 6,371 km.
-- *As built:* high-latitude fallbacks (`nearestDay`, `halfNight`) are off by default.
-- *As built:* haftara defaults: Ashkenaz; Shabbos HaGadol's haftara always (Ashkenaz and
+- **AB-14** *As built:* Plag HaMincha per the Levush is the Gra's calculation (Magen Avraham 233:3).
+- **AB-15** *As built:* fasts begin at alos 72 minutes (rounded down) and end at 7.083° by default.
+- **AB-16** *As built:* the Hebrew date at an instant changes at sunset by default (`hebrewDateAt`).
+- **AB-17** *As built:* the horizon dip for elevation uses the earth's mean radius, 6,371 km.
+- **AB-18** *As built:* high-latitude fallbacks (`nearestDay`, `halfNight`) are off by default.
+- **AB-19** *As built:* haftara defaults: Ashkenaz; Shabbos HaGadol's haftara always (Ashkenaz and
   Sephardi), only when Erev Pesach is Shabbos (Chabad), never (Teimani); Ashkenazi Kedoshim
   is Ezekiel 22:1-16 (Rema, ArtScroll, Ezras Torah luach) where some lists swap it with Amos.
-- *As built:* Daf HaShavua runs Sunday–Shabbos from 6 March 2005 (back-computed; low confidence).
-- *As built:* Mishna Yomis cycles before the 14th (2021) are counted back from it.
-- *As built:* Amud HaYomi returns null after Me'ilah 22a (2038) until Dirshu publishes how
+- **AB-20** *As built:* Daf HaShavua runs Sunday–Shabbos from 6 March 2005 (back-computed; low confidence).
+- **AB-21** *As built:* Mishna Yomis cycles before the 14th (2021) are counted back from it.
+- **AB-22** *As built:* Amud HaYomi returns null after Me'ilah 22a (2038) until Dirshu publishes how
   Kinnim, Tamid and Middos are learned.
-- *As built:* the built-in city table (about 150 places) was chosen for Luach: cities with
+- **AB-23** *As built:* the built-in city table (about 150 places) was chosen for Luach: cities with
   Jewish communities, plus the test cities for high latitude and the date line. Israeli
   communities that GeoNames puts in Asia/Hebron are given Asia/Jerusalem, the time they keep.
-- *As built:* place search ranks exact, prefix, transliteration-skeleton, then substring
+- **AB-24** *As built:* place search ranks exact, prefix, transliteration-skeleton, then substring
   matches, with larger places first on ties.
-- *As built:* the day view's default zmanim are alos 72 min and 16.1°, misheyakir 11°,
+- **AB-25** *As built:* the day view's default zmanim are alos 72 min and 16.1°, misheyakir 11°,
   sunrise, Shema (MGA 72, Gra), Tefilla (Gra), chatzos, Mincha Gedola (later of two), Mincha
   Ketana and Plag (Gra), sunset, tzeis 8.5° and Rabbeinu Tam: a common set, not a ruling.
-- *As built:* the CLI prints Ashkenazi names by default (`--locale` changes it).
-- *As built:* iCal events are all-day for holidays, parsha and learning, and zero-length at the
+- **AB-26** *As built:* the CLI prints Ashkenazi names by default (`--locale` changes it).
+- **AB-27** *As built:* iCal events are all-day for holidays, parsha and learning, and zero-length at the
   instant for candle lighting, havdala and zmanim.
-- *As built:* Israeli commemorations (option `israeliCommemorations`) are listed from the
+- **AB-28** *As built:* Israeli commemorations (option `israeliCommemorations`) are listed from the
   year of each law; Yom HaAliyah on 7 Cheshvan only; Begin Day on 4 Adar II in a leap year
   (the law says "4 Adar"; Begin died on 4 Adar II); Chag HaBanot on 1 Teves.
-- *As built:* the plain-English locale (`en`) uses "Tishri, Heshvan, Iyyar" spellings and
+- **AB-29** *As built:* the plain-English locale (`en`) uses "Tishri, Heshvan, Iyyar" spellings and
   "Saturday".
-- *As built:* the demo app opens on Jerusalem with Ashkenazi names until the user picks a
+- **AB-30** *As built:* the demo app opens on Jerusalem with Ashkenazi names until the user picks a
   place or language; its opinion pickers offer alos 72 min / 16.1° / 90 min; Shema Gra / MGA 72 /
   MGA 16.1° / Baal HaTanya; tzeis 8.5° / 7.083° / 50 min / Rabbeinu Tam (first of each is
   selected). "Use my location" runs on the device only and keeps
   nothing.
-- *As built:* Hebrew zman labels put a left-to-right mark after each degree sign so "16.1°"
+- **AB-31** *As built:* Hebrew zman labels put a left-to-right mark after each degree sign so "16.1°"
   does not flip in right-to-left text.
-- *As built:* before 1.0, a patch release fixes bugs only; anything that changes an API, a
+- **AB-32** *As built:* before 1.0, a patch release fixes bugs only; anything that changes an API, a
   default or a calculated result someone may depend on is a minor release (`RELEASING.md`).
-- *As built:* `npm publish` runs `npm run check` first (`prepublishOnly`); the version is set
+- **AB-33** *As built:* `npm publish` runs `npm run check` first (`prepublishOnly`); the version is set
   in one step by `npm run release:version`.
-- *As built:* the city-data files ship without source maps (they are generated tables), which
+- **AB-34** *As built:* the city-data files ship without source maps (they are generated tables), which
   halves the package.
-- *As built:* security reports go through GitHub's private vulnerability reporting; the code
+- **AB-35** *As built:* security reports go through GitHub's private vulnerability reporting; the code
   of conduct is Luach's own, short text.

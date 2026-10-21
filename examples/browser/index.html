@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Luach in the browser</title>
+  <style>
+    body { font: 16px/1.5 system-ui, sans-serif; max-width: 36rem; margin: 2rem auto; padding: 0 1rem; color: #222; background: #fff; }
+    @media (prefers-color-scheme: dark) { body { color: #eee; background: #111; } }
+    td { padding: 2px 12px 2px 0; vertical-align: top; } .op { color: #777; font-size: 0.9em; }
+  </style>
+</head>
+<body>
+  <h1 id="date">Luach</h1>
+  <p id="where"></p>
+  <table id="zmanim"></table>
+  <p><small>Location stays in your browser. Built on Luach by Yosef Skolnick. Ask your rav: this calculates; it does not rule.</small></p>
+  <script type="module">
+    // From the repo, serve the root and open /examples/browser/; from npm, import from 'luach' via your bundler.
+    import { getDay, findCity, dayNumberInZone, isInIsrael, netz, sofZmanShemaGra, shkiah, tzeis8_5 } from '../../dist/index.js';
+
+    function show(loc) {
+      const calendar = isInIsrael(loc.latitude, loc.longitude) ? 'israel' : 'diaspora';
+      const day = getDay(dayNumberInZone(Date.now(), loc.timeZone), { location: loc, calendar, zmanim: { netz, sofZmanShemaGra, shkiah, tzeis8_5 } });
+      document.getElementById('date').innerHTML = `${day.hebrew.text} · <bdi dir="rtl">${day.hebrew.textHebrew}</bdi>`;
+      document.getElementById('where').textContent = `${loc.name ?? `${loc.latitude.toFixed(2)}, ${loc.longitude.toFixed(2)}`} · ${calendar} calendar · ${day.parsha.name}`;
+      document.getElementById('zmanim').innerHTML = Object.values(day.zmanim)
+        .map((z) => `<tr><td>${z.local ?? '—'}</td><td>${z.opinion}<div class="op">${z.source}</div></td></tr>`).join('');
+    }
+
+    show(findCity('Jerusalem'));
+    navigator.geolocation?.getCurrentPosition(({ coords }) =>
+      show({ latitude: coords.latitude, longitude: coords.longitude, timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone }));
+  </script>
+</body>
+</html>

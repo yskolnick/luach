@@ -126,7 +126,7 @@ All events carry flags: `yomTov` (melacha forbidden), `cholHamoed`, `fast` (`maj
 | DOC-02 | Halachic notes per opinion with sources; "Ask your rav. This library calculates; it does not rule." | done |
 | DOC-03 | Accuracy report generated from oracle tests | done |
 | DOC-04 | Licence and how to credit | done |
-| DOC-05 | Examples: Node, browser, React, React Native (code only), CLI | planned |
+| DOC-05 | Examples: Node, browser, React, React Native (code only), CLI | done |
 | APP-01 | Expo demo app | deferred — D-02 ("Expo isn't part of this run") |
 
 ## M8. Release

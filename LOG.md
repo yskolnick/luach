@@ -10,7 +10,7 @@ plans in [ROADMAP.md](ROADMAP.md) and user-facing changes in [CHANGELOG.md](CHAN
   ([RELEASING.md](RELEASING.md)), after the API clean-up below.
 - **Q-01** Licence: Apache-2.0 with NOTICE (current) or MIT. Yosef is not sure yet.
 - **Q-04** Anniversary defaults for Adar and the 30th of Cheshvan/Kislev: left open.
-- **API clean-up (D-12), in progress:** infer Israel from the place (D-10); stop exporting
+- **API clean-up (D-12), in progress:** infer Israel from the place (D-10, done); stop exporting
   internal helpers; shrink the cost of a single zman; source or give options for the rules
   the code audit found without a source.
 - Private vulnerability reporting to be turned on in the repository settings
@@ -24,7 +24,7 @@ Yosef answered the open questions:
 - **D-08** Q-05: modern Israeli days follow each law from its year, as built.
 - **D-09** Q-06 closed, and a rule: "We want accurate and source based".
 - **D-10** When a caller gives a place but not Israel or the diaspora, Luach decides from the
-  place.
+  place (done: `dayInfo`, `toICalendar`, `fastTimes`, `isMelachaForbiddenAt`).
 - **D-11** P-08: the shared tables are frozen (done; a breaking change, in the CHANGELOG).
 - **D-12** Before 1.0: a smaller bundle for one zman, no internal helpers in the public API,
   and a source or an option for every rule that lacks one.

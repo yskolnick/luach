@@ -43,6 +43,10 @@ provider, under its own terms; Luach does not include one.
 ## Israel or the diaspora
 
 `isInIsrael(lat, lon)` checks a simplified outline (see `ISRAEL_BOUNDARY`) of the area where
-one day of Yom Tov is kept. Near a border, or for any halachic question, ask your rav, and
-pass `{ israel: true }` or `{ israel: false }` to the calendar functions yourself: an
-explicit option always wins.
+one day of Yom Tov is kept.
+
+When you pass a place to `dayInfo`, `toICalendar`, `fastTimes` or `isMelachaForbiddenAt` and
+do not pass `israel`, the place decides: a built-in place's own `israel` flag, or otherwise
+`isInIsrael` on its coordinates. With no place, the diaspora is the default. Near a border,
+or for any halachic question, ask your rav, and pass `{ israel: true }` or
+`{ israel: false }` yourself: an explicit option always wins.

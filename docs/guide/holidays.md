@@ -9,8 +9,11 @@ for (const e of holidaysForYear(5787, { israel: false })) {
 holidaysOn(HebrewDate.fromGregorian(2027, 3, 23)).map((e) => e.id); // ["purim"]
 ```
 
-**Israel or the diaspora is always your explicit choice** (`israel: true | false`); it decides
-Yom Tov Sheni, Chol Hamoed and Isru Chag.
+**Israel or the diaspora** (`israel: true | false`) decides Yom Tov Sheni, Chol Hamoed and Isru
+Chag. The functions that take only a date, such as `holidaysForYear`, use the diaspora unless
+you say otherwise. The ones that take a place (`dayInfo`, `toICalendar`, `fastTimes`,
+`isMelachaForbiddenAt`) decide from the place when you don't say: see
+[Places](./places.md#israel-or-the-diaspora). An explicit option always wins.
 
 Every event has the same flags, so you can filter: `yomTov`, `melachaForbidden`,
 `cholHamoed`, `fast` (`'major' | 'minor' | null`), `roshChodesh`, `modernIsraeli`, `minor`,

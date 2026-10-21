@@ -7,6 +7,7 @@
  */
 
 import { deepFreeze } from '../util/freeze.js';
+import { israelFor } from '../places/israel.js';
 import { HebrewDate } from '../calendar/hebrew-date.js';
 import { MAX_DAYS } from '../calendar/year.js';
 import { formatIsoDate, type CivilDate } from '../time/civil.js';
@@ -45,7 +46,10 @@ export type DayLocation = GeoLocation & {
 export interface DayInfoOptions extends ZmanimOptions {
   /** Where. Without it there are no zmanim. */
   location?: DayLocation;
-  /** Israel or the diaspora. Explicit wins; otherwise `location.israel`; otherwise diaspora. */
+  /**
+   * Israel or the diaspora. Explicit wins; otherwise `location.israel`; otherwise the
+   * location's coordinates decide (`isInIsrael`); with no location, the diaspora (D-10).
+   */
   israel?: boolean;
   /** Names. Default Hebrew. */
   locale?: Locale;
@@ -127,7 +131,7 @@ export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = 
   const h = date instanceof HebrewDate ? date : HebrewDate.fromCivil(date);
   const civil = h.toCivil();
   const locale = options.locale ?? he;
-  const israel = options.israel ?? options.location?.israel ?? false;
+  const israel = israelFor(options.israel, options.location);
   const hopts: HolidayOptions = { ...options.holidays, israel };
   const events = holidaysOn(h, hopts);
   const reading = parshaFor(h, { israel });

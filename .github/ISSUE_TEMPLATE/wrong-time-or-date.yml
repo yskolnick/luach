@@ -1,0 +1,29 @@
+name: Wrong time or date
+description: A zman, holiday, parsha or date that disagrees with your source.
+labels: [accuracy]
+body:
+  - type: markdown
+    attributes:
+      value: Thank you. Please give enough detail for us to reproduce and compare.
+  - type: input
+    id: date
+    attributes: { label: Date, description: "Gregorian (YYYY-MM-DD) or Hebrew" }
+    validations: { required: true }
+  - type: input
+    id: place
+    attributes: { label: Place, description: "City, or latitude/longitude/elevation and time zone" }
+  - type: input
+    id: what
+    attributes: { label: What, description: "Which zman, holiday, parsha, haftara or learning cycle; include the Luach function and options" }
+    validations: { required: true }
+  - type: input
+    id: luach
+    attributes: { label: What Luach says }
+    validations: { required: true }
+  - type: input
+    id: source
+    attributes: { label: What your source says, description: "Name the luach, website or posek" }
+    validations: { required: true }
+  - type: textarea
+    id: more
+    attributes: { label: Anything else }

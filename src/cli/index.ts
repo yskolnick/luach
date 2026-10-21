@@ -16,7 +16,6 @@
 
 import process from 'node:process';
 import * as L from '../index.js';
-import { FULL_CITY_TABLE } from '../cities-full.js';
 
 declare const __LUACH_VERSION__: string;
 const VERSION = typeof __LUACH_VERSION__ === 'string' ? __LUACH_VERSION__ : 'dev';
@@ -67,9 +66,21 @@ function localZone(): string {
   }
 }
 
+// The full city table is large; load it only when the built-in table has no match.
+let fullTable: L.CityTable | undefined;
+async function loadFullTable(): Promise<L.CityTable> {
+  fullTable ??= (await import('../cities-full.js')).FULL_CITY_TABLE;
+  return fullTable;
+}
+
+/** Resolve --city before anything else, so the rest can stay synchronous. */
+async function preloadCity(flags: Args['flags']): Promise<void> {
+  if (typeof flags.city === 'string' && !L.findCity(flags.city)) await loadFullTable();
+}
+
 function resolveLocation(flags: Args['flags']): (L.GeoLocation & { israel?: boolean }) | undefined {
   if (typeof flags.city === 'string') {
-    const c = L.findCity(flags.city) ?? L.findCity(flags.city, { table: FULL_CITY_TABLE });
+    const c = L.findCity(flags.city) ?? (fullTable ? L.findCity(flags.city, { table: fullTable }) : undefined);
     if (!c) return fail(`no city matches "${flags.city}" (try: luach cities "${flags.city}")`);
     return { ...c, name: c.name };
   }
@@ -184,8 +195,9 @@ Calendar: --israel or --diaspora (default: from the place, else diaspora)
 Luach is free software by Yosef Skolnick (Apache-2.0). https://github.com/yskolnick/luach`);
 }
 
-export function main(argv: string[]): void {
+export async function main(argv: string[]): Promise<void> {
   const a = parse(argv);
+  await preloadCity(a.flags);
   const zone = resolveLocation(a.flags)?.timeZone ?? localZone();
   switch (a.command) {
     case 'today':
@@ -253,7 +265,8 @@ export function main(argv: string[]): void {
       const q = a.positional.join(' ');
       if (!q) return fail('cities needs a name');
       const hits = L.searchCities(q, { limit: 10 });
-      const more = hits.length < 10 ? L.searchCities(q, { table: FULL_CITY_TABLE, limit: 10 - hits.length }).filter((c) => !hits.some((h) => h.id === c.id)) : [];
+      const table = hits.length < 10 ? await loadFullTable() : undefined;
+      const more = table ? L.searchCities(q, { table, limit: 10 - hits.length }).filter((c) => !hits.some((h) => h.id === c.id)) : [];
       for (const c of [...hits, ...more]) out(`${c.name}${c.hebrewName ? ` (${c.hebrewName})` : ''}, ${c.country} · ${c.latitude}, ${c.longitude} · ${c.elevation} m · ${c.timeZone}${c.israel ? ' · Israel calendar' : ''}`);
       if (hits.length + more.length === 0) out('No match.');
       return;
@@ -271,4 +284,4 @@ export function main(argv: string[]): void {
   }
 }
 
-main(process.argv.slice(2));
+void main(process.argv.slice(2));

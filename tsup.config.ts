@@ -37,5 +37,17 @@ export default defineConfig([
     banner: { js: '#!/usr/bin/env node' },
     define: { __LUACH_VERSION__: JSON.stringify(version) },
     splitting: false,
+    // Use the library files next to it in dist/ instead of bundling a second copy.
+    esbuildPlugins: [
+      {
+        name: 'cli-uses-dist',
+        setup(build) {
+          build.onResolve({ filter: /^\.\.\/(index|cities-full)\.js$/ }, (args) => ({
+            path: `./${args.path.slice(3)}`,
+            external: true,
+          }));
+        },
+      },
+    ],
   },
 ]);

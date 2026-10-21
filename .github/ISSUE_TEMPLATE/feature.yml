@@ -1,0 +1,8 @@
+name: Feature or opinion request
+description: A new feature, or an opinion or custom Luach doesn't have yet.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: what
+    attributes: { label: What you need, description: "For an opinion or custom: who holds it, and the source (book, siman, page)" }
+    validations: { required: true }

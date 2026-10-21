@@ -88,7 +88,7 @@ All events carry flags: `yomTov` (melacha forbidden), `cholHamoed`, `fast` (`maj
 | ZMN-12 | Bein HaShmashos: Rabbeinu Tam, Geonim, Yereim | Shabbos 34b–35a; Tosafos | oracle | done |
 | ZMN-13 | Tzeis: 8.5°, 7.083°, 42, 50, 60, 72 min, Rabbeinu Tam | SA OC 261, 293 | oracle | done |
 | ZMN-14 | Shaah zmanis per opinion | — | oracle | done |
-| ZMN-15 | Candle lighting (configurable; 18 default; Jerusalem 40; Haifa 30) | SA OC 261:2; Mishna Berura 261:23 | unit; published luach values pending | in progress |
+| ZMN-15 | Candle lighting (configurable; 18 default; Jerusalem 40; Haifa 30) | SA OC 261:2; Mishna Berura 261:23 | unit; sunset vs published USNO tables | done |
 | ZMN-16 | Havdala by degrees or minutes; second-night Yom Tov candles after tzeis | SA OC 293; 514 | oracle | done |
 | ZMN-17 | Erev Pesach: sof zman achilas / biur chametz (Gra, MA) | SA OC 443:1 | oracle | done |
 | ZMN-18 | Fast start/end by opinion | SA OC 562 | oracle | done |
@@ -133,10 +133,10 @@ All events carry flags: `yomTov` (melacha forbidden), `cholHamoed`, `fast` (`maj
 
 | ID | Feature | Status |
 |---|---|---|
-| REL-01 | GitHub Actions CI: typecheck, lint, unit, property, oracle, Hermes, licence check, size budget | planned |
-| REL-02 | Semver, CHANGELOG.md, release script | planned |
-| REL-03 | RELEASING.md (Yosef publishes; token never handled by agents) | planned |
-| REL-04 | SECURITY.md, CONTRIBUTING.md, CODE_OF_CONDUCT.md, issue/PR templates, README "How to credit" | planned |
+| REL-01 | GitHub Actions CI: typecheck, lint, unit, property, oracle, Hermes, licence check, size budget | done |
+| REL-02 | Semver, CHANGELOG.md, release script | done |
+| REL-03 | RELEASING.md (Yosef publishes; token never handled by agents) | done |
+| REL-04 | SECURITY.md, CONTRIBUTING.md, CODE_OF_CONDUCT.md, issue/PR templates, README "How to credit" | done |
 
 ## Post-1.0
 

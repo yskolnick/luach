@@ -1,0 +1,11 @@
+name: Bug
+description: Something crashes, throws, or behaves unexpectedly (not a disputed time; use "Wrong time or date").
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes: { label: What happened, description: "Code to reproduce, the result, and what you expected" }
+    validations: { required: true }
+  - type: input
+    id: env
+    attributes: { label: Environment, description: "Luach version; Node / browser / Deno / Bun / React Native version" }

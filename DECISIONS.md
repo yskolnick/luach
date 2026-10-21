@@ -22,7 +22,7 @@ date-picker widget; Luach is a calculation library with no UI (see README).
 
 ### Q-00. Unmerged branches
 Branches with work not yet on `main`:
-- `m0-scaffold`: repository setup and the M1 core calendar (PR pending).
+- `m2-holidays`: M2 holidays and special days (in progress).
 
 ### Q-01. Licence: Apache-2.0 with NOTICE, or MIT
 See P-01. **Until decided:** Apache-2.0 with a `NOTICE` file.
@@ -38,6 +38,12 @@ common year in a leap year. The defaults are *as built*: Adar I for yahrzeits, A
 birthdays, `'firstAnniversary'` for yahrzeits and `'nextMonth'` for birthdays; 30 Adar I
 in a common year becomes 30 Shevat. **Until decided:** these defaults, documented as
 defaults, not rulings.
+
+### Q-05. Modern Israeli days before their amendments
+Yom HaShoah's rule (Friday → Thursday, Sunday → Monday) is applied to every year from
+1951; Yom HaAtzmaut's Monday → Tuesday rule only from 2004. Historical accuracy before the
+amendments is being researched (`docs/research/2026-10-21-modern-israeli-days.md`).
+**Until decided:** as described; these days are optional and off by default.
 
 ## Proposals
 
@@ -66,5 +72,17 @@ proleptic Gregorian avoids a silent calendar switch in 1582. ADR 0004.
 - *As built:* `gematriya()` writes an exact multiple of 1000 like its units digit (א׳ is 1
   or 1000); `parseGematriya('א׳')` returns 1.
 - *As built:* `formatHebrewDate()` omits the year's thousands by default (תשפ״ז).
+- *As built:* Purim Meshulash is listed on 16 Adar (the Sunday, third of its three days).
+- *As built:* Leil Selichos is listed on the Shabbos whose night begins Selichos (Ashkenaz).
+- *As built:* Yom Kippur Katan (optional) is not listed before Rosh Chodesh Tishrei, Cheshvan,
+  Teves or Iyar, and moves to Thursday from Friday/Shabbos.
+- *As built:* BeHaB (optional) is the Monday, Thursday and Monday after the first Shabbos of
+  Cheshvan and of Iyar.
+- *As built:* the molad is read as Jerusalem mean time at longitude 35.2354° E when turned
+  into an instant (Kiddush Levana times).
+- *As built:* Tachanun defaults: no Tachanun from Erev Yom Kippur through the end of Tishrei,
+  and from Rosh Chodesh Sivan through 12 Sivan; both are options.
+- *As built:* the Omer count text defaults to Nusach Ashkenaz wording; Sefard and Edot
+  HaMizrach are options.
 - *As built:* the plain-English locale (`en`) uses "Tishri, Heshvan, Iyyar" spellings and
   "Saturday".

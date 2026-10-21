@@ -94,6 +94,14 @@ decided:** as described (`ISRAEL_BOUNDARY` in `src/places/places.ts`).
 ### P-07. Per-module ESM output and name tables
 See ADR 0005. **Default until decided:** as proposed.
 
+### P-08. Freeze the shared tables
+`ZMANIM` (and each entry), `DEFAULT_DAY_ZMANIM`, the places from `getPlace()`,
+`builtInPlaces()` and `fullPlaces()`, and `ISRAEL_BOUNDARY` are plain objects and arrays: a
+caller's write changes every later result in the process. Proposal: `Object.freeze` them
+(deeply) where they are built. **Why:** a wrong zman is worse than a missing one, and a
+server or app shares one copy. **Default until decided:** not frozen;
+`test/immutability.test.ts` holds the tests as todos and runs each once its table is frozen.
+
 ## As built
 
 - *As built:* `gematriya()` writes an exact multiple of 1000 like its units digit (א׳ is 1

@@ -1,4 +1,7 @@
 import { defineConfig } from 'tsup';
+import { readFileSync } from 'node:fs';
+
+const { version } = JSON.parse(readFileSync('package.json', 'utf8')) as { version: string };
 
 export default defineConfig([
   {
@@ -20,6 +23,19 @@ export default defineConfig([
     clean: false,
     target: 'es2019',
     treeshake: true,
+    splitting: false,
+  },
+  {
+    // The command-line tool: one self-contained file.
+    entry: { cli: 'src/cli/index.ts' },
+    format: ['esm'],
+    dts: false,
+    sourcemap: false,
+    clean: false,
+    target: 'node18',
+    platform: 'node',
+    banner: { js: '#!/usr/bin/env node' },
+    define: { __LUACH_VERSION__: JSON.stringify(version) },
     splitting: false,
   },
 ]);

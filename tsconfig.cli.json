@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": [
+      "node"
+    ],
+    "lib": [
+      "ES2020",
+      "ES2021.Intl",
+      "DOM"
+    ]
+  },
+  "include": [
+    "src/cli",
+    "src"
+  ],
+  "exclude": []
+}

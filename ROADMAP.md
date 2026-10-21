@@ -111,12 +111,12 @@ All events carry flags: `yomTov` (melacha forbidden), `cholHamoed`, `fast` (`maj
 
 | ID | Feature | Source | Test | Status |
 |---|---|---|---|---|
-| OUT-01 | ESM + CJS + types; Node, browser, Deno, Bun, React Native (Hermes) | — | CI smoke on each | planned |
-| OUT-02 | iCal (.ics) export of holidays, zmanim, learning | RFC 5545 | unit + validator | planned |
-| OUT-03 | `getDay()` JSON "everything about this day" + JSON Schema | JSON Schema 2020-12 | schema validation test | planned |
-| OUT-04 | CLI: `luach today --city Lakewood`, `luach zmanim DATE --lat --lon` | — | unit + snapshot | planned |
-| OUT-05 | Example HTTP server (examples/, not shipped) | — | smoke | planned |
-| OUT-06 | Formatting helpers: "י״ד אדר תשפ״ז", English, short/long | — | unit | planned |
+| OUT-01 | ESM + CJS + types; Node, browser, Deno, Bun, React Native (Hermes) | — | CI smoke on each | done |
+| OUT-02 | iCal (.ics) export of holidays, zmanim, learning | RFC 5545 | unit + validator | done |
+| OUT-03 | `getDay()` JSON "everything about this day" + JSON Schema | JSON Schema 2020-12 | schema validation test | done |
+| OUT-04 | CLI: `luach today --city Lakewood`, `luach zmanim DATE --lat --lon` | — | unit + snapshot | done |
+| OUT-05 | Example HTTP server (examples/, not shipped) | — | smoke | done |
+| OUT-06 | Formatting helpers: "י״ד אדר תשפ״ז", English, short/long | — | unit | done |
 
 ## M7. Docs and examples (demo app removed by D-02)
 

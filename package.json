@@ -5,7 +5,7 @@
   "main": "./dist/index.cjs",
   "scripts": {
     "build": "tsup",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.cli.json",
     "lint": "eslint .",
     "test": "vitest run --exclude \"test/oracle/**\"",
     "test:oracle": "vitest run test/oracle",
@@ -42,14 +42,18 @@
     "@hebcal/core": "^6.14.6",
     "@hebcal/learning": "^6.12.2",
     "@types/node": "^26.6.5",
+    "ajv": "^8.20.0",
     "astronomy-engine": "^2.1.19",
     "esbuild": "^0.28.2",
     "eslint": "^9.39.5",
     "fast-check": "^4.10.2",
     "globals": "^17.13.0",
     "hermes-engine-cli": "^0.12.0",
+    "ical.js": "^2.2.1",
     "kosher-zmanim": "^0.9.0",
+    "playwright-core": "^1.64.1",
     "tsup": "^9.0.0",
+    "tsx": "^4.23.15",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.72.0",
     "vitest": "^3.2.7"
@@ -78,7 +82,8 @@
         "default": "./dist/cities-full.cjs"
       }
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./schema/day.schema.json": "./schema/day.schema.json"
   },
   "bin": {
     "luach": "./dist/cli.js"
@@ -88,7 +93,8 @@
     "NOTICE",
     "LICENSE",
     "README.md",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "schema"
   ],
   "sideEffects": false,
   "engines": {

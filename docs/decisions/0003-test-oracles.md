@@ -11,3 +11,10 @@ These are devDependencies, imported only from `test/`. Nothing in `src/` imports
 
 ## Consequences
 Test failures may come from oracle bugs; each disagreement is investigated against a primary source and documented in the accuracy report.
+
+## Other test-only tools
+- ical.js (MPL-2.0): parses Luach's iCalendar output back, as an independent check.
+- Ajv (MIT): validates `getDay()` output against `schema/day.schema.json`.
+- playwright-core (Apache-2.0): runs the built bundle in headless Chromium.
+- tsx (MIT): runs the CLI from source in tests.
+All are devDependencies; none ship.

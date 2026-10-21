@@ -53,6 +53,8 @@ jobs:
           deno-version: v2.x
       - run: deno run --allow-read scripts/smoke.mjs
       - run: node scripts/smoke.mjs && node scripts/smoke.cjs
+      - run: npx playwright-core install --with-deps chromium && node scripts/smoke-browser.mjs
+      - run: node dist/cli.js date 2026-10-21 --city Lakewood
       - uses: actions/setup-node@v4
         with:
           node-version: 20

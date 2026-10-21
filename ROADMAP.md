@@ -135,7 +135,7 @@ All events carry flags: `yomTov`, `melachaForbidden`, `cholHamoed`, `fast` (`maj
 | DOC-02 | Halachic notes per opinion with sources | — | citation review | done |
 | DOC-03 | Accuracy report generated from oracle tests | — | generated | done |
 | DOC-04 | Licence and how to credit | — | review | done |
-| APP-01 | Expo demo app: today, zmanim + opinion picker, week's holidays, parsha, daf; light/dark, RTL, accessible | — | every screen rendered and checked | planned |
+| APP-01 | Expo demo app: today, zmanim + opinion picker, week's holidays, parsha, daf; light/dark, RTL, accessible | — | every screen rendered and checked | done |
 | EX-01 | Examples: Node, browser, React, React Native, CLI | — | smoke tests | done |
 
 ## M8. Release

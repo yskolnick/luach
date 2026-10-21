@@ -4,14 +4,14 @@
  * @packageDocumentation
  */
 
-import type { HebrewDateParts } from '../calendar/hebrew-date';
-import { isLeapYear } from '../calendar/year';
-import { dayOfWeekOfDays } from '../time/civil';
-import { hebrewToDays } from '../calendar/year';
-import { gematriya } from './gematriya';
-import { isolate } from './rtl';
-import { lookup, type Locale } from '../locales/types';
-import { he } from '../locales/he';
+import type { HebrewDateParts } from '../calendar/hebrew-date.js';
+import { isLeapYear } from '../calendar/year.js';
+import { dayOfWeekOfDays } from '../time/civil.js';
+import { hebrewToDays } from '../calendar/year.js';
+import { gematriya } from './gematriya.js';
+import { isolate } from './rtl.js';
+import { lookup, type Locale } from '../locales/types.js';
+import { he } from '../locales/he.js';
 
 /** The name of a Hebrew month in `locale` (Adar I / Adar II in leap years). */
 export function monthName(month: number, year: number, locale: Locale = he): string {

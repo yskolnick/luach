@@ -7,8 +7,8 @@
  * @packageDocumentation
  */
 
-import { MS_PER_DAY, daysToCivil, civilToDays } from '../time/civil';
-import type { NoEventReason } from './solar';
+import { MS_PER_DAY, daysToCivil, civilToDays } from '../time/civil.js';
+import type { NoEventReason } from './solar.js';
 
 const RAD = Math.PI / 180;
 

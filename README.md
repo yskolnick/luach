@@ -59,6 +59,9 @@ including commercial apps. When you redistribute it (including inside an app), i
 
 > Built on Luach by Yosef Skolnick — https://github.com/yskolnick/luach
 
+Luach includes city data from [GeoNames](https://www.geonames.org/) (CC-BY 4.0); the NOTICE
+file carries that credit too.
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). Please do not submit code copied or adapted from

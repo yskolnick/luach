@@ -10,7 +10,7 @@
  * @packageDocumentation
  */
 
-import { MS_PER_DAY } from '../time/civil';
+import { MS_PER_DAY } from '../time/civil.js';
 
 const RAD = Math.PI / 180;
 const sin = (d: number) => Math.sin(d * RAD);

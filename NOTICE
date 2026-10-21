@@ -7,3 +7,8 @@ https://github.com/yskolnick/luach
 This product is licensed under the Apache License, Version 2.0 (see LICENSE).
 If you redistribute Luach or a work that includes it, the Apache License requires you to
 include this NOTICE text (for example in your app's "About" or open-source licences screen).
+
+This product includes city data from GeoNames (https://www.geonames.org/), licensed under
+the Creative Commons Attribution 4.0 International License
+(https://creativecommons.org/licenses/by/4.0/). Luach's selection, Hebrew-name choice,
+aliases and time-zone corrections are changes made to that data.

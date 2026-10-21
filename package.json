@@ -39,7 +39,17 @@
         "default": "./dist/index.cjs"
       }
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./places-full": {
+      "import": {
+        "types": "./dist/places-full.d.ts",
+        "default": "./dist/places/full.js"
+      },
+      "require": {
+        "types": "./dist/places-full.d.cts",
+        "default": "./dist/places-full.cjs"
+      }
+    }
   },
   "files": [
     "dist",

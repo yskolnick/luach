@@ -74,7 +74,7 @@ function compareYear(year: number, israel: boolean): string[] {
   const ours = new Set<string>();
   for (const e of holidaysForYear(year, { israel, modernIsraeli: true, yomKippurKatan: true })) {
     const k = toHebcal(e, israel);
-    if (k && !(year < 5712 && e.flags.modernIsraeli)) ours.add(`${e.date.epochDays}|${k}`);
+    if (k && !(year < 5712 && e.flags.modernIsraeli) && !(year < 5757 && e.id === 'yom-hashoah')) ours.add(`${e.date.epochDays}|${k}`);
   }
   const theirs = new Set<string>();
   const evs = HebrewCalendar.calendar({ year, isHebrewYear: true, il: israel, sedrot: false, omer: false, yomKippurKatan: true, shabbatMevarchim: true, noModern: false });
@@ -87,6 +87,9 @@ function compareYear(year: number, israel: boolean): string[] {
     // listing convention (see docs/accuracy.md).
     if (year < 5712 && /Yom Ha/.test(desc)) continue;
     if (year < 5728 && desc === 'Yom Yerushalayim') continue;
+    // Explained difference: hebcal moves a Sunday Yom HaShoah to Monday in every year; the
+    // Knesset adopted that rule in 1997 (5757), so earlier Sunday years stay on Sunday.
+    if (year < 5757 && desc === 'Yom HaShoah') continue;
     const days = Math.round((hd.greg().getTime() - new Date(hd.greg().getFullYear(), hd.greg().getMonth(), hd.greg().getDate()).getTime()) / 864e5) +
       Math.round(Date.UTC(hd.greg().getFullYear(), hd.greg().getMonth(), hd.greg().getDate()) / 864e5);
     theirs.add(`${days}|${hebcalKey(desc)}`);

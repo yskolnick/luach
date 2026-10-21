@@ -50,10 +50,10 @@ export function talUmatarStart(year: number, options?: { israel?: boolean }): Ta
  * Which phrase the Amidah uses on `date`, by the day (Shacharis):
  *
  * - `mashivHaruach`: "mashiv haruach umorid hageshem" is said from Musaf of Shemini
- *   Atzeres to Musaf of the first day of Pesach (Taanis 2a; SA OC 114:1). On those two days
+ *   Atzeres to Musaf of the first day of Pesach (Taanis 2a, 4b; SA OC 114:1). On those two days
  *   the value describes Shacharis, and `changesAtMusaf` is true.
  * - `talUmatar`: "v'sein tal umatar" is asked from the start date (see
- *   {@link talUmatarStart}) until Musaf of the first day of Pesach (SA OC 117:1).
+ *   {@link talUmatarStart}) until Mincha of Erev Pesach (SA OC 117:1).
  *   Values describe the daytime Shacharis of `date`.
  *
  * Whether to say "morid hatal" in summer is a custom (Ashkenaz outside Israel generally
@@ -132,12 +132,12 @@ export function kiddushLevana(year: number, month: number): {
   const at = (ms: number, opinion: string, source: string): KiddushLevanaTime => ({ time: new Date(t + ms), opinion, source });
   return {
     earliest: {
-      threeDays: at(3 * MS_PER_DAY, 'Three days after the molad', 'Rabbeinu Yonah (cited in Beis Yosef OC 426); Rema OC 426:4'),
-      sevenDays: at(7 * MS_PER_DAY, 'Seven days after the molad', 'Shulchan Aruch OC 426:4 (kabbalistic practice)'),
+      threeDays: at(3 * MS_PER_DAY, 'Three days after the molad', 'Talmidei Rabbeinu Yonah (on the Rif, Berachos), cited in Beis Yosef OC 426; MB 426:20'),
+      sevenDays: at(7 * MS_PER_DAY, 'Seven days after the molad', 'Shulchan Aruch OC 426:4 (Beis Yosef: kabbalistic source, R. Yosef Gikatilla)'),
     },
     latest: {
-      halfMonth: at(HALF_MONTH_MS, 'Half the month from the molad (14 d 18 h 22 m 1⅔ s)', 'Shulchan Aruch OC 426:3'),
-      fifteenDays: at(15 * MS_PER_DAY, 'Fifteen full days from the molad', 'Rema OC 426:3 (citing Maharil)'),
+      halfMonth: at(HALF_MONTH_MS, 'Half the month from the molad (14 d 18 h 22 m 1⅔ s)', 'Rema OC 426:3 (citing Teshuvos Maharil)'),
+      fifteenDays: at(15 * MS_PER_DAY, 'Fifteen full days from the molad', 'Shulchan Aruch OC 426:3 (until the 16th day from the molad, not inclusive; MB 426:17)'),
     },
   };
 }

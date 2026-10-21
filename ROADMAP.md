@@ -29,7 +29,7 @@ Research behind the extra items (marked †): `docs/research/2026-10-21-what-use
 | CAL-04 | The four dechiyos | Rambam KH 7:1–7 | properties: RH never Sun/Wed/Fri; YK never Fri/Sun; lengths 353–355/383–385 | done |
 | CAL-05 | Year types (chaserim, kesidran, shleimim) | Rambam KH 8:5–6 | property: type ↔ month lengths | done |
 | CAL-06 | Day of week; days in month/year; Adar I/II | — | unit + oracle | done |
-| CAL-07 | Yahrzeit/birthday/bar mitzvah in Adar, 30 Cheshvan, 30 Kislev with both customs | SA OC 55:10, 568:7 (Rema) | unit; oracle: hebcal yahrzeit (Adar I custom) | done |
+| CAL-07 | Yahrzeit/birthday/bar mitzvah in Adar, 30 Cheshvan, 30 Kislev with both customs | Rema OC 55:10; SA OC 568:7 with Rema; Magen Avraham 568:20, MB 568:42 | unit; oracle: hebcal yahrzeit (Adar I custom) | done |
 | CAL-08 | Gematriya with geresh/gershayim, 15/16 rule, with/without thousands; parsing | — | unit; round-trip 1–9999; oracle: hebcal 1–999 | done |
 | CAL-09 | Names in Hebrew, Ashkenazi, Sephardi/Israeli and plain English; pluggable tables | — | unit | done |
 | CAL-10 | RTL: opt-in Unicode isolates; docs explain why | Unicode UAX #9 | unit | done |
@@ -45,18 +45,18 @@ All events carry flags: `yomTov`, `melachaForbidden`, `cholHamoed`, `fast` (`maj
 | ID | Spec | Source | Test | Status |
 |---|---|---|---|---|
 | HOL-01 | Rosh Hashana, Yom Kippur, Sukkos, Shemini Atzeres, Simchas Torah, Pesach, Shavuos, with Yom Tov Sheni outside Israel | Torah; SA OC 496 | oracle: hebcal 50 years, Israel + diaspora | done |
-| HOL-02 | Chol Hamoed, Hoshana Rabba, Isru Chag, Erev Yom Tov | SA OC 429 (Isru Chag) | oracle: hebcal | done |
+| HOL-02 | Chol Hamoed, Hoshana Rabba, Isru Chag, Erev Yom Tov | Rema OC 429:2 (Isru Chag) | oracle: hebcal | done |
 | HOL-03 | Fasts with nidcheh rules: Tzom Gedalia, Asarah B'Teves, Taanis Esther (Thursday rule), 17 Tammuz, Tisha B'Av, Taanis Bechoros (Thursday) | SA OC 549–550, 686:2, 470:2 | oracle: hebcal | done |
 | HOL-04 | Chanukah with candle count; Purim, Shushan Purim, Purim Meshulash, Purim Katan, Shushan Purim Katan | SA OC 670–697; 688:6 | oracle: hebcal | done |
 | HOL-05 | Tu B'Shvat, Lag BaOmer, Tu B'Av, Pesach Sheni, Shloshes Yemei Hagbala | — | oracle: hebcal | done |
-| HOL-06 | Rosh Chodesh (1 or 2 days), Shabbos Mevorchim, molad announcement text | SA OC 417, 284:7 (Mevorchim custom) | oracle: hebcal | in progress (announcement text planned) |
-| HOL-07 | Special Shabbosos: Shuva, Shira, Shekalim, Zachor, Parah, HaChodesh, HaGadol, Chazon, Nachamu, Chol Hamoed | SA OC 685 | oracle: hebcal | in progress (Shira waits for parsha, M3) |
-| HOL-08 | Optional: BeHaB, Yom Kippur Katan, Shovavim (off by default) | SA OC 492; MB 417 | unit + oracle where available | done |
+| HOL-06 | Rosh Chodesh (1 or 2 days), Shabbos Mevorchim, molad announcement text | Magen Avraham / MB 417:1 (Mevorchim; not before Tishrei); Rema OC 284:7 | oracle: hebcal | in progress (announcement text planned) |
+| HOL-07 | Special Shabbosos: Shuva, Shira, Shekalim, Zachor, Parah, HaChodesh, HaGadol, Chazon, Nachamu, Chol Hamoed | SA OC 685:1–6 | oracle: hebcal | in progress (Shira waits for parsha, M3) |
+| HOL-08 | Optional: BeHaB, Yom Kippur Katan, Shovavim (off by default) | SA OC 492:1, MB 492:3; MB 417:4 | unit + oracle where available | done |
 | HOL-09 | Optional: Yom HaShoah, Yom HaZikaron, Yom HaAtzmaut, Yom Yerushalayim with Knesset postponement rules | Knesset laws (see research note) | oracle: hebcal | done |
 | HOL-10 | Omer: day, weeks-and-days text in Hebrew and English, sefirah | — | oracle: hebcal omer | done |
 | HOL-11 | V'sein tal umatar start (7 Cheshvan in Israel; Dec 4/5 outside, any century), mashiv haruach / morid hatal | Taanis 10a; SA OC 117:1; 114 | unit across 1900–2240 | done |
 | HOL-12 | Birkas HaChama (28-year cycle) | Berachos 59b; SA OC 229:2 | unit (1981, 2009, 2037) | done |
-| HOL-13 | Kiddush Levana earliest/latest by several opinions (3 days, 7 days, half-month, 15 days) | SA OC 426:3–4; Rema | unit | done |
+| HOL-13 | Kiddush Levana earliest/latest by several opinions (3 days, 7 days, half-month, 15 days) | SA OC 426:3–4 with Rema; Beis Yosef OC 426 | unit | done |
 | HOL-14 | Tefillah predicates: tachanun, Hallel (full/half), Yaaleh V'Yavo, Al HaNissim, Mizmor L'Sodah, is-fast-day, is-aveilus period † | research §7 | unit, published siddur rules | done |
 | HOL-15 | Holiday names in all four locales | — | unit | done |
 | HOL-16 | Other Israeli days (Sigd, Yom HaAliyah, Swords of Iron memorial day…) and Chag HaBanot | Knesset laws | oracle: hebcal | planned |

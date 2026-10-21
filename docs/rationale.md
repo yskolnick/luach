@@ -173,7 +173,7 @@ recorded as new entries; old ones are superseded, not erased.
 ### Q-05. Modern Israeli days before their amendments {#q-05}
 
 - **What it does:** the moving rules apply from the year each was adopted: Yom HaShoah
-  Friday → Thursday from 1951 and Sunday → Monday from 1997; Yom HaAtzmaut Monday → Tuesday
+  Friday → Thursday from 1959 and Sunday → Monday from 1997; Yom HaAtzmaut Monday → Tuesday
   from 2004. These days are optional and off by default.
 - **Why:** a historical date should match what was observed that year.
 - **Sources:** [modern Israeli days](./research/2026-10-21-modern-israeli-days.md): the law
@@ -364,8 +364,9 @@ These are defaults and details the code has that nobody has chosen. Each can be 
   are **not** in the MB or MA; they are a siddur and luach custom, and lists differ.
 - **Checked against:** hebcal, every year 5660–6000.
 - **Confidence:** Medium.
-- **Open:** for Erev Rosh Chodesh on Friday, MB 417:4 says that those who say Selichos fast
-  on Thursday and others on Friday; the code always uses Thursday.
+- **Open:** **superseded as to its sources by [AB-37](#ab-37)** (2026-10-21). Erev Rosh
+  Chodesh on Friday is now an option (`yomKippurKatanOnFriday`), with the Magen Avraham and
+  the Mishna Berura cited for each side; Thursday stays the default.
 
 ### AB-06. BeHaB {#ab-06}
 
@@ -375,9 +376,9 @@ These are defaults and details the code has that nobody has chosen. Each can be 
 - **Sources:** SA OC 492:1 with the Rema; Mishna Berura 492:3 (*verified*).
 - **Checked against:** unit tests only; hebcal's comparison does not include BeHaB.
 - **Confidence:** Medium.
-- **Open:** **edge case.** MB 492:3 speaks of the first Shabbos *after* Rosh Chodesh, but
-  the code counts 1 Cheshvan or 1 Iyar itself when it is Shabbos. This should be checked
-  against a printed luach.
+- **Open:** **superseded by [AB-38](#ab-38)** (2026-10-21). The edge case recorded here
+  (MB 492:3 speaks of the first Shabbos *after* Rosh Chodesh, but the code counted 1 Cheshvan
+  or 1 Iyar itself when it was Shabbos) is fixed: the count now starts after Rosh Chodesh.
 
 ### AB-07. The molad in Jerusalem mean time {#ab-07}
 
@@ -483,8 +484,10 @@ These are defaults and details the code has that nobody has chosen. Each can be 
   read** (*not verified*).
 - **Checked against:** the Gra's plag is checked against kosher-zmanim (within 8 seconds).
 - **Confidence:** Medium.
-- **Open:** on the MA's reading the day may end at the end of sunset, which would make a
-  slightly later variant; not built. The Levush should be read in the original.
+- **Open:** **superseded as to its source by [AB-40](#ab-40)** (2026-10-21). The second
+  citation audit found the source is Levush OC 267 as reported in Biur Halacha 261:2, and that
+  Magen Avraham 233:3 reads the Levush as counting from tzeis; the sources above are kept
+  for the record. The Levush should still be read in the original.
 
 ### AB-15. Fast times {#ab-15}
 
@@ -590,7 +593,8 @@ These are defaults and details the code has that nobody has chosen. Each can be 
 - **Sources:** GeoNames (CC-BY 4.0); overrides documented in `scripts/build-places.py`.
 - **Checked against:** every place has a valid time zone and a Hebrew name.
 - **Confidence:** High.
-- **Open:** requests for more cities are welcome.
+- **Open:** the count is **superseded by [AB-41](#ab-41)** (197 places since 2026-10-21).
+  Requests for more cities are welcome.
 
 ### AB-24. Place search ranking {#ab-24}
 

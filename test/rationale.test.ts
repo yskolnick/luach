@@ -27,3 +27,13 @@ it('every rationale entry states its sources and confidence', () => {
     expect(s, id).toMatch(/\*\*Confidence:\*\* (High|Medium|Low|Not applicable)\b/);
   }
 });
+
+it('a superseded entry says so in its rationale', () => {
+  const superseded = new Set([...decisions.matchAll(/supersedes (?:the count in )?([DQP]-\d\d|AB-\d\d)/g)].map((m) => m[1]!));
+  expect(superseded.size).toBeGreaterThan(0);
+  for (const id of superseded) {
+    const section = sections.find((s) => s.startsWith(`${id}.`));
+    expect(section, id).toBeDefined();
+    expect(section, id).toMatch(/superseded/i);
+  }
+});

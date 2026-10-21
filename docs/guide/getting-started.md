@@ -20,7 +20,7 @@ import { dayInfo, getPlace } from 'luach';
 
 const info = dayInfo({ year: 2026, month: 10, day: 23 }, { location: getPlace('lakewood') });
 info.candleLighting?.local;  // "17:47"
-info.parsha.name;            // "לך לך"
+info.parsha?.name;           // "לך לך"
 ```
 
 > **Ask your rav. This library calculates; it does not rule.** Every zman names its opinion

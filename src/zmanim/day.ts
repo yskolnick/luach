@@ -6,6 +6,7 @@
  */
 
 import { HebrewDate } from '../calendar/hebrew-date.js';
+import { MAX_DAYS } from '../calendar/year.js';
 import { civilDateAt } from '../time/zone.js';
 import { holidaysOn } from '../holidays/holidays.js';
 import type { HolidayEvent, HolidayOptions } from '../holidays/types.js';
@@ -89,8 +90,9 @@ export function isMelachaForbiddenAt(instant: Date, location: GeoLocation, optio
   const civil = civilDateAt(instant.getTime(), location.timeZone);
   const z = new ZmanimCalendar(location, civil, { ...options, rounding: false });
   const today = HebrewDate.fromCivil(civil);
-  const tomorrow = today.next();
   const holy = (d: HebrewDate) => d.isShabbos || holidaysOn(d, options).some((e) => e.flags.melachaForbidden);
+  // After 29 Elul 9999 (the last supported day) comes Rosh Hashana 10000, always Yom Tov.
+  const holyTomorrow = () => today.epochDays === MAX_DAYS || holy(today.next());
   const t = instant.getTime();
   const sunset = z.sunset().time;
   const start = z.candleLighting(options.beginsMinutesBeforeSunset ?? z.options.candleLightingMinutes).time;
@@ -100,7 +102,7 @@ export function isMelachaForbiddenAt(instant: Date, location: GeoLocation, optio
     return holy(today);
   }
   if (t < start.getTime()) return holy(today);
-  if (t >= end.getTime()) return holy(tomorrow);
+  if (t >= end.getTime()) return holyTomorrow();
   // Between candle lighting and havdala time: forbidden if today is holy (still ending) or tomorrow is (beginning).
-  return holy(today) || holy(tomorrow);
+  return holy(today) || holyTomorrow();
 }

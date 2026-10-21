@@ -144,7 +144,7 @@ export function haftaraFor(date: HebrewDate, options: HaftaraOptions = {}): Haft
   if (rcTomorrow && rcTomorrow.day === 1) return special('machar-chodesh', minhag);
 
   const reading = parshaFor(date, { israel });
-  if (!reading.parsha) return null;
+  if (!reading?.parsha) return null;
   const key = reading.parsha.join('-');
   return make(key, PARSHA_HAFTAROS[key], minhag);
 }

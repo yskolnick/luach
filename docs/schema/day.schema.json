@@ -225,7 +225,10 @@
       }
     },
     "parsha": {
-      "type": "object",
+      "type": [
+        "object",
+        "null"
+      ],
       "required": [
         "date",
         "ids",

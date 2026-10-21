@@ -184,3 +184,8 @@ See ADR 0005. **Default until decided:** as proposed.
   halves the package.
 - *As built:* security reports go through GitHub's private vulnerability reporting; the code
   of conduct is Luach's own, short text.
+- *As built:* in year 9999, the last supported year, answers that need a date in year 10000
+  are left out rather than guessed: `readingCycle(9999)` stops at the last Shabbos of 9999 (its
+  joins still use the known weekday of 1 Tishrei 10000); `parshaFor` (and `dayInfo().parsha`)
+  is null for the few days whose coming Shabbos is in 10000. Leil Selichos and candle lighting
+  on 29 Elul 9999 are computed (Rosh Hashana 10000 is always Yom Tov).

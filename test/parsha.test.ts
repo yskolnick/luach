@@ -3,17 +3,17 @@ import { HebrewDate, Month, parshaFor, parshaName, pirkeiAvos, ashkenazi, he, se
 
 describe('parsha', () => {
   it('this week (published): Shabbos 24 Oct 2026 is Lech Lecha', () => {
-    const r = parshaFor(HebrewDate.fromGregorian(2026, 10, 21));
+    const r = parshaFor(HebrewDate.fromGregorian(2026, 10, 21))!;
     expect(r.parsha).toEqual(['lech-lecha']);
     expect(parshaName(r.parsha, ashkenazi)).toBe('Lech Lecha');
     expect(parshaName(r.parsha, he)).toBe('לך לך');
   });
   it('joined parshiyos', () => {
-    const r = parshaFor(HebrewDate.fromGregorian(2026, 3, 14)); // 25 Adar 5786: Vayakhel-Pekudei
+    const r = parshaFor(HebrewDate.fromGregorian(2026, 3, 14))!; // 25 Adar 5786: Vayakhel-Pekudei
     expect(parshaName(r.parsha, sephardi)).toBe('Vayakhel-Pekudei');
   });
   it('a Shabbos that is Yom Tov has no parsha', () => {
-    const r = parshaFor(new HebrewDate(5787, Month.TISHREI, 1)); // Shabbos Rosh Hashana 5787
+    const r = parshaFor(new HebrewDate(5787, Month.TISHREI, 1))!; // Shabbos Rosh Hashana 5787
     expect(r.parsha).toBeNull();
     expect(r.holiday).toBe('rosh-hashana');
   });
@@ -25,7 +25,7 @@ describe('parsha', () => {
   });
   it('Shabbos Shira is Beshalach', () => {
     const shira = holidaysForYear(5787).find((e) => e.id === 'shabbos-shira')!;
-    expect(parshaFor(shira.date).parsha).toContain('beshalach');
+    expect(parshaFor(shira.date)!.parsha).toContain('beshalach');
   });
   it('Shovavim weeks (optional)', () => {
     const common = holidaysForYear(5786, { shovavim: true }).filter((e) => e.id === 'shovavim');

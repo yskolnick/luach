@@ -125,7 +125,7 @@ function printDay(date: CivilDate, flags: Record<string, string | true>): void {
   if (flags.json) return line(JSON.stringify(info, null, 2));
   line(`${info.gregorian}  ${info.weekdayName}, ${info.hebrew.formatted}${loc && 'name' in loc && loc.name ? `  (${loc.name})` : ''}`);
   for (const e of info.events) line(`  • ${e.name}`);
-  if (info.parsha.name) line(`  Parsha (${info.parsha.date}): ${info.parsha.name}`);
+  if (info.parsha?.name) line(`  Parsha (${info.parsha.date}): ${info.parsha.name}`);
   if (info.omer) line(`  Omer: ${info.omer.textEnglish}`);
   for (const [k, v] of Object.entries(info.learning)) if (v) line(`  ${k}: ${v}`);
   if (info.zmanim.length) {

@@ -233,10 +233,11 @@ export function holidaysForYear(year: number, options: HolidayOptions = {}): Hol
   b.add('rosh-hashana-labehemos', d(Month.ELUL, 1), { minor: true });
   // Leil Selichos (Ashkenaz): the Motzaei Shabbos before Rosh Hashana, or a week earlier if
   // fewer than four days of selichos would remain (Rema OC 581:1; the four-day reason is MB 581:6). Dated on the Shabbos.
+  // Counted from Erev Rosh Hashana (29 Elul), so year 9999 needs no date in year 10000.
   {
-    const rh = new HebrewDate(year + 1, Month.TISHREI, 1);
-    let s = rh.addDays(-4).onOrBefore(SHABBAT);
-    if (rh.daysSince(s) < 5) s = s.addDays(-7);
+    const erevRh = d(Month.ELUL, 29);
+    let s = erevRh.addDays(-3).onOrBefore(SHABBAT);
+    if (erevRh.daysSince(s) < 4) s = s.addDays(-7);
     b.add('leil-selichos', s, { minor: true });
   }
   b.add('erev-rosh-hashana', d(Month.ELUL, 29), { erev: true });

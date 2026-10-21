@@ -56,6 +56,10 @@ All notable changes for users of the `luach` package. This project follows
 - Yom Kippur Katan: new option `yomKippurKatanOnFriday` (`'thursday'`, the default, or
   `'friday'`) for an Erev Rosh Chodesh on Friday; moved days carry `moved: true`; the
   citations now say what Magen Avraham 417:3 and Mishna Berura 417:4 each hold.
+- Every date in Hebrew year 9999 works: `holidaysForYear(9999)` and everything built on it
+  no longer throw. `parshaFor` returns `null` (and `dayInfo().parsha` is `null`) only for the
+  last days of 9999, whose coming Shabbos is in year 10000; `readingCycle(9999)` omits the
+  Shabbosos of year 10000.
 - The city-data files ship without source maps; the package is about half the size.
 - Hebrew zman labels carry a left-to-right mark (U+200E) after each degree sign, so the
   angle reads correctly in right-to-left text.

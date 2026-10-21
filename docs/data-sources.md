@@ -21,3 +21,9 @@ Datasets planned (not yet shipped):
 | Data | Source | Licence | Notes |
 |---|---|---|---|
 | Solar position formulas | NOAA Solar Calculator | US government work, public domain | method re-implemented |
+
+Test data (in `test/`, not shipped in the package):
+
+| Data | Where | Source | Licence | Notes |
+|---|---|---|---|---|
+| 32 one-day sun tables (rise, set, upper transit, begin and end of civil twilight; UTC, to the minute) for Jerusalem, Lakewood, London, Los Angeles, Johannesburg, Sydney, Auckland and Reykjavik at the solstices and equinoxes of 2026 | `test/fixtures/usno.json`, checked by `test/usno.test.ts` (within 60 s) | US Naval Observatory, Astronomical Applications Department, `https://aa.usno.navy.mil/api/rstt/oneday`, retrieved 2026-10-21 (the source and date are in the file) | US government work, public domain | ported from the retired second implementation (D-04) |

@@ -33,7 +33,8 @@ All notable changes for users of the `luach` package. This project follows
   15,000+ people in a separate import, `luach/places-full` (GeoNames, CC-BY 4.0).
 - The ESM build is now one file per module, so unused features are dropped by bundlers.
 - `dayInfo` / `dayInfoRange`: everything about a day as JSON, with a JSON Schema
-  (`docs/schema/day.schema.json`).
+  shipped in the package as `luach/schema/day.schema.json`; its `$id` and each object's
+  `$schema` are a URL that serves the JSON file.
 - iCalendar export (`toICalendar`) of holidays, parsha, learning, candle lighting, havdala
   and zmanim.
 - `parseHebrewDate` for "י״ד אדר תשפ״ז" and "14 Adar II 5787"; `moladAnnouncement`;

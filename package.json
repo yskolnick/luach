@@ -40,6 +40,7 @@
       }
     },
     "./package.json": "./package.json",
+    "./schema/day.schema.json": "./schema/day.schema.json",
     "./places-full": {
       "import": {
         "types": "./dist/places-full.d.ts",
@@ -53,6 +54,7 @@
   },
   "files": [
     "dist",
+    "schema",
     "NOTICE",
     "LICENSE",
     "README.md",

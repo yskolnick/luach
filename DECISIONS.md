@@ -161,3 +161,9 @@ See ADR 0005. **Default until decided:** as proposed.
   halves the package.
 - *As built:* security reports go through GitHub's private vulnerability reporting; the code
   of conduct is Luach's own, short text.
+- *As built:* the day JSON Schema ships in the package as `luach/schema/day.schema.json`
+  (`docs/schema/` keeps an identical copy, checked by a test). Its `$id`, and `$schema` in
+  every `dayInfo()` object, is
+  `https://raw.githubusercontent.com/yskolnick/luach/main/schema/day.schema.json`, a URL
+  that serves the JSON (the earlier GitHub `blob/` URL served a web page). Every object in
+  the schema with a fixed shape, including `learning`, is closed (`additionalProperties: false`).

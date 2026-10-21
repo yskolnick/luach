@@ -12,4 +12,4 @@ npx luach cities "bene beraq"
 ```
 
 Add `--json` for machine-readable output (the same shape as `dayInfo()`;
-see `docs/schema/day.schema.json`).
+see `schema/day.schema.json`, shipped as `luach/schema/day.schema.json`).

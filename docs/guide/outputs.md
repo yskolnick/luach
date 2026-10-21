@@ -5,7 +5,9 @@
 `dayInfo(date, options)` returns a plain JSON object with everything about the day: Hebrew
 date, events, parsha and haftara, Omer, tefillah changes, learning, and (with a `location`)
 zmanim, candle lighting, havdala and fast times. Its shape is described by a
-[JSON Schema](https://github.com/yskolnick/luach/blob/main/docs/schema/day.schema.json).
+[JSON Schema](https://raw.githubusercontent.com/yskolnick/luach/main/schema/day.schema.json),
+which ships in the package as `luach/schema/day.schema.json`; each object's `$schema` is that
+URL (`DAY_INFO_SCHEMA_ID`).
 
 ## iCal
 

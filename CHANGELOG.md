@@ -60,6 +60,9 @@ All notable changes for users of the `luach` package. This project follows
   no longer throw. `parshaFor` returns `null` (and `dayInfo().parsha` is `null`) only for the
   last days of 9999, whose coming Shabbos is in year 10000; `readingCycle(9999)` omits the
   Shabbosos of year 10000.
+- `parseGematriya` rejects numerals not written the standard way (letters out of order,
+  repeated units or tens, יה/יו for 15/16, doubled geresh or gershayim) instead of adding up
+  the letters; every string `gematriya()` writes still parses, and thousands need a geresh.
 - The city-data files ship without source maps; the package is about half the size.
 - Hebrew zman labels carry a left-to-right mark (U+200E) after each degree sign, so the
   angle reads correctly in right-to-left text.

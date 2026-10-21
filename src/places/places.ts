@@ -66,10 +66,10 @@ const PENINEI_SHABBAT_3_2 = 'Peninei Halakha, Shabbat 3:2 (R. Eliezer Melamed; p
  * before shki'a, in Haifa thirty minutes before, and in Tel Aviv and most other Israeli
  * cities twenty minutes before."
  */
-export const LOCAL_CANDLE_LIGHTING: Readonly<Record<number, CandleLightingCustom>> = {
+export const LOCAL_CANDLE_LIGHTING: Readonly<Record<number, CandleLightingCustom>> = /*#__PURE__*/ deepFreeze({
   281184: { minutes: 40, custom: 'the custom of Jerusalem', source: `${PENINEI_SHABBAT_3_2}; Peninei Halakha, Zemanim 13:5 n. 11` },
   294801: { minutes: 30, custom: 'the custom of Haifa', source: PENINEI_SHABBAT_3_2 },
-};
+});
 
 // ------------------------------------------------------------ Israel boundary
 

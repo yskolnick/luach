@@ -369,7 +369,8 @@ recorded as new entries; old ones are superseded, not erased.
 ### P-08. Freeze the shared tables {#p-08}
 
 - **What it does:** since [D-11](#d-11), `ZMANIM`, `DEFAULT_DAY_ZMANIM`, the place objects
-  (built-in and full) and `ISRAEL_BOUNDARY` are deeply frozen where they are built.
+  (built-in and full), `LOCAL_CANDLE_LIGHTING` and `ISRAEL_BOUNDARY` are deeply frozen where
+  they are built.
 - **Why:** they are shared by every caller in a process. A test showed that writing to one
   (for example, a zman's opinion text, or a place's latitude) changes every later result.
 - **Sources:** no halachic source; an engineering choice.

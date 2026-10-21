@@ -59,7 +59,7 @@ All events carry flags: `yomTov`, `melachaForbidden`, `cholHamoed`, `fast` (`maj
 | HOL-13 | Kiddush Levana earliest/latest by several opinions (3 days, 7 days, half-month, 15 days) | SA OC 426:3–4 with Rema; Beis Yosef OC 426 | unit | done |
 | HOL-14 | Tefillah predicates: tachanun, Hallel (full/half), Yaaleh V'Yavo, Al HaNissim, Mizmor L'Sodah, is-fast-day, is-aveilus period † | research §7 | unit, published siddur rules | done |
 | HOL-15 | Holiday names in all four locales | — | unit | done |
-| HOL-16 | Other Israeli days (Sigd, Yom HaAliyah, Swords of Iron memorial day…) and Chag HaBanot | Knesset laws | oracle: hebcal | planned |
+| HOL-16 | Other Israeli commemorations by Hebrew date (Sigd, Yom HaAliyah, Herzl, Ben-Gurion, Jabotinsky, Rabin, Zeevi, Begin, Rav Ovadia Yosef, Golda Meir, Yemenite aliyah, 7 October memorial, …) and Chag HaBanot; optional | Knesset laws (research note 2026-10-21-israeli-commemorations) | oracle: hebcal (explained differences) | done |
 | HOL-17 | Shovavim (optional) | MB 685 / customs | unit | planned (needs parsha, M3) |
 
 ## M3. Parsha, haftara and learning cycles
@@ -131,10 +131,10 @@ All events carry flags: `yomTov`, `melachaForbidden`, `cholHamoed`, `fast` (`maj
 
 | ID | Spec | Source | Test | Status |
 |---|---|---|---|---|
-| DOC-01 | Docs site (VitePress): getting started, recipes, API reference from TSDoc | — | build in CI | planned |
-| DOC-02 | Halachic notes per opinion with sources | — | citation review | planned |
-| DOC-03 | Accuracy report generated from oracle tests | — | generated | planned |
-| DOC-04 | Licence and how to credit | — | review | planned |
+| DOC-01 | Docs site (VitePress): getting started, recipes, API reference from TSDoc | — | build in CI | done |
+| DOC-02 | Halachic notes per opinion with sources | — | citation review | done |
+| DOC-03 | Accuracy report generated from oracle tests | — | generated | done |
+| DOC-04 | Licence and how to credit | — | review | done |
 | APP-01 | Expo demo app: today, zmanim + opinion picker, week's holidays, parsha, daf; light/dark, RTL, accessible | — | every screen rendered and checked | planned |
 | EX-01 | Examples: Node, browser, React, React Native, CLI | — | smoke tests | done |
 

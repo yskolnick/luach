@@ -276,6 +276,7 @@ export function holidaysForYear(year: number, options: HolidayOptions = {}): Hol
 
   // ---- Modern Israeli days (Knesset laws; see docs/research/2026-10-21-modern-israeli-days.md) ----
   if (options.modernIsraeli) addModernIsraeli(b);
+  if (options.israeliCommemorations) addCommemorations(b);
 
   return b.events.sort((x, y) => x.date.epochDays - y.date.epochDays);
 }
@@ -328,10 +329,70 @@ function addModernIsraeli(b: Builder): void {
   }
 }
 
+/**
+ * Israeli commemorations set by Hebrew date, with each law's moving rule
+ * (docs/research/2026-10-21-israeli-commemorations.md). Days whose date is left to a
+ * minister's discretion (Hebrew Language Day, Liberation Day) are not listed.
+ */
+const COMMEMORATIONS: {
+  id: string;
+  month: number | 'adar';
+  day: number;
+  from: number;
+  /** Moving rule by weekday: returns the shift in days. */
+  move: (dow: number) => number;
+  official: boolean;
+}[] = [
+  // Shabbos → the Thursday before (Sigd law, 2008).
+  { id: 'sigd', month: Month.CHESHVAN, day: 29, from: 5769, move: (w) => (w === SHABBAT ? -2 : 0), official: true },
+  // Friday → the Wednesday before (Aliyah Day law, 2016).
+  { id: 'yom-haaliyah', month: Month.CHESHVAN, day: 7, from: 5777, move: (w) => (w === FRIDAY ? -2 : 0), official: true },
+  // Shabbos → Sunday (Herzl law, 2004; 10 Iyar is in fact never Shabbos).
+  { id: 'yom-herzl', month: Month.IYAR, day: 10, from: 5765, move: (w) => (w === SHABBAT ? 1 : 0), official: true },
+  // Friday or Shabbos → the next Sunday (Ben-Gurion law, 1976).
+  { id: 'yom-ben-gurion', month: Month.KISLEV, day: 6, from: 5737, move: (w) => (w === FRIDAY ? 2 : w === SHABBAT ? 1 : 0), official: true },
+  // Shabbos → Sunday (Jabotinsky law, 2005).
+  { id: 'yom-jabotinsky', month: Month.TAMMUZ, day: 29, from: 5765, move: (w) => (w === SHABBAT ? 1 : 0), official: true },
+  // Friday or Shabbos → the Thursday before (Rabin Memorial Day law, 1997).
+  { id: 'yom-rabin', month: Month.CHESHVAN, day: 12, from: 5758, move: (w) => (w === FRIDAY ? -1 : w === SHABBAT ? -2 : 0), official: true },
+  // Friday → Thursday (Zeevi law, 2005).
+  { id: 'yom-zeevi', month: Month.TISHREI, day: 30, from: 5766, move: (w) => (w === FRIDAY ? -1 : 0), official: true },
+  // Friday or Shabbos (a rest day, or the day before one) → the first weekday after (Begin law, 1998, as amended).
+  { id: 'yom-begin', month: 'adar', day: 4, from: 5758, move: (w) => (w === FRIDAY ? 2 : w === SHABBAT ? 1 : 0), official: true },
+  // Shabbos → Sunday (Rav Ovadia Yosef law, 2025).
+  { id: 'yom-ovadia-yosef', month: Month.CHESHVAN, day: 3, from: 5786, move: (w) => (w === SHABBAT ? 1 : 0), official: true },
+  // Shabbos → the first weekday after (Golda Meir law, 2026).
+  { id: 'yom-golda-meir', month: Month.KISLEV, day: 8, from: 5787, move: (w) => (w === SHABBAT ? 1 : 0), official: true },
+  // Friday or Shabbos (or the day before a rest day) → Sunday of the following week (law, 2025).
+  { id: 'yom-aliyat-yehudei-teiman', month: Month.KISLEV, day: 15, from: 5786, move: (w) => (w === FRIDAY ? 2 : w === SHABBAT ? 1 : 0), official: true },
+  // Shabbos (or the day before a rest day) → the first weekday after (7 October law, 2026; observed from 2024).
+  { id: 'yom-zikaron-7-oktober', month: Month.TISHREI, day: 24, from: 5785, move: (w) => (w === SHABBAT ? 1 : w === FRIDAY ? 2 : 0), official: true },
+  // Ethiopian Jews who died on the way to Israel: with Yom Yerushalayim, 28 Iyar.
+  { id: 'yom-zikaron-yehudei-etiopia', month: Month.IYAR, day: 28, from: 5763, move: () => 0, official: true },
+  // The fallen whose burial place is unknown: 7 Adar (Adar II in a leap year); set by the Military Rabbinate.
+  { id: 'yom-zikaron-nifalim-lo-noda-kvuram', month: 'adar', day: 7, from: 5710, move: () => 0, official: true },
+  // Family Day, 30 Shevat (Ministry of Education).
+  { id: 'yom-hamishpacha', month: Month.SHEVAT, day: 30, from: 5734, move: () => 0, official: true },
+  // Chag HaBanot: a North African custom on 1 Teves, not an official day.
+  { id: 'chag-habanot', month: Month.TEVES, day: 1, from: 1, move: () => 0, official: false },
+];
+
+function addCommemorations(b: Builder): void {
+  for (const c of COMMEMORATIONS) {
+    if (b.year < c.from) continue;
+    const month = c.month === 'adar' ? purimMonth(b.year) : c.month;
+    if (c.day > monthLength(b.year, month)) continue;
+    const base = b.d(month, c.day);
+    const shift = c.move(base.dayOfWeek);
+    const day = base.addDays(shift);
+    b.add(c.id, day, c.official ? { modernIsraeli: true, optional: true } : { minor: true, optional: true }, shift ? { moved: true } : undefined);
+  }
+}
+
 const cache = new Map<string, HolidayEvent[]>();
 
 function cachedYear(year: number, options: HolidayOptions): HolidayEvent[] {
-  const key = `${year}|${options.israel ? 1 : 0}${options.modernIsraeli ? 1 : 0}${options.behab ? 1 : 0}${options.yomKippurKatan ? 1 : 0}${options.shabbosMevorchim === false ? 0 : 1}${options.shovavim ? 1 : 0}`;
+  const key = `${year}|${options.israel ? 1 : 0}${options.modernIsraeli ? 1 : 0}${options.behab ? 1 : 0}${options.yomKippurKatan ? 1 : 0}${options.shabbosMevorchim === false ? 0 : 1}${options.shovavim ? 1 : 0}${options.israeliCommemorations ? 1 : 0}`;
   let v = cache.get(key);
   if (!v) {
     v = holidaysForYear(year, options);

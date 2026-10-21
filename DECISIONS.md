@@ -22,9 +22,9 @@ date-picker widget; Luach is a calculation library with no UI (see README).
 
 ### Q-00. Unmerged branches
 Branches with work not yet on `main`:
-- `m4-zmanim`: M4 zmanim (PR #4).
-- `m3b-learning`: M3 part 2 (PR #5, stacked on #4).
-- `m5-places`: M5 places (stacked on #5).
+- `m5-places`: M5 places (PR #6).
+- `m6-outputs`: M6 outputs (PR #7, stacked on #6).
+- `m7-docs`: M7 docs site (stacked on #7).
 
 ### Q-01. Licence: Apache-2.0 with NOTICE, or MIT
 See P-01. **Until decided:** Apache-2.0 with a `NOTICE` file.
@@ -144,5 +144,8 @@ See ADR 0005. **Default until decided:** as proposed.
 - *As built:* the CLI prints Ashkenazi names by default (`--locale` changes it).
 - *As built:* iCal events are all-day for holidays, parsha and learning, and zero-length at the
   instant for candle lighting, havdala and zmanim.
+- *As built:* Israeli commemorations (option `israeliCommemorations`) are listed from the
+  year of each law; Yom HaAliyah on 7 Cheshvan only; Begin Day on 4 Adar II in a leap year
+  (the law says "4 Adar"; Begin died on 4 Adar II); Chag HaBanot on 1 Teves.
 - *As built:* the plain-English locale (`en`) uses "Tishri, Heshvan, Iyyar" spellings and
   "Saturday".

@@ -22,7 +22,7 @@ date-picker widget; Luach is a calculation library with no UI (see README).
 
 ### Q-00. Unmerged branches
 Branches with work not yet on `main`:
-- `m7-demo`: M7 demo app.
+- `m8-release`: M8 release files (PR #10).
 
 ### Q-01. Licence: Apache-2.0 with NOTICE, or MIT
 See P-01. **Until decided:** Apache-2.0 with a `NOTICE` file.
@@ -154,3 +154,11 @@ See ADR 0005. **Default until decided:** as proposed.
   nothing.
 - *As built:* Hebrew zman labels put a left-to-right mark after each degree sign so "16.1°"
   does not flip in right-to-left text.
+- *As built:* before 1.0, a patch release fixes bugs only; anything that changes an API, a
+  default or a calculated result someone may depend on is a minor release (`RELEASING.md`).
+- *As built:* `npm publish` runs `npm run check` first (`prepublishOnly`); the version is set
+  in one step by `npm run release:version`.
+- *As built:* the city-data files ship without source maps (they are generated tables), which
+  halves the package.
+- *As built:* security reports go through GitHub's private vulnerability reporting; the code
+  of conduct is Luach's own, short text.

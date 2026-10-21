@@ -24,3 +24,7 @@ All notable changes for users of the `luach` package. This project follows
   with its opinion, source and rounding; `null` with a reason when the sun does not reach
   an angle; optional high-latitude fallbacks; labels in Hebrew and English (`zmanLabel`).
 - `hebrewDateAt`, `fastTimes` and `isMelachaForbiddenAt` for zmanim-aware questions.
+- Haftaros by minhag (Ashkenaz, Sephardi, Chabad, Teimani where sourced) with the special
+  haftaros and their precedence (`haftaraFor`, `fastMinchaHaftara`).
+- Learning cycles: Yerushalmi Yomi (Vilna), Amud HaYomi, Daf HaShavua, Mishna Yomis, Rambam
+  (one and three chapters), Sefer HaMitzvos day number, Nach Yomi.

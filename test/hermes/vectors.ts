@@ -34,6 +34,17 @@ export function computeVectors(): unknown {
   } catch (e) {
     intlError = String((e as Error).message).slice(0, 40);
   }
+  const loc = { latitude: 31.7683, longitude: 35.2137, elevation: 754, timeZone: 'Asia/Jerusalem' };
+  const zmanim: (string | null)[] = [];
+  for (let n = L.gregorianToDayNumber(2026, 1, 1); n <= L.gregorianToDayNumber(2026, 12, 31); n += 7) {
+    for (const f of [L.alos16_1, L.alos72, L.netz, L.sofZmanShemaGra, L.sofZmanShemaMA72, L.chatzos, L.plagHaminchaGra, L.shkiah, L.tzeis8_5]) {
+      const z = f(n, loc, { timeZoneProvider: fakeJerusalem, rounding: 'none' });
+      zmanim.push(z.time ? z.time.toISOString() : null);
+    }
+  }
+  out.zmanim = zmanim;
+  out.parsha = L.parshiyosOfYear(5787, 'diaspora').map((r) => (r.parsha ? r.parsha.join('-') : r.special));
+  out.holidays = L.holidaysInYear(5787, { location: 'israel', modernIsraeli: true }).map((h) => `${h.id}@${h.dayNumber}`);
   out.intlAvailable = typeof Intl !== 'undefined' && intlError === 'none';
   return out;
 }

@@ -25,3 +25,7 @@ export * from './time/zone.js';
 export * from './parsha/parsha.js';
 export * from './holidays/holidays.js';
 export * from './calendar/seasonal.js';
+export * from './zmanim/zmanim.js';
+export { solarAltitude, solarTransit, horizonDip } from './zmanim/solar.js';
+export { usnoSunEvent } from './zmanim/usno.js';
+export * from './zmanim/fasts.js';

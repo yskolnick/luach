@@ -1,7 +1,9 @@
 /**
  * Sefiras HaOmer: the day, the count text, and the sefirah of the day.
  *
- * The count begins on the night of 16 Nisan (Vayikra 23:15–16) and runs 49 days to the
+ * The count begins on the night of 16 Nisan, the second night of Pesach (Vayikra 23:15–16,
+ * "the day after the sabbath", read as after the first day of Pesach; Shulchan Aruch OC 489:1:
+ * "בליל שני ... מתחילין לספור העומר") and runs 49 days to the
  * eve of Shavuos. A Hebrew date's Omer day is the count said on the evening that
  * *begins* that date: 16 Nisan is day 1.
  *

@@ -179,7 +179,12 @@ describe('tefillah', () => {
     expect(tefillahOn(new HebrewDate(5787, Month.SIVAN, 13)).tachanun).toBe(true);
     expect(tefillahOn(new HebrewDate(5787, Month.TEVES, 15)).tachanun).toBe(new HebrewDate(5787, Month.TEVES, 15).dayOfWeek !== 6);
     expect(tefillahOn(new HebrewDate(5787, Month.TISHREI, 1)).yaalehVyavo).toBe(true);
-    expect(tefillahOn(new HebrewDate(5787, Month.TISHREI, 10)).yaalehVyavo).toBe(false);
+    // Yom Kippur's Amidah has Yaaleh V'Yavo ("ביום הכפרים הזה"; Machzor Yom Kippur Ashkenaz, Mincha Amidah).
+    expect(tefillahOn(new HebrewDate(5787, Month.TISHREI, 10)).yaalehVyavo).toBe(true);
+    // 22 Nisan is Isru Chag in Israel, not Pesach: Mizmor L'Sodah is said (Rema OC 51:9 omits only Pesach).
+    const n22 = new HebrewDate(5787, Month.NISAN, 22);
+    expect(n22.dayOfWeek === 6 || tefillahOn(n22, { israel: true }).mizmorLesodah).toBe(true);
+    expect(tefillahOn(n22).mizmorLesodah).toBe(false); // diaspora: the last day of Pesach
   });
   it('mourning periods', () => {
     expect(mourningPeriods(new HebrewDate(5787, Month.AV, 3))).toEqual({ threeWeeks: true, nineDays: true, omer: false });

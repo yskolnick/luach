@@ -11,7 +11,7 @@ plans in [ROADMAP.md](ROADMAP.md) and user-facing changes in [CHANGELOG.md](CHAN
 - **Q-01** Licence: Apache-2.0 with NOTICE (current) or MIT. Yosef is not sure yet.
 - **Q-04** Anniversary defaults for Adar and the 30th of Cheshvan/Kislev: left open.
 - **API clean-up (D-12), in progress:** infer Israel from the place (D-10, done); stop exporting
-  internal helpers; shrink the cost of a single zman; source or give options for the rules
+  internal helpers (done: 149 names → 96); shrink the cost of a single zman; source or give options for the rules
   the code audit found without a source.
 - Private vulnerability reporting to be turned on in the repository settings
   ([SECURITY.md](SECURITY.md) points there).

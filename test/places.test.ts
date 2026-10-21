@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { searchPlaces, getPlace, isInIsrael, builtInPlaces, nameSkeleton, nearestPlace, ZmanimCalendar, type Place } from '../src/index';
+import { searchPlaces, getPlace, isInIsrael, builtInPlaces, nearestPlace, ZmanimCalendar, type Place } from '../src/index';
+import { nameSkeleton } from '../src/places/places';
 import { fullPlaces } from '../src/places/full';
 
 describe('isInIsrael', () => {

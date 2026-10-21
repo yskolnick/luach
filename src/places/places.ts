@@ -137,7 +137,8 @@ export interface SearchOptions {
 
 /**
  * Finds places by name: exact matches first, then prefix matches, then transliteration
- * matches (see {@link nameSkeleton}), then substrings. Hebrew queries match Hebrew names.
+ * matches (by consonant skeleton: "Bene Beraq" and "Bnei Brak" match), then substrings.
+ * Hebrew queries match Hebrew names.
  * Ties go to larger places. A transliteration match needs a skeleton of at least four
  * consonants, and a skeleton-prefix match must cover most of the name, so a short or loose
  * resemblance finds nothing rather than the wrong city.

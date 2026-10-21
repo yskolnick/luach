@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import ICAL from 'ical.js';
-import { toICalendar, icalFold, icalEscape, getPlace, ashkenazi, rambamThreeChapters, HebrewDate, daysToCivil, civilToDays } from '../src/index';
+import { toICalendar, getPlace, ashkenazi, rambamThreeChapters, HebrewDate, daysToCivil, civilToDays } from '../src/index';
+import { icalFold, icalEscape } from '../src/output/ical';
 
 describe('iCalendar export', () => {
   const ics = toICalendar({ year: 2026, month: 9, day: 1 }, { year: 2026, month: 12, day: 31 }, {

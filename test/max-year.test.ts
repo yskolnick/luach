@@ -1,23 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import {
-  HebrewDate,
-  Month,
-  MAX_DAYS,
-  roshHashanaDays,
-  holidaysForYear,
-  holidaysOn,
-  holidaysBetween,
-  nextHoliday,
-  parshaFor,
-  readingCycle,
-  pirkeiAvos,
-  haftaraFor,
-  fastMinchaHaftara,
-  tefillahOn,
-  dayInfo,
-  getPlace,
-  isMelachaForbiddenAt,
-} from '../src/index';
+import { HebrewDate, Month, holidaysForYear, holidaysOn, holidaysBetween, nextHoliday, parshaFor, readingCycle, pirkeiAvos, haftaraFor, fastMinchaHaftara, tefillahOn, dayInfo, getPlace, isMelachaForbiddenAt } from '../src/index';
+import { MAX_DAYS, roshHashanaDays } from '../src/calendar/year';
 
 // 9999 is the last supported Hebrew year (P-04). Rules that look ahead to year 10000 must
 // still work for every date in 9999, or omit what lies in 10000.

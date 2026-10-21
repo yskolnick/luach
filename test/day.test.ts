@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { hebrewDateAt, fastTimes, isMelachaForbiddenAt, HebrewDate, Month, zonedToInstant } from '../src/index';
+import { hebrewDateAt, fastTimes, isMelachaForbiddenAt, HebrewDate, Month } from '../src/index';
+import { zonedToInstant } from '../src/time/zone';
 
 const NY = { latitude: 40.6782, longitude: -73.9442, timeZone: 'America/New_York' };
 const at = (y: number, m: number, d: number, h: number, mi: number) => new Date(zonedToInstant({ year: y, month: m, day: d }, h * 60 + mi, NY.timeZone));

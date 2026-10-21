@@ -1,33 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { HDate, OmerEvent } from '@hebcal/core';
-import {
-  HebrewDate,
-  Month,
-  holidaysOn,
-  holidaysForYear,
-  holidayName,
-  ashkenazi,
-  he,
-  en,
-  sephardi,
-  omerDay,
-  omerText,
-  omerTextEnglish,
-  omerSefirah,
-  talUmatarStart,
-  amidahSeason,
-  birkasHachamaDates,
-  kiddushLevana,
-  moladInstant,
-  tefillahOn,
-  mourningPeriods,
-  isMelachaForbidden,
-  fastOn,
-  nextHoliday,
-  dayOfWeekOfDays,
-  civilToDays,
-  formatIsoDate,
-} from '../src/index';
+import { HebrewDate, Month, holidaysOn, holidaysForYear, holidayName, ashkenazi, he, en, sephardi, omerDay, omerText, omerTextEnglish, omerSefirah, talUmatarStart, amidahSeason, birkasHachamaDates, kiddushLevana, moladInstant, tefillahOn, mourningPeriods, isMelachaForbidden, fastOn, nextHoliday, civilToDays, formatIsoDate } from '../src/index';
+import { dayOfWeekOfDays } from '../src/time/civil';
 
 const g = (y: number, m: number, d: number) => HebrewDate.fromGregorian(y, m, d);
 const ids = (d: HebrewDate, israel = false) => holidaysOn(d, { israel }).map((e) => e.id);

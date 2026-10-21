@@ -1,20 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import fc from 'fast-check';
 import { HDate } from '@hebcal/core';
-import {
-  HebrewDate,
-  Month,
-  civilToDays,
-  daysToCivil,
-  isLeapYear,
-  roshHashanaDays,
-  yearLength,
-  yearType,
-  monthLength,
-  molad,
-  dayOfWeekOfDays,
-  hebrewToDays,
-} from '../src/index';
+import { HebrewDate, Month, civilToDays, daysToCivil, isLeapYear, yearLength, yearType, monthLength, molad } from '../src/index';
+import { roshHashanaDays, hebrewToDays } from '../src/calendar/year';
+import { dayOfWeekOfDays } from '../src/time/civil';
 
 // Range required by the plan: Gregorian 1900–2240, Hebrew years 5660–6000.
 const FIRST = 5660;

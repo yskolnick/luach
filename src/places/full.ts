@@ -45,4 +45,4 @@ export function fullPlaces(): readonly Place[] {
   return deepFreeze(parsed);
 }
 
-export { searchPlaces, isInIsrael, foldName, nameSkeleton, nearestPlace, distanceKm, type Place } from './places.js';
+export { searchPlaces, isInIsrael, nearestPlace, distanceKm, type Place } from './places.js';

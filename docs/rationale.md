@@ -176,6 +176,12 @@ recorded as new entries; old ones are superseded, not erased.
 
 - **What it does:** a single zman costs less in a bundle; internal helpers are no longer
   exported; every rule the code audit found without a source gets a source or an option.
+  Done so far: the public API is listed by name in `src/index.ts` (96 names, down from 149);
+  what was removed is in CHANGELOG.md, and `test/public-api.test.ts` pins the list. Kept:
+  everything an app calls or reads (dates, holidays, parsha, learning, zmanim, places,
+  outputs, and the documented tables such as `ZMANIM` and `LOCAL_CANDLE_LIGHTING`). Removed:
+  validation, raw calendar and solar arithmetic, rounding, search folding, iCal escaping and
+  locale lookup helpers, none of which the guides, examples or demo app use.
 - **Why:** Yosef asked for all three before 1.0, when breaking changes cost least.
 - **Sources:** DECISIONS.md D-12; [code audit](./research/2026-10-21-citation-audit-code.md).
 - **Checked against:** size budgets in CI; the public API test; the citation audits.

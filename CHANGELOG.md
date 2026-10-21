@@ -6,6 +6,20 @@ All notable changes for users of the `luach` package. This project follows
 ## Unreleased
 
 ### Changed (breaking)
+- Internal helpers are no longer exported (149 names → 96). Removed from `luach`: the
+  validation helpers (`assertCivil`, `assertHebrewDate`, `assertTimeZone`, `assertYear`); the
+  raw calendar arithmetic (`hebrewToDays`, `daysToHebrew`, `roshHashanaDays`,
+  `moladTishreiParts`, `monthsBeforeYear`, `daysBeforeMonth`, `cyclePosition`, `MIN_DAYS`,
+  `MAX_DAYS`, `PARTS_PER_HOUR`, `PARTS_PER_DAY`, `MONTH_PARTS`, `MOLAD_BAHARAD`,
+  `MS_PER_DAY`, `dayOfWeekOfDays`, `julianToDays`, `isGregorianLeapYear`,
+  `gregorianMonthLength`); time-zone internals (`zoneName`, `zonedToInstant`, `localParts`,
+  `civilDateOf`); the sun calculation (`solarPosition`, `solarTransit`, `solarAltitude`,
+  `timeAtZenith`, `usnoTimeAtZenith`, `julianCentury`, `horizonDip`, `SUNRISE_ZENITH`,
+  `EARTH_RADIUS_M`); `roundToMinute`, `roundToLocalMinute`; `festivalOn`, `purimMonth`,
+  `JERUSALEM_LONGITUDE`, `dafYomiCycleStart`; `foldName`, `nameSkeleton` (also from
+  `luach/places-full`); `icalEscape`, `icalFold`; `lookup`, `lookupIn`; and the character
+  constants `GERESH`, `GERSHAYIM`, `RLI`, `LRI`, `FSI`, `PDI`. Use `HebrewDate`,
+  `ZmanimCalendar` and the documented functions instead. A test pins the public list.
 - A calendar call given a place but not `israel` now decides from the place: a location
   inside Israel without its own `israel` flag used to get diaspora rules. Applies to
   `dayInfo`, `toICalendar`, `fastTimes` and `isMelachaForbiddenAt`; `israel` still wins.

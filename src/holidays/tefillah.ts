@@ -3,7 +3,7 @@
  * Mizmor L'Sodah.
  *
  * Customs differ widely, above all for Tachanun. The defaults follow common Ashkenazi
- * practice as summarised in the Mishna Berura (OC 131) and are *defaults*, not rulings;
+ * practice (SA OC 131:6–7 with Rema; Mishna Berura there) and are *defaults*, not rulings;
  * each custom that commonly differs is an option. Ask your rav.
  *
  * @packageDocumentation
@@ -64,7 +64,7 @@ export function tefillahOn(date: HebrewDate, options: TefillahOptions = {}): Tef
   const purimDay = options.walledCity ? 15 : 14;
   const purim = m === am && d === purimDay;
 
-  // ---- Hallel (Arachin 10a; SA OC 422:2, 488:1, 490:4, 683:1) ----
+  // ---- Hallel (Arachin 10a; SA OC 422:2, 488:1, 490:4, 494:1, 644:1, 683:1) ----
   let hallel: 'full' | 'half' | null = null;
   const sukkosOrSheminiAtzeres = m === Month.TISHREI && d >= 15 && d <= (israel ? 22 : 23);
   const pesachFull = m === Month.NISAN && (d === 15 || (!israel && d === 16));
@@ -73,7 +73,7 @@ export function tefillahOn(date: HebrewDate, options: TefillahOptions = {}): Tef
   else if (m === Month.NISAN && d >= 16 && d <= (israel ? 21 : 22)) hallel = 'half';
   else if (roshChodesh) hallel = 'half';
 
-  // ---- Tachanun (MB 131; SA OC 131:4–7) ----
+  // ---- Tachanun (SA OC 131:6–7 with Rema; Rema 494:3 and MB 131:36 for Sivan; SA OC 697:1 for Purim Katan) ----
   let tachanun = !date.isShabbos && !yomTov && !cholHamoed && !roshChodesh && !chanukah;
   if (m === Month.NISAN) tachanun = false; // the whole of Nisan (SA OC 429:2)
   if (m === Month.TISHREI && d >= 9) {
@@ -82,7 +82,7 @@ export function tefillahOn(date: HebrewDate, options: TefillahOptions = {}): Tef
     if (d <= lastNoTachanun) tachanun = false;
   }
   if (m === Month.TISHREI && d === 1) tachanun = false;
-  if (m === Month.ELUL && d === 29) tachanun = false; // Erev Rosh Hashana (Rema OC 581:3)
+  if (m === Month.ELUL && d === 29) tachanun = false; // Erev Rosh Hashana (SA OC 581:3; Rema 131:6)
   if (m === Month.SIVAN) {
     const last = (options.sivanTachanun ?? '12Sivan') === '12Sivan' ? 12 : israel ? 7 : 8;
     if (d >= 1 && d <= last) tachanun = false;

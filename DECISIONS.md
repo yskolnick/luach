@@ -130,6 +130,10 @@ See ADR 0005. **Default until decided:** as proposed.
 - *As built:* Mincha Gedola (Gra) is 6.5 seasonal hours after sunrise; "30 minutes" is after
   astronomical chatzos; chatzos is the solar transit.
 - *As built:* Plag HaMincha per the Levush is the Gra's calculation (Magen Avraham 233:3).
+- *As built (2026-10-21, supersedes the line above's source):* Plag HaMincha per the Levush is
+  computed as the Gra's. The source is Levush OC 267 as reported in Biur Halacha 261:2
+  ("1¼ hours before sunset"); Magen Avraham 233:3 reads the Levush as counting from tzeis.
+  See the citation audit in `docs/research/2026-10-21-citation-audit-zmanim.md`.
 - *As built:* fasts begin at alos 72 minutes (rounded down) and end at 7.083° by default.
 - *As built:* the Hebrew date at an instant changes at sunset by default (`hebrewDateAt`).
 - *As built:* the horizon dip for elevation uses the earth's mean radius, 6,371 km.

@@ -10,11 +10,12 @@ Luach is built in public. This page says where every time, rule, table and decis
 from, so anyone can check it. Most of it is generated from the code by
 `scripts/gen-sources.mjs`, and a test fails if it falls out of date.
 
-Status words in the tables: **checked** means someone read the cited passage and it says
-what Luach claims; **checked (secondary source)** means a modern work was read that cites it;
-**imprecise** or **wrong** means a check found a problem, listed with a note; **not checked**
-means nobody has read it yet. Blank means no independent audit has covered it yet; the
-research notes linked below record the first check.
+The **Audit** column records an independent second check of each zman's citations against
+the texts (`docs/research/2026-10-21-citation-audit-zmanim.md`, data in
+`docs/research/data/citation-audit-zmanim.json`): **checked** means the passage was read and
+says what Luach claims; **corrected** means the check found a problem and the source was
+fixed; **part from a secondary source** means a modern work citing it was read instead;
+**part not verified** means part of the source could not be read, and the source says so.
 
 ## How a time is calculated
 
@@ -52,88 +53,88 @@ Generated from [`src/zmanim/opinions.ts`](https://github.com/yskolnick/luach/blo
 
 | Id | Opinion | Source | Rounding | Audit |
 |---|---|---|---|---|
-| `sunrise` | Sunrise (netz hachama), at sea level unless the calculator's useElevation is on | Berachos 9b; Shulchan Aruch OC 58:1 | up |  |
-| `sunrise-sea-level` | Sunrise at sea level (upper limb at the horizon, standard refraction) | NOAA Solar Calculator; sea-level practice: R. Isser Zalman Meltzer, cited in Peninei Halakha, Tefilla 11:6 n. 7 | up |  |
-| `sunrise-elevation` | Sunrise adjusted for the observer's elevation (lower horizon, earlier) | Zmanim KeHilchasam (R. Bursztyn), ch. 2 §§7, 9: elevation for sunrise and sunset only | up |  |
-| `sunrise-visible` | Visible sunrise over the actual terrain (netz hanireh) | Divrei Yosef; Maharil Diskin (cited in Peninei Halakha, Tefilla 11). Needs terrain data: not computed | up |  |
-| `sunset` | Sunset (shkiah), at sea level unless the calculator's useElevation is on | Shabbos 34b–35a; Shulchan Aruch OC 261:2 | down |  |
-| `sunset-sea-level` | Sunset at sea level | NOAA Solar Calculator | down |  |
-| `sunset-elevation` | Sunset adjusted for the observer's elevation (later) | Zmanim KeHilchasam (R. Bursztyn), ch. 2 §§7, 9 | down |  |
-| `chatzos` | Midday: the sun on the meridian (astronomical transit) | Magen Avraham OC 233:4 | down |  |
-| `chatzos-halayla` | Midnight: halfway between one transit and the next | Berachos 3b; Shulchan Aruch OC 1:3 | down |  |
-| `alos-72` | Dawn 72 fixed minutes before sunrise (4 mil of 18 minutes) | Pesachim 94a; Shulchan Aruch OC 459:2; Magen Avraham 89:2 | up |  |
-| `alos-90` | Dawn 90 fixed minutes before sunrise (4 mil of 22.5 minutes) | Pesachim 94a; Biur Halacha 459:2 | up |  |
-| `alos-96` | Dawn 96 fixed minutes before sunrise (4 mil of 24 minutes) | Pesachim 94a; Magen Avraham 89:2; Shulchan Aruch HaRav 459:10 | up |  |
-| `alos-120` | Dawn 120 fixed minutes before sunrise (5 mil of 24 minutes; a stringency) | Pesachim 93b (Ulla: 5 mil); Magen Avraham 89:2 | up |  |
-| `alos-72-zmaniyos` | Dawn 72 proportional minutes (1.2 seasonal hours of the Gra day) before sunrise | Rambam, Peirush HaMishnayos Berachos 1:1 (an hour and a fifth of seasonal hours); Pesachim 94a | up |  |
-| `alos-90-zmaniyos` | Dawn 90 proportional minutes (1.5 seasonal hours) before sunrise | Pesachim 94a; Biur Halacha 459:2 | up |  |
-| `alos-96-zmaniyos` | Dawn 96 proportional minutes (1.6 seasonal hours) before sunrise | Pesachim 94a; Magen Avraham 89:2 | up |  |
-| `alos-120-zmaniyos` | Dawn 120 proportional minutes (2 seasonal hours) before sunrise (a stringency) | Pesachim 93b | up |  |
-| `alos-16.1` | Dawn when the sun is 16.1° below the horizon: 72 minutes before sunrise in Jerusalem at the equinox | Yechave Daas 2:8 (cited in Peninei Halakha, Tefilla 11:2); 72 minutes per Pesachim 94a | up |  |
-| `alos-18` | Dawn at 18° (astronomical twilight) | Astronomical dawn (cited in Peninei Halakha, Tefilla 11) | up |  |
-| `alos-19.8` | Dawn at 19.8°: 90 minutes before sunrise in Jerusalem at the equinox | Peninei Halakha, Tefilla 11:2; 90 minutes per Biur Halacha 459:2 | up |  |
-| `alos-26` | Dawn at 26°: about 120 minutes before sunrise in Jerusalem at the equinox (a stringency) | Degree equivalent of 120 minutes (Pesachim 93b) | up |  |
-| `alos-baal-hatanya` | Dawn of the Baal HaTanya, 16.9° below the horizon | Shulchan Aruch HaRav OC 89:1; 16.9° per the Chabad luach (Chabad.org) | up |  |
-| `misheyakir-10.2` | Misheyakir at 10.2° | Berachos 9b; Shulchan Aruch OC 18:3; 10.2° per Kovetz Otzros Yerushalayim (Chabad.org) | up |  |
-| `misheyakir-11` | Misheyakir at 11° | Berachos 9b; Shulchan Aruch OC 18:3; Peninei Halakha, Tefilla 11 | up |  |
-| `misheyakir-11.5` | Misheyakir at 11.5° (custom of Eretz Yisrael) | Berachos 9b; Shulchan Aruch OC 18:3 | up |  |
-| `misheyakir-12.85` | Misheyakir at 12.85° | Berachos 9b; Shulchan Aruch OC 18:3; 12.85° attributed to Birur Halacha (R. Zilber) OC 18 (not verified) | up |  |
-| `sof-zman-shema-gra` | Latest Shema, Gra: 3 seasonal hours of a sunrise-to-sunset day | Shulchan Aruch OC 58:1; Mishna Berura 58:4 | down |  |
-| `sof-zman-shema-mga-72` | Latest Shema, Magen Avraham: 3 seasonal hours of a day from alos to tzeis, 72 fixed minutes | Magen Avraham OC 58:1, 233:3; Mishna Berura 58:4; 72 min = 4 mil × 18 min (Pesachim 94a; SA OC 459:2) | down |  |
-| `sof-zman-shema-mga-90` | Latest Shema, Magen Avraham with 90 fixed minutes | Magen Avraham OC 58:1; Mishna Berura 58:4; Biur Halacha 459:2 | down |  |
-| `sof-zman-shema-mga-72-zmaniyos` | Latest Shema, Magen Avraham with 72 proportional minutes | Magen Avraham OC 58:1; Mishna Berura 58:4 | down |  |
-| `sof-zman-shema-mga-90-zmaniyos` | Latest Shema, Magen Avraham with 90 proportional minutes | Magen Avraham OC 58:1; Mishna Berura 58:4 | down |  |
-| `sof-zman-shema-mga-16.1` | Latest Shema, Magen Avraham, day from alos to tzeis at 16.1° | Magen Avraham OC 58:1; Mishna Berura 58:4; 16.1° = Jerusalem equinox equivalent of 72 minutes (Peninei Halakha, Tefilla 11:10) | down |  |
-| `sof-zman-shema-baal-hatanya` | Latest Shema, Baal HaTanya: 3 seasonal hours of a day from netz amiti to shkia amitis (sun 1.583° below the horizon) | Shulchan Aruch HaRav OC 443:4; 1.583° per the Chabad luach (Chabad.org) | down |  |
-| `sof-zman-shema-ateret-torah` | Latest Shema, Ateret Torah: day from alos (72 proportional minutes) to tzeis (40 minutes after sunset) | Ateret Torah luach (Chacham Yosef Harari-Raful); not verified against a printed source | down |  |
-| `sof-zman-tefilla-gra` | Latest Shacharis, Gra: 4 seasonal hours of a sunrise-to-sunset day | Shulchan Aruch OC 89:1; Mishna Berura 58:4 | down |  |
-| `sof-zman-tefilla-mga-72` | Latest Shacharis, Magen Avraham, 72 fixed minutes | Magen Avraham OC 58:1; Mishna Berura 58:4 | down |  |
-| `sof-zman-tefilla-mga-90` | Latest Shacharis, Magen Avraham, 90 fixed minutes | Magen Avraham OC 58:1; Mishna Berura 58:4 | down |  |
-| `sof-zman-tefilla-mga-72-zmaniyos` | Latest Shacharis, Magen Avraham, 72 proportional minutes | Magen Avraham OC 58:1; Mishna Berura 58:4 | down |  |
-| `sof-zman-tefilla-mga-90-zmaniyos` | Latest Shacharis, Magen Avraham, 90 proportional minutes | Magen Avraham OC 58:1; Mishna Berura 58:4 | down |  |
-| `sof-zman-tefilla-mga-16.1` | Latest Shacharis, Magen Avraham, 16.1° | Magen Avraham OC 58:1; Mishna Berura 58:4 | down |  |
-| `sof-zman-tefilla-baal-hatanya` | Latest Shacharis, Baal HaTanya | Shulchan Aruch HaRav OC 89:1, 443:4 | down |  |
-| `sof-zman-tefilla-ateret-torah` | Latest Shacharis, Ateret Torah | Ateret Torah luach (Chacham Yosef Harari-Raful); not verified against a printed source | down |  |
-| `mincha-gedola-30` | Mincha Gedola: 30 fixed minutes after chatzos | Shulchan Aruch OC 233:1; Mishna Berura 233:1 | up |  |
-| `mincha-gedola-gra` | Mincha Gedola, Gra: 6.5 seasonal hours after sunrise | Shulchan Aruch OC 233:1; Mishna Berura 233:1–4 | up |  |
-| `mincha-gedola-greater` | Mincha Gedola: the later of 30 minutes after chatzos and 6.5 seasonal hours (Chabad practice) | Shulchan Aruch OC 233:1; practice per the Chabad luach (Chabad.org) | up |  |
-| `mincha-gedola-mga-72` | Mincha Gedola, Magen Avraham (72 fixed minutes) | Shulchan Aruch OC 233:1; Magen Avraham 233:3 | up |  |
-| `mincha-gedola-baal-hatanya` | Mincha Gedola, Baal HaTanya | Shulchan Aruch HaRav OC 443:4 (day from netz to shkia) | up |  |
-| `mincha-ketana-gra` | Mincha Ketana, Gra: 9.5 seasonal hours | Shulchan Aruch OC 233:1; Mishna Berura 233:1–4 | up |  |
-| `mincha-ketana-mga-72` | Mincha Ketana, Magen Avraham (72 fixed minutes) | Shulchan Aruch OC 233:1; Magen Avraham 233:3 | up |  |
-| `mincha-ketana-baal-hatanya` | Mincha Ketana, Baal HaTanya | Shulchan Aruch HaRav OC 443:4 | up |  |
-| `plag-hamincha-gra` | Plag HaMincha, Gra (and Levush): 1¼ seasonal hours before sunset, day from sunrise to sunset | Berachos 26a; Shulchan Aruch OC 233:1; Magen Avraham 233:3 | up |  |
-| `plag-hamincha-mga-72` | Plag HaMincha, Magen Avraham (72 fixed minutes) | Terumas HaDeshen, cited in Magen Avraham 233:3; Mishna Berura 233:4, 261:25 | up |  |
-| `plag-hamincha-mga-16.1` | Plag HaMincha, Magen Avraham (16.1°) | Magen Avraham 233:3; Mishna Berura 233:4 | up |  |
-| `plag-hamincha-baal-hatanya` | Plag HaMincha, Baal HaTanya | Shulchan Aruch HaRav OC 443:4; Chabad luach | up |  |
-| `plag-hamincha-levush` | Plag HaMincha, Levush: the same calculation as the Gra (day from sunrise to sunset) | Levush OC 233:1, as reported in Magen Avraham 233:3 and 267:1 | up |  |
-| `bein-hashmashos-rabbeinu-tam` | Start of bein hashmashos, Rabbeinu Tam: 3¼ mil (58.5 minutes) after sunset, lasting 13.5 minutes | Tosafos Shabbos 35a, Pesachim 94a; Shulchan Aruch OC 261:2 | down |  |
-| `bein-hashmashos-geonim-13.5` | End of bein hashmashos, Geonim and Gra: ¾ mil of 18 minutes (13.5 minutes) after sunset | Biur Halacha 261:2; Mishna Berura 261:23 | up |  |
-| `bein-hashmashos-geonim-16.875` | End of bein hashmashos, Geonim: ¾ mil of 22.5 minutes (16.875 minutes) after sunset | Biur Halacha 261:2 | up |  |
-| `bein-hashmashos-geonim-18` | End of bein hashmashos, Geonim: ¾ mil of 24 minutes (18 minutes) after sunset | Biur Halacha 261:2 | up |  |
-| `bein-hashmashos-yereim-18` | Start of bein hashmashos, Yereim: ¾ mil of 24 minutes (18 minutes) before sunset | Sefer Yereim 274 (Vilna ed.); Biur Halacha 261:2; Shulchan Aruch HaRav 261:5 | down |  |
-| `bein-hashmashos-yereim-16.875` | Start of bein hashmashos, Yereim: ¾ mil of 22.5 minutes (16.875 minutes) before sunset | Sefer Yereim 274; Biur Halacha 261:2 | down |  |
-| `bein-hashmashos-yereim-13.5` | Start of bein hashmashos, Yereim: ¾ mil of 18 minutes (13.5 minutes) before sunset | Sefer Yereim 274; Biur Halacha 261:2 | down |  |
-| `tzeis-8.5` | Nightfall at 8.5° (three small stars) | Shulchan Aruch OC 293:2 (three small stars); 8.5° per R. Tukaczinsky and the Chabad luach | up |  |
-| `tzeis-7.083` | Nightfall at 7.083° (three medium stars, about 29 minutes after sunset in Jerusalem at the equinox) | Shulchan Aruch OC 562:1 (three medium stars); 7.083° per Dr. Baruch Cohn (not verified) | up |  |
-| `tzeis-6.45` | Nightfall at 6.45° (three medium stars; custom in Israel) | Shulchan Aruch OC 562:1; 6.45° per R. Tukaczinsky (as reported by MyZmanim) | up |  |
-| `tzeis-42` | Nightfall 42 fixed minutes after sunset (a custom in the United States) | Custom; ¾ mil reckoning of the Geonim adapted to latitude | up |  |
-| `tzeis-50` | Nightfall 50 fixed minutes after sunset | Igros Moshe OC 4:62 | up |  |
-| `tzeis-60` | Nightfall 60 fixed minutes after sunset | Custom (not verified against a printed source) | up |  |
-| `tzeis-72` | Nightfall 72 fixed minutes after sunset (4 mil of 18 minutes) | Pesachim 94a; Tosafos Shabbos 35a; Shulchan Aruch OC 261:2 | up |  |
-| `tzeis-rabbeinu-tam` | Nightfall of Rabbeinu Tam: 72 fixed minutes after sunset | Tosafos Shabbos 35a, Pesachim 94a; Shulchan Aruch OC 261:2 | up |  |
-| `tzeis-baal-hatanya` | Nightfall of the Baal HaTanya, 6° below the horizon | Chabad luach (Chabad.org); Shulchan Aruch HaRav OC 261:5 | up |  |
-| `tzeis-ateret-torah` | Nightfall, Ateret Torah: a fixed number of minutes after sunset (default 40) | Ateret Torah luach (Chacham Yosef Harari-Raful); not verified against a printed source | up |  |
-| `candle-lighting` | Candle lighting a fixed number of minutes before sunset, by local custom (18 common; Jerusalem 40) | Shulchan Aruch OC 261:2 (tosefes Shabbos); minutes are custom: Igros Moshe OC 2:6; Kaf HaChaim 261:23; Yabia Omer 5:21 | down |  |
-| `havdala` | End of Shabbos or Yom Tov: three small stars (by degrees) or a fixed number of minutes | Shulchan Aruch OC 293:2 | up |  |
-| `candle-lighting-second-night` | Candles on the second night of Yom Tov, or Yom Tov after Shabbos: after nightfall | Shulchan Aruch OC 503:1 | up |  |
-| `sof-zman-achilas-chametz-gra` | Latest time to eat chametz on Erev Pesach, Gra: 4 seasonal hours | Pesachim 11b; Shulchan Aruch OC 443:1 | down |  |
-| `sof-zman-achilas-chametz-mga-72` | Latest time to eat chametz, Magen Avraham (72 minutes) | Pesachim 11b; Shulchan Aruch OC 443:1 with Rema | down |  |
-| `sof-zman-biur-chametz-gra` | Latest time to burn chametz on Erev Pesach, Gra: 5 seasonal hours | Pesachim 11b; Shulchan Aruch OC 443:1 | down |  |
-| `sof-zman-biur-chametz-mga-72` | Latest time to burn chametz, Magen Avraham (72 minutes) | Pesachim 11b; Shulchan Aruch OC 443:1 with Rema | down |  |
-| `fast-begins` | A minor fast begins at dawn | Shulchan Aruch OC 564:1 | down |  |
-| `fast-begins-sunset` | Yom Kippur and Tisha B'Av begin at sunset the evening before (from bein hashmashos) | Shulchan Aruch OC 553:2, 608:1 | down |  |
-| `fast-ends` | A fast ends at nightfall (three medium stars) | Shulchan Aruch OC 562:1 | up |  |
+| `sunrise` | Sunrise (netz hachama), at sea level unless the calculator's useElevation is on | Berachos 9b; Shulchan Aruch OC 58:1 | up | checked |
+| `sunrise-sea-level` | Sunrise at sea level (upper limb at the horizon, standard refraction) | NOAA Solar Calculator; sea-level practice: R. Isser Zalman Meltzer, cited in Peninei Halakha, Tefilla 11:6 n. 7 | up | part from a secondary source, part not verified |
+| `sunrise-elevation` | Sunrise adjusted for the observer's elevation (lower horizon, earlier) | Zmanim KeHilchasam (R. Bursztyn), ch. 2 §§7, 9: elevation for sunrise and sunset only (not verified: the book was not read) | up | part not verified |
+| `sunrise-visible` | Visible sunrise over the actual terrain (netz hanireh) | Divrei Yosef; Maharil Diskin (cited in Peninei Halakha, Tefilla 11). Needs terrain data: not computed | up | part from a secondary source |
+| `sunset` | Sunset (shkiah), at sea level unless the calculator's useElevation is on | Shabbos 34b–35a; Shulchan Aruch OC 261:2 | down | checked |
+| `sunset-sea-level` | Sunset at sea level | NOAA Solar Calculator | down | part not verified |
+| `sunset-elevation` | Sunset adjusted for the observer's elevation (later) | Zmanim KeHilchasam (R. Bursztyn), ch. 2 §§7, 9 (not verified: the book was not read) | down | part not verified |
+| `chatzos` | Midday: the sun on the meridian (astronomical transit) | Magen Avraham OC 233:4 | down | checked |
+| `chatzos-halayla` | Midnight: halfway between one transit and the next | Berachos 3b; Mishna Berura 1:9 (midnight is twelve hours after midday) | down | checked, corrected |
+| `alos-72` | Dawn 72 fixed minutes before sunrise (4 mil of 18 minutes) | Pesachim 94a; Shulchan Aruch OC 459:2; Magen Avraham 89:2 | up | checked |
+| `alos-90` | Dawn 90 fixed minutes before sunrise (4 mil of 22.5 minutes) | Pesachim 94a; Biur Halacha 459:2 | up | checked |
+| `alos-96` | Dawn 96 fixed minutes before sunrise (4 mil of 24 minutes) | Pesachim 94a; Magen Avraham 89:2; Shulchan Aruch HaRav 459:10 | up | checked |
+| `alos-120` | Dawn 120 fixed minutes before sunrise (5 mil of 24 minutes; a stringency) | Pesachim 93b (Ulla: 5 mil, refuted on 94a); Magen Avraham 89:2 (5 mil reckoned as two hours, as a stringency) | up | corrected, checked |
+| `alos-72-zmaniyos` | Dawn 72 proportional minutes (1.2 seasonal hours of the Gra day) before sunrise | Rambam, Peirush HaMishnayos Berachos 1:1 (an hour and a fifth of seasonal hours); Pesachim 94a | up | checked |
+| `alos-90-zmaniyos` | Dawn 90 proportional minutes (1.5 seasonal hours) before sunrise | Pesachim 94a; Biur Halacha 459:2 | up | checked |
+| `alos-96-zmaniyos` | Dawn 96 proportional minutes (1.6 seasonal hours) before sunrise | Pesachim 94a; Magen Avraham 89:2 | up | checked |
+| `alos-120-zmaniyos` | Dawn 120 proportional minutes (2 seasonal hours) before sunrise (a stringency) | Pesachim 93b (Ulla: 5 mil, refuted on 94a); Magen Avraham 89:2 (5 mil reckoned as two hours) | up | corrected |
+| `alos-16.1` | Dawn when the sun is 16.1° below the horizon: 72 minutes before sunrise in Jerusalem at the equinox | Yechave Daas 2:8 (cited in Peninei Halakha, Tefilla 11:2); 72 minutes per Pesachim 94a | up | checked, part from a secondary source |
+| `alos-18` | Dawn at 18° (astronomical twilight) | Astronomical dawn (cited in Peninei Halakha, Tefilla 11) | up | part from a secondary source |
+| `alos-19.8` | Dawn at 19.8°: 90 minutes before sunrise in Jerusalem at the equinox | Computed: the sun's depression 90 minutes before sunrise in Jerusalem at the equinox; 90 minutes per Biur Halacha 459:2. Peninei Halakha, Tefilla 11:2 gives 19.75° and cautions against relying on such calendars | up | checked, corrected |
+| `alos-26` | Dawn at 26°: about 120 minutes before sunrise in Jerusalem at the equinox (a stringency) | Computed: the sun's depression 120 minutes before sunrise in Jerusalem at the equinox; 120 minutes per Magen Avraham 89:2 (5 mil) | up | corrected |
+| `alos-baal-hatanya` | Dawn of the Baal HaTanya, 16.9° below the horizon | Shulchan Aruch HaRav OC 89:1; 16.9° per the Chabad luach (Chabad.org) | up | checked, part from a secondary source |
+| `misheyakir-10.2` | Misheyakir at 10.2° | Berachos 9b; Shulchan Aruch OC 18:3; 10.2° per the Chabad.org luach, which names no source; attributed to Kovetz Otzros Yerushalayim by MyZmanim (not verified) | up | checked, part from a secondary source, corrected |
+| `misheyakir-11` | Misheyakir at 11° | Berachos 9b; Shulchan Aruch OC 18:3; Peninei Halakha, Tefilla 11 | up | checked, part from a secondary source |
+| `misheyakir-11.5` | Misheyakir at 11.5° (custom of Eretz Yisrael) | Berachos 9b; Shulchan Aruch OC 18:3; 11.5° as the custom of Eretz Yisrael per MyZmanim (secondary; not verified) | up | checked |
+| `misheyakir-12.85` | Misheyakir at 12.85° | Berachos 9b; Shulchan Aruch OC 18:3; 12.85° attributed to Birur Halacha (R. Zilber) OC 18 (not verified) | up | checked, part not verified |
+| `sof-zman-shema-gra` | Latest Shema, Gra: 3 seasonal hours of a sunrise-to-sunset day | Shulchan Aruch OC 58:1; Mishna Berura 58:4 | down | checked |
+| `sof-zman-shema-mga-72` | Latest Shema, Magen Avraham: 3 seasonal hours of a day from alos to tzeis, 72 fixed minutes | Magen Avraham OC 58:1, 233:3; Mishna Berura 58:4; 72 min = 4 mil × 18 min (Pesachim 94a; SA OC 459:2) | down | checked |
+| `sof-zman-shema-mga-90` | Latest Shema, Magen Avraham with 90 fixed minutes | Magen Avraham OC 58:1; Mishna Berura 58:4; Biur Halacha 459:2 | down | checked |
+| `sof-zman-shema-mga-72-zmaniyos` | Latest Shema, Magen Avraham with 72 proportional minutes | Magen Avraham OC 58:1; Mishna Berura 58:4 | down | checked |
+| `sof-zman-shema-mga-90-zmaniyos` | Latest Shema, Magen Avraham with 90 proportional minutes | Magen Avraham OC 58:1; Mishna Berura 58:4 | down | checked |
+| `sof-zman-shema-mga-16.1` | Latest Shema, Magen Avraham, day from alos to tzeis at 16.1° | Magen Avraham OC 58:1; Mishna Berura 58:4; 16.1° = Jerusalem equinox equivalent of 72 minutes (Peninei Halakha, Tefilla 11:2 n. 1) | down | checked, corrected |
+| `sof-zman-shema-baal-hatanya` | Latest Shema, Baal HaTanya: 3 seasonal hours of a day from netz amiti to shkia amitis (sun 1.583° below the horizon) | Shulchan Aruch HaRav OC 443:4; 1.583° per the Chabad luach (Chabad.org) | down | checked, part from a secondary source |
+| `sof-zman-shema-ateret-torah` | Latest Shema, Ateret Torah: day from alos (72 proportional minutes) to tzeis (40 minutes after sunset) | Ateret Torah luach (Chacham Yosef Harari-Raful); not verified against a printed source | down | part not verified |
+| `sof-zman-tefilla-gra` | Latest Shacharis, Gra: 4 seasonal hours of a sunrise-to-sunset day | Shulchan Aruch OC 89:1; Mishna Berura 58:4 | down | checked |
+| `sof-zman-tefilla-mga-72` | Latest Shacharis, Magen Avraham, 72 fixed minutes | Shulchan Aruch OC 89:1 (until the end of the fourth hour); the day from alos to tzeis: Magen Avraham OC 58:1, Mishna Berura 58:4 | down | corrected, checked |
+| `sof-zman-tefilla-mga-90` | Latest Shacharis, Magen Avraham, 90 fixed minutes | Shulchan Aruch OC 89:1 (until the end of the fourth hour); the day from alos to tzeis: Magen Avraham OC 58:1, Mishna Berura 58:4 | down | corrected, checked |
+| `sof-zman-tefilla-mga-72-zmaniyos` | Latest Shacharis, Magen Avraham, 72 proportional minutes | Shulchan Aruch OC 89:1 (until the end of the fourth hour); the day from alos to tzeis: Magen Avraham OC 58:1, Mishna Berura 58:4 | down | corrected, checked |
+| `sof-zman-tefilla-mga-90-zmaniyos` | Latest Shacharis, Magen Avraham, 90 proportional minutes | Shulchan Aruch OC 89:1 (until the end of the fourth hour); the day from alos to tzeis: Magen Avraham OC 58:1, Mishna Berura 58:4 | down | corrected, checked |
+| `sof-zman-tefilla-mga-16.1` | Latest Shacharis, Magen Avraham, 16.1° | Shulchan Aruch OC 89:1 (until the end of the fourth hour); the day from alos to tzeis: Magen Avraham OC 58:1, Mishna Berura 58:4 | down | corrected, checked |
+| `sof-zman-tefilla-baal-hatanya` | Latest Shacharis, Baal HaTanya | Shulchan Aruch OC 89:1 (four hours); the day from netz to shkiah: Shulchan Aruch HaRav OC 443:4. (Shulchan Aruch HaRav OC 89:1 counts from alos instead.) | down | corrected, checked |
+| `sof-zman-tefilla-ateret-torah` | Latest Shacharis, Ateret Torah | Ateret Torah luach (Chacham Yosef Harari-Raful); not verified against a printed source | down | part not verified |
+| `mincha-gedola-30` | Mincha Gedola: 30 fixed minutes after chatzos | Shulchan Aruch OC 233:1 (six and a half seasonal hours), which Mishna Berura 233:1 glosses as half an hour after chatzos; fixed clock minutes are a common practice (not verified as a ruling) | up | checked, corrected |
+| `mincha-gedola-gra` | Mincha Gedola, Gra: 6.5 seasonal hours after sunrise | Shulchan Aruch OC 233:1; Mishna Berura 233:1–4 | up | checked |
+| `mincha-gedola-greater` | Mincha Gedola: the later of 30 minutes after chatzos and 6.5 seasonal hours (Chabad practice) | Shulchan Aruch OC 233:1; practice per the Chabad luach (Chabad.org) | up | checked, part from a secondary source |
+| `mincha-gedola-mga-72` | Mincha Gedola, Magen Avraham (72 fixed minutes) | Shulchan Aruch OC 233:1; Magen Avraham 233:3 | up | checked |
+| `mincha-gedola-baal-hatanya` | Mincha Gedola, Baal HaTanya | Shulchan Aruch HaRav OC 443:4 (day from netz to shkia) | up | checked |
+| `mincha-ketana-gra` | Mincha Ketana, Gra: 9.5 seasonal hours | Shulchan Aruch OC 233:1; Mishna Berura 233:1–4 | up | checked |
+| `mincha-ketana-mga-72` | Mincha Ketana, Magen Avraham (72 fixed minutes) | Shulchan Aruch OC 233:1; Magen Avraham 233:3 | up | checked |
+| `mincha-ketana-baal-hatanya` | Mincha Ketana, Baal HaTanya | Shulchan Aruch HaRav OC 443:4 | up | checked |
+| `plag-hamincha-gra` | Plag HaMincha, Gra (and Levush): 1¼ seasonal hours before sunset, day from sunrise to sunset | Berachos 26a–26b; Shulchan Aruch OC 233:1; Magen Avraham 233:3 | up | corrected, checked |
+| `plag-hamincha-mga-72` | Plag HaMincha, Magen Avraham (72 fixed minutes) | Terumas HaDeshen, cited in Magen Avraham 233:3; Mishna Berura 233:4, 261:25 | up | checked |
+| `plag-hamincha-mga-16.1` | Plag HaMincha, Magen Avraham (16.1°) | Magen Avraham 233:3; Mishna Berura 233:4 | up | checked |
+| `plag-hamincha-baal-hatanya` | Plag HaMincha, Baal HaTanya | Shulchan Aruch HaRav OC 443:4; Chabad luach | up | checked, part from a secondary source |
+| `plag-hamincha-levush` | Plag HaMincha, Levush: 1¼ hours before sunset as Biur Halacha reports it, computed here as the Gra's (seasonal hours, sunrise to sunset) | Levush OC 267, as reported in Biur Halacha 261:2 s.v. "להקדים"; Magen Avraham 233:3 reads the Levush as counting from tzeis | up | checked, corrected |
+| `bein-hashmashos-rabbeinu-tam` | Start of bein hashmashos, Rabbeinu Tam: 3¼ mil (58.5 minutes) after sunset, lasting 13.5 minutes | Tosafos Shabbos 35a, Pesachim 94a; Shulchan Aruch OC 261:2 | down | checked |
+| `bein-hashmashos-geonim-13.5` | End of bein hashmashos, Geonim and Gra: ¾ mil of 18 minutes (13.5 minutes) after sunset | Biur Halacha 261:2; Mishna Berura 261:23; mil of 18 minutes: Shulchan Aruch OC 459:2 | up | checked |
+| `bein-hashmashos-geonim-16.875` | End of bein hashmashos, Geonim: ¾ mil of 22.5 minutes (16.875 minutes) after sunset | Biur Halacha 261:2; mil of 22.5 minutes: Biur Halacha 459:2 | up | checked |
+| `bein-hashmashos-geonim-18` | End of bein hashmashos, Geonim: ¾ mil of 24 minutes (18 minutes) after sunset | Biur Halacha 261:2; mil of 24 minutes: Shulchan Aruch HaRav 459:10 | up | checked |
+| `bein-hashmashos-yereim-18` | Start of bein hashmashos, Yereim: ¾ mil of 24 minutes (18 minutes) before sunset | Sefer Yereim 274 (Vilna ed.); Biur Halacha 261:2; Shulchan Aruch HaRav 261:5; mil of 24 minutes: Shulchan Aruch HaRav 459:10 | down | checked |
+| `bein-hashmashos-yereim-16.875` | Start of bein hashmashos, Yereim: ¾ mil of 22.5 minutes (16.875 minutes) before sunset | Sefer Yereim 274; Biur Halacha 261:2; mil of 22.5 minutes: Biur Halacha 459:2 | down | checked |
+| `bein-hashmashos-yereim-13.5` | Start of bein hashmashos, Yereim: ¾ mil of 18 minutes (13.5 minutes) before sunset | Sefer Yereim 274; Biur Halacha 261:2; mil of 18 minutes: Shulchan Aruch OC 459:2 | down | checked |
+| `tzeis-8.5` | Nightfall at 8.5° (three small stars) | Shulchan Aruch OC 293:2 (three small stars); 8.5° per the Chabad luach; attribution to R. Tukaczinsky not verified | up | checked, part from a secondary source, part not verified |
+| `tzeis-7.083` | Nightfall at 7.083° (three medium stars, about 29 minutes after sunset in Jerusalem at the equinox) | Shulchan Aruch OC 562:1 (three medium stars); 7.083° attributed to Dr. Baruch Cohn (not verified: no primary source read) | up | checked, part not verified |
+| `tzeis-6.45` | Nightfall at 6.45° (three medium stars; custom in Israel) | Shulchan Aruch OC 562:1 (three medium stars); 6.45° as the custom of Eretz Yisrael per MyZmanim (secondary; not verified) | up | checked, corrected |
+| `tzeis-42` | Nightfall 42 fixed minutes after sunset (a custom in the United States) | Custom; ¾ mil reckoning of the Geonim adapted to latitude (not verified against a printed source) | up | part not verified |
+| `tzeis-50` | Nightfall 50 fixed minutes after sunset | Igros Moshe OC 4:62 (not verified: cited from secondary sources; given for New York) | up | part from a secondary source |
+| `tzeis-60` | Nightfall 60 fixed minutes after sunset | Custom (not verified against a printed source) | up | part not verified |
+| `tzeis-72` | Nightfall 72 fixed minutes after sunset (4 mil of 18 minutes) | Pesachim 94a; Tosafos Shabbos 35a; Shulchan Aruch OC 261:2 | up | checked |
+| `tzeis-rabbeinu-tam` | Nightfall of Rabbeinu Tam: 72 fixed minutes after sunset | Tosafos Shabbos 35a, Pesachim 94a; Shulchan Aruch OC 261:2 | up | checked |
+| `tzeis-baal-hatanya` | Nightfall of the Baal HaTanya, 6° below the horizon | Chabad luach (Chabad.org), which names no primary source for 6° (not verified) | up | corrected, part from a secondary source |
+| `tzeis-ateret-torah` | Nightfall, Ateret Torah: a fixed number of minutes after sunset (default 40) | Ateret Torah luach (Chacham Yosef Harari-Raful); not verified against a printed source | up | part not verified |
+| `candle-lighting` | Candle lighting a fixed number of minutes before sunset, by local custom (18 common; Jerusalem 40) | Shulchan Aruch OC 261:2 (tosefes Shabbos); the minutes are local custom: Kaf HaChaim 261:23 (a third of an hour); Igros Moshe OC 2:6 and Yabia Omer 5:21 as cited by the OU (not verified) | down | checked, corrected, part from a secondary source |
+| `havdala` | End of Shabbos or Yom Tov: three small stars (by degrees) or a fixed number of minutes | Shulchan Aruch OC 293:2 | up | checked |
+| `candle-lighting-second-night` | Candles on the second night of Yom Tov, or Yom Tov after Shabbos: after nightfall | Shulchan Aruch OC 503:1 (no preparing from one day of Yom Tov for the next); lighting after nightfall follows from it and is not stated there | up | corrected |
+| `sof-zman-achilas-chametz-gra` | Latest time to eat chametz on Erev Pesach, Gra: 4 seasonal hours | Pesachim 11b; Shulchan Aruch OC 443:1 | down | checked |
+| `sof-zman-achilas-chametz-mga-72` | Latest time to eat chametz, Magen Avraham (72 minutes) | Pesachim 11b; Shulchan Aruch OC 443:1 with Rema | down | checked |
+| `sof-zman-biur-chametz-gra` | Latest time to burn chametz on Erev Pesach, Gra: 5 seasonal hours | Pesachim 11b; Shulchan Aruch OC 443:1 | down | checked |
+| `sof-zman-biur-chametz-mga-72` | Latest time to burn chametz, Magen Avraham (72 minutes) | Pesachim 11b; Shulchan Aruch OC 443:1 with Rema | down | checked |
+| `fast-begins` | A minor fast begins at dawn | Shulchan Aruch OC 564:1 | down | checked |
+| `fast-begins-sunset` | Yom Kippur and Tisha B'Av begin at sunset the evening before (from bein hashmashos) | Shulchan Aruch OC 553:2, 608:1 | down | checked |
+| `fast-ends` | A fast ends at nightfall (three medium stars) | Shulchan Aruch OC 562:1 | up | checked |
 
 ## The calendar
 
@@ -320,6 +321,7 @@ explicitly. Full text: [`DECISIONS.md`](https://github.com/yskolnick/luach/blob/
 
 Each note records what was read, where, and what was concluded.
 
+- [`docs/research/2026-10-21-citation-audit-zmanim.md`](https://github.com/yskolnick/luach/blob/main/docs/research/2026-10-21-citation-audit-zmanim.md): Citation audit of the zmanim sources (2026-10-21)
 - [`docs/research/2026-10-21-citation-check-m1-m2.md`](https://github.com/yskolnick/luach/blob/main/docs/research/2026-10-21-citation-check-m1-m2.md): Citation check, milestones M1–M2 (2026-10-21)
 - [`docs/research/2026-10-21-haftaros.md`](https://github.com/yskolnick/luach/blob/main/docs/research/2026-10-21-haftaros.md): Haftaros by minhag: research notes
 - [`docs/research/2026-10-21-israeli-commemorations.md`](https://github.com/yskolnick/luach/blob/main/docs/research/2026-10-21-israeli-commemorations.md): Israeli official commemorations set by Hebrew date

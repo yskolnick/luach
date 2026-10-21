@@ -29,23 +29,32 @@ function firstHeading(path) {
 }
 
 // ---- Citation audit (optional data) ----
+// Each record: { citation, usedBy: [zman ids], status, url, quote, note, resolution? }.
 function loadAudit() {
   const dir = 'docs/research/data';
-  const map = new Map();
-  if (!existsSync(dir)) return map;
+  const byZman = new Map();
+  if (!existsSync(dir)) return byZman;
   for (const f of readdirSync(dir).filter((n) => /^citation-audit-.*\.json$/.test(n)).sort()) {
-    for (const c of JSON.parse(readFileSync(join(dir, f), 'utf8'))) map.set(c.citation, c);
+    for (const c of JSON.parse(readFileSync(join(dir, f), 'utf8'))) {
+      for (const id of c.usedBy ?? []) {
+        if (!byZman.has(id)) byZman.set(id, []);
+        byZman.get(id).push(c);
+      }
+    }
   }
-  return map;
+  return byZman;
 }
 const AUDIT = loadAudit();
-const STATUS = {
-  verified: 'checked',
-  'secondary-read': 'checked (secondary source)',
-  imprecise: 'imprecise',
-  wrong: 'wrong',
-  'not-read': 'not checked',
-};
+function auditLabel(records) {
+  const labels = new Set();
+  for (const r of records) {
+    if (r.status === 'wrong' || r.status === 'imprecise') labels.add(r.resolution ? 'corrected' : r.status);
+    else if (r.status === 'not-read') labels.add('part not verified');
+    else if (r.status === 'secondary-read') labels.add('part from a secondary source');
+    else if (r.status === 'verified') labels.add('checked');
+  }
+  return [...labels].join(', ');
+}
 
 // ---- Citations in the code ----
 const CITE = /\b(SA|Shulchan Aruch|OC|YD|Rambam|Hilchos|MB|Mishna Berura|Mishnah Berurah|Magen Avraham|Rema|Biur Halacha|Taz|Levush|Gemara|Talmud|Berachos|Shabbos \d|Pesachim|Megillah|Rosh Hashana \d|Sukkah|Taanis|Yoma|Beitzah|Shemos|Vayikra|Bamidbar|Devarim|Bereishis|Knesset|Meeus|NOAA|USNO|Hinnant|GeoNames|IANA)\b/;
@@ -117,12 +126,12 @@ export function render() {
   o += 'Luach is built in public. This page says where every time, rule, table and decision comes\n';
   o += 'from, so anyone can check it. Most of it is generated from the code by\n';
   o += '`scripts/gen-sources.mjs`, and a test fails if it falls out of date.\n\n';
-  o += 'Status words in the tables: **checked** means someone read the cited passage and it says\n';
-  o += 'what Luach claims; **checked (secondary source)** means a modern work was read that cites it;\n';
-  o += '**imprecise** or **wrong** means a check found a problem, listed with a note; **not checked**\n';
-  o += 'means nobody has read it yet. Blank means no independent audit has covered it yet; the\n';
-  o += 'research notes linked below record the first check.\n\n';
-
+  o += 'The **Audit** column records an independent second check of each zman\'s citations against\n';
+  o += 'the texts (`docs/research/2026-10-21-citation-audit-zmanim.md`, data in\n';
+  o += '`docs/research/data/citation-audit-zmanim.json`): **checked** means the passage was read and\n';
+  o += 'says what Luach claims; **corrected** means the check found a problem and the source was\n';
+  o += 'fixed; **part from a secondary source** means a modern work citing it was read instead;\n';
+  o += '**part not verified** means part of the source could not be read, and the source says so.\n\n';
   o += '## How a time is calculated\n\n';
   o += '1. **The sun\'s position.** The NOAA Solar Calculator equations, which implement the\n';
   o += '   low-precision solar theory of Jean Meeus, *Astronomical Algorithms* (2nd ed., 1998), chapters\n';
@@ -155,8 +164,7 @@ export function render() {
   o += `${link('docs/research/2026-10-21-zmanim-opinions.md')}.\n\n`;
   o += '| Id | Opinion | Source | Rounding | Audit |\n|---|---|---|---|---|\n';
   for (const [id, d] of Object.entries(ZMANIM)) {
-    const parts = d.source.split(/;\s*/).map((c) => AUDIT.get(c.trim())).filter(Boolean);
-    const audit = parts.length ? [...new Set(parts.map((p) => STATUS[p.status] ?? p.status))].join(', ') : '';
+    const audit = auditLabel(AUDIT.get(id) ?? []);
     o += `| \`${id}\` | ${esc(d.opinion)} | ${esc(d.source)} | ${d.round} | ${audit} |\n`;
   }
   o += '\n';

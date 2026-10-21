@@ -174,3 +174,6 @@ See ADR 0005. **Default until decided:** as proposed.
 - *As built:* CI builds once and smoke-tests the built package on Node 18, 20 and 22 (ESM,
   CommonJS, the `exports` map and the CLI), in Bun (ESM and CommonJS), in Deno (ESM) and
   in headless Chromium (`test/runtimes/`, ADR 0007).
+- *As built:* the example server's `/calendar.ics` serves at most 400 days with a place
+  (candle lighting and havdala make each day costly) and 5 × 366 days without, answering
+  a longer range with 400 Bad Request.

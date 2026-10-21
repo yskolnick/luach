@@ -1,4 +1,5 @@
-/** Zman labels by built-in locale (key: zman id). Override any of them through a locale's `names` (`zman.<key>`). */
+/** Zman labels by built-in locale (key: zman id). In Hebrew, a LEFT-TO-RIGHT MARK (U+200E)
+ * follows each degree sign so that "11°" keeps its order inside right-to-left text. Override any of them through a locale's `names` (`zman.<key>`). */
 export const NAMES: Readonly<Record<string, Readonly<Record<string, string>>>> = {
   he: {
     'sunrise': 'הנץ החמה',
@@ -18,15 +19,15 @@ export const NAMES: Readonly<Record<string, Readonly<Record<string, string>>>> =
     'alos-90-zmaniyos': 'עלות השחר (זמניות, 90 דקות)',
     'alos-96-zmaniyos': 'עלות השחר (זמניות, 96 דקות)',
     'alos-120-zmaniyos': 'עלות השחר (זמניות, 120 דקות)',
-    'alos-16.1': 'עלות השחר (16.1°)',
-    'alos-18': 'עלות השחר (18°)',
-    'alos-19.8': 'עלות השחר (19.8°)',
-    'alos-26': 'עלות השחר (26°)',
+    'alos-16.1': 'עלות השחר (16.1°\u200E)',
+    'alos-18': 'עלות השחר (18°\u200E)',
+    'alos-19.8': 'עלות השחר (19.8°\u200E)',
+    'alos-26': 'עלות השחר (26°\u200E)',
     'alos-baal-hatanya': 'עלות השחר (בעל התניא)',
-    'misheyakir-10.2': 'משיכיר (10.2°)',
-    'misheyakir-11': 'משיכיר (11°)',
-    'misheyakir-11.5': 'משיכיר (11.5°)',
-    'misheyakir-12.85': 'משיכיר (12.85°)',
+    'misheyakir-10.2': 'משיכיר (10.2°\u200E)',
+    'misheyakir-11': 'משיכיר (11°\u200E)',
+    'misheyakir-11.5': 'משיכיר (11.5°\u200E)',
+    'misheyakir-12.85': 'משיכיר (12.85°\u200E)',
     'sof-zman-shema-gra': 'סוף זמן קריאת שמע (גר״א)',
     'sof-zman-shema-mga-72': 'סוף זמן קריאת שמע (מג״א, 72 דקות)',
     'sof-zman-shema-mga-90': 'סוף זמן קריאת שמע (מג״א, 90 דקות)',
@@ -63,9 +64,9 @@ export const NAMES: Readonly<Record<string, Readonly<Record<string, string>>>> =
     'bein-hashmashos-yereim-18': 'בין השמשות (יראים, 18 דקות)',
     'bein-hashmashos-yereim-16.875': 'בין השמשות (יראים, 16.875 דקות)',
     'bein-hashmashos-yereim-13.5': 'בין השמשות (יראים, 13.5 דקות)',
-    'tzeis-8.5': 'צאת הכוכבים (8.5°)',
-    'tzeis-7.083': 'צאת הכוכבים (7.083°)',
-    'tzeis-6.45': 'צאת הכוכבים (6.45°)',
+    'tzeis-8.5': 'צאת הכוכבים (8.5°\u200E)',
+    'tzeis-7.083': 'צאת הכוכבים (7.083°\u200E)',
+    'tzeis-6.45': 'צאת הכוכבים (6.45°\u200E)',
     'tzeis-42': 'צאת הכוכבים (42 דקות)',
     'tzeis-50': 'צאת הכוכבים (50 דקות)',
     'tzeis-60': 'צאת הכוכבים (60 דקות)',

@@ -22,9 +22,7 @@ date-picker widget; Luach is a calculation library with no UI (see README).
 
 ### Q-00. Unmerged branches
 Branches with work not yet on `main`:
-- `m5-places`: M5 places (PR #6).
-- `m6-outputs`: M6 outputs (PR #7, stacked on #6).
-- `m7-docs`: M7 docs site (stacked on #7).
+- `m7-demo`: M7 demo app.
 
 ### Q-01. Licence: Apache-2.0 with NOTICE, or MIT
 See P-01. **Until decided:** Apache-2.0 with a `NOTICE` file.
@@ -149,3 +147,10 @@ See ADR 0005. **Default until decided:** as proposed.
   (the law says "4 Adar"; Begin died on 4 Adar II); Chag HaBanot on 1 Teves.
 - *As built:* the plain-English locale (`en`) uses "Tishri, Heshvan, Iyyar" spellings and
   "Saturday".
+- *As built:* the demo app opens on Jerusalem with Ashkenazi names until the user picks a
+  place or language; its opinion pickers offer alos 72 min / 16.1° / 90 min; Shema Gra / MGA 72 /
+  MGA 16.1° / Baal HaTanya; tzeis 8.5° / 7.083° / 50 min / Rabbeinu Tam (first of each is
+  selected). "Use my location" runs on the device only and keeps
+  nothing.
+- *As built:* Hebrew zman labels put a left-to-right mark after each degree sign so "16.1°"
+  does not flip in right-to-left text.

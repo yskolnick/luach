@@ -65,6 +65,11 @@ describe('search', () => {
     const z = new ZmanimCalendar(getPlace('jerusalem')!, { year: 2027, month: 3, day: 14 });
     expect(z.sunrise().time).not.toBeNull();
   });
+  it('built-in places include communities the retired table had', () => {
+    for (const id of ['toms-river', 'spring-valley', 'queens', 'borough-park', 'boca-raton', 'skokie', 'southfield', 'salford', 'birmingham', 'durban', 'calgary', 'montevideo', 'brisbane', 'adelaide', 'karmiel', 'immanuel']) expect(getPlace(id), id).toBeDefined();
+    expect(searchPlaces('Toms River')[0]?.id).toBe('toms-river');
+    expect(builtInPlaces().length).toBeGreaterThan(190);
+  });
   it('every built-in place has a valid IANA zone and a Hebrew name', () => {
     for (const p of builtInPlaces()) {
       expect(() => new Intl.DateTimeFormat('en', { timeZone: p.timeZone })).not.toThrow();

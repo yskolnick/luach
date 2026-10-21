@@ -1,6 +1,6 @@
 # Places
 
-Luach ships a small table of about 150 cities and, as a separate import, every city of
+Luach ships a small table of about 200 cities and, as a separate import, every city of
 15,000+ people (GeoNames, CC-BY 4.0). It never looks anything up over the network.
 
 ```ts

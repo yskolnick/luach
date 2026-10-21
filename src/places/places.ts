@@ -121,7 +121,7 @@ function fromRow(r: CityRow): Place {
 
 let cities: Place[] | null = null;
 
-/** The built-in cities (about 150 with Jewish communities worldwide, plus high-latitude and date-line test places). */
+/** The built-in cities (about 200 with Jewish communities worldwide, plus high-latitude and date-line test places). */
 export function builtInPlaces(): readonly Place[] {
   return (cities ??= CITY_ROWS.map(fromRow));
 }

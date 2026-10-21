@@ -28,7 +28,7 @@ All notable changes for users of the `luach` package. This project follows
   haftaros and their precedence (`haftaraFor`, `fastMinchaHaftara`).
 - Learning cycles: Yerushalmi Yomi (Vilna), Amud HaYomi, Daf HaShavua, Mishna Yomis, Rambam
   (one and three chapters), Sefer HaMitzvos day number, Nach Yomi.
-- Places: a built-in table of about 150 cities (`builtInPlaces`, `getPlace`), search by
+- Places: a built-in table of about 200 cities (`builtInPlaces`, `getPlace`), search by
   English spellings and Hebrew (`searchPlaces`), `isInIsrael`, `nearestPlace`; every city of
   15,000+ people in a separate import, `luach/places-full` (GeoNames, CC-BY 4.0).
 - The ESM build is now one file per module, so unused features are dropped by bundlers.
@@ -48,6 +48,14 @@ All notable changes for users of the `luach` package. This project follows
   week, and settings; Hebrew and English, light and dark.
 
 ### Changed
+- Jerusalem and Haifa carry their documented candle-lighting customs (40 and 30 minutes,
+  Peninei Halakha, Shabbat 3:2); `dayInfo`, iCal and the CLI use them unless
+  `candleLightingMinutes` is given, and label the time with the custom and its source.
+- CLI: `--city` also searches every city of 15,000+ people when the built-in table has no
+  match; `--lat/--lon` need `--tz`; `--elevation <m>` (or `=<m>`) turns on
+  elevation-adjusted sunrise and sunset.
+- `isInIsrael`: the outline is redrawn near the borders (Yotvata, Ramat Magshimim, Hamat
+  Gader and Ghajar are inside; Egyptian Rafah is outside).
 - The city-data files ship without source maps; the package is about half the size.
 - Hebrew zman labels carry a left-to-right mark (U+200E) after each degree sign, so the
   angle reads correctly in right-to-left text.

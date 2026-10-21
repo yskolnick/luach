@@ -152,6 +152,11 @@ See ADR 0005. **Default until decided:** as proposed.
 - *As built:* the built-in city table (about 150 places) was chosen for Luach: cities with
   Jewish communities, plus the test cities for high latitude and the date line. Israeli
   communities that GeoNames puts in Asia/Hebron are given Asia/Jerusalem, the time they keep.
+- *As built:* (supersedes the count above) the built-in table has 197 places: the 144 above
+  plus 51 cities with Jewish communities from the retired implementation's table (Toms River,
+  Spring Valley, Queens, Boca Raton, Skokie, Salford, Durban, Calgary, Montevideo, Brisbane, …)
+  and Borough Park and Immanuel. Left out from that table: Cairo (almost no community today)
+  and Nazareth (Nof HaGalil would be the Jewish town; not added).
 - *As built:* place search ranks exact, prefix, transliteration-skeleton, then substring
   matches, with larger places first on ties.
 - *As built:* the day view's default zmanim are alos 72 min and 16.1°, misheyakir 11°,

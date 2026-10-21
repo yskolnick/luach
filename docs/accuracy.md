@@ -26,6 +26,21 @@ wrong or follows another convention, and each one is explained below.
   - Yom HaZikaron 5708–5710: established in 5711/1951; the oracle lists earlier years.
   - Yom Yerushalayim 5727: declared in 5728/1968; the oracle also lists 28 Iyar 5727 itself.
 
+## Hallel
+
+- diaspora: 124,560 days vs @hebcal/core: **0 unexplained differences**. Explained, with the source Luach follows:
+  - Shemini Atzeres / Simchas Torah: whole Hallel (SA OC 644:1, all days of the festival); hebcal has none (682 days)
+  - 24 Kislev: no Hallel; hebcal counts it as Chanukah (the first candle is lit that evening) (341 days)
+  - Rosh Chodesh Teves during Chanukah: whole Hallel (SA OC 683:1); hebcal has half (595 days)
+  - Pesach Sheni: no Hallel in the Shulchan Aruch; hebcal has half (341 days)
+  - Yom HaAtzmaut / Yom Yerushalayim: a custom, deliberately not covered by hallel() (567 days)
+- israel: 124,560 days vs @hebcal/core: **0 unexplained differences**. Explained, with the source Luach follows:
+  - Shemini Atzeres / Simchas Torah: whole Hallel (SA OC 644:1, all days of the festival); hebcal has none (341 days)
+  - 24 Kislev: no Hallel; hebcal counts it as Chanukah (the first candle is lit that evening) (341 days)
+  - Rosh Chodesh Teves during Chanukah: whole Hallel (SA OC 683:1); hebcal has half (595 days)
+  - Pesach Sheni: no Hallel in the Shulchan Aruch; hebcal has half (341 days)
+  - Yom HaAtzmaut / Yom Yerushalayim: a custom, deliberately not covered by hallel() (567 days)
+
 ## Zmanim
 
 ### astronomy-engine (MIT), 19 cities, daily 2025–2028

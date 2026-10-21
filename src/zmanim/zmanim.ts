@@ -41,6 +41,11 @@ export interface ZmanOptions {
   /** Use `location.elevation` for sunrise and sunset (and times based on them). Default false (sea level). */
   readonly elevation?: boolean;
   /**
+   * Dip of the visible horizon in degrees, for callers with terrain data (e.g. from a "visible sunrise" table).
+   * Overrides `elevation` for netz, shkiah and the Gra's day. Luach does not compute terrain (DECISIONS.md Q-08).
+   */
+  readonly horizonDip?: number;
+  /**
    * When the sun doesn't reach an angle: `'none'` (default; time is null) or `'solar-midnight'` (use the moment
    * the sun is lowest, marked `fallback`). The fallback is not a halachic opinion.
    */
@@ -125,13 +130,17 @@ function atZenith(ctx: Ctx, zenith: number, dir: 'morning' | 'evening'): Calc {
   });
 }
 
-function sunriseCalc(ctx: Ctx, elevation = ctx.opts.elevation ?? false): Calc {
-  const dip = elevation ? horizonDip(ctx.loc.elevation ?? 0) : 0;
-  return atZenith(ctx, SUNRISE_ZENITH + dip, 'morning');
+/** Dip below the astronomical horizon: explicit `elevation` true/false, or the options (horizonDip, elevation). */
+function dipFor(ctx: Ctx, elevation: boolean | undefined): number {
+  if (elevation === false) return 0;
+  if (elevation === undefined && ctx.opts.horizonDip !== undefined) return ctx.opts.horizonDip;
+  return (elevation ?? ctx.opts.elevation) ? horizonDip(ctx.loc.elevation ?? 0) : 0;
 }
-function sunsetCalc(ctx: Ctx, elevation = ctx.opts.elevation ?? false): Calc {
-  const dip = elevation ? horizonDip(ctx.loc.elevation ?? 0) : 0;
-  return atZenith(ctx, SUNRISE_ZENITH + dip, 'evening');
+function sunriseCalc(ctx: Ctx, elevation?: boolean): Calc {
+  return atZenith(ctx, SUNRISE_ZENITH + dipFor(ctx, elevation), 'morning');
+}
+function sunsetCalc(ctx: Ctx, elevation?: boolean): Calc {
+  return atZenith(ctx, SUNRISE_ZENITH + dipFor(ctx, elevation), 'evening');
 }
 /** Sun `degrees` below the geometric horizon (sea level, no refraction). */
 const dawn = (ctx: Ctx, degrees: number): Calc => atZenith(ctx, 90 + degrees, 'morning');

@@ -43,6 +43,16 @@ p('  - Yom HaZikaron 5708–5710: established in 5711/1951; the oracle lists ear
 p('  - Yom Yerushalayim 5727: declared in 5728/1968; the oracle also lists 28 Iyar 5727 itself.');
 p();
 
+p('## Hallel');
+p();
+for (const loc of ['diaspora', 'israel']) {
+  const r = read(`hallel-${loc}`);
+  if (!r) continue;
+  p(`- ${loc}: ${r.days.toLocaleString('en')} days vs ${r.oracle}: **${r.unexplained} unexplained differences**. Explained, with the source Luach follows:`);
+  for (const [why, n] of Object.entries(r.explained)) p(`  - ${why} (${n} days)`);
+}
+p();
+
 p('## Zmanim');
 p();
 const kz = read('zmanim-kosher-zmanim');
@@ -73,7 +83,7 @@ if (kz) {
   p('- **Sydney, Auckland, Chatham: kosher-zmanim is one day off** (its issue #37, a sign-inverted raw offset in DST zones).');
   p('  Luach is on the requested day: see the regression test in `test/zmanim.test.ts` and the astronomy-engine comparison.');
   p('  The comparison uses kosher-zmanim\'s answer for the previous date.');
-  p(`- **Chatham chatzos, about 4–20 February (${s.transitJumps} days in 4 years):** kosher-zmanim\'s transit jumps a further day when solar noon crosses 00:00 UTC.`);
+  p(`- **Chatham chatzos, about 4–20 February (${s.transitJumps} days in 4 years):** kosher-zmanim's transit jumps a further day when solar noon crosses 00:00 UTC.`);
   p('  astronomy-engine agrees with Luach on every one of these days.');
   p(`- **Grazing-sun days (${s.grazing}):** on these days the sun's lowest (or highest) point is within 1° of the angle, so the`);
   p('  time moves by minutes for a hundredth of a degree, and the two libraries may disagree on whether the angle is reached at all:');

@@ -31,3 +31,4 @@ export { usnoSunEvent } from './zmanim/usno.js';
 export * from './zmanim/fasts.js';
 export * from './places/places.js';
 export { isInIsrael } from './places/israel.js';
+export { hallel } from './holidays/hallel.js';

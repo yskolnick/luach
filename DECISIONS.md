@@ -92,3 +92,13 @@ Choices made while building that nobody has ruled on. Each can be changed.
 - AB-08. Modern Israeli days start in the year each was established (Yom HaZikaron 5711, Yom Yerushalayim 5728,
   Yom HaShoah Sunday rule 5757, Sigd 5769, Yom HaAliyah 5777). hebcal lists some earlier; see the accuracy report.
 - AB-09. Purim Meshulash is listed on all three days (14–16 Adar) when 15 Adar is Shabbos.
+- AB-10. Zmanim defaults: sunrise/sunset at sea level; the Magen Avraham's days, fixed-minute alos/tzeis and degree
+  times always at sea level; the Gra's day, netz and shkiah follow the `elevation`/`horizonDip` options.
+  Havdala default 8.5°; fast start default alos 72 minutes, end tzeis 8.5°; candle lighting default 18 minutes.
+- AB-11. High-latitude fallback: `'solar-midnight'` only, off by default, marked `fallback` on the result.
+- AB-12. `isInIsrael()` uses a coarse hand-drawn polygon (Golan and Judea and Samaria included) for the Israel
+  calendar; the city table's Israel flag uses the same boundary. Calendar functions never infer location.
+- AB-13. `hallel()` follows the Shulchan Aruch and leaves Yom HaAtzmaut / Yom Yerushalayim (custom) out. Tachanun
+  moved to post-1.0 (HOL-19).
+- AB-14. The brief's example citation "Shulchan Aruch Harav 89:1" for 72 minutes / 16.1° does not say that
+  (it is about instituting the three prayers). Luach cites Magen Avraham 58:1 and Pesachim 94a instead.

@@ -34,7 +34,7 @@ All events carry flags: `yomTov` (melacha forbidden), `cholHamoed`, `fast` (`maj
 | HOL-01 | Yomim Tovim: RH, YK, Sukkos, Shemini Atzeres/Simchas Torah, Pesach, Shavuos; Yom Tov Sheni in the diaspora; Israel rules | Torah; SA OC 496 | oracle hebcal 50 years, Israel and diaspora | done |
 | HOL-02 | Chol Hamoed, Hoshana Rabba, Isru Chag, Erev Yom Tov | SA OC 429 (Isru Chag: Rema OC 429:2) | oracle | done |
 | HOL-03 | Fasts with postponement: Tzom Gedalia, Asara B'Teves (can fall on Friday), Shiva Asar B'Tammuz, Tisha B'Av (nidcheh), Taanis Esther (Thursday rule), Taanis Bechoros (Thursday when 14 Nisan is Shabbos) | SA OC 549–550, 686:2, 470:2 | oracle; property (no fast on Shabbos except YK) | done |
-| HOL-04 | Fast start/end times with zmanim (needs M4) | SA OC 562, 564 | oracle kosher-zmanim | planned |
+| HOL-04 | Fast start/end times with zmanim (needs M4) | SA OC 562, 564 | oracle kosher-zmanim | done |
 | HOL-05 | Chanukah with candle count per night | SA OC 670–671 | oracle | done |
 | HOL-06 | Purim, Shushan Purim, Purim Meshulash, Purim Katan, Shushan Purim Katan | SA OC 688, 697 | oracle; hand-entered Meshulash years (5765, 5768, 5781, 5785) | done |
 | HOL-07 | Tu B'Shvat, Lag BaOmer, Tu B'Av, Pesach Sheni, Shloshes Yemei Hagbala, Lag BaOmer | Mishna RH 1:1; SA OC 493 | oracle | done |
@@ -47,7 +47,8 @@ All events carry flags: `yomTov` (melacha forbidden), `cholHamoed`, `fast` (`maj
 | HOL-14 | Mashiv haruach / morid hatal periods | SA OC 114 | unit | done |
 | HOL-15 | Birkas HaChama (28-year cycle from Tekufas Nisan of Shmuel) | Berachos 59b; SA OC 229:2 | hand-entered (1953, 1981, 2009, 2037) | done |
 | HOL-16 | Kiddush Levana earliest (3 days, 7 days) and latest (half the month by molad, 15 days) | SA OC 426:3–4, Rema; Mishna Berura 426 | oracle kosher-zmanim | done |
-| HOL-17 | Tachanun / Hallel indicators (optional) | SA OC 131, 422 | unit | planned |
+| HOL-17 | Hallel (whole / half / none) | SA OC 422:2, 488:1, 490:4, 494:1, 644:1, 683:1 | oracle hebcal, differences sourced | done |
+| HOL-19 | Tachanun indicators | SA OC 131 and customs | — | post-1.0 (customs vary widely; needs research) |
 | HOL-18 | Holiday queries: by year, by range, filters | — | unit | done |
 
 ## M3. Parsha, haftara and learning cycles
@@ -73,37 +74,37 @@ All events carry flags: `yomTov` (melacha forbidden), `cholHamoed`, `fast` (`maj
 
 | ID | Feature | Source | Test | Status |
 |---|---|---|---|---|
-| ZMN-01 | NOAA solar position and sunrise/sunset/angle times | NOAA Solar Calculator (public domain), Meeus ch. 25 | oracle astronomy-engine; kosher-zmanim | planned |
-| ZMN-02 | Second algorithm for cross-check (Meeus higher-accuracy) | Meeus | unit compare | planned |
-| ZMN-03 | Sea level vs elevation-adjusted; caller horizon angle (Q-08) | — | oracle | planned |
-| ZMN-04 | Alos 72/90/96/120 min; 16.1°, 18°, 19.8°, 26° | Pesachim 94a; Magen Avraham OC 58 / 89; Minchas Cohen | oracle kosher-zmanim | planned |
-| ZMN-05 | Misheyakir 10.2°, 11°, 11.5°, 7.65° (Q-09) | SA OC 18:3; Igros Moshe | oracle | planned |
-| ZMN-06 | Netz sea level and elevation | — | oracle | planned |
-| ZMN-07 | Sof zman Shema / Tefilla: Gra, Magen Avraham (72, 90 fixed and zmaniyos, 16.1°), Baal HaTanya, Ateret Torah | SA OC 58:1, 89:1; Biur HaGra; SA HaRav | oracle | planned |
-| ZMN-08 | Chatzos, Chatzos Halayla | SA OC 1 | oracle | planned |
-| ZMN-09 | Mincha Gedola (30 min, half shaah zmanis, later of the two) | SA OC 233:1; Mishna Berura 233 | oracle | planned |
-| ZMN-10 | Mincha Ketana, Plag HaMincha (Gra, Magen Avraham, Levush) | SA OC 233:1 | oracle | planned |
-| ZMN-11 | Shkiah (sea level, elevation) | — | oracle | planned |
-| ZMN-12 | Bein HaShmashos: Rabbeinu Tam, Geonim, Yereim | Shabbos 34b–35a; Tosafos | oracle | planned |
-| ZMN-13 | Tzeis: 8.5°, 7.083°, 42, 50, 60, 72 min, Rabbeinu Tam | SA OC 261, 293 | oracle | planned |
-| ZMN-14 | Shaah zmanis per opinion | — | oracle | planned |
-| ZMN-15 | Candle lighting (configurable; 18 default; Jerusalem 40; others as reported customs) | SA OC 261; Mishna Berura 261:23 | hand-entered luach values | planned |
-| ZMN-16 | Havdala by degrees or minutes; second-night Yom Tov candles after tzeis | SA OC 293; 514 | oracle | planned |
-| ZMN-17 | Erev Pesach: sof zman achilas / biur chametz (Gra, MA) | SA OC 443:1 | oracle | planned |
-| ZMN-18 | Fast start/end by opinion | SA OC 562 | oracle | planned |
-| ZMN-19 | High-latitude fallback, off by default, clearly marked | — | unit (Tromsø, Reykjavik) | planned |
-| ZMN-20 | `Zman` return object `{ time, opinion, source, rounded, reason? }` + `toJSON` | — | unit | planned |
-| ZMN-21 | Rounding: earliest rounds up, deadline rounds down, per-zman default, overridable, can be off | — | unit | planned |
-| ZMN-22 | Time zones via IANA ids through Intl; pluggable provider where Intl is missing; regression for Sydney/Auckland/Chatham day boundary | — | unit + oracle 19 cities x 4 years | planned |
+| ZMN-01 | NOAA solar position and sunrise/sunset/angle times | NOAA Solar Calculator (public domain), Meeus ch. 25 | oracle astronomy-engine; kosher-zmanim | done |
+| ZMN-02 | Second algorithm for cross-check (Meeus higher-accuracy) | Meeus | unit compare | done |
+| ZMN-03 | Sea level vs elevation-adjusted; caller horizon angle (Q-08) | — | oracle | done |
+| ZMN-04 | Alos 72/90/96/120 min; 16.1°, 18°, 19.8°, 26° | Pesachim 94a; Magen Avraham OC 58 / 89; Minchas Cohen | oracle kosher-zmanim | done |
+| ZMN-05 | Misheyakir 10.2°, 11°, 11.5°; any angle via misheyakirAtDegrees (Q-09) | SA OC 18:3; Igros Moshe | oracle | done |
+| ZMN-06 | Netz sea level and elevation; caller horizon dip (visible netz not computed, Q-08) | — | oracle | done |
+| ZMN-07 | Sof zman Shema / Tefilla: Gra, Magen Avraham (72, 90 fixed and zmaniyos, 16.1°), Baal HaTanya, Ateret Torah | SA OC 58:1, 89:1; Biur HaGra; SA HaRav | oracle | done |
+| ZMN-08 | Chatzos, Chatzos Halayla | SA OC 1 | oracle | done |
+| ZMN-09 | Mincha Gedola (30 min, half shaah zmanis, later of the two) | SA OC 233:1; Mishna Berura 233 | oracle | done |
+| ZMN-10 | Mincha Ketana, Plag HaMincha (Gra, Magen Avraham, Levush) | SA OC 233:1 | oracle | done |
+| ZMN-11 | Shkiah (sea level, elevation) | — | oracle | done |
+| ZMN-12 | Bein HaShmashos: Rabbeinu Tam, Geonim, Yereim | Shabbos 34b–35a; Tosafos | oracle | done |
+| ZMN-13 | Tzeis: 8.5°, 7.083°, 42, 50, 60, 72 min, Rabbeinu Tam | SA OC 261, 293 | oracle | done |
+| ZMN-14 | Shaah zmanis per opinion | — | oracle | done |
+| ZMN-15 | Candle lighting (configurable; 18 default; Jerusalem 40; Haifa 30) | SA OC 261:2; Mishna Berura 261:23 | unit; published luach values pending | in progress |
+| ZMN-16 | Havdala by degrees or minutes; second-night Yom Tov candles after tzeis | SA OC 293; 514 | oracle | done |
+| ZMN-17 | Erev Pesach: sof zman achilas / biur chametz (Gra, MA) | SA OC 443:1 | oracle | done |
+| ZMN-18 | Fast start/end by opinion | SA OC 562 | oracle | done |
+| ZMN-19 | High-latitude fallback, off by default, clearly marked | — | unit (Tromsø, Reykjavik) | done |
+| ZMN-20 | `Zman` return object `{ time, opinion, source, rounded, reason? }` + `toJSON` | — | unit | done |
+| ZMN-21 | Rounding: earliest rounds up, deadline rounds down, per-zman default, overridable, can be off | — | unit | done |
+| ZMN-22 | Time zones via IANA ids through Intl; pluggable provider where Intl is missing; regression for Sydney/Auckland/Chatham day boundary | — | unit + oracle 19 cities x 4 years | done |
 
 ## M5. Places
 
 | ID | Feature | Source | Test | Status |
 |---|---|---|---|---|
-| PLC-01 | Small built-in city table (coords, elevation, IANA zone, Israel flag, Hebrew name) | GeoNames (CC-BY 4.0) | data validation tests | planned |
-| PLC-02 | Optional full dataset as a separate import (`luach/cities-full`) | GeoNames | size budget | planned |
-| PLC-03 | Search by name incl. Hebrew and alternate spellings | — | unit | planned |
-| PLC-04 | `isInIsrael(lat, lon)` with documented boundary and override | — | unit | planned |
+| PLC-01 | Small built-in city table (coords, elevation, IANA zone, Israel flag, Hebrew name) | GeoNames (CC-BY 4.0) | data validation tests | done |
+| PLC-02 | Optional full dataset as a separate import (`luach/cities-full`) | GeoNames | size budget | done |
+| PLC-03 | Search by name incl. Hebrew and alternate spellings | — | unit | done |
+| PLC-04 | `isInIsrael(lat, lon)` with documented boundary and override | — | unit | done |
 | PLC-05 | Docs: plugging in a platform geocoder (no built-in network) | — | docs | planned |
 
 ## M6. Outputs and integrations
@@ -123,7 +124,7 @@ All events carry flags: `yomTov` (melacha forbidden), `cholHamoed`, `fast` (`maj
 |---|---|---|
 | DOC-01 | Docs site (static): getting started, recipes, API reference from TSDoc | planned |
 | DOC-02 | Halachic notes per opinion with sources; "Ask your rav. This library calculates; it does not rule." | planned |
-| DOC-03 | Accuracy report generated from oracle tests | planned |
+| DOC-03 | Accuracy report generated from oracle tests | done |
 | DOC-04 | Licence and how to credit | planned |
 | DOC-05 | Examples: Node, browser, React, React Native (code only), CLI | planned |
 | APP-01 | Expo demo app | deferred — D-02 ("Expo isn't part of this run") |

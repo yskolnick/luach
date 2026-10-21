@@ -29,7 +29,11 @@ export { holidaysForYear, holidaysOn, holidaysBetween, nextHoliday, isMelachaFor
 export { holidayName } from './holidays/names.js';
 export { omerDay, omerText, omerTextEnglish, omerSefirah, type OmerNusach } from './holidays/omer.js';
 export { talUmatarStart, amidahSeason, birkasHachamaDates, isBirkasHachama, moladInstant, kiddushLevana, type TalUmatarStart, type KiddushLevanaTime } from './holidays/seasonal.js';
-export { tefillahOn, mourningPeriods, type TefillahOptions, type TefillahDay } from './holidays/tefillah.js';
+export { tefillahOn, type TefillahOptions, type TefillahDay } from './holidays/tefillah.js';
+export {
+  mourningPeriods, type MourningPeriods, type MourningOptions, type MourningRestrictions, type Restriction, type Restricted,
+  type PartOfDay, type SefirahCustom, type BeinHametzarimCustom, type MeatWineCustom,
+} from './holidays/mourning.js';
 export { PARSHIYOS, readingCycle, parshaFor, parshaName, pirkeiAvos, type ParshaId, type ShabbosReading, type PirkeiAvosOptions } from './parsha/parsha.js';
 export { locate, dafYomi, BAVLI_TRACTATES, type TractateSpan, type DafPortion } from './learning/bavli.js';
 export { Zman, type RoundingDirection, type ZmanUnavailableReason } from './zmanim/zman.js';

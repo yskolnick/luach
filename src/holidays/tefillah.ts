@@ -19,9 +19,13 @@ export interface TefillahOptions extends HolidayOptions {
   /** Walled city (Jerusalem): Purim on 15 Adar. Default `false`. */
   walledCity?: boolean;
   /**
-   * End of the no-Tachanun period after Sukkos: `'isruChag'` (Isru Chag, the day after
-   * the festival) or `'endOfTishrei'` (through Rosh Chodesh Cheshvan, a widespread
-   * Ashkenazi custom). Default `'endOfTishrei'`.
+   * End of the no-Tachanun period after Sukkos. `'isruChag'`: through Isru Chag (SA OC 131:7,
+   * "between Yom Kippur and Sukkos"; Kitzur SA 22:8 adds Isru Chag). Sha'arei Teshuvah 131:19
+   * says of the longer custom "במדינות אלו אין המנהג כן", and Aruch HaShulchan OC 131:12
+   * "ואינו עיקר". `'endOfTishrei'`: through Rosh Chodesh Cheshvan (Knesses HaGedolah,
+   * cited in Sha'arei Teshuvah 131:19 and Kaf HaChaim OC 131:98, the Sephardi custom and the
+   * custom in Israel there). Default, matching the customs (D-14): `'endOfTishrei'` in
+   * Israel, `'isruChag'` outside it. Sephardim outside Israel pass `'endOfTishrei'`.
    */
   tishreiTachanun?: 'isruChag' | 'endOfTishrei';
   /**
@@ -29,7 +33,17 @@ export interface TefillahOptions extends HolidayOptions {
    * tashlumin; common Ashkenazi custom) or `'isruChag'`. Default `'12Sivan'`.
    */
   sivanTachanun?: '12Sivan' | 'isruChag';
-  /** Omit Tachanun on Yom HaAtzmaut and Yom Yerushalayim (a custom in Israel and elsewhere). Default `false`. */
+  /**
+   * Pesach Sheni (14 Iyar). `'omit'`: no Tachanun (Knesses HaGedolah, cited in Kaf HaChaim
+   * OC 131:98; Sha'arei Teshuvah 131:19; Aruch HaShulchan OC 131:12, "the custom of the
+   * Sephardim", noting that the Shulchan Aruch does not list it). `'say'`: as the Shulchan
+   * Aruch's list (SA OC 131:6–7). Default `'omit'`.
+   */
+  pesachSheniTachanun?: 'omit' | 'say';
+  /**
+   * Omit Tachanun on Yom HaAtzmaut and Yom Yerushalayim (Peninei Halakha, Tefillah 21:7; a
+   * modern custom with no classic source). Default `false`.
+   */
   modernDaysNoTachanun?: boolean;
 }
 
@@ -78,7 +92,7 @@ export function tefillahOn(date: HebrewDate, options: TefillahOptions = {}): Tef
   if (m === Month.NISAN) tachanun = false; // the whole of Nisan (SA OC 429:2)
   if (m === Month.TISHREI && d >= 9) {
     // Erev Yom Kippur onwards; through Isru Chag or the end of the month.
-    const lastNoTachanun = (options.tishreiTachanun ?? 'endOfTishrei') === 'endOfTishrei' ? 30 : israel ? 23 : 24;
+    const lastNoTachanun = (options.tishreiTachanun ?? (israel ? 'endOfTishrei' : 'isruChag')) === 'endOfTishrei' ? 30 : israel ? 23 : 24;
     if (d <= lastNoTachanun) tachanun = false;
   }
   if (m === Month.TISHREI && d === 1) tachanun = false;
@@ -87,7 +101,8 @@ export function tefillahOn(date: HebrewDate, options: TefillahOptions = {}): Tef
     const last = (options.sivanTachanun ?? '12Sivan') === '12Sivan' ? 12 : israel ? 7 : 8;
     if (d >= 1 && d <= last) tachanun = false;
   }
-  if (m === Month.IYAR && (d === 14 || d === 18)) tachanun = false; // Pesach Sheni, Lag BaOmer
+  if (m === Month.IYAR && d === 14 && (options.pesachSheniTachanun ?? 'omit') === 'omit') tachanun = false; // Pesach Sheni
+  if (m === Month.IYAR && d === 18) tachanun = false; // Lag BaOmer (Rema OC 131:6, 493:2)
   if (m === Month.AV && (d === 9 || d === 15) ) tachanun = false; // Tisha B'Av (moed), Tu B'Av
   if (has('tisha-bav')) tachanun = false;
   if (m === Month.SHEVAT && d === 15) tachanun = false; // Tu B'Shvat
@@ -107,22 +122,5 @@ export function tefillahOn(date: HebrewDate, options: TefillahOptions = {}): Tef
     yaalehVyavo: roshChodesh || yomTov || cholHamoed,
     alHanissim: chanukah || purim,
     mizmorLesodah,
-  };
-}
-
-/** Whether `date` is in the Three Weeks, the Nine Days, or the Sefirah mourning period. */
-export function mourningPeriods(date: HebrewDate): { threeWeeks: boolean; nineDays: boolean; omer: boolean } {
-  const y = date.year;
-  const e = date.epochDays;
-  const t17 = new HebrewDate(y, Month.TAMMUZ, 17).epochDays;
-  const av9 = new HebrewDate(y, Month.AV, 9);
-  const av10 = (av9.isShabbos ? av9.next() : av9).epochDays;
-  const rcAv = new HebrewDate(y, Month.AV, 1).epochDays;
-  const omerStart = new HebrewDate(y, Month.NISAN, 16).epochDays;
-  const omerEnd = new HebrewDate(y, Month.SIVAN, 5).epochDays;
-  return {
-    threeWeeks: e >= t17 && e <= av10,
-    nineDays: e >= rcAv && e <= av10,
-    omer: e >= omerStart && e <= omerEnd,
   };
 }

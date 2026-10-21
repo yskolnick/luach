@@ -5,10 +5,14 @@
  * with Rema and Mishna Berura):
  *
  * 1. Yom Tov and Chol Hamoed have their own haftara.
- * 2. The four parshiyos (Shekalim, Zachor, Parah, HaChodesh) displace Rosh Chodesh and
- *    Machar Chodesh (Rema 425:1; SA 685:1). Chabad adds the first and last verses of the
- *    displaced haftara.
- * 3. Shabbos Chanukah displaces Rosh Chodesh Teves (SA 684:3) and Machar Chodesh.
+ * 2. The four parshiyos (Shekalim, Zachor, Parah, HaChodesh) displace Rosh Chodesh (Rema
+ *    425:1; SA 685:1, with MB 685:3) and Machar Chodesh (SA 425:2 sets Machar Chodesh; SA
+ *    685:4 reads HaChodesh's haftara on 29 Adar). Aruch HaShulchan OC 425:4-5 states the rule
+ *    for both: "וכל שכן שהפטרת 'מחר חדש' נדחית מפניהם", because Machar Chodesh has no Torah
+ *    reading of its own ("כיון שאין בה קריאה בתורה"). Ashkenazim do not add verses from the
+ *    displaced haftara (Rema 425:2; MB 425:11); Chabad adds the first and last verses.
+ * 3. Shabbos Chanukah displaces Rosh Chodesh Teves (SA 684:3; MB 684:11, "לענין לדחות
+ *    פרסומי ניסא עדיף") and, all the more, Machar Chodesh (Aruch HaShulchan OC 425:4).
  * 4. Shabbos Shuva (SA OC 428:8). Ashkenazim add verses after Hosea 14; by default Micah
  *    with Vayelech and Joel with Haazinu (MB 428:23; see `shuvaAddition`).
  * 5. The three haftaros of affliction (the Shabbosos before Tisha B'Av; the third is

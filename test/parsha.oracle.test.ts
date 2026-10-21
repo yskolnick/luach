@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { HDate, Sedra } from '@hebcal/core';
-import { readingCycle, HebrewDate } from '../src/index';
+import { readingCycle } from '../src/index';
 import { PARSHIYOS } from '../src/parsha/parsha';
 
 const HEBCAL_NAMES = ['Bereshit','Noach','Lech-Lecha','Vayera','Chayei Sara','Toldot','Vayetzei','Vayishlach','Vayeshev','Miketz','Vayigash','Vayechi','Shemot','Vaera','Bo','Beshalach','Yitro','Mishpatim','Terumah','Tetzaveh','Ki Tisa','Vayakhel','Pekudei','Vayikra','Tzav','Shmini','Tazria','Metzora','Achrei Mot','Kedoshim','Emor','Behar','Bechukotai','Bamidbar','Nasso',"Beha'alotcha","Sh'lach",'Korach','Chukat','Balak','Pinchas','Matot','Masei','Devarim','Vaetchanan','Eikev',"Re'eh",'Shoftim','Ki Teitzei','Ki Tavo','Nitzavim','Vayeilech',"Ha'azinu",'Vezot Haberakhah'];

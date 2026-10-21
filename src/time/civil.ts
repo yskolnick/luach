@@ -86,3 +86,13 @@ export function parseIsoDate(s: string): CivilDate {
   assertCivil(d.year, d.month, d.day);
   return d;
 }
+
+/**
+ * Days since 1970-01-01 of a date in the Julian calendar (proleptic). Used for the
+ * tekufos of Shmuel, whose 365¼-day year matches the Julian year.
+ */
+export function julianToDays(year: number, month: number, day: number): number {
+  const y = month <= 2 ? year - 1 : year;
+  const mp = (month + 9) % 12;
+  return 365 * y + Math.floor(y / 4) + Math.floor((153 * mp + 2) / 5) + day - 719471;
+}

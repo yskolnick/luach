@@ -23,6 +23,8 @@ describe('sun times vs astronomy-engine, 19 cities, daily 2025–2028', () => {
         const set = A.SearchRiseSet(A.Body.Sun, obs, -1, after, 0.5);
         const dawn16 = A.SearchAltitude(A.Body.Sun, obs, +1, before, 0.5, -16.1);
         const dusk85 = A.SearchAltitude(A.Body.Sun, obs, -1, after, 0.5, -8.5);
+        const transit = A.SearchHourAngle(A.Body.Sun, obs, 0, before, +1);
+        checks.push(['chatzos (transit)', Z.chatzos(n, loc, { rounding: 'none' }), transit.time.date.getTime()]);
         checks.push(['sunrise', Z.sunriseSeaLevel(n, loc, { rounding: 'none' }), rise ? rise.date.getTime() : null]);
         checks.push(['sunset', Z.sunsetSeaLevel(n, loc, { rounding: 'none' }), set ? set.date.getTime() : null]);
         checks.push(['alos 16.1°', Z.alos16_1(n, loc, { rounding: 'none' }), dawn16 ? dawn16.date.getTime() : null]);

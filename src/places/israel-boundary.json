@@ -1,0 +1,10 @@
+{
+  "description": "Approximate boundary (latitude, longitude) of the area whose residents keep the Eretz Yisrael calendar (one day of Yom Tov). Coarse: within a few km of the actual lines. Not a political statement. Points run clockwise from Rosh HaNikra.",
+  "points": [
+    [33.093, 35.105], [33.06, 35.30], [33.12, 35.50], [33.28, 35.57], [33.33, 35.80], [33.20, 35.86],
+    [32.95, 35.88], [32.71, 35.79], [32.62, 35.57], [32.30, 35.56], [31.78, 35.55], [31.50, 35.49],
+    [31.10, 35.43], [30.80, 35.30], [30.20, 35.15], [29.55, 34.99], [29.49, 34.90], [30.38, 34.54],
+    [30.85, 34.42], [31.22, 34.27], [31.33, 34.22], [31.60, 34.48], [31.80, 34.60], [32.10, 34.76],
+    [32.50, 34.88], [32.83, 34.95]
+  ]
+}

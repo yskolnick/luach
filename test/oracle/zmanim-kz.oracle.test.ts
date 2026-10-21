@@ -133,6 +133,13 @@ const KZ_ISSUE_37 = new Set(['Sydney', 'Auckland', 'Chatham']);
 
 // Grazing-sun days (see grazing()) are recorded in the report but not counted as failures.
 
+// A second kosher-zmanim date-line defect: at Chatham (longitude −176.6°) solar noon crosses 00:00 UTC in
+// early February, and kosher-zmanim's chatzos jumps a day. astronomy-engine's transit agrees with Luach on
+// every one of these days (test/oracle/zmanim-astronomy.oracle.test.ts), so a difference of one day ±2 min on
+// this comparison is recorded, not failed.
+const KZ_TRANSIT_DAY_JUMP = (city: string, name: string, diffSec: number) =>
+  city === 'Chatham' && name === 'chatzos (transit)' && Math.abs(diffSec - 86_400) < 120;
+
 const stats: Record<string, Stat> = {};
 const start = gregorianToDayNumber(2025, 1, 1);
 const end = gregorianToDayNumber(2028, 12, 31);
@@ -165,6 +172,10 @@ describe('zmanim vs kosher-zmanim, 19 cities, daily 2025–2028', () => {
             continue;
           }
           const diff = Math.abs(a - b) / 1000;
+          if (KZ_TRANSIT_DAY_JUMP(city, name, diff)) {
+            s.grazing.push(`${date} kosher-zmanim transit one day off`);
+            continue;
+          }
           if (diff > 60 && grazing(n, loc, ANGLE[name])) {
             s.grazing.push(`${date} Δ${diff.toFixed(0)}s`);
             continue;

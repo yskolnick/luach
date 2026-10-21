@@ -29,3 +29,5 @@ export * from './zmanim/zmanim.js';
 export { solarAltitude, solarTransit, horizonDip } from './zmanim/solar.js';
 export { usnoSunEvent } from './zmanim/usno.js';
 export * from './zmanim/fasts.js';
+export * from './places/places.js';
+export { isInIsrael } from './places/israel.js';

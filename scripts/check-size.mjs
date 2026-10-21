@@ -4,6 +4,7 @@ import { gzipSync } from 'node:zlib';
 
 const BUDGETS = {
   'dist/index.js': 60_000,
+  'dist/cities-full.js': 1_200_000,
 };
 let failed = false;
 for (const [file, budget] of Object.entries(BUDGETS)) {

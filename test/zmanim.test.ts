@@ -153,3 +153,47 @@ describe('Hebrew labels keep degree signs with their numbers', () => {
     expect(zmanLabel('misheyakir-11', heLocale)).toBe('משיכיר (11°‎)');
   });
 });
+
+import { isMelachaForbiddenAt } from '../src/index';
+describe('input validation', () => {
+  const day = { year: 2027, month: 3, day: 14 };
+  const z = new ZmanimCalendar(LAKEWOOD, day);
+  it('non-finite numbers throw a RangeError instead of giving an Invalid Date', () => {
+    expect(() => z.havdala({ degrees: NaN })).toThrow(RangeError);
+    expect(() => z.havdala({ minutes: NaN })).toThrow(RangeError);
+    expect(() => z.havdala({ minutes: Infinity })).toThrow(RangeError);
+    expect(() => z.candleLighting(NaN)).toThrow(RangeError);
+    expect(() => z.candleLightingSecondNight({ degrees: NaN })).toThrow(RangeError);
+    expect(() => new ZmanimCalendar(LAKEWOOD, day, { candleLightingMinutes: NaN })).toThrow(RangeError);
+    expect(() => new ZmanimCalendar(LAKEWOOD, day, { ateretTorahMinutes: NaN })).toThrow(RangeError);
+    expect(() => new ZmanimCalendar({ ...LAKEWOOD, elevation: NaN }, day)).toThrow(RangeError);
+  });
+  it('angles must be below the horizon after sunset (0.833° < degrees ≤ 30°); minutes 0–180', () => {
+    expect(() => z.havdala({ degrees: -5 })).toThrow(/degrees/);
+    expect(() => z.havdala({ degrees: 0.5 })).toThrow(RangeError);
+    expect(() => z.havdala({ degrees: 200 })).toThrow(RangeError);
+    expect(() => z.havdala({ minutes: -10 })).toThrow(RangeError);
+    expect(() => z.havdala({ minutes: 0 })).toThrow(RangeError);
+    expect(() => z.havdala({ minutes: 181 })).toThrow(RangeError);
+    expect(() => z.candleLighting(-1)).toThrow(RangeError);
+    expect(() => z.candleLighting(181)).toThrow(RangeError);
+    expect(z.havdala({ degrees: 30 }).time).not.toBeNull();
+    expect(z.havdala({ minutes: 72 }).time).not.toBeNull();
+    expect(z.candleLighting(0).time).not.toBeNull();
+    expect(z.candleLighting(40).time).not.toBeNull();
+  });
+  it('isMelachaForbiddenAt rejects a bad end instead of answering true', () => {
+    expect(() => isMelachaForbiddenAt(new Date(Date.UTC(2027, 2, 13, 23)), LAKEWOOD, { ends: { degrees: NaN } })).toThrow(RangeError);
+    expect(() => isMelachaForbiddenAt(new Date(Date.UTC(2027, 2, 13, 23)), LAKEWOOD, { beginsMinutesBeforeSunset: NaN })).toThrow(RangeError);
+  });
+  it('invalid civil dates are rejected, not rolled over', () => {
+    expect(() => new ZmanimCalendar(LAKEWOOD, { year: 2026, month: 2, day: 30 })).toThrow(/Invalid civil date/);
+    expect(() => new ZmanimCalendar(LAKEWOOD, { year: 2026, month: 13, day: 1 })).toThrow(RangeError);
+    expect(() => new ZmanimCalendar(LAKEWOOD, { year: 2026.5, month: 1, day: 1 })).toThrow(RangeError);
+  });
+  it('a missing time zone gives a clear error', () => {
+    const noZone = { latitude: 40, longitude: -74 } as unknown as typeof LAKEWOOD;
+    expect(() => new ZmanimCalendar(noZone, day)).toThrow(/time zone/i);
+    expect(() => new ZmanimCalendar({ ...LAKEWOOD, timeZone: {} as unknown as string }, day)).toThrow(/time zone/i);
+  });
+});

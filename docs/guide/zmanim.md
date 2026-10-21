@@ -38,6 +38,16 @@ degrees are always at sea level, because the depression angle of the sun is the 
 everyone in the area. `useElevation: true` uses elevation-adjusted sunrise and sunset (and
 the Gra day built on them); `sunriseElevation()` is always available.
 
+## Checked inputs
+
+Bad numbers throw a `RangeError` rather than produce an invalid time: a civil date that does
+not exist (2026-02-30, month 13, a fractional year), a non-finite elevation, and for
+`havdala()`, `candleLightingSecondNight()` and the `ends` of `isMelachaForbiddenAt` an angle
+that is not more than 0.833° (sunset) and at most 30° below the horizon, or minutes that are
+not more than 0 and at most 180 after sunset. Candle-lighting minutes must be 0–180; Ateret
+Torah minutes more than 0 and at most 180 (`DEPRESSION_RANGE`, `MINUTES_RANGE`). A missing
+time zone is a `TypeError`.
+
 ## Time zones
 
 Pass an IANA zone ("America/New_York"). Luach reads offsets from the platform's `Intl`

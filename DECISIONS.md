@@ -176,3 +176,7 @@ See ADR 0005. **Default until decided:** as proposed.
   `nearestDay` and `halfNight` replace a time only when the sun does not get low enough
   (`sun-always-above`, summer nights). In polar night (`sun-always-below`) the time stays
   `null` with its reason, since any time would be invented.
+- *As built:* caller-supplied angles for havdala and second-night candles must be more than
+  0.833° (sunset) and at most 30° below the horizon; minutes after sunset more than 0 and at
+  most 180; candle-lighting minutes 0–180. Anything else, or a non-finite number, throws a
+  `RangeError` (`DEPRESSION_RANGE`, `MINUTES_RANGE`).

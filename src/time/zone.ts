@@ -60,9 +60,17 @@ function formatterFor(zone: string): Intl.DateTimeFormat {
   return f;
 }
 
-/** Throws a RangeError if `zone` is not an IANA zone name this runtime knows. */
+/**
+ * Throws a RangeError if `zone` is not an IANA zone name this runtime knows, and a TypeError
+ * if it is missing or is neither a name nor a {@link TimeZoneProvider}.
+ */
 export function assertTimeZone(zone: TimeZone): void {
-  if (typeof zone !== 'string') return;
+  if (typeof zone !== 'string') {
+    if (zone === null || typeof zone !== 'object' || typeof (zone as Partial<TimeZoneProvider>).offsetMinutes !== 'function') {
+      throw new TypeError('A time zone is required: an IANA zone name such as "America/New_York", or a TimeZoneProvider');
+    }
+    return;
+  }
   try {
     formatterFor(zone);
   } catch (e) {

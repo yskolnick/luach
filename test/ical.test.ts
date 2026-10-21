@@ -38,4 +38,13 @@ describe('iCalendar export', () => {
     const candles = comp.getAllSubcomponents('vevent').map((v) => new ICAL.Event(v)).find((e) => e.summary === 'Candle lighting')!;
     expect(candles.startDate.toJSDate().toISOString()).toBe('2027-04-23T23:25:00.000Z');
   });
+  it('Tisha B\'Av postponed from Shabbos: Shabbos ends without havdala; havdala after the fast', () => {
+    const ics = toICalendar({ year: 2025, month: 8, day: 2 }, { year: 2025, month: 8, day: 3 }, { location: getPlace('new-york')!, now: new Date(0), locale: ashkenazi, holidays: false, parsha: false });
+    const comp = new ICAL.Component(ICAL.parse(ics));
+    const events = comp.getAllSubcomponents('vevent').map((v) => new ICAL.Event(v));
+    expect(events.map((e) => [e.summary, e.startDate.toJSDate().toISOString()])).toEqual([
+      ['Shabbos ends (no havdala)', '2025-08-03T00:56:00.000Z'],
+      ['Havdala (after the fast)', '2025-08-04T00:46:00.000Z'],
+    ]);
+  });
 });

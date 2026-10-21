@@ -18,6 +18,7 @@ import { mishnaYomis, nachYomi, rambamOneChapter, rambamThreeChapters, yerushalm
 import type { DayLocation } from '../day/day-info.js';
 import { dayInfo } from '../day/day-info.js';
 import { ZmanimCalendar } from '../zmanim/calendar.js';
+import { zmanLabel } from '../zmanim/opinions.js';
 import type { Zman } from '../zmanim/zman.js';
 import { gematriya } from '../text/gematriya.js';
 
@@ -133,7 +134,8 @@ export function toICalendar(start: CivilDate | HebrewDate, end: CivilDate | Hebr
       if (options.candleLighting !== false) {
         const info = dayInfo(d, { location: options.location, israel, locale });
         if (info.candleLighting?.time) items.push({ uid: `${d.toString()}-candles`, summary: rtl ? 'הדלקת נרות' : 'Candle lighting', description: `${info.candleLighting.opinion}. ${info.candleLighting.source}`, categories: 'candle-lighting', at: new Date(info.candleLighting.time) });
-        if (info.havdala?.time) items.push({ uid: `${d.toString()}-havdala`, summary: rtl ? 'הבדלה' : 'Havdala', description: `${info.havdala.opinion}. ${info.havdala.source}`, categories: 'havdala', at: new Date(info.havdala.time) });
+        if (info.havdala?.time) items.push({ uid: `${d.toString()}-havdala`, summary: info.havdala.id === 'havdala' ? (rtl ? 'הבדלה' : 'Havdala') : zmanLabel(info.havdala.id, locale), description: `${info.havdala.opinion}. ${info.havdala.source}`, categories: 'havdala', at: new Date(info.havdala.time) });
+        if (info.shabbosEnds?.time) items.push({ uid: `${d.toString()}-shabbos-ends`, summary: zmanLabel(info.shabbosEnds.id, locale), description: `${info.shabbosEnds.opinion}. ${info.shabbosEnds.source}`, categories: 'shabbos-ends', at: new Date(info.shabbosEnds.time) });
       }
       for (const m of options.zmanim ?? []) {
         const f = (z as unknown as Record<string, unknown>)[m];

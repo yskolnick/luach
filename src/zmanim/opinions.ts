@@ -117,6 +117,8 @@ export const ZMANIM: Readonly<Record<string, ZmanDefinition>> = {
   // ---- Shabbos, Yom Tov, Pesach, fasts ----
   'candle-lighting': { opinion: 'Candle lighting a fixed number of minutes before sunset, by local custom (18 common; Jerusalem 40)', source: 'Shulchan Aruch OC 261:2 (tosefes Shabbos); minutes are custom: Igros Moshe OC 2:6; Kaf HaChaim 261:23; Yabia Omer 5:21', round: down },
   'havdala': { opinion: 'End of Shabbos or Yom Tov: three small stars (by degrees) or a fixed number of minutes', source: 'Shulchan Aruch OC 293:2', round: up },
+  'shabbos-ends-no-havdala': { opinion: 'Shabbos ends (three small stars) before Tisha B\'Av postponed to Sunday: no havdala over a cup tonight; say "Baruch HaMavdil bein kodesh lechol" before melacha', source: 'Shulchan Aruch OC 556:1; Mishnah Berurah 556:2; Shulchan Aruch OC 299:10; Shulchan Aruch OC 293:2', round: up },
+  'havdala-after-fast': { opinion: 'Havdala over a cup, without candle or spices, when Tisha B\'Av postponed from Shabbos ends', source: 'Shulchan Aruch OC 556:1', round: up },
   'candle-lighting-second-night': { opinion: 'Candles on the second night of Yom Tov, or Yom Tov after Shabbos: after nightfall', source: 'Shulchan Aruch OC 503:1', round: up },
   'sof-zman-achilas-chametz-gra': { opinion: 'Latest time to eat chametz on Erev Pesach, Gra: 4 seasonal hours', source: 'Pesachim 11b; Shulchan Aruch OC 443:1', round: down },
   'sof-zman-achilas-chametz-mga-72': { opinion: 'Latest time to eat chametz, Magen Avraham (72 minutes)', source: 'Pesachim 11b; Shulchan Aruch OC 443:1 with Rema', round: down },

@@ -6,6 +6,9 @@ All notable changes for users of the `luach` package. This project follows
 ## Unreleased
 
 ### Changed (breaking)
+- A calendar call given a place but not `israel` now decides from the place: a location
+  inside Israel without its own `israel` flag used to get diaspora rules. Applies to
+  `dayInfo`, `toICalendar`, `fastTimes` and `isMelachaForbiddenAt`; `israel` still wins.
 - The shared tables are frozen: `ZMANIM` and its entries, `DEFAULT_DAY_ZMANIM`, every place
   from `getPlace()`, `builtInPlaces()` and `fullPlaces()`, `LOCAL_CANDLE_LIGHTING` and
   `ISRAEL_BOUNDARY`. Writing to

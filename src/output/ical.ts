@@ -5,6 +5,7 @@
  * @packageDocumentation
  */
 
+import { israelFor } from '../places/israel.js';
 import { HebrewDate } from '../calendar/hebrew-date.js';
 import { daysToCivil, type CivilDate } from '../time/civil.js';
 import { he } from '../locales/he.js';
@@ -31,7 +32,10 @@ export interface ICalOptions {
   name?: string;
   /** Names. Default Hebrew. */
   locale?: Locale;
-  /** Israel or the diaspora (explicit wins over `location.israel`). */
+  /**
+   * Israel or the diaspora. Explicit wins; otherwise `location.israel`; otherwise the
+   * location's coordinates decide (`isInIsrael`); with no location, the diaspora (D-10).
+   */
   israel?: boolean;
   /** Include holidays (with these options). Default true. */
   holidays?: boolean | Omit<HolidayOptions, 'israel'>;
@@ -104,7 +108,7 @@ export function toICalendar(start: CivilDate | HebrewDate, end: CivilDate | Hebr
   const h1 = end instanceof HebrewDate ? end : HebrewDate.fromCivil(end);
   if (h1.epochDays < h0.epochDays) throw new RangeError('end is before start');
   const locale = options.locale ?? he;
-  const israel = options.israel ?? options.location?.israel ?? false;
+  const israel = israelFor(options.israel, options.location);
   const now = options.now ?? new Date();
   if (!(now instanceof Date) || !Number.isFinite(now.getTime())) throw new RangeError('options.now is not a valid Date');
   const zmanMethods = options.location

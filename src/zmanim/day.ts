@@ -10,6 +10,7 @@ import { MAX_DAYS } from '../calendar/year.js';
 import { civilDateAt } from '../time/zone.js';
 import { civilToDays, daysToCivil } from '../time/civil.js';
 import { holidaysOn } from '../holidays/holidays.js';
+import { israelFor } from '../places/israel.js';
 import type { HolidayEvent, HolidayOptions } from '../holidays/types.js';
 import { ZmanimCalendar, type GeoLocation, type ZmanimOptions } from './calendar.js';
 import { ZMANIM } from './opinions.js';
@@ -56,9 +57,12 @@ export interface FastTimesOptions extends HolidayOptions, ZmanimOptions {
   ends?: 'tzeis-6.45' | 'tzeis-7.083' | 'tzeis-8.5' | 'tzeis-42' | 'tzeis-50' | 'tzeis-72';
 }
 
-/** Start and end of the fast on `date`, or null if `date` is not a fast day. */
+/**
+ * Start and end of the fast on `date`, or null if `date` is not a fast day. Israel or the
+ * diaspora: `options.israel` if given, otherwise from the location (D-10).
+ */
 export function fastTimes(date: HebrewDate, location: GeoLocation, options: FastTimesOptions = {}): { fast: HolidayEvent; begins: Zman; ends: Zman } | null {
-  const fast = holidaysOn(date, options).find((e) => e.flags.fast !== null);
+  const fast = holidaysOn(date, { ...options, israel: israelFor(options.israel, location) }).find((e) => e.flags.fast !== null);
   if (!fast) return null;
   const z = new ZmanimCalendar(location, date, options);
   let begins: Zman;
@@ -92,13 +96,15 @@ export interface MelachaOptions extends HolidayOptions, ZmanimOptions {
 /**
  * True if melacha is forbidden at `instant` because of Shabbos or Yom Tov, by the chosen
  * start (candle lighting) and end (havdala) times. Motzaei Shabbos after havdala time is
- * not forbidden. Yom Kippur counts as Yom Tov.
+ * not forbidden. Yom Kippur counts as Yom Tov. Israel or the diaspora (the second day of
+ * Yom Tov): `options.israel` if given, otherwise from the location (D-10).
  */
 export function isMelachaForbiddenAt(instant: Date, location: GeoLocation, options: MelachaOptions = {}): boolean {
   const civil = civilDateAt(instant.getTime(), location.timeZone);
   const z = new ZmanimCalendar(location, civil, { ...options, rounding: false });
   const today = HebrewDate.fromCivil(civil);
-  const holy = (d: HebrewDate) => d.isShabbos || holidaysOn(d, options).some((e) => e.flags.melachaForbidden);
+  const hopts = { ...options, israel: israelFor(options.israel, location) };
+  const holy = (d: HebrewDate) => d.isShabbos || holidaysOn(d, hopts).some((e) => e.flags.melachaForbidden);
   // After 29 Elul 9999 (the last supported day) comes Rosh Hashana 10000, always Yom Tov.
   const holyTomorrow = () => today.epochDays === MAX_DAYS || holy(today.next());
   const t = instant.getTime();

@@ -41,7 +41,17 @@ plans in [ROADMAP.md](ROADMAP.md) and user-facing changes in [CHANGELOG.md](CHAN
   three grazing-angle days explained.
 
 **Decided:** D-01 (the name), D-02 (commits name the models that wrote and checked them; no
-session links), D-03 (this log).
+session links), D-03 (this log), D-04 (a rationale page tied to every decision).
+
+**Rationale page:** [docs/rationale.md](docs/rationale.md) explains every decision: why, the
+sources and how far each was verified, what it was checked against, and a confidence level.
+The *As built* entries are now numbered AB-01 to AB-36 (AB-36, Pirkei Avos, was missing).
+Writing it turned up these, now fixed: three zmanim defined by 16.1° were labelled "16.1 min";
+the accuracy report said 52 zmanim where 51 are compared; the anniversary code lacked its
+citation (Magen Avraham 568:20; MB 568:42). Recorded as open for scholars: the BeHaB edge
+case when Rosh Chodesh is Shabbos (AB-06); the year Yom HaShoah's Friday rule began (Q-05);
+the Levush's own text for Plag (AB-14); and several defaults with no source (rounding, the Omer
+wording, 7.083° for fasts).
 
 **Housekeeping:** commit messages on `main` had carried links to private working sessions.
 Those lines were removed and the history rewritten, so commit hashes before this date

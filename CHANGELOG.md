@@ -48,6 +48,8 @@ All notable changes for users of the `luach` package. This project follows
   week, and settings; Hebrew and English, light and dark.
 
 ### Changed
+- Three zmanim defined by 16.1° (Shema, Shacharis and Plag of the Magen Avraham) were
+  labelled "16.1 min"; they now read "16.1°".
 - The city-data files ship without source maps; the package is about half the size.
 - Hebrew zman labels carry a left-to-right mark (U+200E) after each degree sign, so the
   angle reads correctly in right-to-left text.

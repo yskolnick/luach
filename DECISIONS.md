@@ -38,6 +38,14 @@ updates and decisions that are relevant should be shown to people". `LOG.md` rec
 working session's updates, decisions and open questions. Personal notes and conversation
 records stay in the private records repository.
 
+### D-04. A rationale page tied to every decision
+Yosef: "an ai generated sources page for why the ai is doing it a particular way. This
+should tie to every decision. It should be a document that scholars can look at at analyze
+and fix". [docs/rationale.md](docs/rationale.md) has one section per entry in this file: what
+the code does, why, the sources (with how far each was verified), what it was checked
+against, a confidence level, and what is open. A test fails if any entry lacks a section.
+Scholars challenge an entry with the "Challenge a decision or source" issue template.
+
 ## Open questions
 
 ### Q-00. Unmerged branches
@@ -181,3 +189,5 @@ See ADR 0005. **Default until decided:** as proposed.
   halves the package.
 - **AB-35** *As built:* security reports go through GitHub's private vulnerability reporting; the code
   of conduct is Luach's own, short text.
+- **AB-36** *As built:* Pirkei Avos defaults to one chapter a week on the summer Shabbosim
+  (`cycle: 'single'`); doubling up at the end is an option.

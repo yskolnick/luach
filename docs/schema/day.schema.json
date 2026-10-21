@@ -21,7 +21,9 @@
     "zmanim",
     "candleLighting",
     "havdala",
-    "fast"
+    "shabbosEnds",
+    "fast",
+    "fastBeginsTonight"
   ],
   "additionalProperties": false,
   "$defs": {
@@ -411,6 +413,17 @@
         }
       ]
     },
+    "shabbosEnds": {
+      "description": "When Shabbos ends on a Shabbos whose havdala is deferred (Tisha B'Av postponed to Sunday); not havdala. Otherwise null.",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/zman"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
     "fast": {
       "type": [
         "object",
@@ -430,6 +443,26 @@
           "$ref": "#/$defs/zman"
         },
         "ends": {
+          "$ref": "#/$defs/zman"
+        }
+      }
+    },
+    "fastBeginsTonight": {
+      "description": "A fast that begins this evening at sunset (Yom Kippur, Tisha B'Av), or null.",
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "id",
+        "begins"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "begins": {
           "$ref": "#/$defs/zman"
         }
       }

@@ -127,6 +127,8 @@ Generated from [`src/zmanim/opinions.ts`](https://github.com/yskolnick/luach/blo
 | `tzeis-ateret-torah` | Nightfall, Ateret Torah: a fixed number of minutes after sunset (default 40) | Ateret Torah luach (Chacham Yosef Harari-Raful); not verified against a printed source | up | part not verified |
 | `candle-lighting` | Candle lighting a fixed number of minutes before sunset, by local custom (18 common; Jerusalem 40) | Shulchan Aruch OC 261:2 (tosefes Shabbos); the minutes are local custom: Kaf HaChaim 261:23 (a third of an hour); Igros Moshe OC 2:6 and Yabia Omer 5:21 as cited by the OU (not verified) | down | checked, corrected, part from a secondary source |
 | `havdala` | End of Shabbos or Yom Tov: three small stars (by degrees) or a fixed number of minutes | Shulchan Aruch OC 293:2 | up | checked |
+| `shabbos-ends-no-havdala` | Shabbos ends (three small stars) before Tisha B'Av postponed to Sunday: no havdala over a cup tonight; say "Baruch HaMavdil bein kodesh lechol" before melacha | Shulchan Aruch OC 556:1; Mishnah Berurah 556:2; Shulchan Aruch OC 299:10; Shulchan Aruch OC 293:2 | up |  |
+| `havdala-after-fast` | Havdala over a cup, without candle or spices, when Tisha B'Av postponed from Shabbos ends | Shulchan Aruch OC 556:1 | up |  |
 | `candle-lighting-second-night` | Candles on the second night of Yom Tov, or Yom Tov after Shabbos: after nightfall | Shulchan Aruch OC 503:1 (no preparing from one day of Yom Tov for the next); lighting after nightfall follows from it and is not stated there | up | corrected |
 | `sof-zman-achilas-chametz-gra` | Latest time to eat chametz on Erev Pesach, Gra: 4 seasonal hours | Pesachim 11b; Shulchan Aruch OC 443:1 | down | checked |
 | `sof-zman-achilas-chametz-mga-72` | Latest time to eat chametz, Magen Avraham (72 minutes) | Pesachim 11b; Shulchan Aruch OC 443:1 with Rema | down | checked |
@@ -168,6 +170,9 @@ the code. Zmanim are in the table above; verse references for haftaros are in
 | [`src/calendar/year.ts:28`](https://github.com/yskolnick/luach/blob/main/src/calendar/year.ts#L28) | The years of the 19-year cycle that have 13 months. Rambam, KH 6:11. |
 | [`src/calendar/year.ts:81`](https://github.com/yskolnick/luach/blob/main/src/calendar/year.ts#L81) | The day (counted from day 0 of {@link moladTishreiParts}) of Rosh Hashana of `year`, after the four dechiyos of Rambam, KH 7:1–7: |
 | [`src/calendar/year.ts:126`](https://github.com/yskolnick/luach/blob/main/src/calendar/year.ts#L126) | Rambam, KH 8:5–6. |
+| [`src/day/day-info.ts:89`](https://github.com/yskolnick/luach/blob/main/src/day/day-info.ts#L89) | Havdala tonight. Null on the Shabbos before Tisha B'Av postponed to Sunday (see `shabbosEnds`); on that Sunday it is havdala over a cup when the fast ends (SA OC 556:1). |
+| [`src/day/day-info.ts:154`](https://github.com/yskolnick/luach/blob/main/src/day/day-info.ts#L154) | Lighting after nightfall is only for a second holy night that is Yom Tov: from Shabbos into Yom Tov, or from Yom Tov into Yom Tov (SA OC 503:1). Shabbos itself begins at sunset (SA OC 261:2), so on a Yom Tov that falls on Friday the candles for Shabbos are lit at the usual time before sunset. |
+| [`src/day/day-info.ts:171`](https://github.com/yskolnick/luach/blob/main/src/day/day-info.ts#L171) | Tisha B'Av postponed from Shabbos to Sunday: no havdala over a cup on Motzaei Shabbos; it is said over a cup, without candle or spices, when the fast ends (SA OC 556:1). Melacha after Shabbos needs "HaMavdil bein kodesh lechol" (MB 556:2; SA OC 299:10). |
 | [`src/holidays/holidays.ts:4`](https://github.com/yskolnick/luach/blob/main/src/holidays/holidays.ts#L4) | Dates follow the Torah and the Shulchan Aruch, as cited per event. Where a day is moved (a fast that falls on Shabbos, Taanis Esther, Taanis Bechoros, the modern Israeli days), the rule is stated next to the code. Israel vs the diaspora is always the caller's explicit choice (`israel` option). |
 | [`src/holidays/holidays.ts:93`](https://github.com/yskolnick/luach/blob/main/src/holidays/holidays.ts#L93) | Tzom Gedalia, 3 Tishrei; on Shabbos it is pushed to Sunday (SA OC 549:1, 550:3). |
 | [`src/holidays/holidays.ts:129`](https://github.com/yskolnick/luach/blob/main/src/holidays/holidays.ts#L129) | Asarah B'Teves: it can fall on Friday and is kept then (implied by the Rema, OC 550:3); that it is never pushed off is the Abudraham, cited by the Beis Yosef on OC 550. It never falls on Shabbos. |
@@ -225,31 +230,31 @@ the code. Zmanim are in the table above; verse references for haftaros are in
 | [`src/time/civil.ts:7`](https://github.com/yskolnick/luach/blob/main/src/time/civil.ts#L7) | The arithmetic is the era-based method published by Howard Hinnant in "chrono-Compatible Low-Level Date Algorithms" (placed in the public domain), re-implemented here. It is exact for every year JavaScript numbers can hold. |
 | [`src/time/zone.ts:4`](https://github.com/yskolnick/luach/blob/main/src/time/zone.ts#L4) | Offsets always come from the IANA time-zone database through `Intl.DateTimeFormat`. Luach never derives a "standard offset" from a zone or from longitude: doing that puts zmanim on the wrong civil day near the date line (Sydney, Auckland, Chatham) and across DST changes. |
 | [`src/time/zone.ts:25`](https://github.com/yskolnick/luach/blob/main/src/time/zone.ts#L25) | An IANA zone name such as `"America/New_York"`, or a custom provider. |
-| [`src/time/zone.ts:63`](https://github.com/yskolnick/luach/blob/main/src/time/zone.ts#L63) | Throws a RangeError if `zone` is not an IANA zone name this runtime knows. |
+| [`src/time/zone.ts:64`](https://github.com/yskolnick/luach/blob/main/src/time/zone.ts#L64) | Throws a RangeError if `zone` is not an IANA zone name this runtime knows, and a TypeError if it is missing or is neither a name nor a {@link TimeZoneProvider}. |
 | [`src/zmanim/calendar.ts:16`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L16) | The day is the civil date in the location's IANA time zone. The sun is followed from that day's local noon, so places near the date line (Chatham, Auckland, Sydney) get their own day's times. |
 | [`src/zmanim/calendar.ts:40`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L40) | IANA zone name (e.g. "Asia/Jerusalem") or a provider. |
-| [`src/zmanim/calendar.ts:295`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L295) | Seasonal hour of the Magen Avraham, 72 fixed minutes. |
-| [`src/zmanim/calendar.ts:297`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L297) | Seasonal hour of the Magen Avraham, 90 fixed minutes. |
-| [`src/zmanim/calendar.ts:299`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L299) | Seasonal hour of the Magen Avraham, 72 proportional minutes. |
-| [`src/zmanim/calendar.ts:301`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L301) | Seasonal hour of the Magen Avraham, 90 proportional minutes. |
-| [`src/zmanim/calendar.ts:303`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L303) | Seasonal hour of the Magen Avraham, 16.1°. |
-| [`src/zmanim/calendar.ts:314`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L314) | Latest Shema, Magen Avraham (72 fixed minutes). |
-| [`src/zmanim/calendar.ts:316`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L316) | Latest Shema, Magen Avraham (90 fixed minutes). |
-| [`src/zmanim/calendar.ts:318`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L318) | Latest Shema, Magen Avraham (72 proportional minutes). |
-| [`src/zmanim/calendar.ts:320`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L320) | Latest Shema, Magen Avraham (90 proportional minutes). |
-| [`src/zmanim/calendar.ts:322`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L322) | Latest Shema, Magen Avraham (16.1°). |
-| [`src/zmanim/calendar.ts:330`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L330) | Latest Shacharis, Magen Avraham (72 fixed minutes). |
-| [`src/zmanim/calendar.ts:332`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L332) | Latest Shacharis, Magen Avraham (90 fixed minutes). |
-| [`src/zmanim/calendar.ts:334`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L334) | Latest Shacharis, Magen Avraham (72 proportional minutes). |
-| [`src/zmanim/calendar.ts:336`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L336) | Latest Shacharis, Magen Avraham (90 proportional minutes). |
-| [`src/zmanim/calendar.ts:338`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L338) | Latest Shacharis, Magen Avraham (16.1°). |
-| [`src/zmanim/calendar.ts:357`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L357) | Mincha Gedola, Magen Avraham (72 fixed minutes): 6.5 hours into the MGA day. |
-| [`src/zmanim/calendar.ts:363`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L363) | Mincha Ketana, Magen Avraham (72 fixed minutes). |
-| [`src/zmanim/calendar.ts:369`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L369) | Plag HaMincha, Magen Avraham (72 fixed minutes). |
-| [`src/zmanim/calendar.ts:371`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L371) | Plag HaMincha, Magen Avraham (16.1°). |
-| [`src/zmanim/calendar.ts:376`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L376) | Plag HaMincha, Levush: the same calculation as the Gra (see the source note). |
-| [`src/zmanim/calendar.ts:436`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L436) | Latest time to eat chametz, Magen Avraham 72 (only on 14 Nisan). |
-| [`src/zmanim/calendar.ts:440`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L440) | Latest time to burn chametz, Magen Avraham 72 (only on 14 Nisan). |
+| [`src/zmanim/calendar.ts:330`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L330) | Seasonal hour of the Magen Avraham, 72 fixed minutes. |
+| [`src/zmanim/calendar.ts:332`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L332) | Seasonal hour of the Magen Avraham, 90 fixed minutes. |
+| [`src/zmanim/calendar.ts:334`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L334) | Seasonal hour of the Magen Avraham, 72 proportional minutes. |
+| [`src/zmanim/calendar.ts:336`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L336) | Seasonal hour of the Magen Avraham, 90 proportional minutes. |
+| [`src/zmanim/calendar.ts:338`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L338) | Seasonal hour of the Magen Avraham, 16.1°. |
+| [`src/zmanim/calendar.ts:349`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L349) | Latest Shema, Magen Avraham (72 fixed minutes). |
+| [`src/zmanim/calendar.ts:351`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L351) | Latest Shema, Magen Avraham (90 fixed minutes). |
+| [`src/zmanim/calendar.ts:353`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L353) | Latest Shema, Magen Avraham (72 proportional minutes). |
+| [`src/zmanim/calendar.ts:355`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L355) | Latest Shema, Magen Avraham (90 proportional minutes). |
+| [`src/zmanim/calendar.ts:357`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L357) | Latest Shema, Magen Avraham (16.1°). |
+| [`src/zmanim/calendar.ts:365`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L365) | Latest Shacharis, Magen Avraham (72 fixed minutes). |
+| [`src/zmanim/calendar.ts:367`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L367) | Latest Shacharis, Magen Avraham (90 fixed minutes). |
+| [`src/zmanim/calendar.ts:369`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L369) | Latest Shacharis, Magen Avraham (72 proportional minutes). |
+| [`src/zmanim/calendar.ts:371`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L371) | Latest Shacharis, Magen Avraham (90 proportional minutes). |
+| [`src/zmanim/calendar.ts:373`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L373) | Latest Shacharis, Magen Avraham (16.1°). |
+| [`src/zmanim/calendar.ts:392`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L392) | Mincha Gedola, Magen Avraham (72 fixed minutes): 6.5 hours into the MGA day. |
+| [`src/zmanim/calendar.ts:398`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L398) | Mincha Ketana, Magen Avraham (72 fixed minutes). |
+| [`src/zmanim/calendar.ts:404`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L404) | Plag HaMincha, Magen Avraham (72 fixed minutes). |
+| [`src/zmanim/calendar.ts:406`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L406) | Plag HaMincha, Magen Avraham (16.1°). |
+| [`src/zmanim/calendar.ts:411`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L411) | Plag HaMincha, Levush: the same calculation as the Gra (see the source note). |
+| [`src/zmanim/calendar.ts:477`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L477) | Latest time to eat chametz, Magen Avraham 72 (only on 14 Nisan). |
+| [`src/zmanim/calendar.ts:481`](https://github.com/yskolnick/luach/blob/main/src/zmanim/calendar.ts#L481) | Latest time to burn chametz, Magen Avraham 72 (only on 14 Nisan). |
 | [`src/zmanim/solar.ts:2`](https://github.com/yskolnick/luach/blob/main/src/zmanim/solar.ts#L2) | The position of the sun and the times it crosses a given altitude, after the NOAA Solar Calculator (NOAA Global Monitoring Laboratory; a US Government work in the public domain), which implements the low-precision solar theory in Jean Meeus, *Astronomical Algorithms*, chapters 25 and 28. Accuracy is about a minute for latitudes within ±72°. |
 | [`src/zmanim/usno.ts:16`](https://github.com/yskolnick/luach/blob/main/src/zmanim/usno.ts#L16) | Sun at `zenith` on the solar day nearest `transit` (an approximate local noon instant), rising or setting, by the USNO method. |
 

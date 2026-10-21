@@ -200,8 +200,10 @@ function printDay(date: CivilDate, flags: Record<string, string | true>): void {
     const note = custom ? `  (${c.opinion}; ${custom.source})` : c.id === 'candle-lighting' ? '  (18 minutes before sunset, the common default)' : '';
     line(`  Candle lighting: ${c.local}${note}`);
   }
-  if (info.havdala) line(`  Havdala: ${info.havdala.local}`);
+  if (info.havdala) line(`  ${info.havdala.id === 'havdala-after-fast' ? 'Havdala (after the fast)' : 'Havdala'}: ${info.havdala.local}`);
+  if (info.shabbosEnds) line(`  Shabbos ends (no havdala; say Baruch HaMavdil before melacha): ${info.shabbosEnds.local}`);
   if (info.fast) line(`  Fast: ${info.fast.begins.local} – ${info.fast.ends.local}`);
+  if (info.fastBeginsTonight) line(`  Fast begins: ${info.fastBeginsTonight.begins.local}`);
   line('  Ask your rav. Each time follows a named opinion; see --json for sources.');
 }
 

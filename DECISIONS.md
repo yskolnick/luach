@@ -247,3 +247,14 @@ See ADR 0005. **Default until decided:** as proposed.
   joins still use the known weekday of 1 Tishrei 10000); `parshaFor` (and `dayInfo().parsha`)
   is null for the few days whose coming Shabbos is in 10000. Leil Selichos and candle lighting
   on 29 Elul 9999 are computed (Rosh Hashana 10000 is always Yom Tov).
+- *As built (adds to "high-latitude fallbacks are off by default"):* when turned on,
+  `nearestDay` and `halfNight` replace a time only when the sun does not get low enough
+  (`sun-always-above`, summer nights). In polar night (`sun-always-below`) the time stays
+  `null` with its reason, since any time would be invented.
+- *As built:* caller-supplied angles for havdala and second-night candles must be more than
+  0.833° (sunset) and at most 30° below the horizon; minutes after sunset more than 0 and at
+  most 180; candle-lighting minutes 0–180. Anything else, or a non-finite number, throws a
+  `RangeError` (`DEPRESSION_RANGE`, `MINUTES_RANGE`).
+- *As built:* UTC offsets from `Intl` are not rounded to whole minutes (historical local mean
+  time has seconds), and rounded zmanim are rounded to whole minutes of the local clock, which
+  is the same as UTC minutes for every zone with a whole-minute offset.

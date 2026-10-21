@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ZmanimCalendar, HebrewDate, Month, ZMANIM, fixedOffsetZone, roundToMinute } from '../src/index';
+import { ZmanimCalendar, HebrewDate, Month, ZMANIM, fixedOffsetZone, roundToMinute, offsetMinutes, zonedToInstant, localParts } from '../src/index';
 
 const LAKEWOOD = { latitude: 40.0821, longitude: -74.2097, elevation: 20, timeZone: 'America/New_York' };
 const LONDON = { latitude: 51.5074, longitude: -0.1278, timeZone: 'Europe/London' };
@@ -71,6 +71,27 @@ describe('high latitude', () => {
     expect(near.time).not.toBeNull();
     expect(near.fallback).toMatch(/nearest day/);
   });
+  it('fallbacks never replace a time when the sun stays too low (polar night)', () => {
+    // Svalbard at the winter solstice: the sun stays below about 11.7° under the horizon, so it
+    // never rises to 11° or 8.5°. Solar midnight or another day's offset would be an invented
+    // misheyakir or tzeis. (It does pass 16.1°, so alos 16.1° is a real time.)
+    const svalbard = { latitude: 78.22, longitude: 15.65, timeZone: 'Arctic/Longyearbyen' };
+    for (const mode of ['halfNight', 'nearestDay'] as const) {
+      const z = new ZmanimCalendar(svalbard, { year: 2026, month: 12, day: 21 }, { highLatitudeFallback: mode });
+      for (const m of [z.misheyakir11(), z.misheyakir10Point2(), z.tzeis8Point5(), z.tzeis7Point083()]) {
+        expect(m.time, `${mode} ${m.id}`).toBeNull();
+        expect(m.fallback, `${mode} ${m.id}`).toBeUndefined();
+      }
+      expect(z.misheyakir11().reason).toBe('sun-always-below');
+      expect(z.tzeis8Point5().reason).toBe('sun-always-below');
+      expect(z.alos16Point1().time).not.toBeNull();
+      expect(z.alos16Point1().fallback).toBeUndefined();
+    }
+    // The same place at midsummer: the sun stays too high, so the fallback applies.
+    const summer = new ZmanimCalendar(svalbard, { year: 2027, month: 6, day: 21 }, { highLatitudeFallback: 'halfNight' }).misheyakir11();
+    expect(summer.time).not.toBeNull();
+    expect(summer.fallback).toMatch(/Solar midnight/);
+  });
 });
 
 describe('elevation', () => {
@@ -108,6 +129,31 @@ describe('time zones', () => {
   it('rejects unknown zones', () => {
     expect(() => new ZmanimCalendar({ ...LAKEWOOD, timeZone: 'Mars/Olympus' }, { year: 2027, month: 6, day: 1 })).toThrow(RangeError);
   });
+  it('historical offsets keep their seconds (Jerusalem local mean time in 1900)', () => {
+    const at = Date.UTC(1900, 0, 1, 12);
+    // The runtime's own offset, to the second (ICU data; tzdata's LMT for Jerusalem).
+    const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Jerusalem', timeZoneName: 'longOffset' }).formatToParts(new Date(at));
+    const m = /GMT([+-])(\d\d):(\d\d)(?::(\d\d))?/.exec(parts.find((p) => p.type === 'timeZoneName')!.value)!;
+    const intlMinutes = (m[1] === '-' ? -1 : 1) * (Number(m[2]) * 60 + Number(m[3]) + Number(m[4] ?? 0) / 60);
+    expect(offsetMinutes('Asia/Jerusalem', at)).toBeCloseTo(intlMinutes, 9);
+    expect(Number.isInteger(intlMinutes)).toBe(false);
+    // Local noon maps back to 12:00:00 on the local clock (not 12:00:20).
+    const noon = zonedToInstant({ year: 1900, month: 1, day: 1 }, 12 * 60, 'Asia/Jerusalem');
+    expect(localParts(noon, 'Asia/Jerusalem')).toMatchObject({ hour: 12, minute: 0, second: 0 });
+    expect(noon).toBe(Date.UTC(1900, 0, 1, 12) - Math.round(intlMinutes * 60) * 1000);
+    // Rounding is to the local minute, so a rounded time still shows whole local minutes and
+    // never displays earlier than the exact time.
+    const loc = { ...JERUSALEM, timeZone: 'Asia/Jerusalem' };
+    const r = new ZmanimCalendar(loc, { year: 1900, month: 3, day: 14 }).tzeis8Point5();
+    const x = new ZmanimCalendar(loc, { year: 1900, month: 3, day: 14 }, { rounding: false }).tzeis8Point5();
+    expect(localParts(r.time!.getTime(), 'Asia/Jerusalem').second).toBe(0);
+    expect(r.time!.getTime()).toBeGreaterThanOrEqual(x.time!.getTime());
+    expect(r.time!.getTime() - x.time!.getTime()).toBeLessThan(60_000);
+    const s = new ZmanimCalendar(loc, { year: 1900, month: 3, day: 14 }).sofZmanShemaGra();
+    const sx = new ZmanimCalendar(loc, { year: 1900, month: 3, day: 14 }, { rounding: false }).sofZmanShemaGra();
+    expect(localParts(s.time!.getTime(), 'Asia/Jerusalem').second).toBe(0);
+    expect(s.time!.getTime()).toBeLessThanOrEqual(sx.time!.getTime());
+  });
   it('toJSON gives local time in the location zone', () => {
     const j = new ZmanimCalendar(JERUSALEM, { year: 2027, month: 3, day: 14 }).chatzos().toJSON();
     expect(j.timeZone).toBe('Asia/Jerusalem');
@@ -130,5 +176,49 @@ describe('labels', () => {
 describe('Hebrew labels keep degree signs with their numbers', () => {
   it('a left-to-right mark follows each degree sign', () => {
     expect(zmanLabel('misheyakir-11', heLocale)).toBe('משיכיר (11°‎)');
+  });
+});
+
+import { isMelachaForbiddenAt } from '../src/index';
+describe('input validation', () => {
+  const day = { year: 2027, month: 3, day: 14 };
+  const z = new ZmanimCalendar(LAKEWOOD, day);
+  it('non-finite numbers throw a RangeError instead of giving an Invalid Date', () => {
+    expect(() => z.havdala({ degrees: NaN })).toThrow(RangeError);
+    expect(() => z.havdala({ minutes: NaN })).toThrow(RangeError);
+    expect(() => z.havdala({ minutes: Infinity })).toThrow(RangeError);
+    expect(() => z.candleLighting(NaN)).toThrow(RangeError);
+    expect(() => z.candleLightingSecondNight({ degrees: NaN })).toThrow(RangeError);
+    expect(() => new ZmanimCalendar(LAKEWOOD, day, { candleLightingMinutes: NaN })).toThrow(RangeError);
+    expect(() => new ZmanimCalendar(LAKEWOOD, day, { ateretTorahMinutes: NaN })).toThrow(RangeError);
+    expect(() => new ZmanimCalendar({ ...LAKEWOOD, elevation: NaN }, day)).toThrow(RangeError);
+  });
+  it('angles must be below the horizon after sunset (0.833° < degrees ≤ 30°); minutes 0–180', () => {
+    expect(() => z.havdala({ degrees: -5 })).toThrow(/degrees/);
+    expect(() => z.havdala({ degrees: 0.5 })).toThrow(RangeError);
+    expect(() => z.havdala({ degrees: 200 })).toThrow(RangeError);
+    expect(() => z.havdala({ minutes: -10 })).toThrow(RangeError);
+    expect(() => z.havdala({ minutes: 0 })).toThrow(RangeError);
+    expect(() => z.havdala({ minutes: 181 })).toThrow(RangeError);
+    expect(() => z.candleLighting(-1)).toThrow(RangeError);
+    expect(() => z.candleLighting(181)).toThrow(RangeError);
+    expect(z.havdala({ degrees: 30 }).time).not.toBeNull();
+    expect(z.havdala({ minutes: 72 }).time).not.toBeNull();
+    expect(z.candleLighting(0).time).not.toBeNull();
+    expect(z.candleLighting(40).time).not.toBeNull();
+  });
+  it('isMelachaForbiddenAt rejects a bad end instead of answering true', () => {
+    expect(() => isMelachaForbiddenAt(new Date(Date.UTC(2027, 2, 13, 23)), LAKEWOOD, { ends: { degrees: NaN } })).toThrow(RangeError);
+    expect(() => isMelachaForbiddenAt(new Date(Date.UTC(2027, 2, 13, 23)), LAKEWOOD, { beginsMinutesBeforeSunset: NaN })).toThrow(RangeError);
+  });
+  it('invalid civil dates are rejected, not rolled over', () => {
+    expect(() => new ZmanimCalendar(LAKEWOOD, { year: 2026, month: 2, day: 30 })).toThrow(/Invalid civil date/);
+    expect(() => new ZmanimCalendar(LAKEWOOD, { year: 2026, month: 13, day: 1 })).toThrow(RangeError);
+    expect(() => new ZmanimCalendar(LAKEWOOD, { year: 2026.5, month: 1, day: 1 })).toThrow(RangeError);
+  });
+  it('a missing time zone gives a clear error', () => {
+    const noZone = { latitude: 40, longitude: -74 } as unknown as typeof LAKEWOOD;
+    expect(() => new ZmanimCalendar(noZone, day)).toThrow(/time zone/i);
+    expect(() => new ZmanimCalendar({ ...LAKEWOOD, timeZone: {} as unknown as string }, day)).toThrow(/time zone/i);
   });
 });

@@ -60,9 +60,17 @@ function formatterFor(zone: string): Intl.DateTimeFormat {
   return f;
 }
 
-/** Throws a RangeError if `zone` is not an IANA zone name this runtime knows. */
+/**
+ * Throws a RangeError if `zone` is not an IANA zone name this runtime knows, and a TypeError
+ * if it is missing or is neither a name nor a {@link TimeZoneProvider}.
+ */
 export function assertTimeZone(zone: TimeZone): void {
-  if (typeof zone !== 'string') return;
+  if (typeof zone !== 'string') {
+    if (zone === null || typeof zone !== 'object' || typeof (zone as Partial<TimeZoneProvider>).offsetMinutes !== 'function') {
+      throw new TypeError('A time zone is required: an IANA zone name such as "America/New_York", or a TimeZoneProvider');
+    }
+    return;
+  }
   try {
     formatterFor(zone);
   } catch (e) {
@@ -88,10 +96,15 @@ function intlOffsetMinutes(zone: string, epochMs: number): number {
   }
   if (bc) year = 1 - year;
   const localMs = civilToDays(year, month, day) * MS_PER_DAY + ((hour * 60 + minute) * 60 + second) * 1000;
-  return Math.round((localMs - ms) / 60000);
+  // Not rounded: historical local mean time has seconds (Jerusalem before 1918 is +2:20:40
+  // in the runtime's data), so the offset can be a fraction of a minute.
+  return (localMs - ms) / 60000;
 }
 
-/** UTC offset in minutes (east positive) in `zone` at the instant `epochMs`. */
+/**
+ * UTC offset in minutes (east positive) in `zone` at the instant `epochMs`. Usually whole
+ * minutes; historical local mean time can have seconds, given as a fraction (140.6667).
+ */
 export function offsetMinutes(zone: TimeZone, epochMs: number): number {
   return typeof zone === 'string' ? intlOffsetMinutes(zone, epochMs) : zone.offsetMinutes(epochMs);
 }
@@ -110,27 +123,27 @@ export function zoneName(zone: TimeZone): string {
 export function zonedToInstant(date: CivilDate, minutesOfDay: number, zone: TimeZone): number {
   const local = civilToDays(date.year, date.month, date.day) * MS_PER_DAY + minutesOfDay * 60000;
   const o1 = offsetMinutes(zone, local);
-  let t = local - o1 * 60000;
+  let t = local - Math.round(o1 * 60000);
   const o2 = offsetMinutes(zone, t);
   if (o2 !== o1) {
-    const t2 = local - o2 * 60000;
+    const t2 = local - Math.round(o2 * 60000);
     // Overlap: both readings valid; prefer the earlier instant. Gap: neither maps back.
     if (offsetMinutes(zone, t2) === o2) t = Math.min(t, t2);
-    else t = local - Math.min(o1, o2) * 60000;
+    else t = local - Math.round(Math.min(o1, o2) * 60000);
   }
   return t;
 }
 
 /** The civil date shown on a wall clock in `zone` at `epochMs`. */
 export function civilDateAt(epochMs: number, zone: TimeZone): CivilDate {
-  const local = epochMs + offsetMinutes(zone, epochMs) * 60000;
+  const local = epochMs + Math.round(offsetMinutes(zone, epochMs) * 60000);
   return daysToCivil(Math.floor(local / MS_PER_DAY));
 }
 
 /** Local wall-clock parts in `zone` at `epochMs`. */
 export function localParts(epochMs: number, zone: TimeZone): CivilDate & { hour: number; minute: number; second: number; offsetMinutes: number } {
   const off = offsetMinutes(zone, epochMs);
-  const local = epochMs + off * 60000;
+  const local = epochMs + Math.round(off * 60000);
   const days = Math.floor(local / MS_PER_DAY);
   const rem = local - days * MS_PER_DAY;
   const c = daysToCivil(days);

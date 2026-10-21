@@ -37,6 +37,14 @@ describe('cli', () => {
   });
   it('day view with a city, and JSON', () => {
     expect(run(['date', '2026-10-23', '--city', 'lakewood']).out).toContain('Candle lighting');
+    // Pesach II on a Friday: Shabbos candles before sunset, not after nightfall.
+    expect(run(['date', '2027-04-23', '--city', 'new-york']).out).toContain('Candle lighting: 19:25');
+    // Tisha B'Av postponed from Shabbos: Shabbos ends without havdala; havdala after the fast.
+    const sat = run(['date', '2025-08-02', '--city', 'new-york']).out;
+    expect(sat).toContain('Fast begins: 20:10');
+    expect(sat).toContain('Shabbos ends (no havdala; say Baruch HaMavdil before melacha): 20:56');
+    expect(sat).not.toContain('Havdala:');
+    expect(run(['date', '2025-08-03', '--city', 'new-york']).out).toContain('Havdala (after the fast): 20:46');
     const j = JSON.parse(run(['date', '2026-10-23', '--city', 'jerusalem', '--json']).out);
     expect(j.israel).toBe(true);
   });

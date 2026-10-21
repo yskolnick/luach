@@ -11,7 +11,7 @@ let out = '# Zmanim accuracy (generated)\n\n';
 out += 'Luach against kosher-zmanim 0.9 (test-only oracle), every day of 2025–2028, 19 cities, rounding off. ';
 out += 'Cells: largest difference in seconds. `n` = null on one side only (boundary days when the sun first or last reaches an angle). ';
 out += '`g` = days where the sun only grazes the angle (lowest point within 0.5°), where any two methods diverge. ';
-out += 'Date-line days that kosher-zmanim cannot produce (its issue #37) are excluded and counted.\n\n';
+out += "kosher-zmanim gives Chatham's times a civil day ahead (its issue #37); the comparison asks it for the neighbouring date that lands on Luach's day. Days where no neighbouring date does (kosher-zmanim's solar transit jumps a day when it falls within seconds of 00:00 UTC) are excluded and counted.\n\n";
 out += `Compared values: ${rows.reduce((n, r) => n + r.compared, 0).toLocaleString('en-US')}.\n\n`;
 out += '| Zman | ' + cities.join(' | ') + ' |\n|---|' + cities.map(() => '---:').join('|') + '|\n';
 for (const z of zmanim) {
@@ -25,7 +25,7 @@ for (const z of zmanim) {
   }).join(' | ') + ' |\n';
 }
 const unreachable = cities.map((c) => [c, rows.find((r) => r.city === c)?.unreachable ?? 0]).filter(([, n]) => n);
-out += '\nDays kosher-zmanim could not produce for the requested date: ' + unreachable.map(([c, n]) => `${c} ${n}`).join(', ') + '.\n';
+out += '\nDays kosher-zmanim could not produce (transit day-jump near 00:00 UTC): ' + unreachable.map(([c, n]) => `${c} ${n}`).join(', ') + '.\n';
 const grazing = rows.filter((r) => r.grazing?.length).map((r) => `${r.city} ${r.zman}: ${r.grazing.join(', ')}`);
 out += '\nGrazing-day differences over 60 s:\n\n' + grazing.map((g) => `- ${g}`).join('\n') + '\n';
 process.stdout.write(out);

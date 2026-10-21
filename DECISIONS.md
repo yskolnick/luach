@@ -18,10 +18,21 @@ The name was free on npm on 2026-10-21; Yosef has since reserved it (a placehold
 held for npm's staged-release review). An unrelated package, `luach-picker`, is a browser
 date-picker widget; Luach is a calculation library with no UI (see README).
 
+### D-04. One implementation: `main`
+Two sessions built Luach in parallel on 2026-10-21. Yosef: "Keep main and see where this code
+is better, add that". The second implementation is kept, unmerged, on the branch
+`archive/parallel-implementation-2026-10-21`; what it did better is ported to `main` in
+small pull requests, each with its tests. (D-02 and D-03 are in the public-log pull request.)
+
 ## Open questions
 
 ### Q-00. Unmerged branches
-Branches with work not yet on `main`: none.
+Branches with work not yet on `main` (2026-10-21):
+- `public-log`: the public LOG.md and D-02, D-03 (its own pull request).
+- `claude/port-to-main`: fixes and the sources page ported under D-04.
+- `archive/parallel-implementation-2026-10-21`: the second implementation, kept for reference
+  (D-04); not to be merged. `claude/exciting-clarke-64dzwd` holds the same commits and can be
+  deleted.
 
 ### Q-01. Licence: Apache-2.0 with NOTICE, or MIT
 See P-01. **Until decided:** Apache-2.0 with a `NOTICE` file.

@@ -64,6 +64,8 @@
   },
   "devDependencies": {
     "@hebcal/core": "^6.14.6",
+    "@hebcal/learning": "^6.12.2",
+    "@hebcal/leyning": "^10.1.0",
     "@types/node": "^22.20.5",
     "astronomy-engine": "^2.1.19",
     "esbuild": "^0.25.12",

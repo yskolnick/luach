@@ -48,6 +48,7 @@ function toHebcal(e: HolidayEvent, israel: boolean): string | null {
     case 'erev-tisha-bav': return "Erev Tish'a B'Av";
     case 'tisha-bav': return "Tish'a B'Av";
     case 'shabbos-chazon': return 'Shabbat Chazon';
+    case 'shabbos-shira': return 'Shabbat Shirah';
     case 'shabbos-nachamu': return 'Shabbat Nachamu';
     case 'tu-bav': return "Tu B'Av";
     case 'rosh-hashana-labehemos': return 'Rosh Hashana LaBehemot';
@@ -67,7 +68,7 @@ function hebcalKey(desc: string): string {
   return desc.replace(/^(Rosh Chodesh|Shabbat Mevarchim|Yom Kippur Katan) .*/, '$1 *').replace(/ \(Mevarchim.*$/, '').replace(/ \(observed\)$/, '');
 }
 
-const ignored = new Set(['Sigd', 'Chag HaBanot', 'Yom HaAliyah', 'Yom HaAliyah School Observance', 'Ben-Gurion Day', 'Herzl Day', 'Jabotinsky Day', 'Yitzhak Rabin Memorial Day', 'Family Day', 'Hebrew Language Day', 'Shabbat Shirah', 'Birkat Hachamah', 'Swords of Iron War Memorial Day']);
+const ignored = new Set(['Sigd', 'Chag HaBanot', 'Yom HaAliyah', 'Yom HaAliyah School Observance', 'Ben-Gurion Day', 'Herzl Day', 'Jabotinsky Day', 'Yitzhak Rabin Memorial Day', 'Family Day', 'Hebrew Language Day', 'Birkat Hachamah', 'Swords of Iron War Memorial Day']);
 
 function compareYear(year: number, israel: boolean): string[] {
   const ours = new Set<string>();

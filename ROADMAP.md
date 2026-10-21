@@ -31,24 +31,24 @@ All events carry flags: `yomTov` (melacha forbidden), `cholHamoed`, `fast` (`maj
 
 | ID | Feature | Source | Test | Status |
 |---|---|---|---|---|
-| HOL-01 | Yomim Tovim: RH, YK, Sukkos, Shemini Atzeres/Simchas Torah, Pesach, Shavuos; Yom Tov Sheni in the diaspora; Israel rules | Torah; SA OC 496 | oracle hebcal 50 years, Israel and diaspora | planned |
-| HOL-02 | Chol Hamoed, Hoshana Rabba, Isru Chag, Erev Yom Tov | SA OC 429 (Isru Chag: Rema OC 429:2) | oracle | planned |
-| HOL-03 | Fasts with postponement: Tzom Gedalia, Asara B'Teves (can fall on Friday), Shiva Asar B'Tammuz, Tisha B'Av (nidcheh), Taanis Esther (Thursday rule), Taanis Bechoros (Thursday when 14 Nisan is Shabbos) | SA OC 549–550, 686:2, 470:2 | oracle; property (no fast on Shabbos except YK) | planned |
+| HOL-01 | Yomim Tovim: RH, YK, Sukkos, Shemini Atzeres/Simchas Torah, Pesach, Shavuos; Yom Tov Sheni in the diaspora; Israel rules | Torah; SA OC 496 | oracle hebcal 50 years, Israel and diaspora | done |
+| HOL-02 | Chol Hamoed, Hoshana Rabba, Isru Chag, Erev Yom Tov | SA OC 429 (Isru Chag: Rema OC 429:2) | oracle | done |
+| HOL-03 | Fasts with postponement: Tzom Gedalia, Asara B'Teves (can fall on Friday), Shiva Asar B'Tammuz, Tisha B'Av (nidcheh), Taanis Esther (Thursday rule), Taanis Bechoros (Thursday when 14 Nisan is Shabbos) | SA OC 549–550, 686:2, 470:2 | oracle; property (no fast on Shabbos except YK) | done |
 | HOL-04 | Fast start/end times with zmanim (needs M4) | SA OC 562, 564 | oracle kosher-zmanim | planned |
-| HOL-05 | Chanukah with candle count per night | SA OC 670–671 | oracle | planned |
-| HOL-06 | Purim, Shushan Purim, Purim Meshulash, Purim Katan, Shushan Purim Katan | SA OC 688, 697 | oracle; hand-entered Meshulash years (5765, 5768, 5781, 5785) | planned |
-| HOL-07 | Tu B'Shvat, Lag BaOmer, Tu B'Av, Pesach Sheni, Shloshes Yemei Hagbala, Lag BaOmer | Mishna RH 1:1; SA OC 493 | oracle | planned |
-| HOL-08 | Rosh Chodesh (1 or 2 days), Shabbos Mevorchim, molad announcement text (Hebrew/English) | SA OC 417, 284:7 (Mishna Berura 417) | oracle | planned |
-| HOL-09 | Special Shabbosos: Shuva, Shira, Shekalim, Zachor, Parah, HaChodesh, HaGadol, Chazon, Nachamu, Chol Hamoed | SA OC 685, 430 | oracle | planned |
-| HOL-10 | Optional, off by default: BeHaB, Yom Kippur Katan, Shovavim(-Tat) | SA OC 492; Magen Avraham 417 | oracle; hand-entered | planned |
-| HOL-11 | Optional, off by default: Yom HaShoah, Yom HaZikaron, Yom HaAtzmaut, Yom Yerushalayim with Knesset postponement rules; Yom HaAliyah, Sigd | Israeli laws (1951, 1959, 1963, 1998, 2004 amendments) | oracle | planned |
-| HOL-12 | Sefiras HaOmer: day, weeks-and-days text in Hebrew and English, sefirah | SA OC 489; Kabbalistic sefiros (Siddur) | unit; oracle | planned |
-| HOL-13 | V'sein tal umatar start: 7 Cheshvan in Israel; diaspora 60th day from Tekufas Tishrei (Shmuel), computed, not hard-coded | Taanis 10a; SA OC 117:1 | oracle; hand-entered 1900–2200 | planned |
-| HOL-14 | Mashiv haruach / morid hatal periods | SA OC 114 | unit | planned |
-| HOL-15 | Birkas HaChama (28-year cycle from Tekufas Nisan of Shmuel) | Berachos 59b; SA OC 229:2 | hand-entered (1953, 1981, 2009, 2037) | planned |
-| HOL-16 | Kiddush Levana earliest (3 days, 7 days) and latest (half the month by molad, 15 days) | SA OC 426:3–4, Rema; Mishna Berura 426 | oracle kosher-zmanim | planned |
+| HOL-05 | Chanukah with candle count per night | SA OC 670–671 | oracle | done |
+| HOL-06 | Purim, Shushan Purim, Purim Meshulash, Purim Katan, Shushan Purim Katan | SA OC 688, 697 | oracle; hand-entered Meshulash years (5765, 5768, 5781, 5785) | done |
+| HOL-07 | Tu B'Shvat, Lag BaOmer, Tu B'Av, Pesach Sheni, Shloshes Yemei Hagbala, Lag BaOmer | Mishna RH 1:1; SA OC 493 | oracle | done |
+| HOL-08 | Rosh Chodesh (1 or 2 days), Shabbos Mevorchim, molad announcement text (Hebrew/English) | SA OC 417, 284:7 (Mishna Berura 417) | oracle | done |
+| HOL-09 | Special Shabbosos: Shuva, Shira, Shekalim, Zachor, Parah, HaChodesh, HaGadol, Chazon, Nachamu, Chol Hamoed | SA OC 685, 430 | oracle | done |
+| HOL-10 | Optional, off by default: BeHaB, Yom Kippur Katan, Shovavim(-Tat) | SA OC 492; Magen Avraham 417 | oracle; hand-entered | done |
+| HOL-11 | Optional, off by default: Yom HaShoah, Yom HaZikaron, Yom HaAtzmaut, Yom Yerushalayim with Knesset postponement rules; Yom HaAliyah, Sigd | Israeli laws (1951, 1959, 1963, 1998, 2004 amendments) | oracle | done |
+| HOL-12 | Sefiras HaOmer: day, weeks-and-days text in Hebrew and English, sefirah | SA OC 489; Kabbalistic sefiros (Siddur) | unit; oracle | done |
+| HOL-13 | V'sein tal umatar start: 7 Cheshvan in Israel; diaspora 60th day from Tekufas Tishrei (Shmuel), computed, not hard-coded | Taanis 10a; SA OC 117:1 | oracle; hand-entered 1900–2200 | done |
+| HOL-14 | Mashiv haruach / morid hatal periods | SA OC 114 | unit | done |
+| HOL-15 | Birkas HaChama (28-year cycle from Tekufas Nisan of Shmuel) | Berachos 59b; SA OC 229:2 | hand-entered (1953, 1981, 2009, 2037) | done |
+| HOL-16 | Kiddush Levana earliest (3 days, 7 days) and latest (half the month by molad, 15 days) | SA OC 426:3–4, Rema; Mishna Berura 426 | oracle kosher-zmanim | done |
 | HOL-17 | Tachanun / Hallel indicators (optional) | SA OC 131, 422 | unit | planned |
-| HOL-18 | Holiday queries: by year, by range, filters | — | unit | planned |
+| HOL-18 | Holiday queries: by year, by range, filters | — | unit | done |
 
 ## M3. Parsha, haftara and learning cycles
 

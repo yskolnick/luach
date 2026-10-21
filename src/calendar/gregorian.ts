@@ -88,3 +88,15 @@ export function isValidGregorian(year: number, month: number, day: number): bool
     day <= daysInGregorianMonth(year, month)
   );
 }
+
+/**
+ * Day number of a date in the Julian calendar (used for Shmuel's tekufos, which follow the Julian year).
+ * Years are astronomical (1 BCE = 0).
+ */
+export function julianToDayNumber(year: number, month: number, day: number): DayNumber {
+  const a = Math.floor((14 - month) / 12);
+  const y = year + 4800 - a;
+  const m = month + 12 * a - 3;
+  const jdn = day + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - 32083;
+  return jdn - 2440588; // Julian Day Number of 1970-01-01
+}

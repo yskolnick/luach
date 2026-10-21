@@ -84,3 +84,11 @@ Choices made while building that nobody has ruled on. Each can be changed.
   eighth day of Pesach is Shabbos, this keeps Israel a week ahead until Behar/Bechukosai (common) or
   Matos/Masei (leap). Mishna Berura 428:10 records other customs (splitting Tazria–Metzora instead); Luach
   follows the one that agrees with current calendars and the oracle for every Shabbos 5660–6000.
+- AB-05. Jerusalem mean time for the molad uses longitude 35.2354° E (UTC+2:20:56.5). Kiddush Levana times
+  match kosher-zmanim to the millisecond with this value.
+- AB-06. Yom Kippur Katan when Erev Rosh Chodesh is Friday: default `'friday'` (Magen Avraham 417); `'thursday'`
+  available. Months excluded: Tishrei, Cheshvan, Teves, Iyar.
+- AB-07. Omer text: number words in Nusach Ashkenaz; ending לעומר by default, בעומר as an option.
+- AB-08. Modern Israeli days start in the year each was established (Yom HaZikaron 5711, Yom Yerushalayim 5728,
+  Yom HaShoah Sunday rule 5757, Sigd 5769, Yom HaAliyah 5777). hebcal lists some earlier; see the accuracy report.
+- AB-09. Purim Meshulash is listed on all three days (14–16 Adar) when 15 Adar is Shabbos.

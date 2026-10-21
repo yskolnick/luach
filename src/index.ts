@@ -24,3 +24,4 @@ export * from './format/format.js';
 export * from './time/zone.js';
 export * from './parsha/parsha.js';
 export * from './holidays/holidays.js';
+export * from './calendar/seasonal.js';

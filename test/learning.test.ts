@@ -44,3 +44,16 @@ describe('learning cycles: published dates (docs/research/2026-10-21-learning-cy
     expect(dafHaShavua(g(2016, 10, 16))).toMatchObject({ tractate: 'Beitzah', daf: 2 });
   });
 });
+
+import { BAVLI, MISHNA, NACH, YERUSHALMI_VILNA } from '../src/learning/data.js';
+
+describe('literal cycle lengths match the data', () => {
+  it('2711 / 2702 / 1554 / 2096 / 742', () => {
+    const bavli = BAVLI.reduce((s, t) => s + t[3] - t[2] + 1, 0);
+    expect(bavli).toBe(2711);
+    expect(bavli - (22 - 13)).toBe(2702); // cycles 1–7 learned Shekalim 2–13
+    expect(YERUSHALMI_VILNA.reduce((s, t) => s + t[2], 0)).toBe(1554);
+    expect(MISHNA.reduce((s, t) => s + t[2].reduce((a, b) => a + b, 0), 0) / 2).toBe(2096);
+    expect(NACH.reduce((s, b) => s + b[2], 0)).toBe(742);
+  });
+});

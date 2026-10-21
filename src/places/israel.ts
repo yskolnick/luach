@@ -11,11 +11,12 @@
 
 import boundary from './israel-boundary.json';
 
-const POINTS = boundary.points as unknown as ReadonlyArray<readonly [number, number]>;
+const points = (): ReadonlyArray<readonly [number, number]> => boundary.points as unknown as ReadonlyArray<readonly [number, number]>;
 
 /** True if (latitude, longitude) is inside the boundary. `override` wins when given. */
 export function isInIsrael(latitude: number, longitude: number, override?: boolean): boolean {
   if (override !== undefined) return override;
+  const POINTS = points();
   let inside = false;
   for (let i = 0, j = POINTS.length - 1; i < POINTS.length; j = i, i += 1) {
     const [yi, xi] = POINTS[i] as readonly [number, number];

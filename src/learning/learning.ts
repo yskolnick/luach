@@ -13,6 +13,7 @@ import { type DayNumber, dayOfWeek, gregorianToDayNumber } from '../calendar/gre
 import { AV, TISHREI, dayNumberToHebrew, hebrewToDayNumber } from '../calendar/hebrew.js';
 import { gematriya } from '../format/gematriya.js';
 import { BAVLI, MISHNA, NACH, RAMBAM, YERUSHALMI_VILNA } from './data.js';
+import { lazy } from '../util/lazy.js';
 
 /** Common fields of a day's portion. */
 export interface LearningPortion {
@@ -42,11 +43,10 @@ const DAF_YOMI_START = g(1923, 9, 11);
 const DAF_YOMI_CYCLE8 = g(1975, 6, 24);
 /** Cycles 1–7 learned Shekalim 2–13 (12 dafim); from cycle 8 the Vilna Shekalim (2–22). */
 const bavliDays = (old: boolean) => BAVLI.map(([name, he, first, last]) => [name, he, first, name === 'Shekalim' && old ? 13 : last] as const);
-const BAVLI_OLD = bavliDays(true);
-const BAVLI_NEW = bavliDays(false);
-const total = (list: ReadonlyArray<readonly [string, string, number, number]>) => list.reduce((s, t) => s + t[3] - t[2] + 1, 0);
-const OLD_LEN = total(BAVLI_OLD); // 2702
-const NEW_LEN = total(BAVLI_NEW); // 2711
+const BAVLI_OLD = /* @__PURE__ */ lazy(() => bavliDays(true));
+const BAVLI_NEW = /* @__PURE__ */ lazy(() => bavliDays(false));
+const OLD_LEN = 2702; // Daf Yomi cycles 1–7 (checked in test/learning.test.ts)
+const NEW_LEN = 2711; // from cycle 8
 
 function bavliAt(list: ReadonlyArray<readonly [string, string, number, number]>, index: number): { tractate: string; tractateHebrew: string; daf: number } {
   let i = index;
@@ -74,7 +74,7 @@ export function dafYomi(dayNumber: DayNumber): DafYomi | null {
     start = DAF_YOMI_CYCLE8 + (cycle - 8) * NEW_LEN;
     len = NEW_LEN;
   }
-  const at = bavliAt(len === OLD_LEN ? BAVLI_OLD : BAVLI_NEW, dayNumber - start);
+  const at = bavliAt(len === OLD_LEN ? BAVLI_OLD() : BAVLI_NEW(), dayNumber - start);
   return { ...at, text: `${at.tractate} ${at.daf}`, textHebrew: `${at.tractateHebrew} ${gematriya(at.daf, { punctuation: 'none' })}`, cycle, cycleStart: start, cycleEnd: start + len - 1 };
 }
 
@@ -88,14 +88,14 @@ export function dafHaShavua(dayNumber: DayNumber): DafYomi | null {
   const week = Math.floor((dayNumber - DAF_SHAVUA_START) / 7);
   const cycle = Math.floor(week / NEW_LEN) + 1;
   const start = DAF_SHAVUA_START + (cycle - 1) * NEW_LEN * 7;
-  const at = bavliAt(BAVLI_NEW, week % NEW_LEN);
+  const at = bavliAt(BAVLI_NEW(), week % NEW_LEN);
   return { ...at, text: `${at.tractate} ${at.daf}`, textHebrew: `${at.tractateHebrew} ${gematriya(at.daf, { punctuation: 'none' })}`, cycle, cycleStart: start, cycleEnd: start + NEW_LEN * 7 - 1 };
 }
 
 // ------------------------------------------------------------------ Yerushalmi (Vilna)
 
 const YERUSHALMI_START = g(1980, 2, 2);
-const YERUSHALMI_LEN = YERUSHALMI_VILNA.reduce((s, t) => s + t[2], 0); // 1554
+const YERUSHALMI_LEN = 1554; // dafim in the Vilna Yerushalmi (checked in test/learning.test.ts)
 
 /** The days on which no Yerushalmi daf is learned in Hebrew year `year`: Yom Kippur and Tisha B'Av (as observed). */
 function yerushalmiSkips(year: number): DayNumber[] {
@@ -158,11 +158,16 @@ function dayWithLearnedCount(target: number, near: DayNumber): DayNumber {
 // ------------------------------------------------------------------ Mishna Yomis
 
 const MISHNA_ANCHOR = g(2010, 7, 4); // earliest cycle start confirmed in public sources
-const MISHNA_FLAT: { t: number; chapter: number; mishna: number }[] = [];
-MISHNA.forEach(([, , chapters], t) => chapters.forEach((count, c) => {
-  for (let m = 1; m <= count; m += 1) MISHNA_FLAT.push({ t, chapter: c + 1, mishna: m });
-}));
-const MISHNA_DAYS = MISHNA_FLAT.length / 2; // 2096
+const MISHNA_FLAT = /* @__PURE__ */ lazy(() => {
+  const flat: { t: number; chapter: number; mishna: number }[] = [];
+  MISHNA.forEach(([, , chapters], t) =>
+    chapters.forEach((count, c) => {
+      for (let m = 1; m <= count; m += 1) flat.push({ t, chapter: c + 1, mishna: m });
+    }),
+  );
+  return flat;
+});
+const MISHNA_DAYS = 2096; // 4,192 mishnayos, two a day (checked in test/learning.test.ts)
 
 export interface MishnaYomis extends LearningPortion {
   /** The two mishnayos (they may be in different chapters or tractates). */
@@ -174,7 +179,8 @@ export function mishnaYomis(dayNumber: DayNumber): MishnaYomis | null {
   if (dayNumber < MISHNA_ANCHOR) return null;
   const k = (dayNumber - MISHNA_ANCHOR) % MISHNA_DAYS;
   const cycleStart = dayNumber - k;
-  const pair = [MISHNA_FLAT[2 * k], MISHNA_FLAT[2 * k + 1]].map((x) => {
+  const flat = MISHNA_FLAT();
+  const pair = [flat[2 * k], flat[2 * k + 1]].map((x) => {
     const m = x as { t: number; chapter: number; mishna: number };
     const [tractate, tractateHebrew] = MISHNA[m.t] as readonly [string, string, readonly number[]];
     return { tractate, tractateHebrew, chapter: m.chapter, mishna: m.mishna };
@@ -215,14 +221,14 @@ export interface RambamYomi extends LearningPortion {
   readonly units: readonly RambamUnit[];
 }
 
-const RAMBAM_CHAPTERS: RambamUnit[] = RAMBAM.flatMap(([, en, he, chapters]) =>
-  Array.from({ length: chapters }, (_, i) => ({ hilchos: en, hilchosHebrew: he, chapter: i + 1 })),
+const RAMBAM_CHAPTERS = /* @__PURE__ */ lazy((): RambamUnit[] =>
+  RAMBAM.flatMap(([, en, he, chapters]) => Array.from({ length: chapters }, (_, i) => ({ hilchos: en, hilchosHebrew: he, chapter: i + 1 }))),
 );
 const intro = (part: string, he: string): RambamUnit => ({ hilchos: 'Introduction', hilchosHebrew: he, chapter: null, part });
 
 // 3 chapters a day: 4 introductory days, then the 1,006 chapters in threes, with the Haggadah text
 // (Chametz uMatzah, last chapter) on the same day as chapter 8 (339 days).
-const RAMBAM3_DAYS: RambamUnit[][] = (() => {
+const RAMBAM3_DAYS = /* @__PURE__ */ lazy((): RambamUnit[][] => {
   const days: RambamUnit[][] = [
     [intro('Introduction 1-45', 'הקדמה')],
     [intro('Positive commandments 1-248', 'מצוות עשה')],
@@ -230,17 +236,17 @@ const RAMBAM3_DAYS: RambamUnit[][] = (() => {
     [intro('Table of contents 1:1-14:10', 'תוכן החיבור')],
   ];
   const units: RambamUnit[][] = [];
-  for (const u of RAMBAM_CHAPTERS) {
+  for (const u of RAMBAM_CHAPTERS()) {
     const prev = units[units.length - 1];
     if (u.hilchosHebrew === 'הלכות חמץ ומצה' && u.chapter === 9 && prev) prev.push(u);
     else units.push([u]);
   }
   for (let i = 0; i < units.length; i += 3) days.push(units.slice(i, i + 3).flat());
   return days;
-})();
+});
 
 // 1 chapter a day: 12 introductory days, then one chapter a day, with Seder HaTefillah parts 4 and 5 on one day (1,017 days).
-const RAMBAM1_DAYS: RambamUnit[][] = (() => {
+const RAMBAM1_DAYS = /* @__PURE__ */ lazy((): RambamUnit[][] => {
   const parts = [
     ['Introduction 1-21', 'הקדמה'], ['Introduction 22-33', 'הקדמה'], ['Introduction 34-45', 'הקדמה'],
     ['Positive commandments 1-83', 'מצוות עשה'], ['Positive commandments 84-166', 'מצוות עשה'], ['Positive commandments 167-248', 'מצוות עשה'],
@@ -248,13 +254,13 @@ const RAMBAM1_DAYS: RambamUnit[][] = (() => {
     ['Table of contents 1:1-4:8', 'תוכן החיבור'], ['Table of contents 5:1-9:9', 'תוכן החיבור'], ['Table of contents 10:1-14:10', 'תוכן החיבור'],
   ];
   const days: RambamUnit[][] = parts.map(([p, he]) => [intro(p as string, he as string)]);
-  for (const u of RAMBAM_CHAPTERS) {
+  for (const u of RAMBAM_CHAPTERS()) {
     const prev = days[days.length - 1];
     if (u.hilchosHebrew === 'סדר התפילה' && u.chapter === 5 && prev) prev.push(u);
     else days.push([u]);
   }
   return days;
-})();
+});
 
 function rambamPortion(dayNumber: DayNumber, days: RambamUnit[][]): RambamYomi | null {
   if (dayNumber < RAMBAM_START) return null;
@@ -286,18 +292,18 @@ function rambamPortion(dayNumber: DayNumber, days: RambamUnit[][]): RambamYomi |
 
 /** Rambam, three chapters a day (339-day cycle), from 27 Nisan 5744 (29 April 1984). */
 export function rambam3(dayNumber: DayNumber): RambamYomi | null {
-  return rambamPortion(dayNumber, RAMBAM3_DAYS);
+  return rambamPortion(dayNumber, RAMBAM3_DAYS());
 }
 
 /** Rambam, one chapter a day (1,017-day cycle), from 27 Nisan 5744 (29 April 1984). */
 export function rambam1(dayNumber: DayNumber): RambamYomi | null {
-  return rambamPortion(dayNumber, RAMBAM1_DAYS);
+  return rambamPortion(dayNumber, RAMBAM1_DAYS());
 }
 
 // ------------------------------------------------------------------ Nach Yomi
 
 const NACH_START = g(2007, 11, 1);
-const NACH_LEN = NACH.reduce((s, b) => s + b[2], 0); // 742
+const NACH_LEN = 742; // chapters of Nach (checked in test/learning.test.ts)
 
 export interface NachYomi extends LearningPortion {
   readonly book: string;

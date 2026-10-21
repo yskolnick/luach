@@ -149,3 +149,10 @@ describe('known dates (published calendars)', () => {
     expect(() => hebrewToDayNumber(5786, TISHREI, 31)).toThrow(RangeError);
   });
 });
+
+describe('the calendar epoch constant', () => {
+  it('DAY_ZERO literal equals its derivation from Rosh Hashana 5786', () => {
+    expect(roshHashana(5786)).toBe(gregorianToDayNumber(2025, 9, 23));
+    expect(roshHashana(1)).toBe(gregorianToDayNumber(-3760, 9, 7));
+  });
+});

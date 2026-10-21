@@ -7,6 +7,7 @@
  */
 
 import { ADAR, ADAR_II, isLeapYear } from '../calendar/hebrew.js';
+import { lazy } from '../util/lazy.js';
 import { HOLIDAY_NAMES_ASHKENAZI, HOLIDAY_NAMES_EN, HOLIDAY_NAMES_HE, HOLIDAY_NAMES_SEPHARDI } from '../holidays/names.js';
 import { PARSHA_NAMES_ASHKENAZI, PARSHA_NAMES_EN, PARSHA_NAMES_HE, PARSHA_NAMES_SEPHARDI } from '../parsha/names.js';
 
@@ -51,12 +52,27 @@ const en: Record<string, string> = {
   'weekday.5': 'Friday', 'weekday.6': 'Saturday',
 };
 
-/** The built-in tables. */
-export const NAMES: Readonly<Record<NameStyle, NameTable>> = {
+const tables = /* @__PURE__ */ lazy(() => ({
   he: { ...he, ...PARSHA_NAMES_HE, ...HOLIDAY_NAMES_HE },
   ashkenazi: { ...ashkenazi, ...PARSHA_NAMES_ASHKENAZI, ...HOLIDAY_NAMES_ASHKENAZI },
   sephardi: { ...sephardi, ...PARSHA_NAMES_SEPHARDI, ...HOLIDAY_NAMES_SEPHARDI },
   en: { ...en, ...PARSHA_NAMES_EN, ...HOLIDAY_NAMES_EN },
+}));
+
+/** The built-in tables (months, weekdays, parshiyos, holidays), built on first use. */
+export const NAMES: Readonly<Record<NameStyle, NameTable>> = {
+  get he() {
+    return tables().he;
+  },
+  get ashkenazi() {
+    return tables().ashkenazi;
+  },
+  get sephardi() {
+    return tables().sephardi;
+  },
+  get en() {
+    return tables().en;
+  },
 };
 
 /** Look up a name. `names` is a style or a custom table; missing keys fall back to English, then the id. */
@@ -74,12 +90,20 @@ export function monthId(year: number, month: number): string {
   return id;
 }
 
+const BASE: Readonly<Record<NameStyle, NameTable>> = { he, ashkenazi, sephardi, en };
+
+/** Month and weekday names only touch the small base tables, so date formatting doesn't bundle every holiday name. */
+function baseName(key: string, names: NameStyle | NameTable): string {
+  const table = typeof names === 'string' ? BASE[names] : names;
+  return table[key] ?? en[key] ?? key;
+}
+
 /** Month name: `monthName(5787, NISAN, 'he')` → `"ניסן"`. Adar is "Adar I" in a leap year. */
 export function monthName(year: number, month: number, names: NameStyle | NameTable = 'en'): string {
-  return nameOf(`month.${monthId(year, month)}`, names);
+  return baseName(`month.${monthId(year, month)}`, names);
 }
 
 /** Weekday name, 0 = Sunday … 6 = Shabbos. */
 export function weekdayName(dayOfWeek: number, names: NameStyle | NameTable = 'en'): string {
-  return nameOf(`weekday.${dayOfWeek}`, names);
+  return baseName(`weekday.${dayOfWeek}`, names);
 }

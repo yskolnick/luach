@@ -9,7 +9,7 @@
  * @packageDocumentation
  */
 
-import { type DayNumber, dayOfWeek, gregorianToDayNumber } from './gregorian.js';
+import { type DayNumber, dayOfWeek } from './gregorian.js';
 
 /** Months are numbered from Nisan, following Shemos 12:2. In a leap year Adar (12) is Adar I. */
 export const NISAN = 1;
@@ -51,7 +51,7 @@ const MOLAD_BAHARAD = 1 * PARTS_PER_DAY + 5 * PARTS_PER_HOUR + 204;
  * Derived once from Rosh Hashana 5786 = Tuesday 23 September 2025, and checked in tests
  * against every year 1–9999 for weekday consistency and against independent oracles.
  */
-const DAY_ZERO = gregorianToDayNumber(2025, 9, 23) - 2_112_945;
+const DAY_ZERO = -2_092_591; // = gregorianToDayNumber(2025, 9, 23) - 2_112_945; checked in test/calendar.test.ts
 
 /** Earliest and latest supported Hebrew years. */
 export const MIN_YEAR = 1;
@@ -201,12 +201,11 @@ export function hebrewToDayNumber(year: number, month: number, day: number): Day
   return n + day - 1;
 }
 
-const FIRST_DAY = roshHashana(MIN_YEAR);
-const LAST_DAY = roshHashana(MAX_YEAR + 1) - 1;
 
 /** Hebrew date of a day number. Throws `RangeError` outside Hebrew years 1–9999. */
 export function dayNumberToHebrew(dayNumber: DayNumber): HebrewDate {
-  if (!Number.isInteger(dayNumber) || dayNumber < FIRST_DAY || dayNumber > LAST_DAY) {
+  const FIRST_DAY = roshHashana(MIN_YEAR);
+  if (!Number.isInteger(dayNumber) || dayNumber < FIRST_DAY || dayNumber > roshHashana(MAX_YEAR + 1) - 1) {
     throw new RangeError(`Day number ${dayNumber} is outside Hebrew years ${MIN_YEAR}–${MAX_YEAR}`);
   }
   // Mean year is 235/19 months; start a little low and step forward.

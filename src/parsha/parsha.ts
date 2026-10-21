@@ -41,15 +41,15 @@ export type Location = 'israel' | 'diaspora';
 
 const idx = (id: ParshaId): number => PARSHIYOS.indexOf(id);
 
-/** The seven pairs that can be joined, by the index of the first of the pair. */
-const PAIRS: Record<string, number> = {
-  'vayakhel-pekudei': idx('vayakhel'),
-  'tazria-metzora': idx('tazria'),
-  'acharei-mos-kedoshim': idx('acharei-mos'),
-  'behar-bechukosai': idx('behar'),
-  'chukas-balak': idx('chukas'),
-  'matos-masei': idx('matos'),
-  'nitzavim-vayelech': idx('nitzavim'),
+/** The seven pairs that can be joined, by the first parsha of the pair. */
+const PAIRS: Readonly<Record<string, ParshaId>> = {
+  'vayakhel-pekudei': 'vayakhel',
+  'tazria-metzora': 'tazria',
+  'acharei-mos-kedoshim': 'acharei-mos',
+  'behar-bechukosai': 'behar',
+  'chukas-balak': 'chukas',
+  'matos-masei': 'matos',
+  'nitzavim-vayelech': 'nitzavim',
 };
 
 /** The festival reading on a Shabbos that has no parsha. */
@@ -126,8 +126,9 @@ function fill(
   if (joins < 0) throw new Error(`parsha: too many Shabbosos in ${what}`);
   const joined = new Set<number>();
   const take = (pair: string): boolean => {
-    const a = PAIRS[pair];
-    if (a === undefined || a < first || a + 1 > last || joined.has(a)) return false;
+    const firstOfPair = PAIRS[pair];
+    const a = firstOfPair === undefined ? -1 : idx(firstOfPair);
+    if (a < 0 || a < first || a + 1 > last || joined.has(a)) return false;
     joined.add(a);
     joins -= 1;
     return true;

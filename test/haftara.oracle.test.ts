@@ -48,7 +48,7 @@ function norm(s: string | null | undefined): string | null {
  */
 const EXPLAINED: Record<string, string> = {
   'ashkenaz kedoshim': 'Kedoshim: Ezekiel 22 ends at 22:16 (Luach) or 22:19 (hebcal); both are in published lists',
-  'ashkenaz shabbos-shuva': 'Shabbos Shuva: Ashkenazim add Joel 2:15-27 (Luach) or Micah 7:18-20 (hebcal); both are in use',
+  'ashkenaz shabbos-shuva': 'Shabbos Shuva with Haazinu: Luach adds Joel 2:15-27 (Dagul Mervava, MB 428:23), hebcal Micah 7:18-20; both are in use',
   'ashkenaz shavuos-2': 'Shavuos day 2: Habakkuk 2:20 or 3:1 as the opening verse; both are in use',
   'sephardi shabbos-rosh-chodesh-elul': 'Rosh Chodesh Elul on Shabbos Re\'eh: Sephardim keep Re\'eh\'s haftara (research note); hebcal reads Isaiah 66',
   'sephardi ki-seitzei-after-rosh-chodesh-elul': 'Follows from the line above: Sephardim did not skip Re\'eh\'s haftara, so Ki Seitzei is not doubled',
@@ -66,7 +66,9 @@ export function diffs(israel: boolean, minhag: 'ashkenaz' | 'sephardi', from: nu
     const h = haftaraFor(d, { israel, minhag });
     const ours = norm(h?.reference);
     // Only the end verse of Kedoshim's Ezekiel 22 is a variant; which haftara is read is checked.
-    if (h?.key === 'kedoshim' && minhag === 'ashkenaz' && !(ours === 'ezekiel22:1-16' && theirs === 'ezekiel22:1-19')) {
+    // Shabbos Shuva: only Luach's Joel (with Haazinu) against hebcal's Micah is explained.
+    const shuvaChecked = h?.key === 'shabbos-shuva' && minhag === 'ashkenaz' && !(ours === 'hosea14:2-10|joel2:15-27' && theirs === 'hosea14:2-10|micah7:18-20');
+    if (shuvaChecked || (h?.key === 'kedoshim' && minhag === 'ashkenaz' && !(ours === 'ezekiel22:1-16' && theirs === 'ezekiel22:1-19'))) {
       if (ours !== theirs) out.push(`${d} ${l?.name?.en ?? ''}: ours ${h.key} ${ours} | hebcal ${theirs}`);
       continue;
     }

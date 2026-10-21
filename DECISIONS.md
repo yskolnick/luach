@@ -175,6 +175,10 @@ See ADR 0005. **Default until decided:** as proposed.
   was displaced: then Kedoshim reads Amos 9:7-15 (MB 428:26, citing R. Akiva Eiger, who names
   Machar Chodesh; Luach applies the same reason to Shabbos HaGadol and Rosh Chodesh). This is
   not a Rema-vs-Hertz swap: `@hebcal/leyning` agrees, apart from ending Ezekiel 22 at 22:19.
+- *As built (2026-10-21):* Ashkenazi Shabbos Shuva adds Micah 7:18-20 when the parsha is
+  Vayelech and Joel 2:15-27 when it is Haazinu (the Dagul Mervava, MB 428:23), where it always
+  added Joel. Option `shuvaAddition`: `'micah'`, `'joel'` or `'both'` (Prague; Luach puts Joel
+  before Micah, in book order, which the MB does not specify).
 - *As built (2026-10-21):* `pirkeiAvos` with `until: 'shavuos'` (Kaf HaChaim 292:23) reads
   chapters 1–6 before Shavuos; a seventh Shabbos (Israel, when Pesach begins on Shabbos)
   returns null, since the source does not say what is read then.

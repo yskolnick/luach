@@ -51,7 +51,7 @@ two). Explained differences — genuine variants between published lists, all do
 | Minhag | Haftara | Luach | hebcal | Why |
 |---|---|---|---|---|
 | Ashkenaz | Kedoshim | Ezekiel 22:1-16 | Ezekiel 22:1-19 | where the haftara ends; both are in published lists |
-| Ashkenaz | Shabbos Shuva | Hosea 14 + Joel 2:15-27 | Hosea 14 + Micah 7:18-20 | both customs exist |
+| Ashkenaz | Shabbos Shuva on Haazinu | Hosea 14 + Joel 2:15-27 | Hosea 14 + Micah 7:18-20 | both customs exist; Luach follows the Dagul Mervava (MB 428:23): Micah with Vayelech (as hebcal), Joel with Haazinu |
 | Both | Shavuos day 2 | Habakkuk 2:20-3:19 | Habakkuk 3:1-19 | both customs exist |
 | Sephardi | Re'eh on Rosh Chodesh Elul, and Ki Seitzei after it | Re'eh's own; Ki Seitzei not doubled | Isaiah 66; doubled | Sephardi practice per the research note |
 | Sephardi | Shabbos Rosh Chodesh when Sunday is also Rosh Chodesh | adds Machar Chodesh's first and last verses | does not | SA OC 425:1 (Sephardim, Chabad) vs Rema |

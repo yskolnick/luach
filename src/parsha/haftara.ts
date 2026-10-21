@@ -9,7 +9,8 @@
  *    Machar Chodesh (Rema 425:1; SA 685:1). Chabad adds the first and last verses of the
  *    displaced haftara.
  * 3. Shabbos Chanukah displaces Rosh Chodesh Teves (SA 684:3) and Machar Chodesh.
- * 4. Shabbos Shuva.
+ * 4. Shabbos Shuva (SA OC 428:8). Ashkenazim add verses after Hosea 14; by default Micah
+ *    with Vayelech and Joel with Haazinu (MB 428:23; see `shuvaAddition`).
  * 5. The three haftaros of affliction (the Shabbosos before Tisha B'Av; the third is
  *    Devarim's own) and the seven of consolation (after Tisha B'Av). Rosh Chodesh Av keeps
  *    the second of affliction (MB 425:8). Rosh Chodesh Elul on Shabbos: Ashkenazim and Chabad
@@ -51,6 +52,15 @@ export interface HaftaraOptions {
    * Teimani `'never'` (*as built*; customs differ within each).
    */
   shabbosHagadol?: 'always' | 'erevPesachOnly' | 'exceptErevPesach' | 'never';
+  /**
+   * Ashkenaz only: the verses added after Hosea 14 on Shabbos Shuva, so the haftara does
+   * not end on "ופושעים יכשלו בם" (MB 428:23). `'dagulMervava'` (default): Micah 7:18-20
+   * when the parsha is Vayelech, Joel 2:15-27 when it is Haazinu (the Dagul Mervava, as
+   * MB 428:23 records him); `'micah'` or `'joel'` always; `'both'` (the Prague custom, per
+   * the Eliyahu Rabba in MB 428:23), in book order, Joel then Micah (*as built*). The MB
+   * ends that all follow the local custom.
+   */
+  shuvaAddition?: 'dagulMervava' | 'micah' | 'joel' | 'both';
 }
 
 /** The haftara read on a day. */
@@ -122,7 +132,7 @@ export function haftaraFor(date: HebrewDate, options: HaftaraOptions = {}): Haft
     if (rcToday) return special(rcBoth ? 'shabbos-chanukah-rosh-chodesh-and-erev' : 'shabbos-chanukah-rosh-chodesh', minhag);
     return special('shabbos-chanukah-1', minhag);
   }
-  if (has('shabbos-shuva')) return special('shabbos-shuva', minhag);
+  if (has('shabbos-shuva')) return minhag === 'ashkenaz' ? shuvaAshkenaz(date, options) : special('shabbos-shuva', minhag);
 
   // The three weeks and the seven of consolation.
   const av9 = new HebrewDate(date.year, Month.AV, 9);
@@ -156,6 +166,19 @@ export function haftaraFor(date: HebrewDate, options: HaftaraOptions = {}): Haft
     return make('acharei-mos', PARSHA_HAFTAROS['acharei-mos'], minhag);
   }
   return make(key, PARSHA_HAFTAROS[key], minhag);
+}
+
+const HOSEA = 'Hosea 14:2-10';
+const JOEL = 'Joel 2:15-27';
+const MICAH = 'Micah 7:18-20';
+
+/** Ashkenazi Shabbos Shuva: Hosea 14 and the verses added after it (MB 428:23). */
+function shuvaAshkenaz(date: HebrewDate, options: HaftaraOptions): Haftara {
+  const add = options.shuvaAddition ?? 'dagulMervava';
+  const vayelech = parshaFor(date, { israel: options.israel ?? false }).parsha?.includes('vayelech') ?? false;
+  const ending = add === 'micah' ? [MICAH] : add === 'joel' ? [JOEL] : add === 'both' ? [JOEL, MICAH] : vayelech ? [MICAH] : [JOEL];
+  const segments = [HOSEA, ...ending];
+  return { key: 'shabbos-shuva', minhag: 'ashkenaz', reference: segments.join('; '), segments };
 }
 
 /**

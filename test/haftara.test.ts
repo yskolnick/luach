@@ -42,6 +42,16 @@ describe('haftara', () => {
     // Only Ashkenaz: Sephardim read Ezekiel 22 on Acharei Mos and Ezekiel 20 on Kedoshim.
     expect(haftaraFor(new HebrewDate(5700, Month.NISAN, 26), { minhag: 'sephardi' })?.reference).toBe('Ezekiel 20:2-20');
   });
+  it('Shabbos Shuva (Ashkenaz): Micah with Vayelech, Joel with Haazinu (MB 428:23, Dagul Mervava)', () => {
+    const vayelech = new HebrewDate(5786, Month.TISHREI, 5);
+    const haazinu = new HebrewDate(5787, Month.TISHREI, 8);
+    expect(haftaraFor(vayelech)?.reference).toBe('Hosea 14:2-10; Micah 7:18-20');
+    expect(haftaraFor(haazinu)?.reference).toBe('Hosea 14:2-10; Joel 2:15-27');
+    expect(haftaraFor(vayelech, { shuvaAddition: 'joel' })?.reference).toBe('Hosea 14:2-10; Joel 2:15-27');
+    expect(haftaraFor(haazinu, { shuvaAddition: 'micah' })?.reference).toBe('Hosea 14:2-10; Micah 7:18-20');
+    expect(haftaraFor(haazinu, { shuvaAddition: 'both' })?.segments).toEqual(['Hosea 14:2-10', 'Joel 2:15-27', 'Micah 7:18-20']);
+    expect(haftaraFor(haazinu, { minhag: 'sephardi' })?.reference).toBe('Hosea 14:2-10; Micah 7:18-20');
+  });
   it('Teimani gaps are null, not guessed', () => {
     const d = HebrewDate.fromGregorian(2026, 11, 7); // Chayei Sarah
     const t = haftaraFor(d, { minhag: 'teimani' })!;

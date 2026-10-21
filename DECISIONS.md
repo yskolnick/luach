@@ -115,6 +115,14 @@ See ADR 0005. **Default until decided:** as proposed.
 - *As built:* Yom Kippur Katan (optional) is not listed before Rosh Chodesh Tishrei, Cheshvan,
   Teves or Iyar (common practice; not stated in MB 417:4), and moves to Thursday from
   Friday/Shabbos (MB 417:4).
+- *As built (supersedes the Yom Kippur Katan entry above as to its sources, 2026-10-21):* when
+  Erev Rosh Chodesh is Shabbos, Yom Kippur Katan is on Thursday (Magen Avraham 417:3: Rosh
+  Chodesh on Sunday, fast on Thursday; MB 417:4). When it is Friday the sources differ: Magen
+  Avraham 417:3 keeps it on Friday ("ואם חל ר"ח בשבת מתענין ביום ו'"); MB 417:4 says those who
+  say Selichos fast on Thursday and those who don't on Friday. Option `yomKippurKatanOnFriday`:
+  `'thursday'` (default, the behaviour before the option existed; @hebcal/core, the test oracle,
+  agrees) or `'friday'`. The default is a
+  default, not a ruling. The exclusions are as before.
 - *As built:* BeHaB (optional) is the Monday, Thursday and Monday after the first Shabbos of
   Cheshvan and of Iyar.
 - *As built (supersedes the BeHaB entry above, 2026-10-21):* BeHaB is the Monday, Thursday and

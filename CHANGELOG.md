@@ -53,6 +53,9 @@ All notable changes for users of the `luach` package. This project follows
   in Adar I whose birthday falls in a leap year (Levush, the default, or Magen Avraham).
 - BeHaB counts from the first Shabbos after Rosh Chodesh (MB 492:3): when 1 Cheshvan or
   1 Iyar is Shabbos the fasts are a week later than before.
+- Yom Kippur Katan: new option `yomKippurKatanOnFriday` (`'thursday'`, the default, or
+  `'friday'`) for an Erev Rosh Chodesh on Friday; moved days carry `moved: true`; the
+  citations now say what Magen Avraham 417:3 and Mishna Berura 417:4 each hold.
 - The city-data files ship without source maps; the package is about half the size.
 - Hebrew zman labels carry a left-to-right mark (U+200E) after each degree sign, so the
   angle reads correctly in right-to-left text.

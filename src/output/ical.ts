@@ -18,7 +18,8 @@ import { mishnaYomis, nachYomi, rambamOneChapter, rambamThreeChapters, yerushalm
 import type { DayLocation } from '../day/day-info.js';
 import { dayInfo } from '../day/day-info.js';
 import { ZmanimCalendar } from '../zmanim/calendar.js';
-import type { Zman } from '../zmanim/zman.js';
+import { Zman } from '../zmanim/zman.js';
+import { ZMANIM } from '../zmanim/opinions.js';
 import { gematriya } from '../text/gematriya.js';
 
 /** Learning cycles that can be included. */
@@ -42,15 +43,40 @@ export interface ICalOptions {
   location?: DayLocation;
   /** Candle lighting and havdala (needs `location`). Default true when a location is given. */
   candleLighting?: boolean;
-  /** Zmanim to add as timed events, by {@link ZmanimCalendar} method name. Default none. */
+  /**
+   * Zmanim to add as timed events, by {@link ZmanimCalendar} method name (e.g. `sofZmanShemaGra`).
+   * Default none. A name that is not a zman method throws a RangeError.
+   */
   zmanim?: readonly string[];
-  /** Timestamp for DTSTAMP. Default now. Pass a fixed value for reproducible files. */
+  /** Timestamp for DTSTAMP. Default now. Pass a fixed value for reproducible files. An invalid Date throws a RangeError. */
   now?: Date;
 }
 
 /** Escapes text for an iCalendar value (RFC 5545 §3.3.11). */
 export function icalEscape(s: string): string {
-  return s.replace(/\\/g, '\\\\').replace(/;/g, '\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
+  return s.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r\n|\r|\n/g, '\\n');
+}
+
+const hasOwn = (o: object, k: string) => Object.prototype.hasOwnProperty.call(o, k);
+
+/**
+ * The zman method `name` of `z`, or a RangeError. Only the calendar's own public zman methods
+ * qualify: an own key of `ZmanimCalendar.prototype` (not `constructor`) whose call returns a
+ * {@link Zman} with a known id.
+ */
+function zmanMethod(z: ZmanimCalendar, name: string): () => Zman {
+  const notZman = () => new RangeError(`${name} is not a zman`);
+  if (name === 'constructor' || !hasOwn(ZmanimCalendar.prototype, name)) throw notZman();
+  const f = Object.getOwnPropertyDescriptor(ZmanimCalendar.prototype, name)?.value as unknown;
+  if (typeof f !== 'function') throw notZman();
+  let r: unknown;
+  try {
+    r = (f as () => unknown).call(z);
+  } catch {
+    throw notZman();
+  }
+  if (!(r instanceof Zman) || !hasOwn(ZMANIM, r.id)) throw notZman();
+  return f as () => Zman;
 }
 
 /** Folds a content line to 75 octets (UTF-8), continuation lines starting with a space (§3.1). */
@@ -101,6 +127,11 @@ export function toICalendar(start: CivilDate | HebrewDate, end: CivilDate | Hebr
   if (h1.epochDays < h0.epochDays) throw new RangeError('end is before start');
   const locale = options.locale ?? he;
   const israel = options.israel ?? options.location?.israel ?? false;
+  const now = options.now ?? new Date();
+  if (!(now instanceof Date) || !Number.isFinite(now.getTime())) throw new RangeError('options.now is not a valid Date');
+  const zmanMethods = options.location
+    ? (options.zmanim ?? []).map((m) => zmanMethod(new ZmanimCalendar(options.location!, h0), m))
+    : [];
   const items: Item[] = [];
   const rtl = locale.dir === 'rtl';
 
@@ -135,16 +166,14 @@ export function toICalendar(start: CivilDate | HebrewDate, end: CivilDate | Hebr
         if (info.candleLighting?.time) items.push({ uid: `${d.toString()}-candles`, summary: rtl ? 'הדלקת נרות' : 'Candle lighting', description: `${info.candleLighting.opinion}. ${info.candleLighting.source}`, categories: 'candle-lighting', at: new Date(info.candleLighting.time) });
         if (info.havdala?.time) items.push({ uid: `${d.toString()}-havdala`, summary: rtl ? 'הבדלה' : 'Havdala', description: `${info.havdala.opinion}. ${info.havdala.source}`, categories: 'havdala', at: new Date(info.havdala.time) });
       }
-      for (const m of options.zmanim ?? []) {
-        const f = (z as unknown as Record<string, unknown>)[m];
-        if (typeof f !== 'function') throw new RangeError(`Unknown zman method "${m}"`);
-        const zm = (f as () => Zman).call(z);
+      for (const f of zmanMethods) {
+        const zm = f.call(z);
         if (zm.time) items.push({ uid: `${d.toString()}-${zm.id}`, summary: zm.opinion, description: zm.source, categories: 'zman', at: zm.time });
       }
     }
   }
 
-  const stamp = utcValue(options.now ?? new Date());
+  const stamp = utcValue(now);
   const lines = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',

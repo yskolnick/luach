@@ -51,3 +51,9 @@ All notable changes for users of the `luach` package. This project follows
 - The city-data files ship without source maps; the package is about half the size.
 - Hebrew zman labels carry a left-to-right mark (U+200E) after each degree sign, so the
   angle reads correctly in right-to-left text.
+
+### Fixed
+- iCalendar: semicolons and lone carriage returns in text values are now escaped
+  (RFC 5545 §3.3.11), so summaries like Rambam's "chapter 18, 19; Fasts chapter 1" and
+  calendar names survive a round trip. An invalid `now` and a `zmanim` name that is not a
+  zman method (e.g. `constructor`) throw a `RangeError`.

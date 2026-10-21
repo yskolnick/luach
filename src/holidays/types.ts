@@ -64,6 +64,8 @@ export interface HolidayOptions {
   behab?: boolean;
   /** Include Yom Kippur Katan. Default `false`. */
   yomKippurKatan?: boolean;
+  /** Include the Shabbosos of Shovavim. Default `false`. */
+  shovavim?: boolean;
   /** Include Shabbos Mevorchim. Default `true`. */
   shabbosMevorchim?: boolean;
 }

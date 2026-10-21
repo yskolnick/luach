@@ -13,6 +13,7 @@ import { HebrewDate } from '../calendar/hebrew-date';
 import { Month } from '../calendar/months';
 import { isLeapYear, monthLength, monthsOfYear } from '../calendar/year';
 import { daysToCivil } from '../time/civil';
+import { readingCycle } from '../parsha/parsha';
 import type { HolidayEvent, HolidayFlags, HolidayOptions } from './types';
 
 const NONE: HolidayFlags = {
@@ -47,6 +48,29 @@ class Builder {
   d(month: number, day: number): HebrewDate {
     return new HebrewDate(this.year, month, day);
   }
+}
+
+/**
+ * The Yom Tov or Chol Hamoed event id for `date`, or null, computed directly from the date
+ * (without building the year's event list). Used where a full holiday list would be circular.
+ */
+export function festivalOn(date: HebrewDate, israel: boolean): string | null {
+  const { month: m, day: d } = date;
+  if (m === Month.TISHREI) {
+    if (d === 1 || d === 2) return 'rosh-hashana';
+    if (d === 10) return 'yom-kippur';
+    if (d === 15 || (d === 16 && !israel)) return 'sukkos';
+    if (d >= 16 && d <= 20) return 'sukkos-chol-hamoed';
+    if (d === 21) return 'hoshana-rabba';
+    if (d === 22) return israel ? 'shemini-atzeres-simchas-torah' : 'shemini-atzeres';
+    if (d === 23 && !israel) return 'simchas-torah';
+  } else if (m === Month.NISAN) {
+    if (d === 15 || d === 21 || (!israel && (d === 16 || d === 22))) return 'pesach';
+    if (d >= 16 && d <= 20) return 'pesach-chol-hamoed';
+  } else if (m === Month.SIVAN) {
+    if (d === 6 || (d === 7 && !israel)) return 'shavuos';
+  }
+  return null;
 }
 
 /** Adar in a common year, Adar II in a leap year: the month of Purim. */
@@ -107,6 +131,21 @@ export function holidaysForYear(year: number, options: HolidayOptions = {}): Hol
 
   // ---- Shevat ----
   b.add('tu-bshvat', d(Month.SHEVAT, 15), { minor: true });
+  // Shabbos Shira: the Shabbos of Parshas Beshalach (the Song of the Sea, Shemos 15).
+  {
+    const cycle = readingCycle(year, { israel });
+    const shira = cycle.find((r) => r.parsha?.includes('beshalach'));
+    if (shira) b.add('shabbos-shira', shira.date, { specialShabbos: true });
+    // Shovavim (optional): the weeks of Shemos through Mishpatim, and in a leap year also
+    // Terumah and Tetzaveh ("Shovavim Tat"), a custom of fasting and teshuvah (see docs).
+    if (options.shovavim) {
+      const ids = ['shemos', 'vaera', 'bo', 'beshalach', 'yisro', 'mishpatim', ...(isLeapYear(year) ? ['terumah', 'tetzaveh'] : [])];
+      let n = 0;
+      for (const r of cycle) {
+        if (r.parsha?.some((p) => ids.includes(p))) b.add('shovavim', r.date, { optional: true }, { day: ++n });
+      }
+    }
+  }
 
   // ---- Adar ----
   const am = purimMonth(year);
@@ -292,7 +331,7 @@ function addModernIsraeli(b: Builder): void {
 const cache = new Map<string, HolidayEvent[]>();
 
 function cachedYear(year: number, options: HolidayOptions): HolidayEvent[] {
-  const key = `${year}|${options.israel ? 1 : 0}${options.modernIsraeli ? 1 : 0}${options.behab ? 1 : 0}${options.yomKippurKatan ? 1 : 0}${options.shabbosMevorchim === false ? 0 : 1}`;
+  const key = `${year}|${options.israel ? 1 : 0}${options.modernIsraeli ? 1 : 0}${options.behab ? 1 : 0}${options.yomKippurKatan ? 1 : 0}${options.shabbosMevorchim === false ? 0 : 1}${options.shovavim ? 1 : 0}`;
   let v = cache.get(key);
   if (!v) {
     v = holidaysForYear(year, options);

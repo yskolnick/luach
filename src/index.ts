@@ -22,3 +22,4 @@ export * from './format/gematriya.js';
 export * from './format/names.js';
 export * from './format/format.js';
 export * from './time/zone.js';
+export * from './parsha/parsha.js';

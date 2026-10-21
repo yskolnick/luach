@@ -54,8 +54,8 @@ All events carry flags: `yomTov` (melacha forbidden), `cholHamoed`, `fast` (`maj
 
 | ID | Feature | Source | Test | Status |
 |---|---|---|---|---|
-| PAR-01 | Weekly parsha, Israel and diaspora, doubled parshiyos, divergence weeks | Tur OC 428 (keviyos tables) | oracle hebcal Sedra 5660–6000 both locations | planned |
-| PAR-02 | `null` on Shabbos that is Yom Tov / Chol Hamoed, with the special reading | SA OC 488, 490, 663 | oracle | planned |
+| PAR-01 | Weekly parsha, Israel and diaspora, doubled parshiyos, divergence weeks | Tur OC 428 (keviyos tables) | oracle hebcal Sedra 5660–6000 both locations | done |
+| PAR-02 | `null` on Shabbos that is Yom Tov / Chol Hamoed, with the special reading | SA OC 488, 490, 663 | oracle | done |
 | PAR-03 | Haftara by minhag (Ashkenaz, Sephardi, Chabad; Teimani only with a source), special haftaros; references only | SA OC 284, 425, 428; Mishna Berura | hand-entered from a printed Chumash (named per test) | planned |
 | PAR-04 | Pirkei Avos chapter on summer Shabbosim, with cycle customs | Rema OC 292:2 | hand-entered | planned |
 | LRN-01 | Daf Yomi Bavli (from 11 Sept 1923) | published cycle | oracle @hebcal/learning (BSD) | planned |

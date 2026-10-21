@@ -78,3 +78,9 @@ Choices made while building that nobody has ruled on. Each can be changed.
 - AB-01. Month numbers count from Nisan (Nisan = 1 … Adar = 12, Adar II = 13), following Shemos 12:2. Named constants are exported, so callers need not use numbers.
 - AB-02. Gregorian dates before 15 October 1582 are proleptic Gregorian. Supported range: Hebrew years 1–9999 for conversion; validated by property tests over 5660–6000.
 - AB-03. A Gregorian civil date maps to the Hebrew date of its daytime. Callers who need the evening (after sunset) date pass `afterSunset: true` or use the zmanim-aware helper.
+- AB-04. Parsha joins after Pesach: beyond the joins forced by "Bamidbar before Shavuos", pairs are joined in the order
+  Tazria–Metzora, Acharei–Kedoshim, Matos–Masei, Behar–Bechukosai, Chukas–Balak (common years) and
+  Matos–Masei, Chukas–Balak, Acharei–Kedoshim, Behar–Bechukosai (leap years). In Israel, when the diaspora's
+  eighth day of Pesach is Shabbos, this keeps Israel a week ahead until Behar/Bechukosai (common) or
+  Matos/Masei (leap). Mishna Berura 428:10 records other customs (splitting Tazria–Metzora instead); Luach
+  follows the one that agrees with current calendars and the oracle for every Shabbos 5660–6000.

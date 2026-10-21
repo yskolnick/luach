@@ -142,7 +142,7 @@ All events carry flags: `yomTov`, `melachaForbidden`, `cholHamoed`, `fast` (`maj
 
 | ID | Spec | Source | Test | Status |
 |---|---|---|---|---|
-| REL-01 | CI: typecheck, lint, unit/property/oracle tests, Hermes, licence check, size budget | — | GitHub Actions | in progress |
-| REL-02 | Semver, `CHANGELOG.md`, release script | — | — | planned |
-| REL-03 | `RELEASING.md` (Yosef publishes) | — | review | planned |
-| REL-04 | `SECURITY.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, issue/PR templates, "How to credit" | — | review | planned |
+| REL-01 | CI: typecheck, lint, unit/property/oracle tests, Hermes, licence check, size budget | — | GitHub Actions | done |
+| REL-02 | Semver, `CHANGELOG.md`, release script | — | — | done |
+| REL-03 | `RELEASING.md` (Yosef publishes) | — | review | done |
+| REL-04 | `SECURITY.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, issue/PR templates, "How to credit" | — | review | done |

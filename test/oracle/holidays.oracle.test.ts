@@ -58,6 +58,7 @@ function explained(year: number, line: string): boolean {
 }
 
 import { roshHashana } from '../../src/calendar/hebrew.js';
+import { writeReport } from './report.js';
 
 function hebcalSet(year: number, il: boolean): Set<string> {
   const events = HebrewCalendar.calendar({
@@ -88,6 +89,8 @@ for (const location of ['diaspora', 'israel'] as const) {
   describe(`holidays vs hebcal, ${location}, 5660–6000`, () => {
     it('agree on every compared day', () => {
       const diffs: string[] = [];
+      const explainedList: string[] = [];
+      let compared = 0;
       for (let year = 5660; year <= 6000; year += 1) {
         const theirs = hebcalSet(year, location === 'israel');
         const ours = new Set(
@@ -95,9 +98,11 @@ for (const location of ['diaspora', 'israel'] as const) {
             .filter((h) => COMPARED.has(h.id) && !(h.id === 'purim-meshulash' && h.day !== 3))
             .map((h) => `${h.id === 'shemini-atzeres-simchas-torah' ? 'shemini-atzeres' : h.id}@${h.dayNumber}`),
         );
-        for (const k of ours) if (!theirs.has(k) && !explained(year, k)) diffs.push(`${year} only Luach: ${k}`);
-        for (const k of theirs) if (!ours.has(k) && !explained(year, k)) diffs.push(`${year} only hebcal: ${k}`);
+        compared += ours.size;
+        for (const k of ours) if (!theirs.has(k)) (explained(year, k) ? explainedList : diffs).push(`${year} only Luach: ${k}`);
+        for (const k of theirs) if (!ours.has(k)) (explained(year, k) ? explainedList : diffs).push(`${year} only hebcal: ${k}`);
       }
+      writeReport(`holidays-${location}`, { oracle: '@hebcal/core', years: '5660-6000', eventsCompared: compared, unexplained: diffs.length, explained: explainedList });
       expect(diffs.slice(0, 40)).toEqual([]);
     });
   });

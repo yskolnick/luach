@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { HDate, Molad } from '@hebcal/core';
 import { dayNumberToHebrew, roshHashana, daysInYear, hebrewToDayNumber, monthsInOrder } from '../../src/calendar/hebrew.js';
 import { molad } from '../../src/calendar/molad.js';
+import { writeReport } from './report.js';
 import { dayNumberToGregorian, gregorianToDayNumber } from '../../src/calendar/gregorian.js';
 
 describe('calendar vs hebcal, every day 1900–2240', () => {
@@ -20,6 +21,7 @@ describe('calendar vs hebcal, every day 1900–2240', () => {
     }
     expect(count).toBeGreaterThan(124_000);
     expect(mismatches).toBe(0);
+    writeReport('calendar', { oracle: '@hebcal/core', range: '1900-01-01..2240-12-31', daysCompared: count, mismatches, moladMonths: '5660-6000, every month' });
   });
 
   it('year lengths and Rosh Hashana agree, years 3000–7000', () => {

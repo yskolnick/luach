@@ -12,7 +12,8 @@
     "test:hermes": "node scripts/hermes-test.mjs",
     "check:licenses": "node scripts/check-licenses.mjs",
     "check:size": "node scripts/check-size.mjs",
-    "check": "npm run typecheck && npm run lint && npm test && npm run build && npm run test:hermes && npm run check:licenses && npm run check:size"
+    "check": "npm run typecheck && npm run lint && npm test && npm run build && npm run test:hermes && npm run check:licenses && npm run check:size",
+    "accuracy-report": "node scripts/accuracy-report.mjs"
   },
   "repository": {
     "type": "git",

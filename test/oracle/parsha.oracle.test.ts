@@ -4,6 +4,7 @@ import { HDate, Sedra } from '@hebcal/core';
 import { PARSHIYOS, parshaOn } from '../../src/parsha/parsha.js';
 import { dayNumberToGregorian, dayOfWeek, gregorianToDayNumber } from '../../src/calendar/gregorian.js';
 import { roshHashana } from '../../src/calendar/hebrew.js';
+import { writeReport } from './report.js';
 
 for (const location of ['diaspora', 'israel'] as const) {
   describe(`parsha vs hebcal, ${location}, every Shabbos 5660–6000`, () => {
@@ -33,6 +34,7 @@ for (const location of ['diaspora', 'israel'] as const) {
           mismatches.push(`${g.year}-${g.month}-${g.day}: ours ${ours.parsha ?? ours.special} theirs ${want}`);
         }
       }
+      writeReport(`parsha-${location}`, { oracle: '@hebcal/core Sedra', years: '5660-6000', shabbosos: count, mismatches: mismatches.length });
       expect(count).toBeGreaterThan(17_000);
       expect(mismatches.slice(0, 20)).toEqual([]);
       void gregorianToDayNumber;

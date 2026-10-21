@@ -122,10 +122,10 @@ All events carry flags: `yomTov` (melacha forbidden), `cholHamoed`, `fast` (`maj
 
 | ID | Feature | Status |
 |---|---|---|
-| DOC-01 | Docs site (static): getting started, recipes, API reference from TSDoc | planned |
-| DOC-02 | Halachic notes per opinion with sources; "Ask your rav. This library calculates; it does not rule." | planned |
+| DOC-01 | Docs site (static): getting started, recipes, API reference from TSDoc | done |
+| DOC-02 | Halachic notes per opinion with sources; "Ask your rav. This library calculates; it does not rule." | done |
 | DOC-03 | Accuracy report generated from oracle tests | done |
-| DOC-04 | Licence and how to credit | planned |
+| DOC-04 | Licence and how to credit | done |
 | DOC-05 | Examples: Node, browser, React, React Native (code only), CLI | planned |
 | APP-01 | Expo demo app | deferred — D-02 ("Expo isn't part of this run") |
 

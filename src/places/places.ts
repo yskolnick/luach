@@ -10,6 +10,8 @@
  */
 
 import type { CityRow } from './types.js';
+
+export type { CityRow } from './types.js';
 import { ROWS, ZONES } from './cities-small.js';
 import type { GeoLocation } from '../zmanim/zmanim.js';
 

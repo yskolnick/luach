@@ -9,6 +9,7 @@
  * ```
  *
  * @packageDocumentation
+ * @module luach/cities-full
  */
 
 import { ROWS, ZONES } from './places/cities-full-data.js';

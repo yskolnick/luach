@@ -13,7 +13,11 @@
     "check:licenses": "node scripts/check-licenses.mjs",
     "check:size": "node scripts/check-size.mjs",
     "check": "npm run typecheck && npm run lint && npm test && npm run build && npm run test:hermes && npm run check:licenses && npm run check:size",
-    "accuracy-report": "node scripts/accuracy-report.mjs"
+    "accuracy-report": "node scripts/accuracy-report.mjs",
+    "docs:api": "typedoc",
+    "docs:prepare": "npm run build && npm run docs:api && node scripts/gen-opinions.mjs",
+    "docs:build": "npm run docs:prepare && vitepress build docs",
+    "docs:dev": "vitepress dev docs"
   },
   "repository": {
     "type": "git",
@@ -54,8 +58,11 @@
     "playwright-core": "^1.64.1",
     "tsup": "^9.0.0",
     "tsx": "^4.23.15",
+    "typedoc": "^0.28.20",
+    "typedoc-plugin-markdown": "^4.14.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.72.0",
+    "vitepress": "^1.6.4",
     "vitest": "^3.2.7"
   },
   "type": "module",

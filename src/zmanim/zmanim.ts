@@ -248,7 +248,10 @@ const ateret = (c: Ctx): [Calc, Calc] => {
   return h === null ? [r, s] : [plus(r, (-1.2 * h) / MINUTE), plus(s, 40)];
 };
 
-const DAYS = {
+/** The definitions of "the day" used for proportional hours. See {@link dayOpinion}. */
+export type DayOpinion = 'gra' | 'ma72' | 'ma90' | 'ma96' | 'ma120' | 'ma72z' | 'ma90z' | 'ma16' | 'tanya' | 'ateret';
+
+const DAYS: Record<DayOpinion, { f: (c: Ctx) => [Calc, Calc]; label: string; source: string }> = {
   gra: { f: gra, label: 'Gra: the day from sunrise to sunset', source: 'Biur HaGra OC 459:2 (unverified); SA OC 233:1, Rema (proportional hours)' },
   ma72: { f: ma72, label: 'Magen Avraham: the day from alos to tzeis, 72 fixed minutes', source: `Magen Avraham 58:1 (hours from alos); Pesachim 94a (4 mil); ${SRC_MIL}` },
   ma90: { f: ma90, label: 'Magen Avraham: the day from alos to tzeis, 90 fixed minutes', source: 'Magen Avraham 58:1; 4 mil of 22½ minutes (unverified)' },
@@ -259,9 +262,7 @@ const DAYS = {
   ma16: { f: ma16, label: 'Magen Avraham: the day from alos to tzeis at 16.1° (72 minutes in Jerusalem at the equinox)', source: 'Magen Avraham 58:1; 16.1° as the equinox equivalent of 72 minutes in Jerusalem' },
   tanya: { f: tanya, label: 'Baal HaTanya: the day from netz amiti to shkiah amitis (1.583°)', source: 'Shulchan Aruch HaRav, Seder Hachnasas Shabbos (unverified)' },
   ateret: { f: ateret, label: 'Ateret Torah: the day from alos (1/10 of the day) to tzeis 40 minutes', source: 'Chacham Yosef Harari-Raful, Yeshivat Ateret Torah (unverified)' },
-} as const;
-
-export type DayOpinion = keyof typeof DAYS;
+};
 
 function inDay(opinion: DayOpinion, hours: number) {
   const d = DAYS[opinion];

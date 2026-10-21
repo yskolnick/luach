@@ -5,6 +5,7 @@
  * Ask your rav. This library calculates; it does not rule.
  *
  * @packageDocumentation
+ * @module luach
  */
 
 export * from './calendar/gregorian.js';

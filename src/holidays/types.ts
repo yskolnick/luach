@@ -60,6 +60,11 @@ export interface HolidayOptions {
   israel?: boolean;
   /** Include the modern Israeli days. Default `false`. */
   modernIsraeli?: boolean;
+  /**
+   * Include the other Israeli commemorations set by Hebrew date (Sigd, Yom HaAliyah, Herzl,
+   * Ben-Gurion, Jabotinsky, Rabin, the 7 October memorial day, …) and Chag HaBanot. Default `false`.
+   */
+  israeliCommemorations?: boolean;
   /** Include BeHaB fasts. Default `false`. */
   behab?: boolean;
   /** Include Yom Kippur Katan. Default `false`. */

@@ -186,3 +186,22 @@ describe('tefillah', () => {
     expect(mourningPeriods(new HebrewDate(5787, Month.IYAR, 3)).omer).toBe(true);
   });
 });
+
+describe('Israeli commemorations (optional)', () => {
+  it('off by default; on with the option; moving rules', () => {
+    expect(holidaysForYear(5787).some((e) => e.id === 'sigd')).toBe(false);
+    const ev = holidaysForYear(5787, { israeliCommemorations: true });
+    const oct7 = ev.find((e) => e.id === 'yom-zikaron-7-oktober')!;
+    expect(oct7.date.toCivil()).toEqual({ year: 2026, month: 10, day: 5 }); // Monday 24 Tishrei 5787 (research note)
+    const sigd = ev.find((e) => e.id === 'sigd')!;
+    expect(sigd.date.dayOfWeek).not.toBe(6);
+    for (const e of ev.filter((x) => x.flags.modernIsraeli)) {
+      expect(holidayName(e, en)).not.toMatch(/^holiday\./);
+      expect(holidayName(e, he)).not.toMatch(/^holiday\./);
+    }
+    // 5785: 24 Tishrei was Shabbos (26 October 2024); the memorial moved to Sunday 27 October.
+    const y5785 = holidaysForYear(5785, { israeliCommemorations: true }).find((e) => e.id === 'yom-zikaron-7-oktober')!;
+    expect(y5785.date.toCivil()).toEqual({ year: 2024, month: 10, day: 27 });
+    expect(y5785.moved).toBe(true);
+  });
+});

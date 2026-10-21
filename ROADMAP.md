@@ -11,19 +11,19 @@ User research behind this list: `docs/research/2026-10-21-what-users-want.md`.
 
 | ID | Feature | Source | Test | Status |
 |---|---|---|---|---|
-| CAL-01 | Hebrew ↔ Gregorian conversion, Hebrew years 1–9999, proleptic Gregorian before 1582 (AB-02) | Rambam, Kiddush HaChodesh 6–8; Gregorian rules (Inter gravissimas, 1582) | round-trip property 1900–2240; oracle hebcal daily 1900–2240 | planned |
-| CAL-02 | Molad of any month, with day, hours and chalakim | Rambam KH 6:2–8 (month 29d 12h 793p; BaHaRaD) | oracle hebcal molad 5660–6000; published molad announcements | planned |
-| CAL-03 | Leap years: the 19-year cycle (3, 6, 8, 11, 14, 17, 19) | Rambam KH 6:11 | property: 7 leap years in every cycle; oracle | planned |
-| CAL-04 | The four dechiyos (molad zaken, lo ADU rosh, GaTaRaD, BeTU'TaKPaT) | Rambam KH 7:1–8 | property: RH never Sun/Wed/Fri; year lengths 353–355/383–385; oracle | planned |
-| CAL-05 | Year type (chaseira / kesidra / sheleima), keviah letters, day of week | Rambam KH 8:5–8; Tur OC 428 (keviyos) | property: only 14 keviyos occur; oracle | planned |
-| CAL-06 | Days in month / year; Adar I and II; Cheshvan and Kislev lengths | Rambam KH 8:5–6 | property; oracle | planned |
-| CAL-07 | Yahrzeit and birthday (bar/bas mitzvah) anniversaries, with both customs for Adar, Cheshvan 30 and Kislev 30 | Shulchan Aruch OC 568:7 and Rema; Magen Avraham 568:20; OC 55:10 (bar mitzvah in Adar) | hand-entered cases; oracle hebcal | planned |
-| CAL-08 | Hebrew numerals / gematriya, geresh and gershayim, ט״ו and ט״ז, years with or without thousands | standard Hebrew orthography | unit tables; round-trip parse | planned |
-| CAL-09 | Month and holiday names: Hebrew, Ashkenazi, Sephardi/Israeli, English; pluggable name tables | — | unit | planned |
-| CAL-10 | RTL safety: opt-in Unicode isolates (U+2067/U+2069) around Hebrew output | Unicode Bidirectional Algorithm (UAX #9) | unit | planned |
-| CAL-11 | Property invariants over 5660–6000: Pesach day 1 = Tisha B'Av weekday (at-bash); YK never Fri/Sun; Purim never Sat/Mon/Wed; Hoshana Rabba never Sat | Tur OC 428 | property | planned |
-| CAL-12 | Day of week, days between dates, add days/months/years to a Hebrew date | — | property | planned |
-| CAL-13 | Civil date from `Date` in a given IANA zone, and "Hebrew date now" after sunset | — | unit | planned |
+| CAL-01 | Hebrew ↔ Gregorian conversion, Hebrew years 1–9999, proleptic Gregorian before 1582 (AB-02) | Rambam, Kiddush HaChodesh 6–8; Gregorian rules (Inter gravissimas, 1582) | round-trip property 1900–2240; oracle hebcal daily 1900–2240 | done |
+| CAL-02 | Molad of any month, with day, hours and chalakim | Rambam KH 6:2–8 (month 29d 12h 793p; BaHaRaD) | oracle hebcal molad 5660–6000; published molad announcements | done |
+| CAL-03 | Leap years: the 19-year cycle (3, 6, 8, 11, 14, 17, 19) | Rambam KH 6:11 | property: 7 leap years in every cycle; oracle | done |
+| CAL-04 | The four dechiyos (molad zaken, lo ADU rosh, GaTaRaD, BeTU'TaKPaT) | Rambam KH 7:1–8 | property: RH never Sun/Wed/Fri; year lengths 353–355/383–385; oracle | done |
+| CAL-05 | Year type (chaseira / kesidra / sheleima), keviah letters, day of week | Rambam KH 8:5–8; Tur OC 428 (keviyos) | property: only 14 keviyos occur; oracle | done |
+| CAL-06 | Days in month / year; Adar I and II; Cheshvan and Kislev lengths | Rambam KH 8:5–6 | property; oracle | done |
+| CAL-07 | Yahrzeit and birthday (bar/bas mitzvah) anniversaries, with both customs for Adar, Cheshvan 30 and Kislev 30 | Shulchan Aruch OC 568:7 and Rema; Magen Avraham 568:20; OC 55:10 (bar mitzvah in Adar) | hand-entered cases; oracle hebcal | done |
+| CAL-08 | Hebrew numerals / gematriya, geresh and gershayim, ט״ו and ט״ז, years with or without thousands | standard Hebrew orthography | unit tables; round-trip parse | done |
+| CAL-09 | Month and holiday names: Hebrew, Ashkenazi, Sephardi/Israeli, English; pluggable name tables | — | unit | done |
+| CAL-10 | RTL safety: opt-in Unicode isolates (U+2067/U+2069) around Hebrew output | Unicode Bidirectional Algorithm (UAX #9) | unit | done |
+| CAL-11 | Property invariants over 5660–6000: Pesach day 1 = Tisha B'Av weekday (at-bash); YK never Fri/Sun; Purim never Sat/Mon/Wed; Hoshana Rabba never Sat | Tur OC 428 | property | done |
+| CAL-12 | Day of week, days between dates, add days/months/years to a Hebrew date | — | property | done |
+| CAL-13 | Civil date from `Date` in a given IANA zone, and "Hebrew date now" after sunset | — | unit | done |
 
 ## M2. Holidays and special days
 

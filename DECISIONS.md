@@ -53,6 +53,9 @@ Anything the code does that nobody chose is marked **As built** (see the end of 
 ### Q-09. Misheyakir 12.85°
 - No published source for 12.85° was found. 7.65° (attributed to Rav Moshe Feinstein for New York) is widely printed.
 - Until decided: ship 10.2°, 11°, 11.5° and 7.65°; add 12.85° only with a source.
+- Update 2026-10-21 (research note §6): no published page ties 7.65° (or 9.5°) to a named authority either.
+  New default: named functions only for angles with a source; every angle is available through the generic
+  `misheyakirAtDegrees(angle)`, so callers can use 7.65°, 9.5° or 12.85° on their own rav's say-so.
 
 ### Q-10. Hermes run scope
 - The Linux Hermes CLI (`hermes-engine-cli`) has no `Intl` and no `class` syntax. On phones, Hermes gets `Intl` from the platform.

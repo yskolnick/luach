@@ -126,3 +126,9 @@ describe('labels', () => {
     expect(zmanLabel('sof-zman-shema-gra', heLocale)).toBe('סוף זמן קריאת שמע (גר״א)');
   });
 });
+
+describe('Hebrew labels keep degree signs with their numbers', () => {
+  it('a left-to-right mark follows each degree sign', () => {
+    expect(zmanLabel('misheyakir-11', heLocale)).toBe('משיכיר (11°‎)');
+  });
+});

@@ -8,8 +8,8 @@
  * @packageDocumentation
  */
 
-import { HebrewDate } from '../calendar/hebrew-date';
-import { Month } from '../calendar/months';
+import { HebrewDate } from '../calendar/hebrew-date.js';
+import { Month } from '../calendar/months.js';
 
 /** The Omer day (1–49) of a Hebrew date, or `null` outside the Omer. */
 export function omerDay(date: HebrewDate): number | null {

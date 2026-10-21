@@ -12,15 +12,15 @@
  * @packageDocumentation
  */
 
-import { HebrewDate } from '../calendar/hebrew-date';
-import { Month } from '../calendar/months';
-import { civilToDays } from '../time/civil';
-import { BAVLI_TRACTATES, locate } from './bavli';
-import { gematriya } from '../text/gematriya';
+import { HebrewDate } from '../calendar/hebrew-date.js';
+import { Month } from '../calendar/months.js';
+import { civilToDays } from '../time/civil.js';
+import { BAVLI_TRACTATES, locate } from './bavli.js';
+import { gematriya } from '../text/gematriya.js';
 
 const g = (n: number) => gematriya(n);
 const gp = (n: number) => gematriya(n, { punctuate: false });
-import { BAVLI_AMUDIM, MISHNAH, NACH, RAMBAM, YERUSHALMI_VILNA } from './data';
+import { BAVLI_AMUDIM, MISHNAH, NACH, RAMBAM, YERUSHALMI_VILNA } from './data.js';
 
 /** One day's portion in a learning cycle. */
 export interface LearningPortion {

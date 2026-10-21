@@ -8,9 +8,10 @@
  * @packageDocumentation
  */
 
-import type { RoundingDirection } from './zman';
-import { lookup, type Locale } from '../locales/types';
-import { he } from '../locales/he';
+import type { RoundingDirection } from './zman.js';
+import { lookupIn, type Locale } from '../locales/types.js';
+import { NAMES } from './labels-data.js';
+import { he } from '../locales/he.js';
 
 /** Metadata for one zman. */
 export interface ZmanDefinition {
@@ -128,5 +129,5 @@ export const ZMANIM: Readonly<Record<string, ZmanDefinition>> = {
 
 /** A short display label for a zman id (locale key `zman.<id>`), e.g. "סוף זמן קריאת שמע (גר״א)". */
 export function zmanLabel(id: string, locale: Locale = he): string {
-  return lookup(locale, `zman.${id}`);
+  return lookupIn(locale, `zman.${id}`, NAMES);
 }

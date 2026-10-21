@@ -8,11 +8,11 @@
  * @packageDocumentation
  */
 
-import { HebrewDate } from '../calendar/hebrew-date';
-import { Month } from '../calendar/months';
-import { molad } from '../calendar/molad';
-import { PARTS_PER_HOUR } from '../calendar/year';
-import { daysToCivil, julianToDays, MS_PER_DAY, type CivilDate } from '../time/civil';
+import { HebrewDate } from '../calendar/hebrew-date.js';
+import { Month } from '../calendar/months.js';
+import { molad } from '../calendar/molad.js';
+import { PARTS_PER_HOUR } from '../calendar/year.js';
+import { daysToCivil, julianToDays, MS_PER_DAY, type CivilDate } from '../time/civil.js';
 
 /** When v'sein tal umatar starts in a given Hebrew year's winter. */
 export interface TalUmatarStart {

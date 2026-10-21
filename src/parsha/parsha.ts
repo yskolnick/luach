@@ -25,12 +25,13 @@
  * @packageDocumentation
  */
 
-import { HebrewDate } from '../calendar/hebrew-date';
-import { Month } from '../calendar/months';
-import { isLeapYear } from '../calendar/year';
-import { festivalOn } from '../holidays/holidays';
-import { lookup, type Locale } from '../locales/types';
-import { he } from '../locales/he';
+import { HebrewDate } from '../calendar/hebrew-date.js';
+import { Month } from '../calendar/months.js';
+import { isLeapYear } from '../calendar/year.js';
+import { festivalOn } from '../holidays/holidays.js';
+import { lookupIn, type Locale } from '../locales/types.js';
+import { NAMES } from './names-data.js';
+import { he } from '../locales/he.js';
 
 /** The 54 parshiyos in order. Index = position in the Torah. */
 export const PARSHIYOS = [
@@ -166,7 +167,7 @@ export function parshaFor(date: HebrewDate, options?: { israel?: boolean }): Sha
  */
 export function parshaName(parsha: readonly ParshaId[] | null, locale: Locale = he): string | null {
   if (!parsha) return null;
-  return parsha.map((p) => lookup(locale, `parsha.${p}`)).join(lookup(locale, 'parsha.join'));
+  return parsha.map((p) => lookupIn(locale, `parsha.${p}`, NAMES)).join(lookupIn(locale, 'parsha.join', NAMES));
 }
 
 /**

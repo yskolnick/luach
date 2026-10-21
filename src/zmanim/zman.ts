@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-import { localParts, zoneName, type TimeZone } from '../time/zone';
+import { localParts, zoneName, type TimeZone } from '../time/zone.js';
 
 /**
  * How a zman is rounded to the minute for display: an *earliest* time (e.g. the end of a

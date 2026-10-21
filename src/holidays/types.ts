@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-import type { HebrewDate } from '../calendar/hebrew-date';
+import type { HebrewDate } from '../calendar/hebrew-date.js';
 
 /** Flags for filtering events. Every flag is always present. */
 export interface HolidayFlags {

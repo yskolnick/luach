@@ -8,6 +8,7 @@
  * @packageDocumentation
  */
 
+import { deepFreeze } from '../util/freeze.js';
 import type { RoundingDirection } from './zman.js';
 import { lookupIn, type Locale } from '../locales/types.js';
 import { NAMES } from './labels-data.js';
@@ -27,7 +28,7 @@ const up = 'up' as const;
 const down = 'down' as const;
 
 /** All zmanim by id. */
-export const ZMANIM: Readonly<Record<string, ZmanDefinition>> = {
+export const ZMANIM: Readonly<Record<string, ZmanDefinition>> = /*#__PURE__*/ deepFreeze({
   // ---- Sun ----
   'sunrise': { opinion: 'Sunrise (netz hachama), at sea level unless the calculator\'s useElevation is on', source: 'Berachos 9b; Shulchan Aruch OC 58:1', round: up },
   'sunrise-sea-level': { opinion: 'Sunrise at sea level (upper limb at the horizon, standard refraction)', source: 'NOAA Solar Calculator; sea-level practice: R. Isser Zalman Meltzer, cited in Peninei Halakha, Tefilla 11:6 n. 7', round: up },
@@ -127,7 +128,7 @@ export const ZMANIM: Readonly<Record<string, ZmanDefinition>> = {
   'fast-begins': { opinion: 'A minor fast begins at dawn', source: 'Shulchan Aruch OC 564:1', round: down },
   'fast-begins-sunset': { opinion: 'Yom Kippur and Tisha B\'Av begin at sunset the evening before (from bein hashmashos)', source: 'Shulchan Aruch OC 553:2, 608:1', round: down },
   'fast-ends': { opinion: 'A fast ends at nightfall (three medium stars)', source: 'Shulchan Aruch OC 562:1', round: up },
-};
+});
 
 /** A short display label for a zman id (locale key `zman.<id>`), e.g. "סוף זמן קריאת שמע (גר״א)". */
 export function zmanLabel(id: string, locale: Locale = he): string {

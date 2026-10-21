@@ -55,6 +55,39 @@ is better, add that". The second implementation is kept, unmerged, on the branch
 decisions document about where times came from and cite and source every decision and
 document etc. This is being built in public".
 
+### D-06. Table-only learning cycles deferred (P-05)
+Yosef, on P-05: "defer for now". Chofetz Chaim / Shemiras HaLashon yomi, Tanya yomi, the
+mitzvos of each Sefer HaMitzvos day, the Schottenstein Yerushalmi cycle and Dirshu's Daf HaYomi
+B'Halacha are not built for 1.0. They need publishers' day-by-day tables.
+
+### D-07. The credit line (Q-02)
+Yosef chose "Built on Luach by Yosef Skolnick", the wording already in NOTICE and README.
+
+### D-08. Modern Israeli days follow each law from its year (Q-05)
+Yosef accepted the rules as built: each moving rule applies from the year it was adopted
+(Yom HaShoah Friday → Thursday from 1959, Sunday → Monday from 1997; Yom HaAtzmaut Monday →
+Tuesday from 2004).
+
+### D-09. Accurate and source-based (Q-06)
+Yosef, on Q-06: "If it is now right, just use that. We want accurate and source based unless
+i specifically say otherwise on something but that is very unlikely". Q-06 is closed: Luach
+cites each part of "72 minutes / 16.1°" separately, as the texts say. As a rule, where the
+sources and a convenience differ, Luach follows the sources and says so.
+
+### D-10. Israel or the diaspora from the place (P-06)
+When a caller gives a place and does not say Israel or the diaspora, Luach decides from the
+place with `isInIsrael`. With no place, the diaspora remains the default, as documented. An
+explicit `israel` option always wins. (Asked whether to keep the diaspora default, require a
+choice, or infer from the place, Yosef chose "Infer Israel from the place".)
+
+### D-11. The shared tables are frozen (P-08)
+Yosef, on P-08: "Yes, freeze them". The tables listed in P-08 are frozen where they are built.
+
+### D-12. API clean-up before 1.0
+Yosef asked for three changes before 1.0: shrink the bundle cost of a single zman; stop
+exporting internal helpers; and give every halachic rule the code audit found without a source
+either a source or an option.
+
 ## Open questions
 
 ### Q-00. Unmerged branches
@@ -68,6 +101,7 @@ Branches with work not yet on `main` (2026-10-21):
 See P-01. **Until decided:** Apache-2.0 with a `NOTICE` file.
 
 ### Q-02. How credit should read
+**Decided:** see D-07.
 **Until decided:** NOTICE says "Built on Luach by Yosef Skolnick".
 
 Q-03 is recorded in the private records repository.
@@ -91,6 +125,7 @@ later authorities, against the Magen Avraham") or `'magen-avraham'` (Adar II; MA
 "נעשה ב"מ באדר שני"). **Until decided:** `'levush'`, the behaviour before the option existed.
 
 ### Q-05. Modern Israeli days before their amendments
+**Decided:** see D-08.
 Rules are applied from the year they were adopted
 (`docs/research/2026-10-21-modern-israeli-days.md`): Yom HaShoah Friday → Thursday from 1951
 and Sunday → Monday from 1997; Yom HaAtzmaut Monday → Tuesday from 2004. Not modelled: the
@@ -103,6 +138,7 @@ the law; the 1951 Knesset resolution had no weekday rule, so 1954 (27 Nisan on F
 Friday. Found by the citation audit (`docs/research/2026-10-21-citation-audit-code.md`).
 
 ### Q-06. The example citation in the brief
+**Decided:** see D-09.
 The brief's example, "Magen Avraham, 72 minutes as 16.1°; Shulchan Aruch Harav 89:1", is
 only partly accurate (`docs/research/2026-10-21-zmanim-opinions.md`): the Magen Avraham
 (OC 58:1) says the day runs from alos, not 72 minutes or 16.1°; 72 minutes is 4 mil of
@@ -133,6 +169,7 @@ proleptic Gregorian avoids a silent calendar switch in 1582. ADR 0004.
 **Default until decided:** as proposed.
 
 ### P-05. Move table-only learning cycles after 1.0
+**Decided:** see D-06.
 Chofetz Chaim / Shemiras HaLashon yomi, Tanya yomi, the mitzvos of each Sefer HaMitzvos
 day, the Schottenstein Yerushalmi cycle, and Dirshu's Daf HaYomi B'Halacha cannot be computed
 from structure: each needs a published day-by-day table (or, for Schottenstein, seven
@@ -151,6 +188,7 @@ decided:** as described (`ISRAEL_BOUNDARY` in `src/places/places.ts`).
 See ADR 0005. **Default until decided:** as proposed.
 
 ### P-08. Freeze the shared tables
+**Decided:** see D-11.
 `ZMANIM` (and each entry), `DEFAULT_DAY_ZMANIM`, the places from `getPlace()`,
 `builtInPlaces()` and `fullPlaces()`, and `ISRAEL_BOUNDARY` are plain objects and arrays: a
 caller's write changes every later result in the process. Proposal: `Object.freeze` them

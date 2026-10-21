@@ -110,6 +110,78 @@ recorded as new entries; old ones are superseded, not erased.
 - **Confidence:** Not applicable.
 - **Open:** items found but not ported are listed in the pull request and the LOG.
 
+### D-06. Table-only learning cycles deferred {#d-06}
+
+- **What it does:** five cycles that need a publisher's day-by-day table are not built for
+  1.0 (see [P-05](#p-05)).
+- **Why:** Yosef: "defer for now". A guessed table would be wrong, and a publisher's table
+  needs its permission.
+- **Sources:** DECISIONS.md D-06; [learning cycles](./research/2026-10-21-learning-cycles.md).
+- **Checked against:** nothing to check.
+- **Confidence:** Not applicable.
+- **Open:** they can be added after 1.0 if the tables can be licensed or computed.
+
+### D-07. The credit line {#d-07}
+
+- **What it does:** NOTICE asks apps to show "Built on Luach by Yosef Skolnick".
+- **Why:** Yosef's choice.
+- **Sources:** DECISIONS.md D-07.
+- **Checked against:** nothing to check.
+- **Confidence:** Not applicable.
+- **Open:** nothing.
+
+### D-08. Modern Israeli days follow each law from its year {#d-08}
+
+- **What it does:** see [Q-05](#q-05).
+- **Why:** Yosef accepted the rules as built, so a historical date matches what was observed.
+- **Sources:** DECISIONS.md D-08; [modern Israeli days](./research/2026-10-21-modern-israeli-days.md).
+- **Checked against:** hebcal, every year 5660–6000 (differences explained).
+- **Confidence:** Medium (the Knesset's own PDFs could not be opened).
+- **Open:** whether the Yom HaShoah Friday rule was in the 1959 law or the 1961 amendment;
+  it changes no date.
+
+### D-09. Accurate and source-based {#d-09}
+
+- **What it does:** closes Q-06, and sets the rule that where a source and a convenience
+  differ, Luach follows the source and says so.
+- **Why:** Yosef: "We want accurate and source based unless i specifically say otherwise".
+- **Sources:** DECISIONS.md D-09; [Q-06](#q-06).
+- **Checked against:** the citation audits in `docs/research/`.
+- **Confidence:** Not applicable.
+- **Open:** nothing.
+
+### D-10. Israel or the diaspora from the place {#d-10}
+
+- **What it does:** when a caller gives a place but not `israel`, Luach decides with
+  `isInIsrael`; without a place, the diaspora stays the default; an explicit option wins.
+- **Why:** Yosef chose "Infer Israel from the place". A user in Jerusalem who forgets the
+  option should not get two days of Yom Tov.
+- **Sources:** DECISIONS.md D-10; the outline is [P-06](#p-06).
+- **Checked against:** the `isInIsrael` border tests, and tests that a place in Israel gives
+  Israel rules unless the option says otherwise.
+- **Confidence:** Medium. Near a border the outline is approximate ([P-06](#p-06)).
+- **Open:** near a border, pass `israel` explicitly and ask your rav.
+
+### D-11. The shared tables are frozen {#d-11}
+
+- **What it does:** the built-in tables cannot be changed by a caller.
+- **Why:** Yosef: "Yes, freeze them". A wrong zman is worse than a missing one, and a server
+  shares one copy among users.
+- **Sources:** DECISIONS.md D-11; [P-08](#p-08).
+- **Checked against:** `test/immutability.test.ts`.
+- **Confidence:** Not applicable.
+- **Open:** nothing.
+
+### D-12. API clean-up before 1.0 {#d-12}
+
+- **What it does:** a single zman costs less in a bundle; internal helpers are no longer
+  exported; every rule the code audit found without a source gets a source or an option.
+- **Why:** Yosef asked for all three before 1.0, when breaking changes cost least.
+- **Sources:** DECISIONS.md D-12; [code audit](./research/2026-10-21-citation-audit-code.md).
+- **Checked against:** size budgets in CI; the public API test; the citation audits.
+- **Confidence:** Not applicable.
+- **Open:** tracked in LOG.md until done.
+
 ## Open questions
 
 ### Q-00. Unmerged branches {#q-00}
@@ -137,7 +209,7 @@ recorded as new entries; old ones are superseded, not erased.
 - **Sources:** README, "How to credit".
 - **Checked against:** nothing to check.
 - **Confidence:** Not applicable.
-- **Open:** Yosef's wording.
+- **Open:** decided: [D-07](#d-07).
 
 ### Q-04. Anniversary rules {#q-04}
 
@@ -204,7 +276,7 @@ recorded as new entries; old ones are superseded, not erased.
 - **Sources:** [zmanim opinions](./research/2026-10-21-zmanim-opinions.md).
 - **Checked against:** the primary texts on Sefaria.
 - **Confidence:** High.
-- **Open:** awaits Yosef's acknowledgement.
+- **Open:** decided: [D-09](#d-09).
 
 ## Proposals
 
@@ -266,7 +338,7 @@ recorded as new entries; old ones are superseded, not erased.
 - **Sources:** [learning cycles](./research/2026-10-21-learning-cycles.md).
 - **Checked against:** nothing yet.
 - **Confidence:** High that they need tables.
-- **Open:** Yosef may approve the deferral, or seek permission to ship the tables.
+- **Open:** decided: deferred ([D-06](#d-06)).
 
 ### P-06. What `isInIsrael` covers {#p-06}
 
@@ -296,16 +368,17 @@ recorded as new entries; old ones are superseded, not erased.
 
 ### P-08. Freeze the shared tables {#p-08}
 
-- **What it does:** nothing yet. Proposes `Object.freeze` (deeply) for `ZMANIM`,
-  `DEFAULT_DAY_ZMANIM`, the place objects and `ISRAEL_BOUNDARY`.
+- **What it does:** since [D-11](#d-11), `ZMANIM`, `DEFAULT_DAY_ZMANIM`, the place objects
+  (built-in and full), `LOCAL_CANDLE_LIGHTING` and `ISRAEL_BOUNDARY` are deeply frozen where
+  they are built.
 - **Why:** they are shared by every caller in a process. A test showed that writing to one
   (for example, a zman's opinion text, or a place's latitude) changes every later result.
 - **Sources:** no halachic source; an engineering choice.
 - **Checked against:** `test/immutability.test.ts`, whose tests run as soon as the tables are
   frozen (they passed with the tables frozen in a trial).
 - **Confidence:** Not applicable.
-- **Open:** freezing makes a caller's write throw in strict mode: a behaviour change for
-  Yosef to approve.
+- **Open:** decided: [D-11](#d-11). A caller's write now throws in strict mode (and is
+  ignored otherwise).
 
 ## As built
 

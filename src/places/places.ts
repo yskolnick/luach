@@ -14,6 +14,7 @@
  * @packageDocumentation
  */
 
+import { deepFreeze } from '../util/freeze.js';
 import type { GeoLocation } from '../zmanim/calendar.js';
 import { CITY_ROWS, type CityRow } from './cities-data.js';
 
@@ -65,10 +66,10 @@ const PENINEI_SHABBAT_3_2 = 'Peninei Halakha, Shabbat 3:2 (R. Eliezer Melamed; p
  * before shki'a, in Haifa thirty minutes before, and in Tel Aviv and most other Israeli
  * cities twenty minutes before."
  */
-export const LOCAL_CANDLE_LIGHTING: Readonly<Record<number, CandleLightingCustom>> = {
+export const LOCAL_CANDLE_LIGHTING: Readonly<Record<number, CandleLightingCustom>> = /*#__PURE__*/ deepFreeze({
   281184: { minutes: 40, custom: 'the custom of Jerusalem', source: `${PENINEI_SHABBAT_3_2}; Peninei Halakha, Zemanim 13:5 n. 11` },
   294801: { minutes: 30, custom: 'the custom of Haifa', source: PENINEI_SHABBAT_3_2 },
-};
+});
 
 // ------------------------------------------------------------ Israel boundary
 
@@ -81,7 +82,7 @@ export const LOCAL_CANDLE_LIGHTING: Readonly<Record<number, CandleLightingCustom
  * political statement. Checked against GeoNames coordinates of places on both sides of
  * each border (`test/places.test.ts`).
  */
-export const ISRAEL_BOUNDARY: ReadonlyArray<readonly [number, number]> = [
+export const ISRAEL_BOUNDARY: ReadonlyArray<readonly [number, number]> = /*#__PURE__*/ deepFreeze([
   // Lebanon, west to east, round the Galilee panhandle (Metula) and north of Ghajar
   [35.104, 33.093], [35.18, 33.095], [35.25, 33.1], [35.32, 33.095], [35.4, 33.09], [35.48, 33.09],
   [35.51, 33.1], [35.535, 33.13], [35.54, 33.2], [35.545, 33.25], [35.565, 33.285], [35.578, 33.295],
@@ -97,7 +98,7 @@ export const ISRAEL_BOUNDARY: ReadonlyArray<readonly [number, number]> = [
   // Egypt, from Taba to Kerem Shalom and Rafah; then the coast
   [34.9, 29.49], [34.75, 29.9], [34.6, 30.3], [34.52, 30.6], [34.4, 30.9], [34.284, 31.219], [34.218, 31.321],
   [34.5, 31.7], [34.72, 32.1], [34.85, 32.5], [34.95, 32.85], [35.07, 33.1],
-];
+] as [number, number][]);
 
 /** True if the point is inside {@link ISRAEL_BOUNDARY} (even–odd ray casting). */
 export function isInIsrael(latitude: number, longitude: number): boolean {
@@ -123,7 +124,7 @@ let cities: Place[] | null = null;
 
 /** The built-in cities (about 200 with Jewish communities worldwide, plus high-latitude and date-line test places). */
 export function builtInPlaces(): readonly Place[] {
-  return (cities ??= CITY_ROWS.map(fromRow));
+  return (cities ??= deepFreeze(CITY_ROWS.map(fromRow)));
 }
 
 /** A built-in city by id (e.g. "lakewood"), or undefined. */

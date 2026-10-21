@@ -6,6 +6,7 @@
  * @packageDocumentation
  */
 
+import { deepFreeze } from '../util/freeze.js';
 import { HebrewDate } from '../calendar/hebrew-date.js';
 import { MAX_DAYS } from '../calendar/year.js';
 import { formatIsoDate, type CivilDate } from '../time/civil.js';
@@ -62,10 +63,10 @@ export interface DayInfoOptions extends ZmanimOptions {
 }
 
 /** The default zmanim in a day view: a widely used set, not a ruling. */
-export const DEFAULT_DAY_ZMANIM = [
+export const DEFAULT_DAY_ZMANIM = /*#__PURE__*/ deepFreeze([
   'alos72', 'alos16Point1', 'misheyakir11', 'sunrise', 'sofZmanShemaMga72', 'sofZmanShemaGra', 'sofZmanTefillaGra',
   'chatzos', 'minchaGedolaGreater', 'minchaKetanaGra', 'plagHaminchaGra', 'sunset', 'tzeis8Point5', 'tzeisRabbeinuTam',
-] as const;
+] as const);
 
 /** The JSON for one day. */
 export interface DayInfo {

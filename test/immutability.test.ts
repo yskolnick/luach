@@ -2,12 +2,11 @@
 // a place from getPlace() or the Israel boundary would silently change every later result
 // in the process (another user's request on a server, another screen in an app).
 //
-// Today they are plain objects and arrays, so each test below is a todo: it runs by itself
-// once its table is frozen (see `whenFrozen`). Each body restores what it touched, so it is
-// safe even if it ever ran against an unfrozen table.
+// They are deep-frozen where they are built (D-11). `whenFrozen` turns a test back into a
+// todo if a table is ever unfrozen, so the gap shows instead of the test silently mutating it.
 import { describe, expect, it } from 'vitest';
 import {
-  ZMANIM, DEFAULT_DAY_ZMANIM, ISRAEL_BOUNDARY, ZmanimCalendar, dayInfo, getPlace, builtInPlaces, isInIsrael,
+  ZMANIM, DEFAULT_DAY_ZMANIM, ISRAEL_BOUNDARY, LOCAL_CANDLE_LIGHTING, ZmanimCalendar, dayInfo, getPlace, builtInPlaces, isInIsrael,
 } from '../src/index';
 import { fullPlaces } from '../src/places/full';
 
@@ -69,5 +68,12 @@ describe('shared tables are immutable', () => {
     rejects(() => { b[0]![0] = 0; });
     rejects(() => { b.length = 0; });
     expect(isInIsrael(31.7683, 35.2137)).toBe(true);
+  });
+
+  whenFrozen('LOCAL_CANDLE_LIGHTING cannot be changed', [LOCAL_CANDLE_LIGHTING], () => {
+    const t = LOCAL_CANDLE_LIGHTING as unknown as Record<number, { minutes: number }>;
+    rejects(() => { t[281184]!.minutes = 18; });
+    rejects(() => { t[1] = { minutes: 0 }; });
+    expect(getPlace('jerusalem')!.candleLighting!.minutes).toBe(40);
   });
 });

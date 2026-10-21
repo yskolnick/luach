@@ -18,6 +18,21 @@ The name was free on npm on 2026-10-21; Yosef has since reserved it (a placehold
 held for npm's staged-release review). An unrelated package, `luach-picker`, is a browser
 date-picker widget; Luach is a calculation library with no UI (see README).
 
+### D-02. Commits name the models that wrote and checked them; no session links
+Yosef: "All commits on this repo can say which model worked on it and which checked it
+since it is a public repo and we want transparency." Commits end with a `Co-Authored-By:`
+line naming the model that wrote the change, and may add a line naming the model that
+checked it. Session links stay out: on 2026-10-21 the `Claude-Session:` lines were removed
+from every commit on `main` (history rewritten and force-pushed; file contents unchanged)
+and from the pull-request descriptions. This supersedes, for commit messages only, the
+earlier rule against model names in the repository.
+
+### D-03. A public project log
+Yosef: "I would like a log to be in here also. Nothing personal at all should be there but
+updates and decisions that are relevant should be shown to people". `LOG.md` records each
+working session's updates, decisions and open questions. Personal notes and conversation
+records stay in the private records repository.
+
 ## Open questions
 
 ### Q-00. Unmerged branches

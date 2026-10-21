@@ -171,3 +171,6 @@ See ADR 0005. **Default until decided:** as proposed.
   (`scripts/lib/js-scan.mjs`), fail on `createRequire`, computed `import()`/`require()` and
   devDependency names in strings, and check the built `dist/` for oracle text and package
   imports; `npm run check` builds before the licence check (ADR 0006).
+- *As built:* CI builds once and smoke-tests the built package on Node 18, 20 and 22 (ESM,
+  CommonJS, the `exports` map and the CLI), in Bun (ESM and CommonJS), in Deno (ESM) and
+  in headless Chromium (`test/runtimes/`, ADR 0007).

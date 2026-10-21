@@ -90,7 +90,46 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npx -y bun@1 test/runtimes/smoke.mjs
+      - run: npx -y bun@1 test/runtimes/smoke.cjs
       - run: npx -y deno@2 run --allow-read test/runtimes/smoke.mjs
+
+  node-versions:
+    # package.json says node >=18: build once on Node 22, then load the built package as
+    # ESM and CommonJS (directly and through "exports") and run the built CLI on each
+    # supported Node.
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [18, 20, 22]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: node --version
+      - run: node test/runtimes/smoke.mjs
+      - run: node test/runtimes/smoke.cjs
+      - run: node test/runtimes/smoke-node.mjs
+
+  browser:
+    # Loads the built ESM package in headless Chromium and runs it in the page.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: node test/runtimes/smoke-browser.mjs
 
   docs:
     # Builds the docs site and renders every page in Chromium (light/desktop and dark/phone).

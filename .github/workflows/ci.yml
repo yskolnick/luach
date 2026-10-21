@@ -90,3 +90,17 @@ jobs:
       - run: npm run build
       - run: npx -y bun@1 test/runtimes/smoke.mjs
       - run: npx -y deno@2 run --allow-read test/runtimes/smoke.mjs
+
+  docs:
+    # Builds the docs site and renders every page in Chromium (light/desktop and dark/phone).
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run docs:build
+      - run: node scripts/render-docs.mjs

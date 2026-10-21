@@ -3,7 +3,7 @@
  * (https://www.geonames.org/), CC-BY 4.0. A separate entry point so that the main bundle
  * stays small. Use it with `searchPlaces(query, { places: fullPlaces() })`.
  *
- * @packageDocumentation
+ * @module luach/places-full
  */
 
 import { FULL_CITY_DATA } from './full-data.js';

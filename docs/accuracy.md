@@ -21,7 +21,9 @@ with these explained differences:
 |---|---|
 | Yom HaShoah on a Sunday before 1997 | The Knesset adopted the Sunday → Monday rule in 1997 (Amendment No. 3); hebcal applies it to every year. Luach keeps earlier Sunday years on Sunday. Source: `docs/research/2026-10-21-modern-israeli-days.md`. |
 | Modern days before 1951; Yom Yerushalayim 1967 | Listing convention: Luach lists these days from their first observance. |
-| Sigd, Yom HaAliyah, other Israeli commemorations, 7 October memorial | Not built yet (ROADMAP HOL-16). |
+| Israeli commemorations (option `israeliCommemorations`): first years | Each is listed from the year of its law (research note); hebcal starts some a year apart, and lists most only in Israel mode. Compared from the later first year, in Israel mode. |
+| Yom HaAliyah on a Friday | The 2016 law moves it to the Wednesday before; hebcal does not. Hebcal's "Yom HaAliyah" on 10 Nisan is not in the law (only in its purpose clause). |
+| Chag HaBanot | A North African custom, not an official day. Luach lists 1 Teves (the Ministry of Education's date); hebcal lists the first day of Rosh Chodesh Teves. |
 
 ## Parsha
 

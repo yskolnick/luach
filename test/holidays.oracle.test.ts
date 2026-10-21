@@ -60,6 +60,14 @@ function toHebcal(e: HolidayEvent, israel: boolean): string | null {
     case 'yom-hazikaron': return 'Yom HaZikaron';
     case 'yom-haatzmaut': return "Yom HaAtzma'ut";
     case 'yom-yerushalayim': return 'Yom Yerushalayim';
+    case 'sigd': return 'Sigd';
+    case 'yom-haaliyah': return 'Yom HaAliyah School Observance';
+    case 'yom-herzl': return 'Herzl Day';
+    case 'yom-ben-gurion': return 'Ben-Gurion Day';
+    case 'yom-jabotinsky': return 'Jabotinsky Day';
+    case 'yom-rabin': return 'Yitzhak Rabin Memorial Day';
+    case 'yom-hamishpacha': return 'Family Day';
+    case 'yom-zikaron-7-oktober': return 'Swords of Iron War Memorial Day';
     default: return null;
   }
 }
@@ -68,13 +76,31 @@ function hebcalKey(desc: string): string {
   return desc.replace(/^(Rosh Chodesh|Shabbat Mevarchim|Yom Kippur Katan) .*/, '$1 *').replace(/ \(Mevarchim.*$/, '').replace(/ \(observed\)$/, '');
 }
 
-const ignored = new Set(['Sigd', 'Chag HaBanot', 'Yom HaAliyah', 'Yom HaAliyah School Observance', 'Ben-Gurion Day', 'Herzl Day', 'Jabotinsky Day', 'Yitzhak Rabin Memorial Day', 'Family Day', 'Hebrew Language Day', 'Birkat Hachamah', 'Swords of Iron War Memorial Day']);
+// Explained: Yom HaAliyah's law sets only 7 Cheshvan (10 Nisan is in its purpose clause);
+// Hebrew Language Day is moved at a minister's discretion; Birkas HaChama is a separate API.
+// Chag HaBanot: hebcal lists the first day of Rosh Chodesh Teves (30 Kislev when there are
+// two); Luach lists 1 Teves, the date the Ministry of Education gives (research note).
+const COMMEMORATION = new Set(['Sigd', 'Yom HaAliyah School Observance', 'Herzl Day', 'Ben-Gurion Day', 'Jabotinsky Day', 'Yitzhak Rabin Memorial Day', 'Family Day', 'Swords of Iron War Memorial Day']);
+/** The first year hebcal lists each commemoration (either locale). */
+const FIRST_YEAR = new Map<string, number>();
+for (let y = 5660; y <= 6000; y++) {
+  for (const ev of HebrewCalendar.calendar({ year: y, isHebrewYear: true, il: true, sedrot: false, omer: false, noModern: false })) {
+    const d = ev.getDesc();
+    if (COMMEMORATION.has(d) && !FIRST_YEAR.has(d)) FIRST_YEAR.set(d, y);
+  }
+}
+// Compare from the later of the two first years (hebcal and Luach start some of these a
+// year apart; Luach starts each from its law, per the research note).
+const OURS_FROM: Record<string, number> = { 'Sigd': 5769, 'Yom HaAliyah School Observance': 5777, 'Herzl Day': 5765, 'Ben-Gurion Day': 5737, 'Jabotinsky Day': 5765, 'Yitzhak Rabin Memorial Day': 5758, 'Family Day': 5734, 'Swords of Iron War Memorial Day': 5785 };
+for (const [d, y] of Object.entries(OURS_FROM)) FIRST_YEAR.set(d, Math.max(y, FIRST_YEAR.get(d) ?? y));
+const ignored = new Set(['Yom HaAliyah', 'Hebrew Language Day', 'Birkat Hachamah', 'Chag HaBanot']);
 
 function compareYear(year: number, israel: boolean): string[] {
   const ours = new Set<string>();
-  for (const e of holidaysForYear(year, { israel, modernIsraeli: true, yomKippurKatan: true })) {
+  for (const e of holidaysForYear(year, { israel, modernIsraeli: true, yomKippurKatan: true, israeliCommemorations: true })) {
     const k = toHebcal(e, israel);
-    if (k && !(year < 5712 && e.flags.modernIsraeli) && !(year < 5757 && e.id === 'yom-hashoah')) ours.add(`${e.date.epochDays}|${k}`);
+    if (e.id === 'yom-haaliyah' && e.moved) continue;
+    if (k && !(year < 5712 && e.flags.modernIsraeli) && !(year < 5757 && e.id === 'yom-hashoah') && !(COMMEMORATION.has(k) && (!israel || year < (FIRST_YEAR.get(k) ?? 1e9)))) ours.add(`${e.date.epochDays}|${k}`);
   }
   const theirs = new Set<string>();
   const evs = HebrewCalendar.calendar({ year, isHebrewYear: true, il: israel, sedrot: false, omer: false, yomKippurKatan: true, shabbatMevarchim: true, noModern: false });
@@ -90,6 +116,10 @@ function compareYear(year: number, israel: boolean): string[] {
     // Explained difference: hebcal moves a Sunday Yom HaShoah to Monday in every year; the
     // Knesset adopted that rule in 1997 (5757), so earlier Sunday years stay on Sunday.
     if (year < 5757 && desc === 'Yom HaShoah') continue;
+    // Commemorations: first years differ by listing convention; compared from hebcal's first year.
+    // Yom HaAliyah on a Friday: the 2016 law moves it to the Wednesday before; hebcal does not.
+    if (desc === 'Yom HaAliyah School Observance' && hd.getDay() === 5) continue;
+    if (COMMEMORATION.has(desc) && (!israel || year < (FIRST_YEAR.get(desc) ?? 1e9))) continue;
     const days = Math.round((hd.greg().getTime() - new Date(hd.greg().getFullYear(), hd.greg().getMonth(), hd.greg().getDate()).getTime()) / 864e5) +
       Math.round(Date.UTC(hd.greg().getFullYear(), hd.greg().getMonth(), hd.greg().getDate()) / 864e5);
     theirs.add(`${days}|${hebcalKey(desc)}`);

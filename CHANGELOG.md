@@ -40,3 +40,7 @@ All notable changes for users of the `luach` package. This project follows
   `formatTime`.
 - The `luach` command line (`npx luach today --city lakewood`).
 - Tested on Hermes (React Native): output identical to Node.
+- Optional Israeli commemorations by Hebrew date (`israeliCommemorations: true`): Sigd, Yom
+  HaAliyah, Herzl, Ben-Gurion, Jabotinsky, Rabin, the 7 October memorial day and others,
+  each with its law's moving rule.
+- Documentation site (VitePress) with guides, zmanim sources and the API reference.

@@ -8,7 +8,7 @@ Anything the code does that nobody chose is marked **As built** (see the end of 
 
 | Branch | Repo | State |
 |---|---|---|
-| `claude/exciting-clarke-64dzwd` | luach | Development branch for M1 onward; PR to `main` opened for Yosef to merge (Q-04) |
+| `claude/exciting-clarke-64dzwd` | luach | Independent implementation of M1–M8, not merged; see Q-13 (a second implementation is on `main`) |
 | `claude/exciting-clarke-64dzwd` | luach-records | Private records; Yosef merges |
 
 ## Decided
@@ -69,6 +69,12 @@ Anything the code does that nobody chose is marked **As built** (see the end of 
   Dirshu's published anchor by one day); the Schottenstein Yerushalmi cycle (skip days and order not published).
 - Until decided: not shipped; marked blocked in the roadmap. Options for Yosef: get permission to use a table
   (Chabad, the Chofetz Chaim Heritage Foundation, Dirshu, ArtScroll), or approve deferring them past 1.0.
+
+### Q-13. Two parallel implementations
+- On 2026-10-21 a second working session built Luach from the same brief on branches `m0-scaffold` … `m5-places`;
+  PRs #1–#4 were merged into `main`, #5 and #6 are open. This branch (`claude/exciting-clarke-64dzwd`) is an
+  independent implementation of M1–M8 and has not been merged.
+- Until decided: no further feature work on this branch; nothing here touches `main` or the other branches.
 
 ## Proposals
 

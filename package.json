@@ -71,7 +71,12 @@
     "check:imports": "node scripts/check-imports.mjs",
     "check:size": "node scripts/check-size.mjs",
     "check": "npm run typecheck && npm run lint && npm run check:imports && npm run check:licenses && npm run build && npm test && npm run check:size",
-    "test:hermes": "node scripts/hermes-test.mjs"
+    "test:hermes": "node scripts/hermes-test.mjs",
+    "docs:api": "typedoc",
+    "docs:gen": "node scripts/gen-halacha-docs.mjs",
+    "docs:build": "npm run build && npm run docs:api && npm run docs:gen && vitepress build docs",
+    "docs:dev": "npm run docs:api && vitepress dev docs",
+    "docs:check": "node scripts/render-docs.mjs"
   },
   "devDependencies": {
     "@babel/core": "^7.29.7",
@@ -87,9 +92,14 @@
     "fast-check": "^3.23.2",
     "ical.js": "^2.2.1",
     "kosher-zmanim": "^0.9.0",
+    "playwright": "^1.64.1",
     "tsup": "^8.5.1",
+    "typedoc": "^0.28.20",
+    "typedoc-plugin-markdown": "^4.14.1",
+    "typedoc-vitepress-theme": "^1.1.4",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.72.0",
+    "vitepress": "^1.6.4",
     "vitest": "^3.2.7"
   },
   "bin": {

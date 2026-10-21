@@ -138,5 +138,11 @@ See ADR 0005. **Default until decided:** as proposed.
   communities that GeoNames puts in Asia/Hebron are given Asia/Jerusalem, the time they keep.
 - *As built:* place search ranks exact, prefix, transliteration-skeleton, then substring
   matches, with larger places first on ties.
+- *As built:* the day view's default zmanim are alos 72 min and 16.1°, misheyakir 11°,
+  sunrise, Shema (MGA 72, Gra), Tefilla (Gra), chatzos, Mincha Gedola (later of two), Mincha
+  Ketana and Plag (Gra), sunset, tzeis 8.5° and Rabbeinu Tam: a common set, not a ruling.
+- *As built:* the CLI prints Ashkenazi names by default (`--locale` changes it).
+- *As built:* iCal events are all-day for holidays, parsha and learning, and zero-length at the
+  instant for candle lighting, havdala and zmanim.
 - *As built:* the plain-English locale (`en`) uses "Tishri, Heshvan, Iyyar" spellings and
   "Saturday".

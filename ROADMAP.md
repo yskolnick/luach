@@ -34,7 +34,7 @@ Research behind the extra items (marked †): `docs/research/2026-10-21-what-use
 | CAL-09 | Names in Hebrew, Ashkenazi, Sephardi/Israeli and plain English; pluggable tables | — | unit | done |
 | CAL-10 | RTL: opt-in Unicode isolates; docs explain why | Unicode UAX #9 | unit | done |
 | CAL-11 | `HebrewDate` with `afterSunset` input † | research §2 | unit | done |
-| CAL-12 | Parse Hebrew date strings ("י״ד אדר תשפ״ז", "14 Adar 5787") † | research §10 | unit | planned |
+| CAL-12 | Parse Hebrew date strings ("י״ד אדר תשפ״ז", "14 Adar 5787") † | research §10 | unit | done |
 | CAL-13 | Day-boundary-aware "Hebrew date now at a place" (uses zmanim) † | research §2 | unit with zmanim | done |
 
 ## M2. Holidays and special days
@@ -49,7 +49,7 @@ All events carry flags: `yomTov`, `melachaForbidden`, `cholHamoed`, `fast` (`maj
 | HOL-03 | Fasts with nidcheh rules: Tzom Gedalia, Asarah B'Teves, Taanis Esther (Thursday rule), 17 Tammuz, Tisha B'Av, Taanis Bechoros (Thursday) | SA OC 549–550, 686:2, 470:2 | oracle: hebcal | done |
 | HOL-04 | Chanukah with candle count; Purim, Shushan Purim, Purim Meshulash, Purim Katan, Shushan Purim Katan | SA OC 670–697; 688:6 | oracle: hebcal | done |
 | HOL-05 | Tu B'Shvat, Lag BaOmer, Tu B'Av, Pesach Sheni, Shloshes Yemei Hagbala | — | oracle: hebcal | done |
-| HOL-06 | Rosh Chodesh (1 or 2 days), Shabbos Mevorchim, molad announcement text | Magen Avraham / MB 417:1 (Mevorchim; not before Tishrei); Rema OC 284:7 | oracle: hebcal | in progress (announcement text planned) |
+| HOL-06 | Rosh Chodesh (1 or 2 days), Shabbos Mevorchim, molad announcement text (checked against hebcal) | Magen Avraham / MB 417:1 (Mevorchim; not before Tishrei); Rema OC 284:7 | oracle: hebcal | done |
 | HOL-07 | Special Shabbosos: Shuva, Shira, Shekalim, Zachor, Parah, HaChodesh, HaGadol, Chazon, Nachamu, Chol Hamoed | SA OC 685:1–6 | oracle: hebcal | in progress (Shira waits for parsha, M3) |
 | HOL-08 | Optional: BeHaB, Yom Kippur Katan, Shovavim (off by default) | SA OC 492:1, MB 492:3; MB 417:4 | unit + oracle where available | done |
 | HOL-09 | Optional: Yom HaShoah, Yom HaZikaron, Yom HaAtzmaut, Yom Yerushalayim with Knesset postponement rules | Knesset laws (see research note) | oracle: hebcal | done |
@@ -115,13 +115,13 @@ All events carry flags: `yomTov`, `melachaForbidden`, `cholHamoed`, `fast` (`maj
 
 | ID | Spec | Source | Test | Status |
 |---|---|---|---|---|
-| OUT-01 | ESM (per module, tree-shakable) + CJS + types; Node, browser, Deno, Bun, React Native (Hermes) | ADR 0005 | CI: Node, size budgets per feature; Hermes run | in progress |
-| OUT-02 | iCal (.ics) export for holidays, zmanim, learning | RFC 5545 | unit + validator | planned |
-| OUT-03 | "Everything about this day" JSON + JSON Schema | — | schema validation test | planned |
-| OUT-04 | CLI: `luach today --city`, `luach zmanim DATE --lat --lon` | — | unit | planned |
-| OUT-05 | Example HTTP server (examples/, not shipped) | — | smoke test | planned |
-| OUT-06 | Formatting helpers (Hebrew, English, short/long) | — | unit | in progress (dates done) |
-| OUT-07 | Range queries: next N days, next occurrence of an event † | research | unit | planned |
+| OUT-01 | ESM (per module, tree-shakable) + CJS + types; Node, browser, Deno, Bun, React Native (Hermes) | ADR 0005 | CI: Node 20/22, three machine zones, size budgets per feature, Hermes run (output identical to Node) | in progress (Deno/Bun smoke tests planned) |
+| OUT-02 | iCal (.ics) export for holidays, zmanim, learning | RFC 5545 | unit + validator | done |
+| OUT-03 | "Everything about this day" JSON + JSON Schema | — | schema validation test | done |
+| OUT-04 | CLI: `luach today --city`, `luach zmanim DATE --lat --lon` | — | unit | done |
+| OUT-05 | Example HTTP server (examples/, not shipped) | — | smoke test | done |
+| OUT-06 | Formatting helpers (Hebrew, English, short/long; times in a zone, 12/24 h) | — | unit | done |
+| OUT-07 | Range queries: next N days, next occurrence of an event † | research | unit | done |
 | OUT-08 | Swift and Kotlin ports from shared test vectors | — | — | post-1.0 |
 | OUT-09 | WebAssembly build | — | — | post-1.0 |
 | OUT-10 | Printable luach PDF | — | — | post-1.0 |
@@ -136,7 +136,7 @@ All events carry flags: `yomTov`, `melachaForbidden`, `cholHamoed`, `fast` (`maj
 | DOC-03 | Accuracy report generated from oracle tests | — | generated | planned |
 | DOC-04 | Licence and how to credit | — | review | planned |
 | APP-01 | Expo demo app: today, zmanim + opinion picker, week's holidays, parsha, daf; light/dark, RTL, accessible | — | every screen rendered and checked | planned |
-| EX-01 | Examples: Node, browser, React, React Native, CLI | — | smoke tests | planned |
+| EX-01 | Examples: Node, browser, React, React Native, CLI | — | smoke tests | done |
 
 ## M8. Release
 

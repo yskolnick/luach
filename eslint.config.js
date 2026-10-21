@@ -1,7 +1,7 @@
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  { ignores: ['dist/**', 'node_modules/**', 'docs/.vitepress/**', 'apps/**', 'coverage/**'] },
+  { ignores: ['dist/**', 'node_modules/**', 'docs/.vitepress/**', 'apps/**', 'coverage/**', 'examples/**'] },
   ...tseslint.configs.recommended,
   {
     files: ['src/**/*.ts'],

@@ -157,3 +157,20 @@ describe('validation', () => {
     expect(() => new HebrewDate(5784, Month.ADAR_II, 29)).not.toThrow();
   });
 });
+
+import { moladAnnouncement, formatTime } from '../src/index';
+describe('molad announcement and time formatting', () => {
+  it('matches the clock parts', () => {
+    // Molad Cheshvan 5787 per the calendar arithmetic; the text renders molad().clock.
+    const m = molad(5787, Month.CHESHVAN);
+    const s = moladAnnouncement(5787, Month.CHESHVAN);
+    expect(s).toContain(`${m.clock.chalakim} chalak`);
+    expect(moladAnnouncement(5787, Month.CHESHVAN, 'he')).toContain('חלקים');
+  });
+  it('formatTime in a zone', () => {
+    const t = new Date(Date.UTC(2026, 9, 21, 19, 5, 30));
+    expect(formatTime(t, 'Asia/Jerusalem')).toBe('22:05');
+    expect(formatTime(t, 'America/New_York', { hour12: true })).toBe('3:05 pm');
+    expect(formatTime(t, 'UTC', { seconds: true })).toBe('19:05:30');
+  });
+});

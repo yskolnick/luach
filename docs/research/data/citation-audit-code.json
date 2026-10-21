@@ -1,0 +1,770 @@
+[
+ {
+  "citation": "Rambam KH 6:2",
+  "where": [
+   "src/calendar/year.ts:5",
+   "src/calendar/year.ts:15",
+   "src/calendar/molad.ts:4"
+  ],
+  "claim": "1080 chalakim to the hour",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Mishneh_Torah,_Sanctification_of_the_New_Month.6.2",
+  "quote": "An hour can be divided into 1080 units.",
+  "note": ""
+ },
+ {
+  "citation": "Rambam KH 6:3",
+  "where": [
+   "src/calendar/year.ts:6",
+   "src/calendar/year.ts:19"
+  ],
+  "claim": "Mean month = 29 d 12 h 793 p",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Mishneh_Torah,_Sanctification_of_the_New_Month.6.3",
+  "quote": "twenty-nine full days, twelve hours of the thirtieth day, and 793 units of the thirteenth hour",
+  "note": ""
+ },
+ {
+  "citation": "Rambam KH 6:8",
+  "where": [
+   "src/calendar/year.ts:7",
+   "src/calendar/year.ts:24"
+  ],
+  "claim": "First molad BaHaRaD (day 2, 5 h, 204 p)",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Mishneh_Torah,_Sanctification_of_the_New_Month.6.8",
+  "quote": "the conjunction of the first year of creation, was on Monday night, 5 hours and 204 units after nightfall",
+  "note": ""
+ },
+ {
+  "citation": "Rambam KH 6:11",
+  "where": [
+   "src/calendar/year.ts:28"
+  ],
+  "claim": "Leap years 3,6,8,11,14,17,19 of the cycle",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Mishneh_Torah,_Sanctification_of_the_New_Month.6.11",
+  "quote": "The third year of the cycle, the sixth year, the eighth year, the eleventh year, the fourteenth year, the seventeenth year, the nineteenth year",
+  "note": ""
+ },
+ {
+  "citation": "Rambam KH 7:1",
+  "where": [
+   "src/calendar/year.ts:82",
+   "src/calendar/year.ts:84"
+  ],
+  "claim": "Lo ADU Rosh",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Mishneh_Torah,_Sanctification_of_the_New_Month.7.1",
+  "quote": "Rosh Chodesh Tishrei should never be established on a Sunday, a Wednesday, or a Friday",
+  "note": ""
+ },
+ {
+  "citation": "Rambam KH 7:2",
+  "where": [
+   "src/calendar/year.ts:85"
+  ],
+  "claim": "Molad zaken: noon or later postpones",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Mishneh_Torah,_Sanctification_of_the_New_Month.7.2",
+  "quote": "if the conjunction takes place at noon or after noon, Rosh Chodesh should be established on the following day",
+  "note": ""
+ },
+ {
+  "citation": "Rambam KH 7:4",
+  "where": [
+   "src/calendar/year.ts:86"
+  ],
+  "claim": "GaTaRaD in a common year",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Mishneh_Torah,_Sanctification_of_the_New_Month.7.4",
+  "quote": "In an ordinary year, when the conjunction ... falls on the night of the third day, nine hours and 204 units ... postponed ... to Thursday",
+  "note": ""
+ },
+ {
+  "citation": "Rambam KH 7:5",
+  "where": [
+   "src/calendar/year.ts:87"
+  ],
+  "claim": "BeTU'TaKPaT after a leap year",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Mishneh_Torah,_Sanctification_of_the_New_Month.7.5",
+  "quote": "in a year that follows a leap year ... Monday, three hours and 589 units or more after daybreak ... on Tuesday",
+  "note": ""
+ },
+ {
+  "citation": "Rambam KH 8:5-6",
+  "where": [
+   "src/calendar/year.ts:126"
+  ],
+  "claim": "Year types chaserim/kesidran/shleimim by Cheshvan and Kislev",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Mishneh_Torah,_Sanctification_of_the_New_Month.8.6",
+  "quote": "Sometimes they are both full; sometimes both lacking; and sometimes Marcheshvan is lacking and Kislev is full",
+  "note": "The naming is in 8:6; 8:5 gives the fixed months."
+ },
+ {
+  "citation": "Shemos 12:2; Rambam KH 1:1 ff.",
+  "where": [
+   "src/calendar/months.ts:4"
+  ],
+  "claim": "Months numbered from Nisan",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Exodus.12.2",
+  "quote": "it shall be the first of the months of the year for you",
+  "note": "KH 1:1 quotes the verse to show months are lunar, not to number them; the verse alone carries the claim."
+ },
+ {
+  "citation": "Rema OC 55:10 (Mahari Mintz)",
+  "where": [
+   "src/calendar/anniversary.ts:9"
+  ],
+  "claim": "Born in Adar of a common year, bar mitzvah in a leap year: Adar II",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.55.10",
+  "quote": "ומי שנולד באדר ונעש' בר מצוה בשנת העיבור אינו נעשה בר מצוה עד אדר השני [תשו' מהר\"י מינץ]",
+  "note": "The Mechaber in the same se'if also covers Adar I/II of a leap year turning 13 in a common year (case 2), which the code leaves uncited."
+ },
+ {
+  "citation": "SA OC 568:7 with Rema",
+  "where": [
+   "src/calendar/anniversary.ts:10-11"
+  ],
+  "claim": "Yahrzeit: Mechaber Adar II; Rema Adar I; some keep both",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.568.7",
+  "quote": "יתענה באדר ב': הגה ויש אומרים דיתענה בראשון ... וכן המנהג להתענות בראשון מיהו יש מחמירין להתענות בשניהם",
+  "note": "Rema YD 402:12 says the same (Adar I is 'העיקר')."
+ },
+ {
+  "citation": "SA OC 549:1, 550:3",
+  "where": [
+   "src/holidays/holidays.ts:93"
+  ],
+  "claim": "Tzom Gedalia 3 Tishrei; on Shabbos pushed to Sunday",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.550.3",
+  "quote": "כל ד' צומות הללו אם חלו להיו' בשבת נדחין לאחר השבת",
+  "note": ""
+ },
+ {
+  "citation": "SA OC 550:3 and commentaries",
+  "where": [
+   "src/holidays/holidays.ts:129"
+  ],
+  "claim": "Asarah B'Teves is never pushed off and can fall on Friday",
+  "status": "imprecise",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.550.3",
+  "quote": "כל ד' צומות הללו אם חלו להיו' בשבת נדחין ... הגה ואם חלו בע\"ש קורים בשחרית ומנחה ויחל",
+  "note": "550:3 itself includes 10 Teves among fasts pushed off Shabbos and only implies a Friday fast via the Rema. 'Never pushed off' is the Abudraham via Beis Yosef 550, and is moot: 10 Teves never falls on Shabbos in the fixed calendar."
+ },
+ {
+  "citation": "Shemos 15",
+  "where": [
+   "src/holidays/holidays.ts:134"
+  ],
+  "claim": "Shabbos Shira = Beshalach, Song of the Sea",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Exodus.15.1",
+  "quote": "Then Moses and the Israelites sang this song",
+  "note": ""
+ },
+ {
+  "citation": "SA OC 685:1, 5",
+  "where": [
+   "src/holidays/holidays.ts:156"
+  ],
+  "claim": "Shekalim on or before Rosh Chodesh Adar",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.685.5",
+  "quote": "חל ר\"ח אדר הסמוך לניסן בתוך ימי השבוע ואפילו בע\"ש מקדימין לקרות פרשת שקלים בשבת שלפניו",
+  "note": ""
+ },
+ {
+  "citation": "SA OC 685:2, 5",
+  "where": [
+   "src/holidays/holidays.ts:158"
+  ],
+  "claim": "Zachor the Shabbos before Purim",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.685.5",
+  "quote": "כדי שתהא פרשת זכור בשבת הסמוכה לפורים מלפניה ואם חל פורים בערב שבת מקדימים לקרות פרשת זכור בשבת שלפניו",
+  "note": ""
+ },
+ {
+  "citation": "SA OC 686:2",
+  "where": [
+   "src/holidays/holidays.ts:160"
+  ],
+  "claim": "Taanis Esther on Shabbos moves to Thursday",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.686.2",
+  "quote": "מתענין בי\"ג באדר ואם חל פורים באחד בשבת מקדימין להתענות ביום חמישי",
+  "note": ""
+ },
+ {
+  "citation": "SA OC 688:6",
+  "where": [
+   "src/holidays/holidays.ts:169-170"
+  ],
+  "claim": "Purim Meshulash Friday-Sunday; seudah Sunday",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.688.6",
+  "quote": "מקדימים לקרותה בערב שבת ... ואומרים על הנסים ואין עושין סעודת פורים עד יום אחד בשב'",
+  "note": ""
+ },
+ {
+  "citation": "SA OC 685:3-4, 6",
+  "where": [
+   "src/holidays/holidays.ts:172"
+  ],
+  "claim": "Parah the Shabbos before HaChodesh; HaChodesh on or before 1 Nisan",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.685.4",
+  "quote": "בשבת חמישי שהוא כ\"ט באדר ... החדש הזה לכם",
+  "note": "SA gives worked cases (685:3-4) and the skipping table (685:6); the general order is Mishnah Megillah 3:4 / Megillah 29a."
+ },
+ {
+  "citation": "SA OC 430:1",
+  "where": [
+   "src/holidays/holidays.ts:178"
+  ],
+  "claim": "Shabbos HaGadol is the Shabbos before Pesach",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.430.1",
+  "quote": "שבת שלפני הפסח קורין אותו שבת הגדול",
+  "note": ""
+ },
+ {
+  "citation": "SA OC 470:2",
+  "where": [
+   "src/holidays/holidays.ts:180"
+  ],
+  "claim": "Taanis Bechoros moves to Thursday when Erev Pesach is Shabbos",
+  "status": "imprecise",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.470.2",
+  "quote": "יש אומרי' שמתעני' הבכורו' ביום ה' ויש אומרים שאינם מתענים כלל: הגה אבל יש לנהוג כסברא הראשונה",
+  "note": "The Mechaber records a dispute; the Thursday ruling is the Rema's. Cite 'Rema OC 470:2'."
+ },
+ {
+  "citation": "SA OC 550:3; 552:10",
+  "where": [
+   "src/holidays/holidays.ts:217"
+  ],
+  "claim": "17 Tammuz and 9 Av pushed to Sunday from Shabbos",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.552.10",
+  "quote": "או שחל בשבת ונדחה לאחר השבת",
+  "note": "Rule is in 550:3; 552:10 presupposes it (seudah hamafsekes)."
+ },
+ {
+  "citation": "Rema OC 581:1; MB 581:6",
+  "where": [
+   "src/holidays/holidays.ts:234-235"
+  ],
+  "claim": "Selichos from Motzaei Shabbos; a week earlier when RH is Monday/Tuesday (four days)",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.581.1",
+  "quote": "ביום א' שלפני ר\"ה ואם חל ר\"ה ב' וג' אז מתחילין מיום א שבוע שלפניו",
+  "note": "MB 581:6: 'לכך צריך להשלים ד' ימים קודם ר\"ה'."
+ },
+ {
+  "citation": "MB 417:4; Magen Avraham 417:3",
+  "where": [
+   "src/holidays/holidays.ts:255-260"
+  ],
+  "claim": "Yom Kippur Katan: Erev RC, moved to Thursday if Friday or Shabbos",
+  "status": "imprecise",
+  "url": "https://www.sefaria.org/Mishnah_Berurah.417.4",
+  "quote": "אם חל ער\"ח ביום שבת מקדימין להתענות ביום ה' ואם חל ביום ו' אותן שאומרין סליחות יתענו ביום ה' ואותן שאין אומרין סליחות יתענו ביום ו'",
+  "note": "Friday->Thursday holds only for those who say selichos (MB); MA 417:3 says when RC is Shabbos one fasts on Friday. Code moves every Friday case; the month exclusions are uncited (code says so)."
+ },
+ {
+  "citation": "SA OC 492:1 with Rema; MB 492:3",
+  "where": [
+   "src/holidays/holidays.ts:266"
+  ],
+  "claim": "BeHaB Mon-Thu-Mon after the first Shabbos of Cheshvan and Iyar",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Mishnah_Berurah.492.3",
+  "quote": "ומברכין בבהכ\"נ בשבת הראשון שאחר ר\"ח למי שיתענה בה\"ב ואחר אותו שבת מתחילין להתענות",
+  "note": "Edge: code takes the Shabbos on or after 1 Cheshvan/Iyar, which can be Rosh Chodesh day 2 itself (e.g. 5785); MB says 'after RC'."
+ },
+ {
+  "citation": "Yom HaShoah law 1959, amend. 1997",
+  "where": [
+   "src/holidays/holidays.ts:298-308"
+  ],
+  "claim": "27 Nisan; Friday->Thursday; from 1997 Sunday->Monday",
+  "status": "verified",
+  "url": "https://he.wikisource.org/wiki/חוק_יום_הזכרון_לשואה_ולגבורה",
+  "quote": "חל כ\"ז בניסן בששי בשבוע, יקויים יום הזכרון בכ\"ו בניסן ... חל כ\"ז בניסן בראשון בשבוע, יקוים יום הזכרון בכ\"ח בניסן",
+  "note": "Amendment list includes תשנ\"ז (1997). Applying the Friday rule from 1951 (before the 1959 law) is not covered by the law text."
+ },
+ {
+  "citation": "Independence Day law 1949, amend. 2004",
+  "where": [
+   "src/holidays/holidays.ts:310-323"
+  ],
+  "claim": "5 Iyar; Fri/Shabbos -> Thursday; from 2004 Monday -> Tuesday",
+  "status": "verified",
+  "url": "https://he.wikisource.org/wiki/חוק_יום_העצמאות",
+  "quote": "אם יום ה׳ באייר יחול בשבת, יוחג ... ביום ג׳ באייר ... ביום ששי ... ביום ד׳ באייר ... בשני בשבוע, יוחג ... ביום ו׳ באייר",
+  "note": "Yom HaZikaron law (4 Iyar; Fri->2, Thu->3, Sun->5 Iyar) also checked; atz.prev() reproduces it."
+ },
+ {
+  "citation": "Jerusalem Day law 1998",
+  "where": [
+   "src/holidays/holidays.ts:325-328"
+  ],
+  "claim": "28 Iyar, no moving rule; from 1968",
+  "status": "verified",
+  "url": "https://he.wikisource.org/wiki/חוק_יום_ירושלים",
+  "quote": "הכנסת מכריזה בזה על יום כ״ח באייר כעל יום ירושלים",
+  "note": "The law has no weekday rule. 1968 start is a government decision (not-read)."
+ },
+ {
+  "citation": "Sigd law 2008",
+  "where": [
+   "src/holidays/holidays.ts:346"
+  ],
+  "claim": "29 Cheshvan; Shabbos -> Thursday before",
+  "status": "verified",
+  "url": "https://he.wikisource.org/wiki/חוק_חג_הסיגד",
+  "quote": "חל כ״ט בחשוון בשבת, יוחג חג הסיגד ביום חמישי שלפניו",
+  "note": ""
+ },
+ {
+  "citation": "Aliyah Day law 2016",
+  "where": [
+   "src/holidays/holidays.ts:348"
+  ],
+  "claim": "7 Cheshvan; Friday -> Wednesday before",
+  "status": "verified",
+  "url": "https://he.wikisource.org/wiki/חוק_יום_העלייה",
+  "quote": "יום העלייה יצוין מדי שנה ביום ז׳ בחשוון ... חל יום העלייה ביום שישי, יצוין יום העלייה ביום רביעי שלפניו",
+  "note": ""
+ },
+ {
+  "citation": "Herzl law 2004",
+  "where": [
+   "src/holidays/holidays.ts:350"
+  ],
+  "claim": "10 Iyar; Shabbos -> Sunday; '10 Iyar is in fact never Shabbos'",
+  "status": "wrong",
+  "url": "https://he.wikisource.org/wiki/חוק_בנימין_זאב_הרצל_(ציון_זכרו_ופועלו)",
+  "quote": "חל י׳ באייר בשבת, יקוים יום הרצל ביום א׳ שלאחריו",
+  "note": "Rule is right; the aside is false. 10 Iyar is Shabbos whenever Pesach is Tuesday: 10 Iyar 5784 = Sat 18 May 2024 (Luach itself returns 11 Iyar, moved). docs/research/2026-10-21-israeli-commemorations.md:252 repeats the error."
+ },
+ {
+  "citation": "Ben-Gurion law 1976",
+  "where": [
+   "src/holidays/holidays.ts:352"
+  ],
+  "claim": "6 Kislev; Fri/Shabbos -> next Sunday",
+  "status": "verified",
+  "url": "https://he.wikisource.org/wiki/חוק_דוד_בן-גוריון",
+  "quote": "חל ו׳ בכסלו בערב שבת או בשבת, יקויים יום הזכרון ביום א׳ שלאחריו",
+  "note": ""
+ },
+ {
+  "citation": "Jabotinsky law 2005",
+  "where": [
+   "src/holidays/holidays.ts:354"
+  ],
+  "claim": "29 Tammuz; Shabbos -> Sunday",
+  "status": "verified",
+  "url": "https://he.wikisource.org/wiki/חוק_זאב_ז׳בוטינסקי_(ציון_זכרו_ופועלו)",
+  "quote": "חל כ״ט בתמוז בשבת, יקוים יום זאב ז׳בוטינסקי ביום א׳ שלאחריו",
+  "note": "29 Tammuz is never Shabbos, so this clause never fires."
+ },
+ {
+  "citation": "Rabin Memorial Day law 1997",
+  "where": [
+   "src/holidays/holidays.ts:356"
+  ],
+  "claim": "12 Cheshvan; Fri/Shabbos -> Thursday before",
+  "status": "verified",
+  "url": "https://he.wikisource.org/wiki/חוק_יום_הזיכרון_ליצחק_רבין",
+  "quote": "חל י״ב בחשון ביום ששי או בשבת, יקוים יום הזיכרון ביום חמישי שלפניו",
+  "note": ""
+ },
+ {
+  "citation": "Zeevi law 2005",
+  "where": [
+   "src/holidays/holidays.ts:358"
+  ],
+  "claim": "30 Tishrei; Friday -> Thursday",
+  "status": "verified",
+  "url": "https://he.wikisource.org/wiki/חוק_להנצחת_זכרו_של_רחבעם_זאבי",
+  "quote": "חל ל׳ בתשרי ביום שישי, תוקדם פעילות ההנצחה ליום חמישי שלפניו",
+  "note": ""
+ },
+ {
+  "citation": "Begin law 1998 as amended",
+  "where": [
+   "src/holidays/holidays.ts:360"
+  ],
+  "claim": "4 Adar; rest day or day before -> first weekday after",
+  "status": "verified",
+  "url": "https://he.wikisource.org/wiki/חוק_להנצחת_זכרו_של_מנחם_בגין",
+  "quote": "חל ד׳ באדר ביום חג, מנוחה או שבתון, או ביום זיכרון או יום ציון ממלכתי, או ביום שלפני אחד הימים כאמור, יצוין ... ביום החול הראשון שאחרי",
+  "note": "Law also moves it off a memorial/state day; not modelled."
+ },
+ {
+  "citation": "Ovadia Yosef law 2025",
+  "where": [
+   "src/holidays/holidays.ts:362"
+  ],
+  "claim": "3 Cheshvan; Shabbos -> Sunday",
+  "status": "verified",
+  "url": "https://he.wikisource.org/wiki/חוק_להנצחת_זכרו_של_מרן_הרב_עובדיה_יוסף",
+  "quote": "חל ג׳ בחשוון בשבת, יקוים יום מרן הרב עובדיה יוסף ביום א׳ שלאחריו",
+  "note": ""
+ },
+ {
+  "citation": "Golda Meir law 2026",
+  "where": [
+   "src/holidays/holidays.ts:364"
+  ],
+  "claim": "8 Kislev; Shabbos -> first weekday after",
+  "status": "verified",
+  "url": "https://he.wikisource.org/wiki/חוק_להנצחת_זכרה_של_גולדה_מאיר",
+  "quote": "חל ח׳ בכסלו ביום חג, מנוחה או שבתון, או ביום זיכרון או יום ציון ממלכתי,יצוין יום גולדה מאיר ביום החול הראשון שאחרי",
+  "note": "Memorial/state-day clause not modelled."
+ },
+ {
+  "citation": "Yemenite aliyah day law 2025",
+  "where": [
+   "src/holidays/holidays.ts:366"
+  ],
+  "claim": "15 Kislev; Fri/Shabbos -> Sunday of the following week",
+  "status": "verified",
+  "url": "https://he.wikisource.org/wiki/חוק_יום_לציון_עליית_יהודי_תימן_לישראל_ולהנצחת_זכרם_של_הנספים_בדרך_לישראל",
+  "quote": "או ביום שלפני אחד הימים כאמור, יצוין ... ביום ראשון בשבוע שלאחר מכן",
+  "note": ""
+ },
+ {
+  "citation": "7 October law 2026",
+  "where": [
+   "src/holidays/holidays.ts:368"
+  ],
+  "claim": "24 Tishrei; Shabbos or day before rest day -> first weekday after",
+  "status": "verified",
+  "url": "https://he.wikisource.org/wiki/חוק_זיכרון_הטבח_והנצחת_הגבורה_ביום_כ\"ב_בתשרי_(שמחת_תורה)_–_7_באוקטובר",
+  "quote": "חל כ״ד בתשרי ביום חג, מנוחה או שבתון או ביום שלפני אחד הימים כאמור, יצוין יום הזיכרון ביום החול הראשון שאחרי",
+  "note": "Law is תשפ\"ו-2026. 'Observed from 2024' (government decision) not-read."
+ },
+ {
+  "citation": "Eruvin 56a (tekufas Shmuel)",
+  "where": [
+   "src/holidays/seasonal.ts:4"
+  ],
+  "claim": "Shmuel's year of 365 1/4 days",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Eruvin.56a",
+  "quote": "there are only ninety-one days and seven and a half hours between the beginning of one season and the next",
+  "note": ""
+ },
+ {
+  "citation": "Taanis 10a; SA OC 117:1",
+  "where": [
+   "src/holidays/seasonal.ts:28"
+  ],
+  "claim": "Israel: from Maariv of 7 Cheshvan",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.117.1",
+  "quote": "ובארץ ישראל מתחילין לשאול מליל ז' במרחשון",
+  "note": "Taanis 10a: 'The halakha is in accordance with Rabban Gamliel ... seventh of Marcheshvan'."
+ },
+ {
+  "citation": "SA OC 117:1",
+  "where": [
+   "src/holidays/seasonal.ts:31"
+  ],
+  "claim": "Diaspora: Maariv of day 60 after tekufas Tishrei, tekufah day counted",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.117.1",
+  "quote": "בתפלת ערבית של יום ס' אחר תקופת תשרי [ויום התקופה הוא בכלל הס']",
+  "note": ""
+ },
+ {
+  "citation": "Taanis 2a, 4b; SA OC 114:1",
+  "where": [
+   "src/holidays/seasonal.ts:53"
+  ],
+  "claim": "Mashiv haruach from Musaf Shemini Atzeres to Musaf first day of Pesach",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.114.1",
+  "quote": "בתפלת מוסף של י\"ט האחרון של חג ואין פוסקין עד תפלת מוסף של י\"ט הראשון של פסח",
+  "note": ""
+ },
+ {
+  "citation": "SA OC 117:1",
+  "where": [
+   "src/holidays/seasonal.ts:56"
+  ],
+  "claim": "Tal umatar until Mincha of Erev Pesach",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.117.1",
+  "quote": "ושואלין עד תפלת המנחה של ערב י\"ט הראשון של פסח",
+  "note": ""
+ },
+ {
+  "citation": "Berachos 59b; SA OC 229:2",
+  "where": [
+   "src/holidays/seasonal.ts:82"
+  ],
+  "claim": "Birkas HaChama every 28 years, tekufah at start of Tuesday night, said Wednesday morning",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.229.2",
+  "quote": "מכ\"ח לכ\"ח שנה והתקופה בתחלת ליל ד' כשרואה אותה ביום ד' בבקר",
+  "note": ""
+ },
+ {
+  "citation": "Talmidei Rabbeinu Yonah in Beis Yosef OC 426; MB 426:20",
+  "where": [
+   "src/holidays/seasonal.ts:135"
+  ],
+  "claim": "Kiddush Levana from 3 days",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Beit_Yosef,_Orach_Chayim.426",
+  "quote": "למדנו מדברי ה\"ר יונה שאין מברכין ברכת הלבנה עד שיעברו עליה ג' ימים",
+  "note": "MB 426:20: most acharonim allow after 3 full days."
+ },
+ {
+  "citation": "SA OC 426:4 (Beis Yosef: R. Yosef Gikatilla)",
+  "where": [
+   "src/holidays/seasonal.ts:136"
+  ],
+  "claim": "Kiddush Levana from 7 days, kabbalistic",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.426.4",
+  "quote": "אין מברכין עליה עד שיעברו שבעת ימים עליה",
+  "note": "BY 426: 'והר\"י גיקטיליא בעל שערי אורה כתב בתשובה שע\"פ הקבלה ... ז' ימים'."
+ },
+ {
+  "citation": "Rema OC 426:3 (Maharil)",
+  "where": [
+   "src/holidays/seasonal.ts:139"
+  ],
+  "claim": "Latest: half of 29d12h793p",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.426.3",
+  "quote": "ואין לקדש אלא עד חצי כ\"ט י\"ב תשצ\"ג מן המולד (תשובת מהרי\"ל)",
+  "note": ""
+ },
+ {
+  "citation": "SA OC 426:3; MB 426:17",
+  "where": [
+   "src/holidays/seasonal.ts:140"
+  ],
+  "claim": "Latest: 15 full days from the molad",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.426.3",
+  "quote": "עד י\"ו מיום המולד ולא י\"ו בכלל",
+  "note": "MB 426:17: count 15 full 24-hour days from the moment of the molad."
+ },
+ {
+  "citation": "SA OC 131:6-7 with Rema; MB",
+  "where": [
+   "src/holidays/tefillah.ts:6",
+   "src/holidays/tefillah.ts:76"
+  ],
+  "claim": "Tachanun omissions",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.131.7",
+  "quote": "ומנהג פשוט שלא ליפול על פניהם בכל חודש ניסן ולא בט' באב ולא בין י\"ה לסוכות",
+  "note": "131:6 lists 15 Av, 15 Shevat, RC, Chanukah, Purim, Lag BaOmer, Erev YK/RH. Pesach Sheni and end-of-Tishrei are not there (uncited customs)."
+ },
+ {
+  "citation": "Arachin 10a; SA OC 422:2, 488:1, 490:4, 494:1, 644:1, 683:1",
+  "where": [
+   "src/holidays/tefillah.ts:67"
+  ],
+  "claim": "Full/half Hallel days",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Arakhin.10a",
+  "quote": "eighteen days a year on which the individual completes the full hallel ... in the Diaspora ... twenty-one days",
+  "note": "Each SA se'if checked: 422:2 RC half; 488:1 Pesach full; 490:4 later days half; 494:1, 644:1, 683:1 full."
+ },
+ {
+  "citation": "Rema OC 494:3; MB 131:36",
+  "where": [
+   "src/holidays/tefillah.ts:28-31",
+   "src/holidays/tefillah.ts:76"
+  ],
+  "claim": "No Tachanun from RC Sivan to Isru Chag, or to 12 Sivan",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.494.3",
+  "quote": "ואין אומרים תחנון מתחילת ראש חודש סיון עד ח' בו דהיינו אחר אסרו חג",
+  "note": "MB 131:36: some places omit it all six days after Shavuos (tashlumin)."
+ },
+ {
+  "citation": "SA OC 697:1",
+  "where": [
+   "src/holidays/tefillah.ts:76",
+   "src/holidays/tefillah.ts:94"
+  ],
+  "claim": "No Tachanun on Purim Katan",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.697.1",
+  "quote": "יום י\"ד וט\"ו שבאדר ראשון אין נופלין על פניהם",
+  "note": ""
+ },
+ {
+  "citation": "SA OC 429:2",
+  "where": [
+   "src/holidays/tefillah.ts:78"
+  ],
+  "claim": "No Tachanun all Nisan",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.429.2",
+  "quote": "אין נופלים על פניהם בכל חדש ניסן",
+  "note": ""
+ },
+ {
+  "citation": "SA OC 581:3; Rema 131:6",
+  "where": [
+   "src/holidays/tefillah.ts:85"
+  ],
+  "claim": "No Tachanun on Erev Rosh Hashana",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.581.3",
+  "quote": "אין נופלים על פניהם בערב ראש השנה בתפלה",
+  "note": ""
+ },
+ {
+  "citation": "Rema OC 51:9",
+  "where": [
+   "src/holidays/tefillah.ts:97-100"
+  ],
+  "claim": "No Mizmor L'Sodah on Shabbos/YT, Erev Pesach, Pesach, Erev YK",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.51.9",
+  "quote": "וא\"א מזמור לתודה בשבת וי\"ט או בימי פסח ... ולא בערב פסח ... ולא בעיו\"כ",
+  "note": "Code also drops it on 22 Nisan in Israel (Isru Chag), which the Rema does not include."
+ },
+ {
+  "citation": "Tur and SA OC 428:4",
+  "where": [
+   "src/parsha/parsha.ts:11-17"
+  ],
+  "claim": "Deadlines: Tzav (common)/Metzora (leap) before Pesach; Bamidbar before Shavuos; Devarim before 9 Av; Nitzavim before RH; Haazinu before Sukkos",
+  "status": "imprecise",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.428.4",
+  "quote": "לעולם קורין צו את אהרן קודם פסח בפשוט' ומצורע במעוברת חוץ מבה\"ח מעוברת (וה\"ש מעוברת) שקורים אחרי מות קודם הפסח",
+  "note": "Comment omits the SA's stated exception (Acharei Mos before Pesach). Code treats Metzora as a minimum, so output still reaches Acharei Mos (e.g. 5771, matches hebcal). 'Haazinu before Sukkos' is inferred from the RH-weekday discussion, not stated."
+ },
+ {
+  "citation": "Rema OC 292:2",
+  "where": [
+   "src/parsha/parsha.ts:175"
+  ],
+  "claim": "Pirkei Avos on summer Shabbos afternoons",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.292.2",
+  "quote": "אבל אומרים פרקי אבות בקיץ ושיר המעלות בחורף וכל מקום לפי מנהגו",
+  "note": ""
+ },
+ {
+  "citation": "Rema 425:1; SA 685:1",
+  "where": [
+   "src/parsha/haftara.ts:8-9"
+  ],
+  "claim": "Four parshiyos displace Rosh Chodesh haftara",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.425.1",
+  "quote": "ואם אירע ראש חדש בד' פרשיות מפטירין בשל פרשה",
+  "note": "Displacing Machar Chodesh is not stated here."
+ },
+ {
+  "citation": "SA OC 684:3",
+  "where": [
+   "src/parsha/haftara.ts:11"
+  ],
+  "claim": "Shabbos Chanukah displaces RC Teves haftara",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.684.3",
+  "quote": "אם חל ר\"ח טבת בשבת ... ובג' קורא מפטיר בשל חנוכ' ומפטיר רני ושמחי",
+  "note": "Machar Chodesh part uncited."
+ },
+ {
+  "citation": "MB 425:8",
+  "where": [
+   "src/parsha/haftara.ts:14-15"
+  ],
+  "claim": "Shabbos RC Av: second haftara of affliction (Shim'u)",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Mishnah_Berurah.425.8",
+  "quote": "ועיין בביאור הגר\"א שדחה סברא זו מהלכה ופסק כדעה ראשונה דמפטירין שמעו",
+  "note": "The Rema himself prefers השמים כסאי 'where there is no custom'; MB brings the Gra against it. Worth saying in the docs."
+ },
+ {
+  "citation": "MB 425:7",
+  "where": [
+   "src/parsha/haftara.ts:15-16"
+  ],
+  "claim": "RC Elul on Shabbos: Ashkenaz reads RC's, adds Re'eh's on Ki Seitzei",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Mishnah_Berurah.425.7",
+  "quote": "כשיפטירו בפ' תצא ברני עקרה יסיימו גם בעניה סוערה הכתובה אחריה",
+  "note": ""
+ },
+ {
+  "citation": "Rema OC 428:8",
+  "where": [
+   "src/parsha/haftara.ts:20-21"
+  ],
+  "claim": "Joined parshiyos: second's haftara, except Acharei Mos-Kedoshim",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.428.8",
+  "quote": "כשקורין שתי פרשיות מפטירין באחרונה ... ובלבד באחרי מות וקדושים דמפטירין הלא כבני כושיים שהיא הפטרת א\"מ",
+  "note": ""
+ },
+ {
+  "citation": "SA OC 566:1",
+  "where": [
+   "src/parsha/haftara.ts:156"
+  ],
+  "claim": "Communal fasts have a Mincha haftara",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.566.1",
+  "quote": "בתענית ציבור ... וקורים ויחל בשחרית ובמנחה ... הגה ומפטירין במנחה דרשו",
+  "note": "The haftara is the Rema's gloss."
+ },
+ {
+  "citation": "SA OC 470:1",
+  "where": [
+   "src/parsha/haftara.ts:156"
+  ],
+  "claim": "Taanis Bechoros is the firstborn's fast",
+  "status": "verified",
+  "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.470.1",
+  "quote": "הבכורות מתענין בערב פסח",
+  "note": ""
+ },
+ {
+  "citation": "Vayikra 23:15-16",
+  "where": [
+   "src/holidays/omer.ts:4"
+  ],
+  "claim": "Omer begins night of 16 Nisan, 49 days",
+  "status": "imprecise",
+  "url": "https://www.sefaria.org/Leviticus.23.15-16",
+  "quote": "from the day on which you bring the sheaf ... the day after the sabbath ... you shall count off seven weeks",
+  "note": "The verse gives 'the day after the sabbath'; 16 Nisan comes from Menachos 65b-66a (Rambam Temidin u'Musafin 7:11). Add that.",
+  "resolution": "Comment now also cites Shulchan Aruch OC 489:1 (2026-10-21)."
+ },
+ {
+  "citation": "Daf Yomi: Shekalim 22 dafim (Vilna Yerushalmi) from cycle 8, 1975",
+  "where": [
+   "src/learning/bavli.ts:8"
+  ],
+  "claim": "Shekalim length change",
+  "status": "not-read",
+  "url": "",
+  "quote": "",
+  "note": "Historical fact, not halachic; not checked."
+ }
+]

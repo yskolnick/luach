@@ -321,6 +321,7 @@ explicitly. Full text: [`DECISIONS.md`](https://github.com/yskolnick/luach/blob/
 
 Each note records what was read, where, and what was concluded.
 
+- [`docs/research/2026-10-21-citation-audit-code.md`](https://github.com/yskolnick/luach/blob/main/docs/research/2026-10-21-citation-audit-code.md): Citation audit of the calendar, holiday and reading code (2026-10-21)
 - [`docs/research/2026-10-21-citation-audit-zmanim.md`](https://github.com/yskolnick/luach/blob/main/docs/research/2026-10-21-citation-audit-zmanim.md): Citation audit of the zmanim sources (2026-10-21)
 - [`docs/research/2026-10-21-citation-check-m1-m2.md`](https://github.com/yskolnick/luach/blob/main/docs/research/2026-10-21-citation-check-m1-m2.md): Citation check, milestones M1–M2 (2026-10-21)
 - [`docs/research/2026-10-21-haftaros.md`](https://github.com/yskolnick/luach/blob/main/docs/research/2026-10-21-haftaros.md): Haftaros by minhag: research notes

@@ -14,6 +14,23 @@ describe('isInIsrael', () => {
     ['Damascus', 33.51, 36.29], ['Quneitra', 33.126, 35.824], ['Cairo', 30.04, 31.24], ['Tyre', 33.27, 35.2],
     ['Irbid', 32.55, 35.85], ['El Arish', 31.13, 33.8], ['Larnaca', 34.92, 33.63],
   ];
+  // Near the border: places that keep one day of Yom Tov (P-06), and their foreign neighbours.
+  // Coordinates: GeoNames cities500 (CC-BY 4.0), rounded.
+  const border: [string, number, number, boolean][] = [
+    ['Yotvata', 29.896, 35.061, true], ['Neot HaKikar', 30.93, 35.37, true], ['Ramat Magshimim', 32.845, 35.807, true],
+    ['Hamat Gader', 32.684, 35.662, true], ['Ghajar', 33.271, 35.623, true], ['Metula', 33.279, 35.579, true],
+    ['Kfar Ruppin', 32.458, 35.556, true], ['Hanita', 33.087, 35.174, true], ['Aramsha', 33.087, 35.227, true],
+    ['Yiftah', 33.129, 35.552, true], ['Be\'er Ora', 29.71, 34.987, true], ['Ein Bokek', 31.199, 35.363, true],
+    ['Buq\'ata', 33.201, 35.779, true], ['Mas\'ade', 33.232, 35.756, true],
+    ['Aqaba (Jordan)', 29.53, 35.0, false], ['Taba (Egypt)', 29.49, 34.89, false], ['Irbid (Jordan)', 32.55, 35.85, false],
+    ['Quneitra (Syria)', 33.08, 35.9, false], ['old Quneitra (Syria)', 33.126, 35.825, false], ['Khan Arnabah (Syria)', 33.184, 35.892, false],
+    ['Ash Shajarah (Syria)', 32.774, 35.882, false], ['Umm Qais (Jordan)', 32.654, 35.685, false], ['Saham al-Kaffarat (Jordan)', 32.699, 35.774, false],
+    ['Ash Shuna ash Shamaliya (Jordan)', 32.62, 35.615, false], ['Tabaqat Fahl (Jordan)', 32.451, 35.609, false],
+    ['Safi (Jordan)', 31.036, 35.465, false], ['Ar Rishah (Jordan)', 30.224, 35.217, false], ['Ghawr al-Mazra\'a (Jordan)', 31.266, 35.517, false],
+    ['Kfar Kila (Lebanon)', 33.277, 35.552, false], ['Khiam (Lebanon)', 33.327, 35.611, false], ['Kfar Shouba (Lebanon)', 33.328, 35.693, false],
+    ['Bint Jbeil (Lebanon)', 33.119, 35.433, false], ['Alma ash-Shaab (Lebanon)', 33.105, 35.182, false], ['Rafah (Egypt)', 31.282, 34.239, false],
+  ];
+  it.each(border)('border: %s', (_n, la, lo, want) => expect(isInIsrael(la, lo)).toBe(want));
   for (const [n, la, lo] of inside) it(`${n} is inside`, () => expect(isInIsrael(la, lo)).toBe(true));
   for (const [n, la, lo] of outside) it(`${n} is outside`, () => expect(isInIsrael(la, lo)).toBe(false));
   it('built-in Israeli cities are flagged, and only they', () => {

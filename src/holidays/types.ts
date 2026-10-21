@@ -77,7 +77,7 @@ export interface HolidayOptions {
   yomKippurKatanOnFriday?: 'thursday' | 'friday';
   /**
    * Keep Yom Kippur Katan before Rosh Chodesh Cheshvan (Kaf HaChaim OC 417:16: "צריך
-   * להתענות"). Default `false` (as built; Luach found no source for leaving it out).
+   * להתענות"). Default `false` (D-16; Luach found no source for leaving it out).
    */
   yomKippurKatanCheshvan?: boolean;
   /** Include the Shabbosos of Shovavim. Default `false`. */

@@ -24,7 +24,8 @@ export interface TefillahOptions extends HolidayOptions {
    * says of the longer custom "במדינות אלו אין המנהג כן", and Aruch HaShulchan OC 131:12
    * "ואינו עיקר". `'endOfTishrei'`: through Rosh Chodesh Cheshvan (Knesses HaGedolah,
    * cited in Sha'arei Teshuvah 131:19 and Kaf HaChaim OC 131:98, the Sephardi custom and the
-   * custom in Israel there). Default `'endOfTishrei'` (as built; see DECISIONS.md).
+   * custom in Israel there). Default, matching the customs (D-14): `'endOfTishrei'` in
+   * Israel, `'isruChag'` outside it. Sephardim outside Israel pass `'endOfTishrei'`.
    */
   tishreiTachanun?: 'isruChag' | 'endOfTishrei';
   /**
@@ -91,7 +92,7 @@ export function tefillahOn(date: HebrewDate, options: TefillahOptions = {}): Tef
   if (m === Month.NISAN) tachanun = false; // the whole of Nisan (SA OC 429:2)
   if (m === Month.TISHREI && d >= 9) {
     // Erev Yom Kippur onwards; through Isru Chag or the end of the month.
-    const lastNoTachanun = (options.tishreiTachanun ?? 'endOfTishrei') === 'endOfTishrei' ? 30 : israel ? 23 : 24;
+    const lastNoTachanun = (options.tishreiTachanun ?? (israel ? 'endOfTishrei' : 'isruChag')) === 'endOfTishrei' ? 30 : israel ? 23 : 24;
     if (d <= lastNoTachanun) tachanun = false;
   }
   if (m === Month.TISHREI && d === 1) tachanun = false;

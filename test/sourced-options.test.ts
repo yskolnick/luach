@@ -20,6 +20,12 @@ describe('Tachanun after Sukkos', () => {
     expect(tefillahOn(d(weekday), { tishreiTachanun: 'endOfTishrei' }).tachanun).toBe(false);
     expect(tefillahOn(d(24), { tishreiTachanun: 'isruChag' }).tachanun).toBe(false); // Isru Chag in the diaspora
   });
+  it('by default it matches the place (D-14): end of Tishrei in Israel, Isru Chag elsewhere', () => {
+    const d = (day: number) => new HebrewDate(5787, Month.TISHREI, day);
+    const weekday = [25, 26, 27, 28].find((x) => !d(x).isShabbos)!;
+    expect(tefillahOn(d(weekday)).tachanun).toBe(true);
+    expect(tefillahOn(d(weekday), { israel: true }).tachanun).toBe(false);
+  });
 });
 
 describe('Yom Kippur Katan before Cheshvan', () => {

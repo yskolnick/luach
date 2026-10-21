@@ -27,6 +27,9 @@ All notable changes for users of the `luach` package. This project follows
   from `getPlace()`, `builtInPlaces()` and `fullPlaces()`, `LOCAL_CANDLE_LIGHTING` and
   `ISRAEL_BOUNDARY`. Writing to
   them throws in strict mode. Copy a table before changing it.
+- `tefillahOn` outside Israel now says Tachanun again after Isru Chag of Sukkos (it used to
+  wait for Rosh Chodesh Cheshvan); in Israel the default is unchanged (D-14). Pass
+  `tishreiTachanun: 'endOfTishrei'` for the old behaviour.
 - `mourningPeriods` returns `weekOfTishaBav` and `restrictions` as well, and moved to its own
   module (still exported from `luach`). `restrictions` is `null` unless a custom is given; see
   `MourningOptions`. Code comparing the whole result with `toEqual` needs the new fields.

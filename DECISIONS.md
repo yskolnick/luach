@@ -95,6 +95,20 @@ Luach 10.6 KB, `@hebcal/core` 44.8 KB, `kosher-zmanim` 49.0 KB. A lighter route 
 definitions computed by one function) would only add to the API, so it can come later
 without breaking anyone (ROADMAP OUT-12). This settles the bundle part of D-12.
 
+### D-14. Tachanun after Sukkos follows the place's custom
+Asked whether Tachanun should come back after Isru Chag (the Ashkenazi sources) or after the
+end of Tishrei (the Sephardi custom and the custom in Israel), Yosef chose "Match the customs".
+Luach reads that as: by default `'endOfTishrei'` in Israel and `'isruChag'` outside it
+(Kaf HaChaim OC 131:98; Sha'arei Teshuvah 131:19; Aruch HaShulchan OC 131:12). Sephardim
+outside Israel pass `'endOfTishrei'`. Settles P-09.
+
+### D-15. Mourning restrictions have no default
+Yosef chose "No default (Recommended)": `mourningPeriods` reports restrictions only for a
+custom the caller names (AB-57).
+
+### D-16. Yom Kippur Katan before Cheshvan stays off by default
+Yosef chose "Keep it off (Recommended)": `yomKippurKatanCheshvan` turns it on (AB-59).
+
 ## Open questions
 
 ### Q-00. Unmerged branches
@@ -210,6 +224,7 @@ server or app shares one copy. **Default until decided:** not frozen;
 `test/immutability.test.ts` holds the tests as todos and runs each once its table is frozen.
 
 ### P-09. Tachanun after Sukkos: which default
+**Decided:** see D-14.
 `tefillahOn` stops Tachanun through Rosh Chodesh Cheshvan by default (`'endOfTishrei'`), and
 its documentation called that "a widespread Ashkenazi custom". The sources Luach read put the
 longer custom with the Sephardim and Israel (Knesses HaGedolah in Kaf HaChaim OC 131:98), and
@@ -390,7 +405,7 @@ decided:** `'endOfTishrei'`, with the documentation corrected to cite both sides
   (`pesachSheniTachanun: 'omit'`; Kaf HaChaim OC 131:98; Sha'arei Teshuvah 131:19; Aruch
   HaShulchan OC 131:12); `'say'` follows the Shulchan Aruch's list.
 - **AB-59** *As built (D-12):* Yom Kippur Katan is not kept before Tishrei (SA OC 581:2), Iyar
-  (MB 429:10) or Teves (SA OC 670:1); before Cheshvan it is off by default and on with
+  (MB 429:10) or Teves (SA OC 670:1); before Cheshvan it is off by default (D-16) and on with
   `yomKippurKatanCheshvan` (Kaf HaChaim OC 417:16 says to fast; Luach found no source for
   leaving it out).
 - **AB-60** *As built (D-12):* `amidahSeason` says "mashiv haruach" at Shacharis of the first

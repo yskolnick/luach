@@ -200,6 +200,39 @@ recorded as new entries; old ones are superseded, not erased.
 - **Confidence:** Not applicable.
 - **Open:** ROADMAP OUT-12, after 1.0.
 
+### D-14. Tachanun after Sukkos follows the place's custom {#d-14}
+
+- **What it does:** `tefillahOn` omits Tachanun through Rosh Chodesh Cheshvan in Israel and
+  through Isru Chag outside it, unless `tishreiTachanun` is given.
+- **Why:** Yosef chose "Match the customs". The Ashkenazi works resume after Isru Chag; the
+  custom in Israel (and of the Sephardim) is the whole of Tishrei. Luach has no nusach option
+  in `tefillahOn`, so the place decides and Sephardim abroad pass the option.
+- **Sources:** SA OC 131:7; Kitzur SA 22:8; Sha'arei Teshuvah 131:19; Aruch HaShulchan OC
+  131:12; Kaf HaChaim OC 131:98 (citing Chaim Sha'al on the custom in Israel) (*verified*,
+  Sefaria).
+- **Checked against:** `test/sourced-options.test.ts`.
+- **Confidence:** Medium: the reading of "Match the customs" is Luach's; the Israeli Ashkenazi
+  custom rests on Kaf HaChaim's report.
+- **Open:** a `nusach` option for `tefillahOn`, if wanted.
+
+### D-15. Mourning restrictions have no default {#d-15}
+
+- **What it does:** `mourningPeriods` gives `restrictions: null` unless a custom is named.
+- **Why:** Yosef chose no default; the customs differ too much to apply one silently.
+- **Sources:** DECISIONS.md D-15; the customs themselves are in [AB-57](#ab-57).
+- **Checked against:** `test/mourning.test.ts`.
+- **Confidence:** Not applicable.
+- **Open:** nothing.
+
+### D-16. Yom Kippur Katan before Cheshvan stays off by default {#d-16}
+
+- **What it does:** no Yom Kippur Katan before Cheshvan unless `yomKippurKatanCheshvan`.
+- **Why:** Yosef chose to keep it off; common printed calendars leave it out.
+- **Sources:** DECISIONS.md D-16; Kaf HaChaim OC 417:16 for the option (*verified*).
+- **Checked against:** `test/sourced-options.test.ts`; the hebcal oracle.
+- **Confidence:** Low as to a source for the default; none was found.
+- **Open:** a source for leaving it out.
+
 ## Open questions
 
 ### Q-00. Unmerged branches {#q-00}
@@ -412,8 +445,7 @@ recorded as new entries; old ones are superseded, not erased.
 
 ### P-09. Tachanun after Sukkos: which default {#p-09}
 
-- **What it does:** `tefillahOn` omits Tachanun through Rosh Chodesh Cheshvan unless
-  `tishreiTachanun: 'isruChag'` is given.
+- **What it does:** superseded by [D-14](#d-14): the default now follows the place.
 - **Why:** proposed change: the module's defaults are common Ashkenazi practice, and the
   Ashkenazi works Luach read resume Tachanun after Isru Chag. The old documentation called
   the longer custom "widespread Ashkenazi"; the sources say otherwise.
@@ -423,7 +455,7 @@ recorded as new entries; old ones are superseded, not erased.
   (*verified*, Sefaria).
 - **Checked against:** `test/sourced-options.test.ts`.
 - **Confidence:** High on the sources; what shuls do today was not surveyed.
-- **Open:** Yosef's choice of default.
+- **Open:** decided: [D-14](#d-14).
 
 ## As built
 

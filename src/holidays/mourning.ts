@@ -2,7 +2,7 @@
  * The mourning periods of the year (the Sefirah, the Three Weeks) and, for a custom the
  * caller names, what each custom restricts on a given day.
  *
- * Customs here differ more than almost anywhere in the calendar, so Luach has no default:
+ * Customs here differ more than almost anywhere in the calendar, so Luach has no default (D-15):
  * without a custom, {@link MourningPeriods.restrictions} is `null`. Each restriction names
  * its source. Shabbos and Yom Tov laws, a seudas mitzvah, a bris and the other exceptions in
  * the sources are not modelled. Ask your rav.

@@ -62,3 +62,29 @@ export function molad(year: number, month: number): Molad {
     clock: { dayOfWeek: clockDow, hour: clockHour, minute: Math.floor(parts / 18), chalakim: parts % 18 },
   };
 }
+
+const WEEKDAYS_EN = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Shabbos'];
+const WEEKDAYS_HE = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
+
+/**
+ * The molad as announced on Shabbos Mevorchim, in English or Hebrew, e.g.
+ * "Tuesday night, 9:11 pm and 3 chalakim" / "ליל שלישי, 21:11 ו־3 חלקים". Times are the
+ * calendar's (Jerusalem mean time), not local clock time. Announcement customs vary (some
+ * say "after" the hour, some use a 24-hour clock); this is a plain rendering of the facts.
+ */
+export function moladAnnouncement(year: number, month: number, language: 'en' | 'he' = 'en'): string {
+  const m = molad(year, month);
+  const { dayOfWeek, hour, minute, chalakim } = m.clock;
+  // Evening hours belong to the next Hebrew day: "Tuesday night" means the night after Tuesday.
+  const night = hour >= 18 || hour < 6;
+  const hh = String(minute).padStart(2, '0');
+  if (language === 'he') {
+    const day = WEEKDAYS_HE[dayOfWeek]!;
+    const when = night && hour >= 18 ? `ליל ${WEEKDAYS_HE[(dayOfWeek + 1) % 7]}` : `יום ${day}`;
+    return `${when}, ${hour}:${hh} ו־${chalakim} חלקים`;
+  }
+  const h12 = hour % 12 === 0 ? 12 : hour % 12;
+  const ampm = hour < 12 ? 'am' : 'pm';
+  const when = night ? `${WEEKDAYS_EN[dayOfWeek]} ${hour < 6 ? 'early morning' : 'night'}` : `${WEEKDAYS_EN[dayOfWeek]}`;
+  return `${when}, ${h12}:${hh} ${ampm} and ${chalakim} ${chalakim === 1 ? 'chelek' : 'chalakim'}`;
+}

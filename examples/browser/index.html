@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Luach in the browser</title>
+  <style>
+    body { font: 16px/1.5 system-ui, sans-serif; margin: 2rem auto; max-width: 36rem; padding: 0 1rem; }
+    .he { font-size: 1.4rem; }
+    li { list-style: none; display: flex; justify-content: space-between; }
+  </style>
+</head>
+<body>
+  <h1 id="date"></h1>
+  <p class="he" dir="rtl" id="hebrew"></p>
+  <button id="locate">Zmanim for my location</button>
+  <ul id="zmanim"></ul>
+  <p><small>Ask your rav. This page calculates; it does not rule. Your location stays on this device.</small></p>
+  <script type="module">
+    // Serve the repository root (e.g. `npx serve .`) and open /examples/browser/.
+    import { HebrewDate, formatHebrewDate, ashkenazi, ZmanimCalendar, zmanLabel } from '../../dist/index.js';
+    const today = HebrewDate.today();
+    document.getElementById('date').textContent = formatHebrewDate(today, { locale: ashkenazi, form: 'full' });
+    document.getElementById('hebrew').textContent = formatHebrewDate(today);
+    document.getElementById('locate').onclick = () =>
+      navigator.geolocation.getCurrentPosition((pos) => {
+        const here = { latitude: pos.coords.latitude, longitude: pos.coords.longitude, timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone };
+        const z = new ZmanimCalendar(here, today);
+        const list = document.getElementById('zmanim');
+        list.replaceChildren(...[z.alos72(), z.sunrise(), z.sofZmanShemaGra(), z.chatzos(), z.sunset(), z.tzeis8Point5()].map((zman) => {
+          const li = document.createElement('li');
+          li.innerHTML = `<span>${zmanLabel(zman.id, ashkenazi)}</span><b>${zman.localTime() ?? '—'}</b>`;
+          li.title = `${zman.opinion}. ${zman.source}`;
+          return li;
+        }));
+      });
+  </script>
+</body>
+</html>

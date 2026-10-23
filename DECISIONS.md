@@ -1,186 +1,131 @@
 # Decisions
 
-Yosef Skolnick decides everything about Luach. This file holds:
+Yosef Skolnick decides everything about Luach. This file records each decision and the state
+of everything not yet decided:
 
-- **D-nn, Decided:** a ruling, with Yosef's own words quoted.
-- **Q-nn, Open question:** what is being asked, and what the code does until it is answered.
-- **P-nn, Proposal:** a recommendation, why, and the default in effect until Yosef decides.
-- ***As built*:** behaviour the code has that nobody chose; listed so it can be chosen or changed.
+- **Decided (D-nn):** a ruling by Yosef.
+- **Open question (Q-nn):** what is being asked, and what the code does until it is answered.
+- **Proposal (P-nn):** a recommendation, the reason for it, and the default in effect until
+  Yosef decides.
+- **Settled:** questions and proposals that a decision has closed, kept for reference.
+- **As built (AB-nn):** behaviour the code has that nobody has formally chosen, listed so it
+  can be chosen or changed.
 
-Entries are added and superseded, never rewritten. Architecture, tooling, dependency and
-licence choices also have an ADR in `docs/decisions/`.
+A decision is never changed silently: a later entry supersedes it and says so. Architecture,
+tooling, dependency and licence choices also have an ADR in `docs/decisions/`.
 
 Every entry has a matching section in [docs/rationale.md](docs/rationale.md), written by the
 AI that built the code: why it was done this way, the sources, how confident the reasoning
-is, and what would change it. A test fails if an entry has no rationale. *As built* entries
-are numbered AB-nn (numbers added 2026-10-21; the text is unchanged).
+is, and what would change it. A test fails if an entry has no rationale.
 
 ## Decided
 
 ### D-01. The name is Luach
-The npm package is `luach` and the repository is `yskolnick/luach`. Yosef: "use luach".
-The name was free on npm on 2026-10-21; Yosef has since reserved it (a placeholder release
-held for npm's staged-release review). An unrelated package, `luach-picker`, is a browser
-date-picker widget; Luach is a calculation library with no UI (see README).
+The npm package is `luach` and the repository is `yskolnick/luach`. An unrelated package,
+`luach-picker`, is a browser date-picker widget; Luach is a calculation library with no UI
+(see README).
 
-### D-02. Commits name the models that wrote and checked them; no session links
-Yosef: "All commits on this repo can say which model worked on it and which checked it
-since it is a public repo and we want transparency." Commits end with a `Co-Authored-By:`
-line naming the model that wrote the change, and may add a line naming the model that
-checked it. Session links stay out: on 2026-10-21 the `Claude-Session:` lines were removed
-from every commit on `main` (history rewritten and force-pushed; file contents unchanged)
-and from the pull-request descriptions. This supersedes, for commit messages only, the
-earlier rule against model names in the repository.
+### D-02. Commits name the models that wrote and checked them
+Each commit ends with a `Co-Authored-By:` line naming the AI model that wrote the change, and
+may add a line naming the model that checked it. Nothing else in the repository names a model.
 
 ### D-03. A public project log
-Yosef: "I would like a log to be in here also. Nothing personal at all should be there but
-updates and decisions that are relevant should be shown to people". `LOG.md` records each
-working session's updates, decisions and open questions. Personal notes and conversation
-records stay in the private records repository.
+[LOG.md](LOG.md) records what changed, what was decided and what is still open.
 
 ### D-04. A rationale page tied to every decision
-Yosef: "an ai generated sources page for why the ai is doing it a particular way. This
-should tie to every decision. It should be a document that scholars can look at at analyze
-and fix". [docs/rationale.md](docs/rationale.md) has one section per entry in this file: what
-the code does, why, the sources (with how far each was verified), what it was checked
-against, a confidence level, and what is open. A test fails if any entry lacks a section.
-Scholars challenge an entry with the "Challenge a decision or source" issue template.
+[docs/rationale.md](docs/rationale.md) has one section per entry in this file: what the code
+does, why, the sources (with how far each was verified), what it was checked against, a
+confidence level, and what is open. A test fails if any entry lacks a section.
+[docs/sources.md](docs/sources.md), generated from the code, indexes every source. Scholars
+challenge an entry with the "Challenge a decision or source" issue template.
 
 ### D-05. One implementation: `main`
-Two sessions built Luach in parallel on 2026-10-21. Yosef: "Keep main and see where this code
-is better, add that". The second implementation is kept, unmerged, on the branch
-`archive/parallel-implementation-2026-10-21`; what it did better was ported to `main`
-(yskolnick/luach#14), each change with its tests. The same request led to
-[docs/sources.md](docs/sources.md), generated from the code: Yosef: "Write up a sources and
-decisions document about where times came from and cite and source every decision and
-document etc. This is being built in public".
+`main` is the only maintained implementation. An earlier prototype is kept for reference on
+the branch `archive/parallel-implementation-2026-10-21` and is not to be merged.
 
-### D-06. Table-only learning cycles deferred (P-05)
-Yosef, on P-05: "defer for now". Chofetz Chaim / Shemiras HaLashon yomi, Tanya yomi, the
-mitzvos of each Sefer HaMitzvos day, the Schottenstein Yerushalmi cycle and Dirshu's Daf HaYomi
-B'Halacha are not built for 1.0. They need publishers' day-by-day tables.
+### D-06. Table-only learning cycles wait until after 1.0
+Chofetz Chaim / Shemiras HaLashon yomi, Tanya yomi, the mitzvos of each Sefer HaMitzvos day,
+the Schottenstein Yerushalmi cycle and Dirshu's Daf HaYomi B'Halacha need publishers'
+day-by-day tables and are not part of 1.0 (P-05).
 
-### D-07. The credit line (Q-02)
-Yosef chose "Built on Luach by Yosef Skolnick", the wording already in NOTICE and README.
+### D-07. The credit line
+Apps credit Luach with "Built on Luach by Yosef Skolnick", the wording in NOTICE and README.
 
-### D-08. Modern Israeli days follow each law from its year (Q-05)
-Yosef accepted the rules as built: each moving rule applies from the year it was adopted
-(Yom HaShoah Friday → Thursday from 1959, Sunday → Monday from 1997; Yom HaAtzmaut Monday →
-Tuesday from 2004).
+### D-08. Modern Israeli days follow each law from its year
+Each moving rule applies from the year it was adopted (Yom HaShoah Friday → Thursday from
+1959, Sunday → Monday from 1997; Yom HaAtzmaut Monday → Tuesday from 2004).
 
-### D-09. Accurate and source-based (Q-06)
-Yosef, on Q-06: "If it is now right, just use that. We want accurate and source based unless
-i specifically say otherwise on something but that is very unlikely". Q-06 is closed: Luach
-cites each part of "72 minutes / 16.1°" separately, as the texts say. As a rule, where the
-sources and a convenience differ, Luach follows the sources and says so.
+### D-09. Accurate and source-based
+Where the sources and a convenience differ, Luach follows the sources and says so. Applied
+first to Q-06: Luach cites each part of "72 minutes / 16.1°" separately, as the texts say.
 
-### D-10. Israel or the diaspora from the place (P-06)
+### D-10. Israel or the diaspora from the place
 When a caller gives a place and does not say Israel or the diaspora, Luach decides from the
-place with `isInIsrael`. With no place, the diaspora remains the default, as documented. An
-explicit `israel` option always wins. (Asked whether to keep the diaspora default, require a
-choice, or infer from the place, Yosef chose "Infer Israel from the place".)
+place with `isInIsrael`. With no place, the diaspora is the default, as documented. An
+explicit `israel` option always wins.
 
-### D-11. The shared tables are frozen (P-08)
-Yosef, on P-08: "Yes, freeze them". The tables listed in P-08 are frozen where they are built.
+### D-11. The shared tables are frozen
+The tables listed in P-08 are frozen where they are built.
 
 ### D-12. API clean-up before 1.0
-Yosef asked for three changes before 1.0: shrink the bundle cost of a single zman; stop
-exporting internal helpers; and give every halachic rule the code audit found without a source
-either a source or an option.
+Three goals for 1.0: a smaller bundle cost for a single zman; no internal helpers in the
+public API; and a source or an option for every halachic rule the code audit found without a
+source. All three are settled: D-13 for the bundle; the public API went from 149 names to 96;
+and AB-57 to AB-60 for the sources and options.
 
 ### D-13. One zman costs 10.6 KB for 1.0
-Asked how an app should get one zman without paying for all of them, Yosef chose "Keep
-10.6 KB; revisit after 1.0". Measured on 2026-10-21 (one sunrise, minified and gzipped):
-Luach 10.6 KB, `@hebcal/core` 44.8 KB, `kosher-zmanim` 49.0 KB. A lighter route (importable
-definitions computed by one function) would only add to the API, so it can come later
-without breaking anyone (ROADMAP OUT-12). This settles the bundle part of D-12.
+Measured on 2026-10-21 (one sunrise, minified and gzipped): Luach 10.6 KB, `@hebcal/core`
+44.8 KB, `kosher-zmanim` 49.0 KB. A lighter route (importable definitions computed by one
+function) would only add to the API, so it can come after 1.0 without breaking anyone
+(ROADMAP OUT-12).
 
 ### D-14. Tachanun after Sukkos follows the place's custom
-Asked whether Tachanun should come back after Isru Chag (the Ashkenazi sources) or after the
-end of Tishrei (the Sephardi custom and the custom in Israel), Yosef chose "Match the customs".
-Luach reads that as: by default `'endOfTishrei'` in Israel and `'isruChag'` outside it
-(Kaf HaChaim OC 131:98; Sha'arei Teshuvah 131:19; Aruch HaShulchan OC 131:12). Sephardim
-outside Israel pass `'endOfTishrei'`. Settles P-09.
+By default Tachanun resumes after the end of Tishrei (`'endOfTishrei'`) in Israel and after
+Isru Chag (`'isruChag'`) outside it (Kaf HaChaim OC 131:98; Sha'arei Teshuvah 131:19; Aruch
+HaShulchan OC 131:12). Sephardim outside Israel pass `'endOfTishrei'`. Settles P-09.
 
 ### D-15. Mourning restrictions have no default
-Yosef chose "No default (Recommended)": `mourningPeriods` reports restrictions only for a
-custom the caller names (AB-57).
+`mourningPeriods` reports restrictions only for a custom the caller names (AB-57).
 
-### D-16. Yom Kippur Katan before Cheshvan stays off by default
-Yosef chose "Keep it off (Recommended)": `yomKippurKatanCheshvan` turns it on (AB-59).
+### D-16. Yom Kippur Katan before Cheshvan is off by default
+`yomKippurKatanCheshvan` turns it on (AB-59).
 
 ## Open questions
-
-### Q-00. Unmerged branches
-Branches with work not yet on `main` (2026-10-21):
-- `claude/port-to-main`: the ports under D-05 (yskolnick/luach#14).
-- `archive/parallel-implementation-2026-10-21`: the second implementation, kept for reference
-  (D-05); not to be merged. `claude/exciting-clarke-64dzwd` holds the same commits and can be
-  deleted.
 
 ### Q-01. Licence: Apache-2.0 with NOTICE, or MIT
 See P-01. **Until decided:** Apache-2.0 with a `NOTICE` file.
 
-### Q-02. How credit should read
-**Decided:** see D-07.
-**Until decided:** NOTICE says "Built on Luach by Yosef Skolnick".
-
-Q-03 is recorded in the private records repository.
-
 ### Q-04. Anniversary rules (30 Adar I, 30 Cheshvan/Kislev defaults)
-`anniversary()` offers both customs for the 30th of Cheshvan/Kislev and for Adar of a
-common year in a leap year. The defaults are *as built*: Adar I for yahrzeits, Adar II for
-birthdays, `'firstAnniversary'` for yahrzeits and `'nextMonth'` for birthdays; 30 Adar I
-in a common year becomes 30 Shevat. **Until decided:** these defaults, documented as
-defaults, not rulings.
+`anniversary()` offers both customs for the 30th of Cheshvan/Kislev and for Adar of a common
+year in a leap year. **Until decided**, the defaults are: Adar I for yahrzeits, Adar II for
+birthdays; `'firstAnniversary'` for yahrzeits and `'nextMonth'` for birthdays; a yahrzeit of
+30 Adar I falls on 30 Shevat in a common year. They are documented as defaults, not rulings.
 
-*Note, 2026-10-21:* the birthday default for 30 Adar I observed in a common year changed
-from 30 Shevat to 1 Nisan (a bar mitzvah a month early was a wrong date, not a custom).
-Magen Avraham OC 55:10 and Mishna Berura 55:45: when the 30th does not exist, the age is not
-complete until the 1st of the next month ("עדיין לא מלאה לו שנה ... דבעי' י"ג שנים שלימים");
-MB 55:44: one born in Adar I counts from Adar, not Shevat. The same rule now applies to any
-birthday whose day is missing (30 Adar I under the Adar II option below). Yahrzeits keep
-30 Shevat. Also added: for a birthday of someone born in Adar I, observed in a leap year,
-`adarI: 'levush'` (Adar I; Levush OC 685 as cited by MA 55:10; MB 55:43, "the consensus of the
-later authorities, against the Magen Avraham") or `'magen-avraham'` (Adar II; MA 55:10,
-"נעשה ב"מ באדר שני"). **Until decided:** `'levush'`, the behaviour before the option existed.
-
-### Q-05. Modern Israeli days before their amendments
-**Decided:** see D-08.
-Rules are applied from the year they were adopted
-(`docs/research/2026-10-21-modern-israeli-days.md`): Yom HaShoah Friday → Thursday from 1951
-and Sunday → Monday from 1997; Yom HaAtzmaut Monday → Tuesday from 2004. Not modelled: the
-1954 date of the Shabbos → Thursday rule for Yom HaAtzmaut (applied from 1949), and the
-uncertain 1950 date. The 7 October memorial day (24 Tishrei) is not built yet (HOL-16).
-**Until decided:** as described; these days are optional and off by default.
-
-*Update 2026-10-21:* the Yom HaShoah Friday → Thursday rule now applies from 1959, the year of
-the law; the 1951 Knesset resolution had no weekday rule, so 1954 (27 Nisan on Friday) stays on
-Friday. Found by the citation audit (`docs/research/2026-10-21-citation-audit-code.md`).
-
-### Q-06. The example citation in the brief
-**Decided:** see D-09.
-The brief's example, "Magen Avraham, 72 minutes as 16.1°; Shulchan Aruch Harav 89:1", is
-only partly accurate (`docs/research/2026-10-21-zmanim-opinions.md`): the Magen Avraham
-(OC 58:1) says the day runs from alos, not 72 minutes or 16.1°; 72 minutes is 4 mil of
-18 minutes (Pesachim 94a; SA OC 459:2); 16.1° is a modern Jerusalem-equinox conversion;
-and Shulchan Aruch HaRav 89:1 gives no minutes (459:10 makes a mil 24 minutes). **Until
-decided:** Luach cites each part separately, as in `src/zmanim/opinions.ts`.
+- **Birthdays on a day that does not exist** (for example 30 Adar I in a common year) fall
+  on the 1st of the next month, so 30 Adar I becomes 1 Nisan. Magen Avraham OC 55:10 and
+  Mishna Berura 55:45: when the 30th does not exist, the age is not complete until the 1st
+  of the next month ("עדיין לא מלאה לו שנה ... דבעי' י"ג שנים שלימים"); MB 55:44: one born in
+  Adar I counts from Adar, not Shevat. This corrected an earlier default (30 Shevat) that put
+  a bar mitzvah a month early.
+- **Born in Adar I, observed in a leap year:** option `adarI`, `'levush'` (Adar I; Levush OC
+  685 as cited by MA 55:10; MB 55:43, "the consensus of the later authorities, against the
+  Magen Avraham") or `'magen-avraham'` (Adar II; MA 55:10, "נעשה ב"מ באדר שני"). **Until
+  decided:** `'levush'`.
 
 ### Q-07. Chabad on Shabbos HaChodesh or Chanukah before Rosh Chodesh
 When Shabbos HaChodesh is 29 Adar, or a Shabbos of Chanukah is 29 Kislev, Rosh Chodesh is on
 Sunday. Chabad adds the first and last verses of Machar Chodesh after Shekalim in that case
 (`shekalim-machar-chodesh`), but Luach found no source for whether it does so after
-HaChodesh or the Chanukah haftara. **Until decided:** no verses are added (as built).
+HaChodesh or the Chanukah haftara. **Until decided:** no verses are added.
 
 ## Proposals
 
 ### P-01. Apache-2.0 with a NOTICE file
 **Why:** Apache-2.0 requires redistributors to carry the NOTICE text, which is the closest
-standard licence to "use it freely, but credit Yosef". It also has an explicit patent
-grant. MIT would only require keeping the copyright line inside the licence text.
-**Default until decided:** Apache-2.0. If Yosef picks MIT, the `LICENSE` and `NOTICE` files
-change and nothing else does. ADR: `docs/decisions/0002-licence-and-clean-room.md`.
+standard licence to "use it freely, but credit Yosef". It also has an explicit patent grant.
+MIT would only require keeping the copyright line inside the licence text.
+**Default until decided:** Apache-2.0. Choosing MIT would change only `LICENSE` and `NOTICE`.
+ADR: `docs/decisions/0002-licence-and-clean-room.md`.
 
 ### P-02. Zero runtime dependencies; TypeScript, tsup, Vitest, ESLint
 **Why:** smallest bundle, no licence risk, works on Hermes. ADR 0003.
@@ -195,60 +140,76 @@ and the Rambam. ADR 0004. **Default until decided:** as proposed.
 proleptic Gregorian avoids a silent calendar switch in 1582. ADR 0004.
 **Default until decided:** as proposed.
 
-### P-05. Move table-only learning cycles after 1.0
-**Decided:** see D-06.
-Chofetz Chaim / Shemiras HaLashon yomi, Tanya yomi, the mitzvos of each Sefer HaMitzvos
-day, the Schottenstein Yerushalmi cycle, and Dirshu's Daf HaYomi B'Halacha cannot be computed
-from structure: each needs a published day-by-day table (or, for Schottenstein, seven
-tractate lengths not yet found). **Why:** shipping a publisher's table needs its licence or
-permission; a guess would be wrong. **Default until decided:** listed as post-1.0 in the
-roadmap. Yosef may instead approve deferring them, or obtaining permission to ship tables.
-
 ### P-06. What `isInIsrael` covers
 The built-in boundary is a simplified outline of the area where communities keep one day of
 Yom Tov: the State of Israel with Judea and Samaria, the Golan Heights and Gaza, accurate to
-a few kilometres. **Why:** the function exists to choose Israel or diaspora rules; it makes no
-political statement, and callers can always pass `israel` explicitly. **Default until
+a few kilometres. **Why:** the function exists to choose Israel or diaspora rules; it makes
+no political statement, and callers can always pass `israel` explicitly. **Default until
 decided:** as described (`ISRAEL_BOUNDARY` in `src/places/places.ts`).
 
 ### P-07. Per-module ESM output and name tables
 See ADR 0005. **Default until decided:** as proposed.
 
+## Settled
+
+### Q-02. How credit should read
+Settled by D-07: "Built on Luach by Yosef Skolnick".
+
+### Q-05. Modern Israeli days before their amendments
+Settled by D-08. Each rule applies from the year it was adopted
+(`docs/research/2026-10-21-modern-israeli-days.md`): Yom HaShoah Friday → Thursday from 1959,
+the year of the law (the 1951 Knesset resolution had no weekday rule, so 1954, with 27 Nisan
+on Friday, stays on Friday), and Sunday → Monday from 1997; Yom HaAtzmaut Monday → Tuesday
+from 2004. Not modelled: the 1954 date of the Shabbos → Thursday rule for Yom HaAtzmaut
+(applied from 1949), and the uncertain 1950 date. The 7 October memorial day (24 Tishrei) is
+not built yet (HOL-16). These days are optional and off by default.
+
+### Q-06. The combined citation for 72 minutes / 16.1°
+Settled by D-09. The citation "Magen Avraham, 72 minutes as 16.1°; Shulchan Aruch
+Harav 89:1", is only partly accurate (`docs/research/2026-10-21-zmanim-opinions.md`): the
+Magen Avraham (OC 58:1) says the day runs from alos, not 72 minutes or 16.1°; 72 minutes is
+4 mil of 18 minutes (Pesachim 94a; SA OC 459:2); 16.1° is a modern Jerusalem-equinox
+conversion; and Shulchan Aruch HaRav 89:1 gives no minutes (459:10 makes a mil 24 minutes).
+Luach cites each part separately, as in `src/zmanim/opinions.ts`.
+
+### P-05. Move table-only learning cycles after 1.0
+Settled by D-06. These cycles cannot be computed from structure: each needs a published
+day-by-day table (or, for Schottenstein, seven tractate lengths not yet found). Shipping a
+publisher's table needs its licence or permission, and a guess would be wrong. They are
+listed as post-1.0 in the roadmap.
+
 ### P-08. Freeze the shared tables
-**Decided:** see D-11.
-`ZMANIM` (and each entry), `DEFAULT_DAY_ZMANIM`, the places from `getPlace()`,
-`builtInPlaces()` and `fullPlaces()`, and `ISRAEL_BOUNDARY` are plain objects and arrays: a
-caller's write changes every later result in the process. Proposal: `Object.freeze` them
-(deeply) where they are built. **Why:** a wrong zman is worse than a missing one, and a
-server or app shares one copy. **Default until decided:** not frozen;
-`test/immutability.test.ts` holds the tests as todos and runs each once its table is frozen.
+Settled by D-11. `ZMANIM` (and each entry), `DEFAULT_DAY_ZMANIM`, the places from
+`getPlace()`, `builtInPlaces()` and `fullPlaces()`, and `ISRAEL_BOUNDARY` were plain objects
+and arrays, so a caller's write would change every later result in the process. They are now
+deeply frozen where they are built (`test/immutability.test.ts`). A wrong zman is worse than
+a missing one, and a server or app shares one copy.
 
 ### P-09. Tachanun after Sukkos: which default
-**Decided:** see D-14.
-`tefillahOn` stops Tachanun through Rosh Chodesh Cheshvan by default (`'endOfTishrei'`), and
-its documentation called that "a widespread Ashkenazi custom". The sources Luach read put the
-longer custom with the Sephardim and Israel (Knesses HaGedolah in Kaf HaChaim OC 131:98), and
-the Ashkenazi works against it: Sha'arei Teshuvah 131:19 "במדינות אלו אין המנהג כן", Aruch
-HaShulchan OC 131:12 "ואינו עיקר", Kitzur SA 22:8 (through Isru Chag). The module's stated
-default is common Ashkenazi practice. Proposal: make `'isruChag'` the default. **Default until
-decided:** `'endOfTishrei'`, with the documentation corrected to cite both sides.
+Settled by D-14. The sources Luach read put the custom of no Tachanun through the end of
+Tishrei with the Sephardim and Israel (Knesses HaGedolah in Kaf HaChaim OC 131:98), and the
+Ashkenazi works against it: Sha'arei Teshuvah 131:19 "במדינות אלו אין המנהג כן", Aruch
+HaShulchan OC 131:12 "ואינו עיקר", Kitzur SA 22:8 (through Isru Chag). The default now
+follows the place.
 
 ## As built
+
+An entry marked *replaced* has been superseded by a later one; the later entry gives the
+current behaviour.
 
 - **AB-01** *As built:* `gematriya()` writes an exact multiple of 1000 like its units digit (א׳ is 1
   or 1000); `parseGematriya('א׳')` returns 1.
 - **AB-02** *As built:* `formatHebrewDate()` omits the year's thousands by default (תשפ״ז).
 - **AB-03** *As built:* Purim Meshulash is listed on 16 Adar (the Sunday, third of its three days).
 - **AB-04** *As built:* Leil Selichos is listed on the Shabbos whose night begins Selichos (Ashkenaz).
-- **AB-05** *As built:* Yom Kippur Katan (optional) is not listed before Rosh Chodesh Tishrei, Cheshvan,
-  Teves or Iyar (common practice; not stated in MB 417:4), and moves to Thursday from
-  Friday/Shabbos (MB 417:4).
-- **AB-06** *As built:* BeHaB (optional) is the Monday, Thursday and Monday after the first Shabbos of
-  Cheshvan and of Iyar.
+- **AB-05** *As built (replaced by AB-37):* Yom Kippur Katan (optional) is not listed before Rosh
+  Chodesh Tishrei, Cheshvan, Teves or Iyar, and moves to Thursday from Friday/Shabbos (MB 417:4).
+- **AB-06** *As built (replaced by AB-38):* BeHaB (optional) is the Monday, Thursday and Monday after
+  the first Shabbos of Cheshvan and of Iyar.
 - **AB-07** *As built:* the molad is read as Jerusalem mean time at longitude 35.2354° E when turned
   into an instant (Kiddush Levana times).
 - **AB-08** *As built:* Tachanun defaults: no Tachanun from Erev Yom Kippur through the end of Tishrei,
-  and from Rosh Chodesh Sivan through 12 Sivan; both are options.
+  and from Rosh Chodesh Sivan through 12 Sivan; both are options. (After Sukkos, see D-14.)
 - **AB-09** *As built:* the Omer count text defaults to Nusach Ashkenaz wording; Sefard and Edot
   HaMizrach are options.
 - **AB-10** *As built:* zmanim default to sea-level sunrise and sunset (`useElevation: false`);
@@ -257,21 +218,21 @@ decided:** `'endOfTishrei'`, with the documentation corrected to cite both sides
 - **AB-12** *As built:* candle lighting defaults to 18 minutes; havdala and second-night candles to 8.5°.
 - **AB-13** *As built:* Mincha Gedola (Gra) is 6.5 seasonal hours after sunrise; "30 minutes" is after
   astronomical chatzos; chatzos is the solar transit.
-- **AB-14** *As built:* Plag HaMincha per the Levush is the Gra's calculation (Magen Avraham 233:3).
+- **AB-14** *As built (source replaced by AB-40):* Plag HaMincha per the Levush is the Gra's
+  calculation.
 - **AB-15** *As built:* fasts begin at alos 72 minutes (rounded down) and end at 7.083° by default.
 - **AB-16** *As built:* the Hebrew date at an instant changes at sunset by default (`hebrewDateAt`).
 - **AB-17** *As built:* the horizon dip for elevation uses the earth's mean radius, 6,371 km.
 - **AB-18** *As built:* high-latitude fallbacks (`nearestDay`, `halfNight`) are off by default.
 - **AB-19** *As built:* haftara defaults: Ashkenaz; Shabbos HaGadol's haftara always (Ashkenaz and
-  Sephardi), only when Erev Pesach is Shabbos (Chabad), never (Teimani); Ashkenazi Kedoshim
-  is Ezekiel 22:1-16 (Rema, ArtScroll, Ezras Torah luach) where some lists swap it with Amos.
+  Sephardi), only when Erev Pesach is Shabbos (Chabad), never (Teimani). (Kedoshim: see AB-44.)
 - **AB-20** *As built:* Daf HaShavua runs Sunday–Shabbos from 6 March 2005 (back-computed; low confidence).
 - **AB-21** *As built:* Mishna Yomis cycles before the 14th (2021) are counted back from it.
 - **AB-22** *As built:* Amud HaYomi returns null after Me'ilah 22a (2038) until Dirshu publishes how
   Kinnim, Tamid and Middos are learned.
-- **AB-23** *As built:* the built-in city table (about 150 places) was chosen for Luach: cities with
-  Jewish communities, plus the test cities for high latitude and the date line. Israeli
-  communities that GeoNames puts in Asia/Hebron are given Asia/Jerusalem, the time they keep.
+- **AB-23** *As built:* the built-in city table was chosen for Luach: cities with Jewish communities,
+  plus test cities for high latitude and the date line. Israeli communities that GeoNames puts
+  in Asia/Hebron are given Asia/Jerusalem, the time they keep. (Count: see AB-41.)
 - **AB-24** *As built:* place search ranks exact, prefix, transliteration-skeleton, then substring
   matches, with larger places first on ties.
 - **AB-25** *As built:* the day view's default zmanim are alos 72 min and 16.1°, misheyakir 11°,
@@ -288,8 +249,7 @@ decided:** `'endOfTishrei'`, with the documentation corrected to cite both sides
 - **AB-30** *As built:* the demo app opens on Jerusalem with Ashkenazi names until the user picks a
   place or language; its opinion pickers offer alos 72 min / 16.1° / 90 min; Shema Gra / MGA 72 /
   MGA 16.1° / Baal HaTanya; tzeis 8.5° / 7.083° / 50 min / Rabbeinu Tam (first of each is
-  selected). "Use my location" runs on the device only and keeps
-  nothing.
+  selected). "Use my location" runs on the device only and keeps nothing.
 - **AB-31** *As built:* Hebrew zman labels put a left-to-right mark after each degree sign so "16.1°"
   does not flip in right-to-left text.
 - **AB-32** *As built:* before 1.0, a patch release fixes bugs only; anything that changes an API, a
@@ -302,62 +262,62 @@ decided:** `'endOfTishrei'`, with the documentation corrected to cite both sides
   of conduct is Luach's own, short text.
 - **AB-36** *As built:* Pirkei Avos defaults to one chapter a week on the summer Shabbosim
   (`cycle: 'single'`); doubling up at the end is an option.
-- **AB-37** *As built (supersedes AB-05 as to its sources, 2026-10-21):* when
-  Erev Rosh Chodesh is Shabbos, Yom Kippur Katan is on Thursday (Magen Avraham 417:3: Rosh
-  Chodesh on Sunday, fast on Thursday; MB 417:4). When it is Friday the sources differ: Magen
-  Avraham 417:3 keeps it on Friday ("ואם חל ר"ח בשבת מתענין ביום ו'"); MB 417:4 says those who
-  say Selichos fast on Thursday and those who don't on Friday. Option `yomKippurKatanOnFriday`:
-  `'thursday'` (default, the behaviour before the option existed; @hebcal/core, the test oracle,
-  agrees) or `'friday'`. The default is a default, not a ruling. The exclusions are as before.
-- **AB-38** *As built (supersedes AB-06, 2026-10-21):* BeHaB is the Monday, Thursday and
-  Monday after the first Shabbos *after* Rosh Chodesh (MB 492:3, "שבת הראשון שאחר ר"ח"). When
-  1 Cheshvan or 1 Iyar is Shabbos, that Shabbos is Rosh Chodesh and is not counted (5785:
-  11, 14 and 18 November 2024, not 4, 7 and 11 November).
+- **AB-37** *As built (supersedes AB-05):* Yom Kippur Katan (optional) is not listed before Rosh
+  Chodesh Tishrei, Teves or Iyar, nor by default before Cheshvan (AB-59). When Erev Rosh
+  Chodesh is Shabbos, it is on Thursday (Magen Avraham 417:3: Rosh Chodesh on Sunday, fast on Thursday;
+  MB 417:4). When it is Friday the sources differ: Magen Avraham 417:3 keeps it on Friday ("ואם
+  חל ר"ח בשבת מתענין ביום ו'"); MB 417:4 says those who say Selichos fast on Thursday and those
+  who don't on Friday. Option `yomKippurKatanOnFriday`: `'thursday'` (default; @hebcal/core,
+  the test oracle, agrees) or `'friday'`. The default is a default, not a ruling.
+- **AB-38** *As built (supersedes AB-06):* BeHaB (optional) is the Monday, Thursday and Monday
+  after the first Shabbos *after* Rosh Chodesh Cheshvan and Iyar (MB 492:3, "שבת הראשון שאחר
+  ר"ח"). When 1 Cheshvan or 1 Iyar is Shabbos, that Shabbos is Rosh Chodesh and is not counted
+  (5785: 11, 14 and 18 November 2024).
 - **AB-39** *As built (adds to AB-12):* a place may carry its documented candle-lighting custom,
   and the day view (and so the CLI and iCal) uses it when the caller has not set
   `candleLightingMinutes`, labelled with the custom and its source. Set only where a source was
   read: Jerusalem 40 and Haifa 30 (Peninei Halakha, Shabbat 3:2; Jerusalem also Zemanim 13:5
-  n. 11). Not set: Zichron Yaakov 30 (not verified: no source found beyond other software's
-  settings); Petach Tikva 40 (one article by R. Eliezer Melamed, "Adding Sanctity to the
-  Sabbath", says so; his Peninei Halakha does not); the Shomron 30 (same article; a region, not
-  a city). Lu'ach Eretz Yisrael is reported to give Jerusalem 25 (not verified).
-- **AB-40** *As built (supersedes AB-14 as to its source, 2026-10-21):* Plag HaMincha per the
-  Levush is computed as the Gra's. The source is Levush OC 267 as reported in Biur Halacha 261:2
+  n. 11). Not set: Zichron Yaakov 30 (no source found beyond other software's settings);
+  Petach Tikva 40 (one article by R. Eliezer Melamed, "Adding Sanctity to the Sabbath", says
+  so; his Peninei Halakha does not); the Shomron 30 (same article; a region, not a city).
+  Lu'ach Eretz Yisrael is reported to give Jerusalem 25 (not verified).
+- **AB-40** *As built (supersedes AB-14 as to its source):* Plag HaMincha per the Levush is
+  computed as the Gra's. The source is Levush OC 267 as reported in Biur Halacha 261:2
   ("1¼ hours before sunset"); Magen Avraham 233:3 reads the Levush as counting from tzeis.
   See `docs/research/2026-10-21-citation-audit-zmanim.md`.
-- **AB-41** *As built (supersedes the count in AB-23):* the built-in table has 197 places: the
-  144 before plus 51 cities with Jewish communities from the retired implementation's table
-  (Toms River, Spring Valley, Queens, Boca Raton, Skokie, Salford, Durban, Calgary, Montevideo,
-  Brisbane, …) and Borough Park and Immanuel. Left out from that table: Cairo (almost no
-  community today) and Nazareth (Nof HaGalil would be the Jewish town; not added).
+- **AB-41** *As built (supersedes the count in AB-23):* the built-in table has 197 places,
+  including cities with Jewish communities such as Toms River, Spring Valley, Queens, Boca
+  Raton, Skokie, Salford, Durban, Calgary, Montevideo and Brisbane, and Borough Park and
+  Immanuel. Left out: Cairo (almost no community today) and Nazareth (Nof HaGalil would be
+  the Jewish town; not added).
 - **AB-42** *As built (adds to AB-24):* a transliteration match needs a skeleton of at least
   four consonants, and a skeleton-prefix match must cover three quarters of the name, so
-  "Tzfat", "Boro Park" and "Emmanuel" no longer find Zefta, a São Paulo district or Manila.
-  The full table carries the built-in table's spellings for the same GeoNames city and every
-  non-historic Hebrew name GeoNames has. The CLI takes a loose full-table match only when no
-  built-in place matches at all.
+  "Tzfat", "Boro Park" and "Emmanuel" find the right places and not Zefta, a São Paulo district
+  or Manila. The full table carries the built-in table's spellings for the same GeoNames city
+  and every non-historic Hebrew name GeoNames has. The CLI takes a loose full-table match only
+  when no built-in place matches at all.
 - **AB-43** *As built:* the CLI's `--city` searches the built-in places, then (only when none
   matches by name or prefix) the full table, loaded on demand; `--lat/--lon` need `--tz` (the
   computer's own zone is never assumed); `--elevation <m>` turns on elevation-adjusted sunrise
   and sunset (`useElevation`) and says so in the output.
-- **AB-44** *As built (supersedes the Kedoshim part of AB-19, 2026-10-21):* Ashkenazi Kedoshim
-  is Ezekiel 22:1-16, except when Acharei Mos's own haftara (Amos 9:7-15) was displaced: then
-  Kedoshim reads Amos 9:7-15 (MB 428:26, citing R. Akiva Eiger, who names Machar Chodesh; Luach
-  applies the same reason to Shabbos HaGadol and Rosh Chodesh). This is not a Rema-vs-Hertz
-  swap: `@hebcal/leyning` agrees, apart from ending Ezekiel 22 at 22:19.
-- **AB-45** *As built (2026-10-21):* Ashkenazi Shabbos Shuva adds Micah 7:18-20 when the parsha
-  is Vayelech and Joel 2:15-27 when it is Haazinu (the Dagul Mervava, MB 428:23), where it
-  always added Joel. Option `shuvaAddition`: `'micah'`, `'joel'` or `'both'` (Luach puts Joel
-  before Micah, in book order, which the MB does not specify).
-- **AB-46** *As built (2026-10-21):* haftara options `roshChodeshAv` (default `'affliction'`,
-  Shim'u, per MB 425:8 following the Gra; `'roshChodesh'`, Isaiah 66, which the Rema OC 425:1
-  calls primary where there is no custom) and `roshChodeshElul` (default by minhag as before;
+- **AB-44** *As built (supersedes the Kedoshim part of AB-19):* Ashkenazi Kedoshim is Ezekiel
+  22:1-16 (Rema, ArtScroll, Ezras Torah luach), except when Acharei Mos's own haftara (Amos
+  9:7-15) was displaced: then Kedoshim reads Amos 9:7-15 (MB 428:26, citing R. Akiva Eiger, who
+  names Machar Chodesh; Luach applies the same reason to Shabbos HaGadol and Rosh Chodesh).
+  `@hebcal/leyning` agrees, apart from ending Ezekiel 22 at 22:19.
+- **AB-45** *As built:* Ashkenazi Shabbos Shuva adds Micah 7:18-20 when the parsha is Vayelech
+  and Joel 2:15-27 when it is Haazinu (the Dagul Mervava, MB 428:23). Option `shuvaAddition`:
+  `'micah'`, `'joel'` or `'both'` (Luach puts Joel before Micah, in book order, which the MB
+  does not specify).
+- **AB-46** *As built:* haftara options `roshChodeshAv` (default `'affliction'`, Shim'u, per
+  MB 425:8 following the Gra; `'roshChodesh'`, Isaiah 66, which the Rema OC 425:1 calls
+  primary where there is no custom) and `roshChodeshElul` (default by minhag;
   `'consolation'` per the SA OC 425:1, `'roshChodesh'` per the Rema there, with Re'eh's
   haftara added on Ki Seitzei per MB 425:7).
-- **AB-47** *As built (adds to AB-36, 2026-10-21):* `pirkeiAvos` skips Shabbos Erev Tisha B'Av
-  (8 Av; Rema OC 553:2). With `until: 'shavuos'` (Kaf HaChaim 292:23) it reads chapters 1–6
-  before Shavuos; a seventh Shabbos (Israel, when Pesach begins on Shabbos) returns null, since
-  the source does not say what is read then.
+- **AB-47** *As built (adds to AB-36):* `pirkeiAvos` skips Shabbos Erev Tisha B'Av (8 Av; Rema
+  OC 553:2). With `until: 'shavuos'` (Kaf HaChaim 292:23) it reads chapters 1–6 before
+  Shavuos; a seventh Shabbos (Israel, when Pesach begins on Shabbos) returns null, since the
+  source does not say what is read then.
 - **AB-48** *As built:* in year 9999, the last supported year, answers that need a date in year
   10000 are left out rather than guessed: `readingCycle(9999)` stops at the last Shabbos of 9999
   (its joins still use the known weekday of 1 Tishrei 10000); `parshaFor` (and
@@ -378,8 +338,8 @@ decided:** `'endOfTishrei'`, with the documentation corrected to cite both sides
   (`docs/schema/` keeps an identical copy, checked by a test). Its `$id`, and `$schema` in
   every `dayInfo()` object, is
   `https://raw.githubusercontent.com/yskolnick/luach/main/schema/day.schema.json`, a URL that
-  serves the JSON (the earlier GitHub `blob/` URL served a web page). Every object in the schema
-  with a fixed shape, including `learning`, is closed (`additionalProperties: false`).
+  serves the JSON. Every object in the schema with a fixed shape, including `learning`, is
+  closed (`additionalProperties: false`).
 - **AB-53** *As built:* the import and licence checks read code with a small tokenizer of their
   own (`scripts/lib/js-scan.mjs`), fail on `createRequire`, computed `import()`/`require()` and
   devDependency names in strings, and check the built `dist/` for oracle text and package
@@ -398,9 +358,9 @@ decided:** `'endOfTishrei'`, with the documentation corrected to cite both sides
   (haircuts, weddings, meat and wine, laundry) only for customs the caller names: six Sefirah
   customs (SA, Rema and MB 493; Kaf HaChaim OC 493:13), Ashkenaz or Sephard for the Three Weeks
   (SA and Rema OC 551:2–4; MB 558:3–4), four meat-and-wine customs (SA OC 551:9; MB 551:58–59;
-  Kaf HaChaim OC 551:125), ending on 10 Av per SA or Rema OC 558:1. There is no default; with
-  no custom, `restrictions` is `null`, and a day the sources read do not settle is `null`. It
-  also gives `weekOfTishaBav` (none when 9 Av is Sunday or Shabbos, SA OC 551:4).
+  Kaf HaChaim OC 551:125), ending on 10 Av per SA or Rema OC 558:1. There is no default (D-15);
+  with no custom, `restrictions` is `null`, and a day the sources read do not settle is `null`.
+  It also gives `weekOfTishaBav` (none when 9 Av is Sunday or Shabbos, SA OC 551:4).
 - **AB-58** *As built (D-12):* Tachanun is omitted on Pesach Sheni by default
   (`pesachSheniTachanun: 'omit'`; Kaf HaChaim OC 131:98; Sha'arei Teshuvah 131:19; Aruch
   HaShulchan OC 131:12); `'say'` follows the Shulchan Aruch's list.
@@ -411,4 +371,4 @@ decided:** `'endOfTishrei'`, with the documentation corrected to cite both sides
 - **AB-60** *As built (D-12):* `amidahSeason` says "mashiv haruach" at Shacharis of the first
   day of Pesach (it changes at Musaf), and "morid hatal" by `nusach`: not for Ashkenaz outside
   Israel (Rema OC 114:3, the default), yes for other nusachos and in Israel (MB 114:3, 13;
-  Tashbetz Katan 101). Before, `moridHatal` was true all summer for everyone.
+  Tashbetz Katan 101).

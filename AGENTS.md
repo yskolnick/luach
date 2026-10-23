@@ -17,12 +17,14 @@ before starting.
    Defaults are documented as defaults. "Ask your rav. This library calculates; it does not rule."
 4. **Privacy.** No network, telemetry, `eval` or dynamic code in `src/`.
 5. **Yosef decides.** Proposals go in `DECISIONS.md` as P-nn with a default; questions as
-   Q-nn. A *Decided* entry needs his own words, quoted. Mark unchosen behaviour *As built*.
+   Q-nn. A *Decided* entry states the decision; his own words, quoted, go in the private
+   records repo (`DECISIONS-private.md`). Mark unchosen behaviour *As built*.
 6. **Records.** Every decision lands in `DECISIONS.md` in the same commit as the work;
    tooling/dependency/licence choices also get an ADR (`docs/decisions/`). Research goes in
    `docs/research/YYYY-MM-DD-topic.md` with sources; datasets in `docs/data-sources.md`.
-   Each session updates the public `LOG.md` (updates, decisions, open questions; nothing
-   personal). Personal notes and conversation records live in the private records repo.
+   Each session updates the public `LOG.md` with what changed, what was decided and what is
+   open. How the work was done (sessions, conversations, quotes, branch housekeeping,
+   mistakes along the way) goes only in the private records repo.
 7. **No secrets, tokens, session links or personal data** in this repo. Commit messages
    name the model that wrote the change (`Co-Authored-By:`) and may name the model that
    checked it (D-02); nothing else names a model.

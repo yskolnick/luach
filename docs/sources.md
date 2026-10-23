@@ -321,7 +321,7 @@ Development dependencies only; none ships in the package.
 
 ## Decisions
 
-Yosef Skolnick decides. A *Decided* entry quotes his words; a proposal (P) or question (Q)
+Yosef Skolnick decides. A *Decided* entry is his ruling; a proposal (P) or question (Q)
 carries a default that is in effect until he answers; *As built* marks choices nobody made
 explicitly. Full text: [`DECISIONS.md`](https://github.com/yskolnick/luach/blob/main/DECISIONS.md).
 
@@ -331,43 +331,42 @@ way](./rationale) (one section per entry).
 | Id | Decision | Status |
 |---|---|---|
 | [D-01](./rationale#d-01) | The name is Luach | Decided |
-| [D-02](./rationale#d-02) | Commits name the models that wrote and checked them; no session links | Decided |
+| [D-02](./rationale#d-02) | Commits name the models that wrote and checked them | Decided |
 | [D-03](./rationale#d-03) | A public project log | Decided |
 | [D-04](./rationale#d-04) | A rationale page tied to every decision | Decided |
 | [D-05](./rationale#d-05) | One implementation: `main` | Decided |
-| [D-06](./rationale#d-06) | Table-only learning cycles deferred (P-05) | Decided |
-| [D-07](./rationale#d-07) | The credit line (Q-02) | Decided |
-| [D-08](./rationale#d-08) | Modern Israeli days follow each law from its year (Q-05) | Decided |
-| [D-09](./rationale#d-09) | Accurate and source-based (Q-06) | Decided |
-| [D-10](./rationale#d-10) | Israel or the diaspora from the place (P-06) | Decided |
-| [D-11](./rationale#d-11) | The shared tables are frozen (P-08) | Decided |
+| [D-06](./rationale#d-06) | Table-only learning cycles wait until after 1.0 | Decided |
+| [D-07](./rationale#d-07) | The credit line | Decided |
+| [D-08](./rationale#d-08) | Modern Israeli days follow each law from its year | Decided |
+| [D-09](./rationale#d-09) | Accurate and source-based | Decided |
+| [D-10](./rationale#d-10) | Israel or the diaspora from the place | Decided |
+| [D-11](./rationale#d-11) | The shared tables are frozen | Decided |
 | [D-12](./rationale#d-12) | API clean-up before 1.0 | Decided |
 | [D-13](./rationale#d-13) | One zman costs 10.6 KB for 1.0 | Decided |
 | [D-14](./rationale#d-14) | Tachanun after Sukkos follows the place's custom | Decided |
 | [D-15](./rationale#d-15) | Mourning restrictions have no default | Decided |
-| [D-16](./rationale#d-16) | Yom Kippur Katan before Cheshvan stays off by default | Decided |
-| [Q-00](./rationale#q-00) | Unmerged branches | Open questions |
+| [D-16](./rationale#d-16) | Yom Kippur Katan before Cheshvan is off by default | Decided |
 | [Q-01](./rationale#q-01) | Licence: Apache-2.0 with NOTICE, or MIT | Open questions |
-| [Q-02](./rationale#q-02) | How credit should read | Open questions |
 | [Q-04](./rationale#q-04) | Anniversary rules (30 Adar I, 30 Cheshvan/Kislev defaults) | Open questions |
-| [Q-05](./rationale#q-05) | Modern Israeli days before their amendments | Open questions |
-| [Q-06](./rationale#q-06) | The example citation in the brief | Open questions |
 | [Q-07](./rationale#q-07) | Chabad on Shabbos HaChodesh or Chanukah before Rosh Chodesh | Open questions |
 | [P-01](./rationale#p-01) | Apache-2.0 with a NOTICE file | Proposals |
 | [P-02](./rationale#p-02) | Zero runtime dependencies; TypeScript, tsup, Vitest, ESLint | Proposals |
 | [P-03](./rationale#p-03) | Days counted from 1970-01-01; months numbered from Nisan | Proposals |
 | [P-04](./rationale#p-04) | Supported range: Hebrew years 1–9999, proleptic Gregorian | Proposals |
-| [P-05](./rationale#p-05) | Move table-only learning cycles after 1.0 | Proposals |
 | [P-06](./rationale#p-06) | What `isInIsrael` covers | Proposals |
 | [P-07](./rationale#p-07) | Per-module ESM output and name tables | Proposals |
-| [P-08](./rationale#p-08) | Freeze the shared tables | Proposals |
-| [P-09](./rationale#p-09) | Tachanun after Sukkos: which default | Proposals |
+| [Q-02](./rationale#q-02) | How credit should read | Settled |
+| [Q-05](./rationale#q-05) | Modern Israeli days before their amendments | Settled |
+| [Q-06](./rationale#q-06) | The combined citation for 72 minutes / 16.1° | Settled |
+| [P-05](./rationale#p-05) | Move table-only learning cycles after 1.0 | Settled |
+| [P-08](./rationale#p-08) | Freeze the shared tables | Settled |
+| [P-09](./rationale#p-09) | Tachanun after Sukkos: which default | Settled |
 | [AB-01](./rationale#ab-01) | `gematriya()` writes an exact multiple of 1000 like its units digit (א׳ is … | As built |
 | [AB-02](./rationale#ab-02) | `formatHebrewDate()` omits the year's thousands by default … | As built |
 | [AB-03](./rationale#ab-03) | Purim Meshulash is listed on 16 Adar (the Sunday, third of its three … | As built |
 | [AB-04](./rationale#ab-04) | Leil Selichos is listed on the Shabbos whose night begins Selichos … | As built |
-| [AB-05](./rationale#ab-05) | Yom Kippur Katan (optional) is not listed before Rosh Chodesh Tishrei, … | As built |
-| [AB-06](./rationale#ab-06) | BeHaB (optional) is the Monday, Thursday and Monday after the first Shabbos … | As built |
+| [AB-05](./rationale#ab-05) | Yom Kippur Katan (optional) is not listed before … | As built |
+| [AB-06](./rationale#ab-06) | BeHaB (optional) is the Monday, Thursday and Monday … | As built |
 | [AB-07](./rationale#ab-07) | the molad is read as Jerusalem mean time at longitude 35.2354° E when … | As built |
 | [AB-08](./rationale#ab-08) | Tachanun defaults: no Tachanun from Erev Yom Kippur through the end of … | As built |
 | [AB-09](./rationale#ab-09) | the Omer count text defaults to Nusach Ashkenaz wording; Sefard and … | As built |
@@ -375,7 +374,7 @@ way](./rationale) (one section per entry).
 | [AB-11](./rationale#ab-11) | rounding is on by default (earliest times up, deadlines … | As built |
 | [AB-12](./rationale#ab-12) | candle lighting defaults to 18 minutes; havdala and second-night candles to … | As built |
 | [AB-13](./rationale#ab-13) | Mincha Gedola (Gra) is 6.5 seasonal hours after sunrise; "30 minutes" is … | As built |
-| [AB-14](./rationale#ab-14) | Plag HaMincha per the Levush is the Gra's calculation (Magen Avraham … | As built |
+| [AB-14](./rationale#ab-14) | Plag HaMincha per the Levush is the … | As built |
 | [AB-15](./rationale#ab-15) | fasts begin at alos 72 minutes (rounded down) and end at 7.083° by … | As built |
 | [AB-16](./rationale#ab-16) | the Hebrew date at an instant changes at sunset by default … | As built |
 | [AB-17](./rationale#ab-17) | the horizon dip for elevation uses the earth's mean radius, 6,371 … | As built |
@@ -384,7 +383,7 @@ way](./rationale) (one section per entry).
 | [AB-20](./rationale#ab-20) | Daf HaShavua runs Sunday–Shabbos from 6 March 2005 (back-computed; low … | As built |
 | [AB-21](./rationale#ab-21) | Mishna Yomis cycles before the 14th (2021) are counted back from … | As built |
 | [AB-22](./rationale#ab-22) | Amud HaYomi returns null after Me'ilah 22a (2038) until Dirshu publishes … | As built |
-| [AB-23](./rationale#ab-23) | the built-in city table (about 150 places) was chosen for Luach: cities … | As built |
+| [AB-23](./rationale#ab-23) | the built-in city table was chosen for Luach: cities with Jewish … | As built |
 | [AB-24](./rationale#ab-24) | place search ranks exact, prefix, transliteration-skeleton, then … | As built |
 | [AB-25](./rationale#ab-25) | the day view's default zmanim are alos 72 min and 16.1°, misheyakir … | As built |
 | [AB-26](./rationale#ab-26) | the CLI prints Ashkenazi names by default (`--locale` changes … | As built |
@@ -398,17 +397,17 @@ way](./rationale) (one section per entry).
 | [AB-34](./rationale#ab-34) | the city-data files ship without source maps (they are generated tables), … | As built |
 | [AB-35](./rationale#ab-35) | security reports go through GitHub's private vulnerability reporting; the … | As built |
 | [AB-36](./rationale#ab-36) | Pirkei Avos defaults to one chapter a week on the summer … | As built |
-| [AB-37](./rationale#ab-37) | when | As built |
-| [AB-38](./rationale#ab-38) | BeHaB is the Monday, Thursday … | As built |
+| [AB-37](./rationale#ab-37) | Yom Kippur Katan (optional) is not listed before … | As built |
+| [AB-38](./rationale#ab-38) | BeHaB (optional) is the Monday, Thursday and … | As built |
 | [AB-39](./rationale#ab-39) | a place may carry its documented candle-lighting … | As built |
-| [AB-40](./rationale#ab-40) | Plag HaMincha per … | As built |
-| [AB-41](./rationale#ab-41) | the built-in table has 197 places: … | As built |
+| [AB-40](./rationale#ab-40) | Plag HaMincha per the Levush … | As built |
+| [AB-41](./rationale#ab-41) | the built-in table has 197 … | As built |
 | [AB-42](./rationale#ab-42) | a transliteration match needs a skeleton of at … | As built |
 | [AB-43](./rationale#ab-43) | the CLI's `--city` searches the built-in places, then (only when … | As built |
-| [AB-44](./rationale#ab-44) | Ashkenazi … | As built |
-| [AB-45](./rationale#ab-45) | Ashkenazi Shabbos Shuva adds Micah 7:18-20 when the … | As built |
-| [AB-46](./rationale#ab-46) | haftara options `roshChodeshAv` (default … | As built |
-| [AB-47](./rationale#ab-47) | `pirkeiAvos` skips Shabbos Erev Tisha … | As built |
+| [AB-44](./rationale#ab-44) | Ashkenazi Kedoshim is … | As built |
+| [AB-45](./rationale#ab-45) | Ashkenazi Shabbos Shuva adds Micah 7:18-20 when the parsha is … | As built |
+| [AB-46](./rationale#ab-46) | haftara options `roshChodeshAv` (default `'affliction'`, Shim'u, … | As built |
+| [AB-47](./rationale#ab-47) | `pirkeiAvos` skips Shabbos Erev Tisha B'Av (8 Av; … | As built |
 | [AB-48](./rationale#ab-48) | in year 9999, the last supported year, answers that need a date in … | As built |
 | [AB-49](./rationale#ab-49) | when turned on, `nearestDay` and `halfNight` replace … | As built |
 | [AB-50](./rationale#ab-50) | caller-supplied angles for havdala and second-night candles must be … | As built |

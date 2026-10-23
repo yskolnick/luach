@@ -14,8 +14,8 @@ examine the reasoning and correct it.
 This page was written by the AI coding assistant that built Luach. (Each commit names the
 model in its `Co-Authored-By:` line.) It records the assistant's reasoning so that people can
 check it. It is not a psak and decides nothing: **ask your rav. This library calculates; it
-does not rule.** Where Yosef Skolnick has decided something, his words are quoted in
-DECISIONS.md and marked *Decided*. Everything else is a proposal, an open question, or
+does not rule.** Where Yosef Skolnick has decided something, DECISIONS.md marks it
+*Decided*. Everything else is a proposal, an open question, or
 behaviour the code has that nobody has yet chosen (*As built*).
 :::
 
@@ -51,31 +51,29 @@ recorded as new entries; old ones are superseded, not erased.
 ### D-01. The name is Luach {#d-01}
 
 - **What it does:** the package is `luach` on npm; the repository is `yskolnick/luach`.
-- **Why:** Yosef chose it: "use luach".
+- **Why:** *luach* (לוח) is the Hebrew word for a printed calendar.
 - **Sources:** DECISIONS.md D-01. An unrelated package, `luach-picker`, is a date-picker
   widget; the README says so to avoid confusion.
-- **Checked against:** the npm registry (the name is registered to Yosef's account).
+- **Checked against:** the npm registry.
 - **Confidence:** Not applicable.
 - **Open:** nothing.
 
-### D-02. Commits name the models that wrote and checked them; no session links {#d-02}
+### D-02. Commits name the models that wrote and checked them {#d-02}
 
 - **What it does:** every commit ends with a `Co-Authored-By:` line naming the AI model that
-  wrote it, and may name the model that checked it. Links to private working sessions are
-  never published.
-- **Why:** Yosef: "since it is a public repo and we want transparency." The session links
-  pointed to private working sessions, which are not for the public.
+  wrote it, and may name the model that checked it.
+- **Why:** transparency: the code is public and largely AI-written, so readers can see which
+  model wrote and checked each change.
 - **Sources:** DECISIONS.md D-02.
-- **Checked against:** the history of `main` (no session links; model lines kept).
+- **Checked against:** the history of `main`.
 - **Confidence:** Not applicable.
-- **Open:** GitHub keeps each pull request's original commits; only GitHub Support can purge
-  the old links there.
+- **Open:** nothing.
 
 ### D-03. A public project log {#d-03}
 
 - **What it does:** [LOG.md](https://github.com/yskolnick/luach/blob/main/LOG.md) records each
-  working session's updates, decisions and open questions, with nothing personal.
-- **Why:** Yosef asked for updates and decisions to be "shown to people".
+  what changed, what was decided and what is still open.
+- **Why:** so people following the project can see its progress and what is still undecided.
 - **Sources:** DECISIONS.md D-03.
 - **Checked against:** nothing to check.
 - **Confidence:** Not applicable.
@@ -85,36 +83,30 @@ recorded as new entries; old ones are superseded, not erased.
 
 - **What it does:** this page. Every entry in DECISIONS.md has a section here, and a test
   fails if one is missing or lacks its sources and confidence.
-- **Why:** Yosef asked for "a document that scholars can look at and analyze and fix", tied
-  to every decision.
+- **Why:** so scholars can examine the reasoning behind every decision and correct it.
 - **Sources:** DECISIONS.md D-04.
 - **Checked against:** `test/rationale.test.ts`.
 - **Confidence:** Not applicable.
-- **Open:** the entries were written from the repository's research notes, code comments
-  and tests on 2026-10-21. Where the repository records no source, the entry says so rather
-  than supplying one.
+- **Open:** where the repository records no source, the entry says so rather than
+  supplying one.
 
 ### D-05. One implementation: `main` {#d-05}
 
-- **What it does:** keeps the implementation on `main` and ports into it what a second,
-  parallel implementation did better (yskolnick/luach#14). The second one stays on the branch
-  `archive/parallel-implementation-2026-10-21` for reference.
-- **Why:** Yosef: "Keep main and see where this code is better, add that". Three comparisons
-  (calendar and readings; zmanim and places; outputs and tooling) ran both on the same inputs
-  and against the oracles; each difference was decided by the primary source or the oracle,
-  not by which implementation wrote it.
-- **Sources:** DECISIONS.md D-05. The sources index, [Sources](./sources.md), came from the
-  same session: Yosef: "Write up a sources and decisions document about where times came
-  from and cite and source every decision and document etc. This is being built in public".
-- **Checked against:** every ported change has a test that failed before it; `npm run check`.
+- **What it does:** `main` is the only maintained implementation. An earlier prototype stays
+  on the branch `archive/parallel-implementation-2026-10-21` for reference.
+- **Why:** one codebase to test, document and review. Where the prototype handled a case
+  better, the change was brought into `main` with a test that failed first
+  (yskolnick/luach#14); each difference was settled by the primary source or the oracle.
+- **Sources:** DECISIONS.md D-05.
+- **Checked against:** `npm run check`.
 - **Confidence:** Not applicable.
-- **Open:** items found but not ported are listed in the pull request and the LOG.
+- **Open:** nothing.
 
-### D-06. Table-only learning cycles deferred {#d-06}
+### D-06. Table-only learning cycles wait until after 1.0 {#d-06}
 
 - **What it does:** five cycles that need a publisher's day-by-day table are not built for
   1.0 (see [P-05](#p-05)).
-- **Why:** Yosef: "defer for now". A guessed table would be wrong, and a publisher's table
+- **Why:** a guessed table would be wrong, and a publisher's table
   needs its permission.
 - **Sources:** DECISIONS.md D-06; [learning cycles](./research/2026-10-21-learning-cycles.md).
 - **Checked against:** nothing to check.
@@ -124,7 +116,7 @@ recorded as new entries; old ones are superseded, not erased.
 ### D-07. The credit line {#d-07}
 
 - **What it does:** NOTICE asks apps to show "Built on Luach by Yosef Skolnick".
-- **Why:** Yosef's choice.
+- **Why:** a short line an app can put on its About screen.
 - **Sources:** DECISIONS.md D-07.
 - **Checked against:** nothing to check.
 - **Confidence:** Not applicable.
@@ -133,7 +125,7 @@ recorded as new entries; old ones are superseded, not erased.
 ### D-08. Modern Israeli days follow each law from its year {#d-08}
 
 - **What it does:** see [Q-05](#q-05).
-- **Why:** Yosef accepted the rules as built, so a historical date matches what was observed.
+- **Why:** a historical date matches what was observed.
 - **Sources:** DECISIONS.md D-08; [modern Israeli days](./research/2026-10-21-modern-israeli-days.md).
 - **Checked against:** hebcal, every year 5660–6000 (differences explained).
 - **Confidence:** Medium (the Knesset's own PDFs could not be opened).
@@ -144,7 +136,7 @@ recorded as new entries; old ones are superseded, not erased.
 
 - **What it does:** closes Q-06, and sets the rule that where a source and a convenience
   differ, Luach follows the source and says so.
-- **Why:** Yosef: "We want accurate and source based unless i specifically say otherwise".
+- **Why:** accuracy over convenience is the project's first rule.
 - **Sources:** DECISIONS.md D-09; [Q-06](#q-06).
 - **Checked against:** the citation audits in `docs/research/`.
 - **Confidence:** Not applicable.
@@ -154,7 +146,7 @@ recorded as new entries; old ones are superseded, not erased.
 
 - **What it does:** when a caller gives a place but not `israel`, Luach decides with
   `isInIsrael`; without a place, the diaspora stays the default; an explicit option wins.
-- **Why:** Yosef chose "Infer Israel from the place". A user in Jerusalem who forgets the
+- **Why:** a user in Jerusalem who forgets the
   option should not get two days of Yom Tov.
 - **Sources:** DECISIONS.md D-10; the outline is [P-06](#p-06).
 - **Checked against:** the `isInIsrael` border tests, and tests that a place in Israel gives
@@ -165,7 +157,7 @@ recorded as new entries; old ones are superseded, not erased.
 ### D-11. The shared tables are frozen {#d-11}
 
 - **What it does:** the built-in tables cannot be changed by a caller.
-- **Why:** Yosef: "Yes, freeze them". A wrong zman is worse than a missing one, and a server
+- **Why:** a wrong zman is worse than a missing one, and a server
   shares one copy among users.
 - **Sources:** DECISIONS.md D-11; [P-08](#p-08).
 - **Checked against:** `test/immutability.test.ts`.
@@ -182,7 +174,7 @@ recorded as new entries; old ones are superseded, not erased.
   outputs, and the documented tables such as `ZMANIM` and `LOCAL_CANDLE_LIGHTING`). Removed:
   validation, raw calendar and solar arithmetic, rounding, search folding, iCal escaping and
   locale lookup helpers, none of which the guides, examples or demo app use.
-- **Why:** Yosef asked for all three before 1.0, when breaking changes cost least.
+- **Why:** before 1.0 is when breaking changes cost least.
 - **Sources:** DECISIONS.md D-12; [code audit](./research/2026-10-21-citation-audit-code.md).
 - **Checked against:** size budgets in CI; the public API test; the citation audits.
 - **Confidence:** Not applicable.
@@ -192,7 +184,7 @@ recorded as new entries; old ones are superseded, not erased.
 
 - **What it does:** keeps one way to compute zmanim, `ZmanimCalendar`. Importing it costs
   10.6 KB gzip, because a class carries all of its methods and their opinion texts.
-- **Why:** Yosef chose to keep it and revisit after 1.0. Luach is already about a quarter
+- **Why:** Luach is already about a quarter
   of the size of the other zmanim libraries, and a lighter route can be added later without
   breaking anyone; adding it now would grow the API just after it was trimmed.
 - **Sources:** DECISIONS.md D-13. Sizes measured with esbuild (minify, gzip) on one sunrise.
@@ -204,45 +196,35 @@ recorded as new entries; old ones are superseded, not erased.
 
 - **What it does:** `tefillahOn` omits Tachanun through Rosh Chodesh Cheshvan in Israel and
   through Isru Chag outside it, unless `tishreiTachanun` is given.
-- **Why:** Yosef chose "Match the customs". The Ashkenazi works resume after Isru Chag; the
+- **Why:** the Ashkenazi works resume after Isru Chag; the
   custom in Israel (and of the Sephardim) is the whole of Tishrei. Luach has no nusach option
   in `tefillahOn`, so the place decides and Sephardim abroad pass the option.
 - **Sources:** SA OC 131:7; Kitzur SA 22:8; Sha'arei Teshuvah 131:19; Aruch HaShulchan OC
   131:12; Kaf HaChaim OC 131:98 (citing Chaim Sha'al on the custom in Israel) (*verified*,
   Sefaria).
 - **Checked against:** `test/sourced-options.test.ts`.
-- **Confidence:** Medium: the reading of "Match the customs" is Luach's; the Israeli Ashkenazi
-  custom rests on Kaf HaChaim's report.
+- **Confidence:** Medium: the Israeli Ashkenazi custom rests on Kaf HaChaim's report.
 - **Open:** a `nusach` option for `tefillahOn`, if wanted.
 
 ### D-15. Mourning restrictions have no default {#d-15}
 
 - **What it does:** `mourningPeriods` gives `restrictions: null` unless a custom is named.
-- **Why:** Yosef chose no default; the customs differ too much to apply one silently.
+- **Why:** the customs differ too much to apply one silently.
 - **Sources:** DECISIONS.md D-15; the customs themselves are in [AB-57](#ab-57).
 - **Checked against:** `test/mourning.test.ts`.
 - **Confidence:** Not applicable.
 - **Open:** nothing.
 
-### D-16. Yom Kippur Katan before Cheshvan stays off by default {#d-16}
+### D-16. Yom Kippur Katan before Cheshvan is off by default {#d-16}
 
 - **What it does:** no Yom Kippur Katan before Cheshvan unless `yomKippurKatanCheshvan`.
-- **Why:** Yosef chose to keep it off; common printed calendars leave it out.
+- **Why:** common printed calendars leave it out.
 - **Sources:** DECISIONS.md D-16; Kaf HaChaim OC 417:16 for the option (*verified*).
 - **Checked against:** `test/sourced-options.test.ts`; the hebcal oracle.
 - **Confidence:** Low as to a source for the default; none was found.
 - **Open:** a source for leaving it out.
 
 ## Open questions
-
-### Q-00. Unmerged branches {#q-00}
-
-- **What it does:** lists branches with work not yet on `main` (see DECISIONS.md Q-00).
-- **Why:** so nobody loses track of unfinished work.
-- **Sources:** project process (AGENTS.md).
-- **Checked against:** the repository's branches.
-- **Confidence:** Not applicable.
-- **Open:** nothing.
 
 ### Q-01. Licence: Apache-2.0 with NOTICE, or MIT {#q-01}
 
@@ -252,15 +234,6 @@ recorded as new entries; old ones are superseded, not erased.
 - **Checked against:** the licence check in CI (`npm run check:licenses`).
 - **Confidence:** Not applicable.
 - **Open:** Yosef's choice.
-
-### Q-02. How credit should read {#q-02}
-
-- **What it does:** NOTICE says "Built on Luach by Yosef Skolnick".
-- **Why:** a short line an app can put on its About screen.
-- **Sources:** README, "How to credit".
-- **Checked against:** nothing to check.
-- **Confidence:** Not applicable.
-- **Open:** decided: [D-07](#d-07).
 
 ### Q-04. Anniversary rules {#q-04}
 
@@ -292,42 +265,6 @@ recorded as new entries; old ones are superseded, not erased.
   now a test oracle. New option `adarI` for one born in Adar I whose birthday falls in a leap
   year: `'levush'` (default; MB 55:43, "the consensus of the later authorities") or
   `'magen-avraham'` (MA 55:10, Adar II) (*verified*).
-
-### Q-05. Modern Israeli days before their amendments {#q-05}
-
-- **What it does:** the moving rules apply from the year each was adopted: Yom HaShoah
-  Friday → Thursday from 1959 and Sunday → Monday from 1997; Yom HaAtzmaut Monday → Tuesday
-  from 2004. These days are optional and off by default.
-- **Why:** a historical date should match what was observed that year.
-- **Sources:** [modern Israeli days](./research/2026-10-21-modern-israeli-days.md): the law
-  texts on Wikisource, the Knesset committee protocol of 11 March 1997 (Amendment No. 3),
-  and news and educational sources listed there.
-- **Checked against:** hebcal, every year 5660–6000 (differences explained in
-  [Accuracy](./accuracy.md)).
-- **Confidence:** Medium. The Knesset's own PDFs could not be opened.
-- **Open:**
-  - **Resolved 2026-10-21:** the Friday → Thursday rule for Yom HaShoah now applies from
-    1959, the year of the law, as the research note says; 1954 stays on Friday. Whether the
-    rule was in the 1959 law or added in 1961 is still unconfirmed (it affects no year: no
-    27 Nisan fell on Friday between 1959 and 1961).
-  - Not modelled: the 1954 date of Yom HaAtzmaut's Shabbos rule, and the uncertain 1950
-    date.
-
-### Q-06. The example citation in the brief {#q-06}
-
-- **What it does:** the zmanim table cites each part of "72 minutes / 16.1°" separately
-  instead of attributing both to the Magen Avraham.
-- **Why:** the research found the combined citation inaccurate:
-  - Magen Avraham OC 58:1 (with 233:3) says only that the day is counted from alos; it never
-    says "72 minutes" or "16.1°" (*verified*).
-  - 72 minutes is 4 mil of 18 minutes (Pesachim 94a; SA OC 459:2) (*verified*).
-  - 16.1° is a modern conversion of 72 minutes in Jerusalem at the equinox.
-  - Shulchan Aruch HaRav 89:1 gives no minutes; 459:10 makes a mil 24 minutes, which implies
-    96 (*verified*).
-- **Sources:** [zmanim opinions](./research/2026-10-21-zmanim-opinions.md).
-- **Checked against:** the primary texts on Sefaria.
-- **Confidence:** High.
-- **Open:** decided: [D-09](#d-09).
 
 ### Q-07. Chabad on Shabbos HaChodesh or Chanukah before Rosh Chodesh {#q-07}
 
@@ -390,19 +327,6 @@ recorded as new entries; old ones are superseded, not erased.
 - **Open:** dates before 1582 are proleptic Gregorian, not the Julian dates historians use;
   this is documented, not converted.
 
-### P-05. Move table-only learning cycles after 1.0 {#p-05}
-
-- **What it does:** Chofetz Chaim / Shemiras HaLashon yomi, Tanya yomi, the mitzvos of each
-  Sefer HaMitzvos day, the Schottenstein Yerushalmi cycle and Dirshu's Daf HaYomi B'Halacha
-  are not built.
-- **Why:** they cannot be computed from the structure of the text. Each needs a publisher's
-  day-by-day table, whose licence is unknown and which must be treated as copyrighted. For
-  Schottenstein, several tractate lengths were not found. A guess would be wrong.
-- **Sources:** [learning cycles](./research/2026-10-21-learning-cycles.md).
-- **Checked against:** nothing yet.
-- **Confidence:** High that they need tables.
-- **Open:** decided: deferred ([D-06](#d-06)).
-
 ### P-06. What `isInIsrael` covers {#p-06}
 
 - **What it does:** a simplified outline of where communities keep one day of Yom Tov: the
@@ -428,6 +352,66 @@ recorded as new entries; old ones are superseded, not erased.
   zmanim 9.4 KB, holidays 5.8 KB).
 - **Confidence:** Not applicable.
 - **Open:** nothing.
+
+## Settled
+
+### Q-02. How credit should read {#q-02}
+
+- **What it does:** NOTICE says "Built on Luach by Yosef Skolnick".
+- **Why:** a short line an app can put on its About screen.
+- **Sources:** README, "How to credit".
+- **Checked against:** nothing to check.
+- **Confidence:** Not applicable.
+- **Open:** decided: [D-07](#d-07).
+
+### Q-05. Modern Israeli days before their amendments {#q-05}
+
+- **What it does:** the moving rules apply from the year each was adopted: Yom HaShoah
+  Friday → Thursday from 1959 and Sunday → Monday from 1997; Yom HaAtzmaut Monday → Tuesday
+  from 2004. These days are optional and off by default.
+- **Why:** a historical date should match what was observed that year.
+- **Sources:** [modern Israeli days](./research/2026-10-21-modern-israeli-days.md): the law
+  texts on Wikisource, the Knesset committee protocol of 11 March 1997 (Amendment No. 3),
+  and news and educational sources listed there.
+- **Checked against:** hebcal, every year 5660–6000 (differences explained in
+  [Accuracy](./accuracy.md)).
+- **Confidence:** Medium. The Knesset's own PDFs could not be opened.
+- **Open:**
+  - **Resolved 2026-10-21:** the Friday → Thursday rule for Yom HaShoah now applies from
+    1959, the year of the law, as the research note says; 1954 stays on Friday. Whether the
+    rule was in the 1959 law or added in 1961 is still unconfirmed (it affects no year: no
+    27 Nisan fell on Friday between 1959 and 1961).
+  - Not modelled: the 1954 date of Yom HaAtzmaut's Shabbos rule, and the uncertain 1950
+    date.
+
+### Q-06. The combined citation for 72 minutes / 16.1° {#q-06}
+
+- **What it does:** the zmanim table cites each part of "72 minutes / 16.1°" separately
+  instead of attributing both to the Magen Avraham.
+- **Why:** the research found the combined citation inaccurate:
+  - Magen Avraham OC 58:1 (with 233:3) says only that the day is counted from alos; it never
+    says "72 minutes" or "16.1°" (*verified*).
+  - 72 minutes is 4 mil of 18 minutes (Pesachim 94a; SA OC 459:2) (*verified*).
+  - 16.1° is a modern conversion of 72 minutes in Jerusalem at the equinox.
+  - Shulchan Aruch HaRav 89:1 gives no minutes; 459:10 makes a mil 24 minutes, which implies
+    96 (*verified*).
+- **Sources:** [zmanim opinions](./research/2026-10-21-zmanim-opinions.md).
+- **Checked against:** the primary texts on Sefaria.
+- **Confidence:** High.
+- **Open:** decided: [D-09](#d-09).
+
+### P-05. Move table-only learning cycles after 1.0 {#p-05}
+
+- **What it does:** Chofetz Chaim / Shemiras HaLashon yomi, Tanya yomi, the mitzvos of each
+  Sefer HaMitzvos day, the Schottenstein Yerushalmi cycle and Dirshu's Daf HaYomi B'Halacha
+  are not built.
+- **Why:** they cannot be computed from the structure of the text. Each needs a publisher's
+  day-by-day table, whose licence is unknown and which must be treated as copyrighted. For
+  Schottenstein, several tractate lengths were not found. A guess would be wrong.
+- **Sources:** [learning cycles](./research/2026-10-21-learning-cycles.md).
+- **Checked against:** nothing yet.
+- **Confidence:** High that they need tables.
+- **Open:** decided: deferred ([D-06](#d-06)).
 
 ### P-08. Freeze the shared tables {#p-08}
 

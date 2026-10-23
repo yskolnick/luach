@@ -321,7 +321,7 @@ Development dependencies only; none ships in the package.
 
 ## Decisions
 
-Yosef Skolnick decides. A *Decided* entry quotes his words; a proposal (P) or question (Q)
+Yosef Skolnick decides. A *Decided* entry is his ruling; a proposal (P) or question (Q)
 carries a default that is in effect until he answers; *As built* marks choices nobody made
 explicitly. Full text: [`DECISIONS.md`](https://github.com/yskolnick/luach/blob/main/DECISIONS.md).
 
@@ -346,7 +346,6 @@ way](./rationale) (one section per entry).
 | [D-14](./rationale#d-14) | Tachanun after Sukkos follows the place's custom | Decided |
 | [D-15](./rationale#d-15) | Mourning restrictions have no default | Decided |
 | [D-16](./rationale#d-16) | Yom Kippur Katan before Cheshvan is off by default | Decided |
-| [Q-00](./rationale#q-00) | Branches | Open questions |
 | [Q-01](./rationale#q-01) | Licence: Apache-2.0 with NOTICE, or MIT | Open questions |
 | [Q-04](./rationale#q-04) | Anniversary rules (30 Adar I, 30 Cheshvan/Kislev defaults) | Open questions |
 | [Q-07](./rationale#q-07) | Chabad on Shabbos HaChodesh or Chanukah before Rosh Chodesh | Open questions |
@@ -358,7 +357,7 @@ way](./rationale) (one section per entry).
 | [P-07](./rationale#p-07) | Per-module ESM output and name tables | Proposals |
 | [Q-02](./rationale#q-02) | How credit should read | Settled |
 | [Q-05](./rationale#q-05) | Modern Israeli days before their amendments | Settled |
-| [Q-06](./rationale#q-06) | The example citation in the brief | Settled |
+| [Q-06](./rationale#q-06) | The combined citation for 72 minutes / 16.1° | Settled |
 | [P-05](./rationale#p-05) | Move table-only learning cycles after 1.0 | Settled |
 | [P-08](./rationale#p-08) | Freeze the shared tables | Settled |
 | [P-09](./rationale#p-09) | Tachanun after Sukkos: which default | Settled |

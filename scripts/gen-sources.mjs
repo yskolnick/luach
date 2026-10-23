@@ -211,7 +211,7 @@ export function render() {
   o += '\n';
 
   o += '## Decisions\n\n';
-  o += 'Yosef Skolnick decides. A *Decided* entry quotes his words; a proposal (P) or question (Q)\n';
+  o += 'Yosef Skolnick decides. A *Decided* entry is his ruling; a proposal (P) or question (Q)\n';
   o += 'carries a default that is in effect until he answers; *As built* marks choices nobody made\n';
   o += `explicitly. Full text: ${link('DECISIONS.md')}.\n\n`;
   o += 'Why each one was made, its sources and how confident the reasoning is: [Why it works this\n';

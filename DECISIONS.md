@@ -3,7 +3,7 @@
 Yosef Skolnick decides everything about Luach. This file records each decision and the state
 of everything not yet decided:
 
-- **Decided (D-nn):** a ruling, with Yosef's words quoted.
+- **Decided (D-nn):** a ruling by Yosef.
 - **Open question (Q-nn):** what is being asked, and what the code does until it is answered.
 - **Proposal (P-nn):** a recommendation, the reason for it, and the default in effect until
   Yosef decides.
@@ -21,95 +21,76 @@ is, and what would change it. A test fails if an entry has no rationale.
 ## Decided
 
 ### D-01. The name is Luach
-The npm package is `luach` and the repository is `yskolnick/luach`. Yosef: "use luach".
-Yosef has reserved the name on npm. An unrelated package, `luach-picker`, is a browser
-date-picker widget; Luach is a calculation library with no UI (see README).
+The npm package is `luach` and the repository is `yskolnick/luach`. An unrelated package,
+`luach-picker`, is a browser date-picker widget; Luach is a calculation library with no UI
+(see README).
 
 ### D-02. Commits name the models that wrote and checked them
-Yosef: "All commits on this repo can say which model worked on it and which checked it
-since it is a public repo and we want transparency." Each commit ends with a
-`Co-Authored-By:` line naming the model that wrote the change, and may add a line naming the
-model that checked it. Nothing else in the repository names a model. Links to private
-working sessions are never published; they were removed from the history of `main` on
-2026-10-21 (see LOG.md).
+Each commit ends with a `Co-Authored-By:` line naming the AI model that wrote the change, and
+may add a line naming the model that checked it. Nothing else in the repository names a model.
 
 ### D-03. A public project log
-Yosef: "Nothing personal at all should be there but updates and decisions that are relevant
-should be shown to people". `LOG.md` records each working session's updates, decisions and
-open questions. Personal notes stay in a private records repository.
+[LOG.md](LOG.md) records what changed, what was decided and what is still open.
 
 ### D-04. A rationale page tied to every decision
-Yosef: "This should tie to every decision. It should be a document that scholars can look
-at ... and fix". [docs/rationale.md](docs/rationale.md) has one section per entry in this
-file: what the code does, why, the sources (with how far each was verified), what it was
-checked against, a confidence level, and what is open. A test fails if any entry lacks a
-section. Scholars challenge an entry with the "Challenge a decision or source" issue
-template.
+[docs/rationale.md](docs/rationale.md) has one section per entry in this file: what the code
+does, why, the sources (with how far each was verified), what it was checked against, a
+confidence level, and what is open. A test fails if any entry lacks a section.
+[docs/sources.md](docs/sources.md), generated from the code, indexes every source. Scholars
+challenge an entry with the "Challenge a decision or source" issue template.
 
 ### D-05. One implementation: `main`
-Two implementations of Luach were built on 2026-10-21. Yosef: "Keep main and see where this
-code is better, add that". The second is kept for reference on the branch
-`archive/parallel-implementation-2026-10-21`; what it did better was ported to `main`
-(yskolnick/luach#14), each change with its tests. The same review produced
-[docs/sources.md](docs/sources.md), generated from the code. Yosef: "cite and source every
-decision ... This is being built in public".
+`main` is the only maintained implementation. An earlier prototype is kept for reference on
+the branch `archive/parallel-implementation-2026-10-21` and is not to be merged.
 
 ### D-06. Table-only learning cycles wait until after 1.0
-Yosef, on P-05: "defer for now". Chofetz Chaim / Shemiras HaLashon yomi, Tanya yomi, the
-mitzvos of each Sefer HaMitzvos day, the Schottenstein Yerushalmi cycle and Dirshu's Daf
-HaYomi B'Halacha need publishers' day-by-day tables and are not part of 1.0.
+Chofetz Chaim / Shemiras HaLashon yomi, Tanya yomi, the mitzvos of each Sefer HaMitzvos day,
+the Schottenstein Yerushalmi cycle and Dirshu's Daf HaYomi B'Halacha need publishers'
+day-by-day tables and are not part of 1.0 (P-05).
 
 ### D-07. The credit line
-Yosef chose "Built on Luach by Yosef Skolnick", the wording in NOTICE and README.
+Apps credit Luach with "Built on Luach by Yosef Skolnick", the wording in NOTICE and README.
 
 ### D-08. Modern Israeli days follow each law from its year
-Yosef approved the rules as built: each moving rule applies from the year it was adopted
-(Yom HaShoah Friday → Thursday from 1959, Sunday → Monday from 1997; Yom HaAtzmaut Monday →
-Tuesday from 2004).
+Each moving rule applies from the year it was adopted (Yom HaShoah Friday → Thursday from
+1959, Sunday → Monday from 1997; Yom HaAtzmaut Monday → Tuesday from 2004).
 
 ### D-09. Accurate and source-based
-Yosef: "We want accurate and source based". Where the sources and a convenience differ,
-Luach follows the sources and says so. Applied first to Q-06: Luach cites each part of
-"72 minutes / 16.1°" separately, as the texts say.
+Where the sources and a convenience differ, Luach follows the sources and says so. Applied
+first to Q-06: Luach cites each part of "72 minutes / 16.1°" separately, as the texts say.
 
 ### D-10. Israel or the diaspora from the place
-Yosef chose "Infer Israel from the place". When a caller gives a place and does not say
-Israel or the diaspora, Luach decides from the place with `isInIsrael`. With no place, the
-diaspora is the default, as documented. An explicit `israel` option always wins.
+When a caller gives a place and does not say Israel or the diaspora, Luach decides from the
+place with `isInIsrael`. With no place, the diaspora is the default, as documented. An
+explicit `israel` option always wins.
 
 ### D-11. The shared tables are frozen
-Yosef, on P-08: "Yes, freeze them". The tables listed in P-08 are frozen where they are built.
+The tables listed in P-08 are frozen where they are built.
 
 ### D-12. API clean-up before 1.0
-Yosef set three goals for 1.0: a smaller bundle cost for a single zman; no internal helpers
-in the public API; and a source or an option for every halachic rule the code audit found
-without a source. All three are settled: D-13 for the bundle; the public API went from 149
-names to 96; and AB-57 to AB-60 for the sources and options.
+Three goals for 1.0: a smaller bundle cost for a single zman; no internal helpers in the
+public API; and a source or an option for every halachic rule the code audit found without a
+source. All three are settled: D-13 for the bundle; the public API went from 149 names to 96;
+and AB-57 to AB-60 for the sources and options.
 
 ### D-13. One zman costs 10.6 KB for 1.0
-Yosef chose "Keep 10.6 KB; revisit after 1.0". Measured on 2026-10-21 (one sunrise, minified
-and gzipped): Luach 10.6 KB, `@hebcal/core` 44.8 KB, `kosher-zmanim` 49.0 KB. A lighter route
-(importable definitions computed by one function) would only add to the API, so it can come
-later without breaking anyone (ROADMAP OUT-12). This settles the bundle part of D-12.
+Measured on 2026-10-21 (one sunrise, minified and gzipped): Luach 10.6 KB, `@hebcal/core`
+44.8 KB, `kosher-zmanim` 49.0 KB. A lighter route (importable definitions computed by one
+function) would only add to the API, so it can come after 1.0 without breaking anyone
+(ROADMAP OUT-12).
 
 ### D-14. Tachanun after Sukkos follows the place's custom
-Yosef chose "Match the customs". By default Tachanun resumes after the end of Tishrei
-(`'endOfTishrei'`) in Israel and after Isru Chag (`'isruChag'`) outside it (Kaf HaChaim OC
-131:98; Sha'arei Teshuvah 131:19; Aruch HaShulchan OC 131:12). Sephardim outside Israel pass
-`'endOfTishrei'`. Settles P-09.
+By default Tachanun resumes after the end of Tishrei (`'endOfTishrei'`) in Israel and after
+Isru Chag (`'isruChag'`) outside it (Kaf HaChaim OC 131:98; Sha'arei Teshuvah 131:19; Aruch
+HaShulchan OC 131:12). Sephardim outside Israel pass `'endOfTishrei'`. Settles P-09.
 
 ### D-15. Mourning restrictions have no default
-Yosef chose "No default": `mourningPeriods` reports restrictions only for a custom the caller
-names (AB-57).
+`mourningPeriods` reports restrictions only for a custom the caller names (AB-57).
 
 ### D-16. Yom Kippur Katan before Cheshvan is off by default
-Yosef chose "Keep it off": `yomKippurKatanCheshvan` turns it on (AB-59).
+`yomKippurKatanCheshvan` turns it on (AB-59).
 
 ## Open questions
-
-### Q-00. Branches
-All work is on `main`. `archive/parallel-implementation-2026-10-21` is kept for reference
-(D-05) and is not to be merged. The other branches on GitHub are merged and can be deleted.
 
 ### Q-01. Licence: Apache-2.0 with NOTICE, or MIT
 See P-01. **Until decided:** Apache-2.0 with a `NOTICE` file.
@@ -136,8 +117,6 @@ When Shabbos HaChodesh is 29 Adar, or a Shabbos of Chanukah is 29 Kislev, Rosh C
 Sunday. Chabad adds the first and last verses of Machar Chodesh after Shekalim in that case
 (`shekalim-machar-chodesh`), but Luach found no source for whether it does so after
 HaChodesh or the Chanukah haftara. **Until decided:** no verses are added.
-
-(Q-03 is not about Luach and is kept with the project's private records.)
 
 ## Proposals
 
@@ -185,8 +164,8 @@ from 2004. Not modelled: the 1954 date of the Shabbos → Thursday rule for Yom 
 (applied from 1949), and the uncertain 1950 date. The 7 October memorial day (24 Tishrei) is
 not built yet (HOL-16). These days are optional and off by default.
 
-### Q-06. The example citation in the brief
-Settled by D-09. The brief's example, "Magen Avraham, 72 minutes as 16.1°; Shulchan Aruch
+### Q-06. The combined citation for 72 minutes / 16.1°
+Settled by D-09. The citation "Magen Avraham, 72 minutes as 16.1°; Shulchan Aruch
 Harav 89:1", is only partly accurate (`docs/research/2026-10-21-zmanim-opinions.md`): the
 Magen Avraham (OC 58:1) says the day runs from alos, not 72 minutes or 16.1°; 72 minutes is
 4 mil of 18 minutes (Pesachim 94a; SA OC 459:2); 16.1° is a modern Jerusalem-equinox

@@ -6,7 +6,7 @@ All notable changes for users of the `luach` package. This project follows
 ## Unreleased
 
 ### Documentation
-- The README now opens with a notice that Luach was written entirely by AI and may contain
+- The README now opens with a notice that Luach was built mostly by AI and may contain
   mistakes, and the package description says so too.
 
 ## 0.1.0 — 2026-10-24

@@ -1,4 +1,4 @@
-// The request handler for server.mjs, separate so it can be tested without a socket.
+// The request handler for server.mjs, kept separate from the socket.
 import { dayInfo, toICalendar, getPlace, searchPlaces, isInIsrael, parseIsoDate, civilDateAt, civilToDays } from '../../dist/index.js';
 
 // A public endpoint should not compute (or send) years of events per request: with a

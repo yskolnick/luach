@@ -11,7 +11,7 @@ shema.source;        // "Shulchan Aruch OC 58:1; Mishna Berura 58:4"
 shema.rounded;       // "down"
 ```
 
-There is one named method per opinion — see the [full table with sources](/halacha/zmanim).
+There is one named method per opinion — see the [full table with sources](../halacha/zmanim.md).
 Every method returns a `Zman`: `{ id, time, opinion, source, rounded, reason?, fallback? }`
 and `toJSON()`.
 

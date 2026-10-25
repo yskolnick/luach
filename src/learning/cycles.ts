@@ -2,8 +2,7 @@
  * Daily learning cycles other than Daf Yomi Bavli (see ./bavli.ts).
  *
  * Every cycle is computed from its start date and the structure of its text; no day-by-day
- * tables. Start dates and rules: docs/research/2026-10-21-learning-cycles.md. Learning
- * days are civil days, as the cycles' calendars print them.
+ * tables. Learning days are civil days, as the cycles' calendars print them.
  *
  * Not included (they need published day-by-day tables; ROADMAP LRN-06–LRN-08): Chofetz
  * Chaim and Shemiras HaLashon yomi, Tanya yomi, the mitzvos of each Sefer HaMitzvos day,
@@ -260,7 +259,7 @@ export function rambamThreeChapters(date: HebrewDate | number): LearningPortion 
 
 /**
  * The day number of Sefer HaMitzvos (Chabad), which runs in parallel with the
- * three-chapter Rambam cycle (Day 1 is that cycle's first day; chabad.org shows "Day 1" on
+ * three-chapter Rambam cycle (Day 1 is that cycle's first day; Day 1 fell on
  * 1 March 2025, the start of a three-chapter cycle). The mitzvos for each day come from a
  * published table that Luach does not ship.
  */

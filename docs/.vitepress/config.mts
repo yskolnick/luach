@@ -14,6 +14,7 @@ export default defineConfig({
     nav: [
       { text: 'Guide', link: '/guide/getting-started' },
       { text: 'Zmanim sources', link: '/halacha/zmanim' },
+      { text: 'Halachic choices', link: '/halacha/choices' },
       { text: 'Sources', link: '/sources' },
       { text: 'Accuracy', link: '/accuracy' },
       { text: 'API', link: '/api/' },
@@ -41,6 +42,7 @@ export default defineConfig({
           items: [
             { text: 'Notes', link: '/halacha/' },
             { text: 'Zmanim and sources', link: '/halacha/zmanim' },
+            { text: 'Halachic choices and calculations', link: '/halacha/choices' },
                 ],
         },
         {

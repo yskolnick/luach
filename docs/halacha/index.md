@@ -7,6 +7,8 @@ it is written; every custom that commonly differs is an option; and every defaul
 as a default, never as "the" correct answer.
 
 - [Zmanim: every opinion and its source](./zmanim)
+- [Halachic choices and calculations](./choices): every place Luach chose between opinions,
+  customs or ways to calculate, with its sources, its confidence, and what is open.
 - The calendar follows the Rambam, Hilchos Kiddush HaChodesh 6–8 (molad, the 19-year cycle,
   the four dechiyos, year types).
 - Holidays and fasts cite the Shulchan Aruch where they are moved (SA OC 549–550, 552:10,

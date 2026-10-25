@@ -15,12 +15,16 @@ starting.
 3. **The library rules on nothing halachic.** Every zman names its opinion and source.
    Defaults are documented as defaults. "Ask your rav. This library calculates; it does not rule."
 4. **Privacy.** No network, telemetry, `eval` or dynamic code in `src/`.
-5. **Nothing private in this repo.** No decisions, logs, discussions, conversation records,
-   rationale notes, decision numbers, personal data, secrets, tokens or session links: not in
-   files, comments, commit messages or pull requests. Every conversation, log entry,
-   decision, rationale note and architecture record always goes in the owner's private
-   records repository, `luach-records`, and nowhere else. Research notes here hold sources
-   and findings only.
+5. **What is public here, and what is not.** This repo is the release: the code, the
+   sources, and the halachic choices and calculations, so others can see what is there, ask
+   about it and correct it (`docs/halacha/choices.md`, `docs/halacha/zmanim.md`,
+   `docs/sources.md`, `docs/accuracy.md`, research notes with their sources). Each choice is
+   stated as what Luach does, why, its sources, what it was checked against, how confident
+   the reasoning is, and what is open. Nothing else: no conversations, logs, project or
+   process decisions, decision numbers, quotes of the owner, personal data, secrets, tokens
+   or session links, in files, comments, commit messages or pull requests. Those always go in
+   the owner's private records repository, `luach-records`, which also holds a full copy of
+   everything here.
 6. **Sources.** Research goes in `docs/research/YYYY-MM-DD-topic.md` with sources; datasets
    in `docs/data-sources.md`.
 7. **Small green commits,** a branch per milestone, PR, merge when CI is green.

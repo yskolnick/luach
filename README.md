@@ -74,7 +74,9 @@ outputs, right-to-left text, React Native), every zman with its source, the accu
 reports and the API reference. Build and open it with `npm run docs:dev`. Runnable examples
 are in `examples/`; a demo app is in `apps/demo/`.
 
-Luach is built in public. [Sources](docs/sources.md) lists where every time,
+Luach is built in public. [Halachic choices and calculations](docs/halacha/choices.md) explains
+every choice between opinions, customs or ways to calculate, with its sources and what is open;
+[Sources](docs/sources.md) lists where every time,
 rule, table and default comes from, with a link to each citation in the code.
 
 ## How to credit

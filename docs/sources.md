@@ -7,15 +7,8 @@ aside: false
 > Ask your rav. This library calculates; it does not rule.
 
 Luach is built in public. This page says where every time, rule, table and default comes
-from, so anyone can check it. Most of it is generated from the code by
-`scripts/gen-sources.mjs`, and a test fails if it falls out of date.
-
-The **Audit** column records an independent second check of each zman's citations against
-the texts (`docs/research/2026-10-21-citation-audit-zmanim.md`, data in
-`docs/research/data/citation-audit-zmanim.json`): **checked** means the passage was read and
-says what Luach claims; **corrected** means the check found a problem and the source was
-fixed; **part from a secondary source** means a modern work citing it was read instead;
-**part not verified** means part of the source could not be read, and the source says so.
+from, so anyone can check it. Most of it is generated from
+the code.
 
 ## How a time is calculated
 
@@ -43,100 +36,97 @@ fixed; **part from a secondary source** means a modern work citing it was read i
 8. **A second algorithm** for cross-checking: the US Naval Observatory's *Almanac for
    Computers* (1990, public domain). Code: [`src/zmanim/usno.ts`](https://github.com/yskolnick/luach/blob/main/src/zmanim/usno.ts).
 
-Accuracy against independent implementations is in [accuracy](./accuracy) and
-[zmanim accuracy](./accuracy-zmanim).
 
 ## Every zman and its source
 
-Generated from [`src/zmanim/opinions.ts`](https://github.com/yskolnick/luach/blob/main/src/zmanim/opinions.ts). The research behind them is in
-[`docs/research/2026-10-21-zmanim-opinions.md`](https://github.com/yskolnick/luach/blob/main/docs/research/2026-10-21-zmanim-opinions.md).
+Generated from [`src/zmanim/opinions.ts`](https://github.com/yskolnick/luach/blob/main/src/zmanim/opinions.ts).
 
-| Id | Opinion | Source | Rounding | Audit |
-|---|---|---|---|---|
-| `sunrise` | Sunrise (netz hachama), at sea level unless the calculator's useElevation is on | Berachos 9b; Shulchan Aruch OC 58:1 | up | checked |
-| `sunrise-sea-level` | Sunrise at sea level (upper limb at the horizon, standard refraction) | NOAA Solar Calculator; sea-level practice: R. Isser Zalman Meltzer, cited in Peninei Halakha, Tefilla 11:6 n. 7 | up | part from a secondary source, part not verified |
-| `sunrise-elevation` | Sunrise adjusted for the observer's elevation (lower horizon, earlier) | Zmanim KeHilchasam (R. Bursztyn), ch. 2 §§7, 9: elevation for sunrise and sunset only (not verified: the book was not read) | up | part not verified |
-| `sunrise-visible` | Visible sunrise over the actual terrain (netz hanireh) | Divrei Yosef; Maharil Diskin (cited in Peninei Halakha, Tefilla 11). Needs terrain data: not computed | up | part from a secondary source |
-| `sunset` | Sunset (shkiah), at sea level unless the calculator's useElevation is on | Shabbos 34b–35a; Shulchan Aruch OC 261:2 | down | checked |
-| `sunset-sea-level` | Sunset at sea level | NOAA Solar Calculator | down | part not verified |
-| `sunset-elevation` | Sunset adjusted for the observer's elevation (later) | Zmanim KeHilchasam (R. Bursztyn), ch. 2 §§7, 9 (not verified: the book was not read) | down | part not verified |
-| `chatzos` | Midday: the sun on the meridian (astronomical transit) | Magen Avraham OC 233:4 | down | checked |
-| `chatzos-halayla` | Midnight: halfway between one transit and the next | Berachos 3b; Mishna Berura 1:9 (midnight is twelve hours after midday) | down | checked, corrected |
-| `alos-72` | Dawn 72 fixed minutes before sunrise (4 mil of 18 minutes) | Pesachim 94a; Shulchan Aruch OC 459:2; Magen Avraham 89:2 | up | checked |
-| `alos-90` | Dawn 90 fixed minutes before sunrise (4 mil of 22.5 minutes) | Pesachim 94a; Biur Halacha 459:2 | up | checked |
-| `alos-96` | Dawn 96 fixed minutes before sunrise (4 mil of 24 minutes) | Pesachim 94a; Magen Avraham 89:2; Shulchan Aruch HaRav 459:10 | up | checked |
-| `alos-120` | Dawn 120 fixed minutes before sunrise (5 mil of 24 minutes; a stringency) | Pesachim 93b (Ulla: 5 mil, refuted on 94a); Magen Avraham 89:2 (5 mil reckoned as two hours, as a stringency) | up | corrected, checked |
-| `alos-72-zmaniyos` | Dawn 72 proportional minutes (1.2 seasonal hours of the Gra day) before sunrise | Rambam, Peirush HaMishnayos Berachos 1:1 (an hour and a fifth of seasonal hours); Pesachim 94a | up | checked |
-| `alos-90-zmaniyos` | Dawn 90 proportional minutes (1.5 seasonal hours) before sunrise | Pesachim 94a; Biur Halacha 459:2 | up | checked |
-| `alos-96-zmaniyos` | Dawn 96 proportional minutes (1.6 seasonal hours) before sunrise | Pesachim 94a; Magen Avraham 89:2 | up | checked |
-| `alos-120-zmaniyos` | Dawn 120 proportional minutes (2 seasonal hours) before sunrise (a stringency) | Pesachim 93b (Ulla: 5 mil, refuted on 94a); Magen Avraham 89:2 (5 mil reckoned as two hours) | up | corrected |
-| `alos-16.1` | Dawn when the sun is 16.1° below the horizon: 72 minutes before sunrise in Jerusalem at the equinox | Yechave Daas 2:8 (cited in Peninei Halakha, Tefilla 11:2); 72 minutes per Pesachim 94a | up | checked, part from a secondary source |
-| `alos-18` | Dawn at 18° (astronomical twilight) | Astronomical dawn (cited in Peninei Halakha, Tefilla 11) | up | part from a secondary source |
-| `alos-19.8` | Dawn at 19.8°: 90 minutes before sunrise in Jerusalem at the equinox | Computed: the sun's depression 90 minutes before sunrise in Jerusalem at the equinox; 90 minutes per Biur Halacha 459:2. Peninei Halakha, Tefilla 11:2 gives 19.75° and cautions against relying on such calendars | up | checked, corrected |
-| `alos-26` | Dawn at 26°: about 120 minutes before sunrise in Jerusalem at the equinox (a stringency) | Computed: the sun's depression 120 minutes before sunrise in Jerusalem at the equinox; 120 minutes per Magen Avraham 89:2 (5 mil) | up | corrected |
-| `alos-baal-hatanya` | Dawn of the Baal HaTanya, 16.9° below the horizon | Shulchan Aruch HaRav OC 89:1; 16.9° as calculated in Chabad practice | up | checked, part from a secondary source |
-| `misheyakir-10.2` | Misheyakir at 10.2° | Berachos 9b; Shulchan Aruch OC 18:3; 10.2° as published in a luach that names no source; attributed elsewhere to Kovetz Otzros Yerushalayim (not verified) | up | checked, part from a secondary source, corrected |
-| `misheyakir-11` | Misheyakir at 11° | Berachos 9b; Shulchan Aruch OC 18:3; Peninei Halakha, Tefilla 11 | up | checked, part from a secondary source |
-| `misheyakir-11.5` | Misheyakir at 11.5° (custom of Eretz Yisrael) | Berachos 9b; Shulchan Aruch OC 18:3; 11.5° as the custom of Eretz Yisrael per a published luach (secondary; not verified) | up | checked |
-| `misheyakir-12.85` | Misheyakir at 12.85° | Berachos 9b; Shulchan Aruch OC 18:3; 12.85° attributed to Birur Halacha (R. Zilber) OC 18 (not verified) | up | checked, part not verified |
-| `sof-zman-shema-gra` | Latest Shema, Gra: 3 seasonal hours of a sunrise-to-sunset day | Shulchan Aruch OC 58:1; Mishna Berura 58:4 | down | checked |
-| `sof-zman-shema-mga-72` | Latest Shema, Magen Avraham: 3 seasonal hours of a day from alos to tzeis, 72 fixed minutes | Magen Avraham OC 58:1, 233:3; Mishna Berura 58:4; 72 min = 4 mil × 18 min (Pesachim 94a; SA OC 459:2) | down | checked |
-| `sof-zman-shema-mga-90` | Latest Shema, Magen Avraham with 90 fixed minutes | Magen Avraham OC 58:1; Mishna Berura 58:4; Biur Halacha 459:2 | down | checked |
-| `sof-zman-shema-mga-72-zmaniyos` | Latest Shema, Magen Avraham with 72 proportional minutes | Magen Avraham OC 58:1; Mishna Berura 58:4 | down | checked |
-| `sof-zman-shema-mga-90-zmaniyos` | Latest Shema, Magen Avraham with 90 proportional minutes | Magen Avraham OC 58:1; Mishna Berura 58:4 | down | checked |
-| `sof-zman-shema-mga-16.1` | Latest Shema, Magen Avraham, day from alos to tzeis at 16.1° | Magen Avraham OC 58:1; Mishna Berura 58:4; 16.1° = Jerusalem equinox equivalent of 72 minutes (Peninei Halakha, Tefilla 11:2 n. 1) | down | checked, corrected |
-| `sof-zman-shema-baal-hatanya` | Latest Shema, Baal HaTanya: 3 seasonal hours of a day from netz amiti to shkia amitis (sun 1.583° below the horizon) | Shulchan Aruch HaRav OC 443:4; 1.583° as calculated in Chabad practice | down | checked, part from a secondary source |
-| `sof-zman-shema-ateret-torah` | Latest Shema, Ateret Torah: day from alos (72 proportional minutes) to tzeis (40 minutes after sunset) | Ateret Torah luach (Chacham Yosef Harari-Raful); not verified against a printed source | down | part not verified |
-| `sof-zman-tefilla-gra` | Latest Shacharis, Gra: 4 seasonal hours of a sunrise-to-sunset day | Shulchan Aruch OC 89:1; Mishna Berura 58:4 | down | checked |
-| `sof-zman-tefilla-mga-72` | Latest Shacharis, Magen Avraham, 72 fixed minutes | Shulchan Aruch OC 89:1 (until the end of the fourth hour); the day from alos to tzeis: Magen Avraham OC 58:1, Mishna Berura 58:4 | down | corrected, checked |
-| `sof-zman-tefilla-mga-90` | Latest Shacharis, Magen Avraham, 90 fixed minutes | Shulchan Aruch OC 89:1 (until the end of the fourth hour); the day from alos to tzeis: Magen Avraham OC 58:1, Mishna Berura 58:4 | down | corrected, checked |
-| `sof-zman-tefilla-mga-72-zmaniyos` | Latest Shacharis, Magen Avraham, 72 proportional minutes | Shulchan Aruch OC 89:1 (until the end of the fourth hour); the day from alos to tzeis: Magen Avraham OC 58:1, Mishna Berura 58:4 | down | corrected, checked |
-| `sof-zman-tefilla-mga-90-zmaniyos` | Latest Shacharis, Magen Avraham, 90 proportional minutes | Shulchan Aruch OC 89:1 (until the end of the fourth hour); the day from alos to tzeis: Magen Avraham OC 58:1, Mishna Berura 58:4 | down | corrected, checked |
-| `sof-zman-tefilla-mga-16.1` | Latest Shacharis, Magen Avraham, 16.1° | Shulchan Aruch OC 89:1 (until the end of the fourth hour); the day from alos to tzeis: Magen Avraham OC 58:1, Mishna Berura 58:4 | down | corrected, checked |
-| `sof-zman-tefilla-baal-hatanya` | Latest Shacharis, Baal HaTanya | Shulchan Aruch OC 89:1 (four hours); the day from netz to shkiah: Shulchan Aruch HaRav OC 443:4. (Shulchan Aruch HaRav OC 89:1 counts from alos instead.) | down | corrected, checked |
-| `sof-zman-tefilla-ateret-torah` | Latest Shacharis, Ateret Torah | Ateret Torah luach (Chacham Yosef Harari-Raful); not verified against a printed source | down | part not verified |
-| `mincha-gedola-30` | Mincha Gedola: 30 fixed minutes after chatzos | Shulchan Aruch OC 233:1 (six and a half seasonal hours), which Mishna Berura 233:1 glosses as half an hour after chatzos; fixed clock minutes are a common practice (not verified as a ruling) | up | checked, corrected |
-| `mincha-gedola-gra` | Mincha Gedola, Gra: 6.5 seasonal hours after sunrise | Shulchan Aruch OC 233:1; Mishna Berura 233:1–4 | up | checked |
-| `mincha-gedola-greater` | Mincha Gedola: the later of 30 minutes after chatzos and 6.5 seasonal hours (Chabad practice) | Shulchan Aruch OC 233:1; Chabad practice | up | checked, part from a secondary source |
-| `mincha-gedola-mga-72` | Mincha Gedola, Magen Avraham (72 fixed minutes) | Shulchan Aruch OC 233:1; Magen Avraham 233:3 | up | checked |
-| `mincha-gedola-baal-hatanya` | Mincha Gedola, Baal HaTanya | Shulchan Aruch HaRav OC 443:4 (day from netz to shkia) | up | checked |
-| `mincha-ketana-gra` | Mincha Ketana, Gra: 9.5 seasonal hours | Shulchan Aruch OC 233:1; Mishna Berura 233:1–4 | up | checked |
-| `mincha-ketana-mga-72` | Mincha Ketana, Magen Avraham (72 fixed minutes) | Shulchan Aruch OC 233:1; Magen Avraham 233:3 | up | checked |
-| `mincha-ketana-baal-hatanya` | Mincha Ketana, Baal HaTanya | Shulchan Aruch HaRav OC 443:4 | up | checked |
-| `plag-hamincha-gra` | Plag HaMincha, Gra (and Levush): 1¼ seasonal hours before sunset, day from sunrise to sunset | Berachos 26a–26b; Shulchan Aruch OC 233:1; Magen Avraham 233:3 | up | corrected, checked |
-| `plag-hamincha-mga-72` | Plag HaMincha, Magen Avraham (72 fixed minutes) | Terumas HaDeshen, cited in Magen Avraham 233:3; Mishna Berura 233:4, 261:25 | up | checked |
-| `plag-hamincha-mga-16.1` | Plag HaMincha, Magen Avraham (16.1°) | Magen Avraham 233:3; Mishna Berura 233:4 | up | checked |
-| `plag-hamincha-baal-hatanya` | Plag HaMincha, Baal HaTanya | Shulchan Aruch HaRav OC 443:4; as calculated in Chabad practice | up | checked, part from a secondary source |
-| `plag-hamincha-levush` | Plag HaMincha, Levush: 1¼ hours before sunset as Biur Halacha reports it, computed here as the Gra's (seasonal hours, sunrise to sunset) | Levush OC 267, as reported in Biur Halacha 261:2 s.v. "להקדים"; Magen Avraham 233:3 reads the Levush as counting from tzeis | up | checked, corrected |
-| `bein-hashmashos-rabbeinu-tam` | Start of bein hashmashos, Rabbeinu Tam: 3¼ mil (58.5 minutes) after sunset, lasting 13.5 minutes | Tosafos Shabbos 35a, Pesachim 94a; Shulchan Aruch OC 261:2 | down | checked |
-| `bein-hashmashos-geonim-13.5` | End of bein hashmashos, Geonim and Gra: ¾ mil of 18 minutes (13.5 minutes) after sunset | Biur Halacha 261:2; Mishna Berura 261:23; mil of 18 minutes: Shulchan Aruch OC 459:2 | up | checked |
-| `bein-hashmashos-geonim-16.875` | End of bein hashmashos, Geonim: ¾ mil of 22.5 minutes (16.875 minutes) after sunset | Biur Halacha 261:2; mil of 22.5 minutes: Biur Halacha 459:2 | up | checked |
-| `bein-hashmashos-geonim-18` | End of bein hashmashos, Geonim: ¾ mil of 24 minutes (18 minutes) after sunset | Biur Halacha 261:2; mil of 24 minutes: Shulchan Aruch HaRav 459:10 | up | checked |
-| `bein-hashmashos-yereim-18` | Start of bein hashmashos, Yereim: ¾ mil of 24 minutes (18 minutes) before sunset | Sefer Yereim 274 (Vilna ed.); Biur Halacha 261:2; Shulchan Aruch HaRav 261:5; mil of 24 minutes: Shulchan Aruch HaRav 459:10 | down | checked |
-| `bein-hashmashos-yereim-16.875` | Start of bein hashmashos, Yereim: ¾ mil of 22.5 minutes (16.875 minutes) before sunset | Sefer Yereim 274; Biur Halacha 261:2; mil of 22.5 minutes: Biur Halacha 459:2 | down | checked |
-| `bein-hashmashos-yereim-13.5` | Start of bein hashmashos, Yereim: ¾ mil of 18 minutes (13.5 minutes) before sunset | Sefer Yereim 274; Biur Halacha 261:2; mil of 18 minutes: Shulchan Aruch OC 459:2 | down | checked |
-| `tzeis-8.5` | Nightfall at 8.5° (three small stars) | Shulchan Aruch OC 293:2 (three small stars); 8.5° as calculated in Chabad practice; attribution to R. Tukaczinsky not verified | up | checked, part from a secondary source, part not verified |
-| `tzeis-7.083` | Nightfall at 7.083° (three medium stars, about 29 minutes after sunset in Jerusalem at the equinox) | Shulchan Aruch OC 562:1 (three medium stars); 7.083° attributed to Dr. Baruch Cohn (not verified: no primary source read) | up | checked, part not verified |
-| `tzeis-6.45` | Nightfall at 6.45° (three medium stars; custom in Israel) | Shulchan Aruch OC 562:1 (three medium stars); 6.45° as the custom of Eretz Yisrael per a published luach (secondary; not verified) | up | checked, corrected |
-| `tzeis-42` | Nightfall 42 fixed minutes after sunset (a custom in the United States) | Custom; ¾ mil reckoning of the Geonim adapted to latitude (not verified against a printed source) | up | part not verified |
-| `tzeis-50` | Nightfall 50 fixed minutes after sunset | Igros Moshe OC 4:62 (not verified: cited from secondary sources; given for New York) | up | part from a secondary source |
-| `tzeis-60` | Nightfall 60 fixed minutes after sunset | Custom (not verified against a printed source) | up | part not verified |
-| `tzeis-72` | Nightfall 72 fixed minutes after sunset (4 mil of 18 minutes) | Pesachim 94a; Tosafos Shabbos 35a; Shulchan Aruch OC 261:2 | up | checked |
-| `tzeis-rabbeinu-tam` | Nightfall of Rabbeinu Tam: 72 fixed minutes after sunset | Tosafos Shabbos 35a, Pesachim 94a; Shulchan Aruch OC 261:2 | up | checked |
-| `tzeis-baal-hatanya` | Nightfall of the Baal HaTanya, 6° below the horizon | Chabad practice; no primary source for 6° was found (not verified) | up | corrected, part from a secondary source |
-| `tzeis-ateret-torah` | Nightfall, Ateret Torah: a fixed number of minutes after sunset (default 40) | Ateret Torah luach (Chacham Yosef Harari-Raful); not verified against a printed source | up | part not verified |
-| `candle-lighting` | Candle lighting a fixed number of minutes before sunset, by local custom (18 common; Jerusalem 40) | Shulchan Aruch OC 261:2 (tosefes Shabbos); the minutes are local custom: Kaf HaChaim 261:23 (a third of an hour); Igros Moshe OC 2:6 and Yabia Omer 5:21 as cited by the OU (not verified) | down | checked, corrected, part from a secondary source |
-| `havdala` | End of Shabbos or Yom Tov: three small stars (by degrees) or a fixed number of minutes | Shulchan Aruch OC 293:2 | up | checked |
-| `shabbos-ends-no-havdala` | Shabbos ends (three small stars) before Tisha B'Av postponed to Sunday: no havdala over a cup tonight; say "Baruch HaMavdil bein kodesh lechol" before melacha | Shulchan Aruch OC 556:1; Mishnah Berurah 556:2; Shulchan Aruch OC 299:10; Shulchan Aruch OC 293:2 | up |  |
-| `havdala-after-fast` | Havdala over a cup, without candle or spices, when Tisha B'Av postponed from Shabbos ends | Shulchan Aruch OC 556:1 | up |  |
-| `candle-lighting-second-night` | Candles on the second night of Yom Tov, or Yom Tov after Shabbos: after nightfall | Shulchan Aruch OC 503:1 (no preparing from one day of Yom Tov for the next); lighting after nightfall follows from it and is not stated there | up | corrected |
-| `sof-zman-achilas-chametz-gra` | Latest time to eat chametz on Erev Pesach, Gra: 4 seasonal hours | Pesachim 11b; Shulchan Aruch OC 443:1 | down | checked |
-| `sof-zman-achilas-chametz-mga-72` | Latest time to eat chametz, Magen Avraham (72 minutes) | Pesachim 11b; Shulchan Aruch OC 443:1 with Rema | down | checked |
-| `sof-zman-biur-chametz-gra` | Latest time to burn chametz on Erev Pesach, Gra: 5 seasonal hours | Pesachim 11b; Shulchan Aruch OC 443:1 | down | checked |
-| `sof-zman-biur-chametz-mga-72` | Latest time to burn chametz, Magen Avraham (72 minutes) | Pesachim 11b; Shulchan Aruch OC 443:1 with Rema | down | checked |
-| `fast-begins` | A minor fast begins at dawn | Shulchan Aruch OC 564:1 | down | checked |
-| `fast-begins-sunset` | Yom Kippur and Tisha B'Av begin at sunset the evening before (from bein hashmashos) | Shulchan Aruch OC 553:2, 608:1 | down | checked |
-| `fast-ends` | A fast ends at nightfall (three medium stars) | Shulchan Aruch OC 562:1 | up | checked |
+| Id | Opinion | Source | Rounding |
+|---|---|---|---|
+| `sunrise` | Sunrise (netz hachama), at sea level unless the calculator's useElevation is on | Berachos 9b; Shulchan Aruch OC 58:1 | up |
+| `sunrise-sea-level` | Sunrise at sea level (upper limb at the horizon, standard refraction) | NOAA Solar Calculator; sea-level practice: R. Isser Zalman Meltzer, cited in Peninei Halakha, Tefilla 11:6 n. 7 | up |
+| `sunrise-elevation` | Sunrise adjusted for the observer's elevation (lower horizon, earlier) | Zmanim KeHilchasam (R. Bursztyn), ch. 2 §§7, 9: elevation for sunrise and sunset only (not verified: the book was not read) | up |
+| `sunrise-visible` | Visible sunrise over the actual terrain (netz hanireh) | Divrei Yosef; Maharil Diskin (cited in Peninei Halakha, Tefilla 11). Needs terrain data: not computed | up |
+| `sunset` | Sunset (shkiah), at sea level unless the calculator's useElevation is on | Shabbos 34b–35a; Shulchan Aruch OC 261:2 | down |
+| `sunset-sea-level` | Sunset at sea level | NOAA Solar Calculator | down |
+| `sunset-elevation` | Sunset adjusted for the observer's elevation (later) | Zmanim KeHilchasam (R. Bursztyn), ch. 2 §§7, 9 (not verified: the book was not read) | down |
+| `chatzos` | Midday: the sun on the meridian (astronomical transit) | Magen Avraham OC 233:4 | down |
+| `chatzos-halayla` | Midnight: halfway between one transit and the next | Berachos 3b; Mishna Berura 1:9 (midnight is twelve hours after midday) | down |
+| `alos-72` | Dawn 72 fixed minutes before sunrise (4 mil of 18 minutes) | Pesachim 94a; Shulchan Aruch OC 459:2; Magen Avraham 89:2 | up |
+| `alos-90` | Dawn 90 fixed minutes before sunrise (4 mil of 22.5 minutes) | Pesachim 94a; Biur Halacha 459:2 | up |
+| `alos-96` | Dawn 96 fixed minutes before sunrise (4 mil of 24 minutes) | Pesachim 94a; Magen Avraham 89:2; Shulchan Aruch HaRav 459:10 | up |
+| `alos-120` | Dawn 120 fixed minutes before sunrise (5 mil of 24 minutes; a stringency) | Pesachim 93b (Ulla: 5 mil, refuted on 94a); Magen Avraham 89:2 (5 mil reckoned as two hours, as a stringency) | up |
+| `alos-72-zmaniyos` | Dawn 72 proportional minutes (1.2 seasonal hours of the Gra day) before sunrise | Rambam, Peirush HaMishnayos Berachos 1:1 (an hour and a fifth of seasonal hours); Pesachim 94a | up |
+| `alos-90-zmaniyos` | Dawn 90 proportional minutes (1.5 seasonal hours) before sunrise | Pesachim 94a; Biur Halacha 459:2 | up |
+| `alos-96-zmaniyos` | Dawn 96 proportional minutes (1.6 seasonal hours) before sunrise | Pesachim 94a; Magen Avraham 89:2 | up |
+| `alos-120-zmaniyos` | Dawn 120 proportional minutes (2 seasonal hours) before sunrise (a stringency) | Pesachim 93b (Ulla: 5 mil, refuted on 94a); Magen Avraham 89:2 (5 mil reckoned as two hours) | up |
+| `alos-16.1` | Dawn when the sun is 16.1° below the horizon: 72 minutes before sunrise in Jerusalem at the equinox | Yechave Daas 2:8 (cited in Peninei Halakha, Tefilla 11:2); 72 minutes per Pesachim 94a | up |
+| `alos-18` | Dawn at 18° (astronomical twilight) | Astronomical dawn (cited in Peninei Halakha, Tefilla 11) | up |
+| `alos-19.8` | Dawn at 19.8°: 90 minutes before sunrise in Jerusalem at the equinox | Computed: the sun's depression 90 minutes before sunrise in Jerusalem at the equinox; 90 minutes per Biur Halacha 459:2. Peninei Halakha, Tefilla 11:2 gives 19.75° and cautions against relying on such calendars | up |
+| `alos-26` | Dawn at 26°: about 120 minutes before sunrise in Jerusalem at the equinox (a stringency) | Computed: the sun's depression 120 minutes before sunrise in Jerusalem at the equinox; 120 minutes per Magen Avraham 89:2 (5 mil) | up |
+| `alos-baal-hatanya` | Dawn of the Baal HaTanya, 16.9° below the horizon | Shulchan Aruch HaRav OC 89:1; 16.9° as calculated in Chabad practice | up |
+| `misheyakir-10.2` | Misheyakir at 10.2° | Berachos 9b; Shulchan Aruch OC 18:3; 10.2° as published in a luach that names no source; attributed elsewhere to Kovetz Otzros Yerushalayim (not verified) | up |
+| `misheyakir-11` | Misheyakir at 11° | Berachos 9b; Shulchan Aruch OC 18:3; Peninei Halakha, Tefilla 11 | up |
+| `misheyakir-11.5` | Misheyakir at 11.5° (custom of Eretz Yisrael) | Berachos 9b; Shulchan Aruch OC 18:3; 11.5° as the custom of Eretz Yisrael per a published luach (secondary; not verified) | up |
+| `misheyakir-12.85` | Misheyakir at 12.85° | Berachos 9b; Shulchan Aruch OC 18:3; 12.85° attributed to Birur Halacha (R. Zilber) OC 18 (not verified) | up |
+| `sof-zman-shema-gra` | Latest Shema, Gra: 3 seasonal hours of a sunrise-to-sunset day | Shulchan Aruch OC 58:1; Mishna Berura 58:4 | down |
+| `sof-zman-shema-mga-72` | Latest Shema, Magen Avraham: 3 seasonal hours of a day from alos to tzeis, 72 fixed minutes | Magen Avraham OC 58:1, 233:3; Mishna Berura 58:4; 72 min = 4 mil × 18 min (Pesachim 94a; SA OC 459:2) | down |
+| `sof-zman-shema-mga-90` | Latest Shema, Magen Avraham with 90 fixed minutes | Magen Avraham OC 58:1; Mishna Berura 58:4; Biur Halacha 459:2 | down |
+| `sof-zman-shema-mga-72-zmaniyos` | Latest Shema, Magen Avraham with 72 proportional minutes | Magen Avraham OC 58:1; Mishna Berura 58:4 | down |
+| `sof-zman-shema-mga-90-zmaniyos` | Latest Shema, Magen Avraham with 90 proportional minutes | Magen Avraham OC 58:1; Mishna Berura 58:4 | down |
+| `sof-zman-shema-mga-16.1` | Latest Shema, Magen Avraham, day from alos to tzeis at 16.1° | Magen Avraham OC 58:1; Mishna Berura 58:4; 16.1° = Jerusalem equinox equivalent of 72 minutes (Peninei Halakha, Tefilla 11:2 n. 1) | down |
+| `sof-zman-shema-baal-hatanya` | Latest Shema, Baal HaTanya: 3 seasonal hours of a day from netz amiti to shkia amitis (sun 1.583° below the horizon) | Shulchan Aruch HaRav OC 443:4; 1.583° as calculated in Chabad practice | down |
+| `sof-zman-shema-ateret-torah` | Latest Shema, Ateret Torah: day from alos (72 proportional minutes) to tzeis (40 minutes after sunset) | Ateret Torah practice (Chacham Yosef Harari-Raful); not verified against a printed source | down |
+| `sof-zman-tefilla-gra` | Latest Shacharis, Gra: 4 seasonal hours of a sunrise-to-sunset day | Shulchan Aruch OC 89:1; Mishna Berura 58:4 | down |
+| `sof-zman-tefilla-mga-72` | Latest Shacharis, Magen Avraham, 72 fixed minutes | Shulchan Aruch OC 89:1 (until the end of the fourth hour); the day from alos to tzeis: Magen Avraham OC 58:1, Mishna Berura 58:4 | down |
+| `sof-zman-tefilla-mga-90` | Latest Shacharis, Magen Avraham, 90 fixed minutes | Shulchan Aruch OC 89:1 (until the end of the fourth hour); the day from alos to tzeis: Magen Avraham OC 58:1, Mishna Berura 58:4 | down |
+| `sof-zman-tefilla-mga-72-zmaniyos` | Latest Shacharis, Magen Avraham, 72 proportional minutes | Shulchan Aruch OC 89:1 (until the end of the fourth hour); the day from alos to tzeis: Magen Avraham OC 58:1, Mishna Berura 58:4 | down |
+| `sof-zman-tefilla-mga-90-zmaniyos` | Latest Shacharis, Magen Avraham, 90 proportional minutes | Shulchan Aruch OC 89:1 (until the end of the fourth hour); the day from alos to tzeis: Magen Avraham OC 58:1, Mishna Berura 58:4 | down |
+| `sof-zman-tefilla-mga-16.1` | Latest Shacharis, Magen Avraham, 16.1° | Shulchan Aruch OC 89:1 (until the end of the fourth hour); the day from alos to tzeis: Magen Avraham OC 58:1, Mishna Berura 58:4 | down |
+| `sof-zman-tefilla-baal-hatanya` | Latest Shacharis, Baal HaTanya | Shulchan Aruch OC 89:1 (four hours); the day from netz to shkiah: Shulchan Aruch HaRav OC 443:4. (Shulchan Aruch HaRav OC 89:1 counts from alos instead.) | down |
+| `sof-zman-tefilla-ateret-torah` | Latest Shacharis, Ateret Torah | Ateret Torah practice (Chacham Yosef Harari-Raful); not verified against a printed source | down |
+| `mincha-gedola-30` | Mincha Gedola: 30 fixed minutes after chatzos | Shulchan Aruch OC 233:1 (six and a half seasonal hours), which Mishna Berura 233:1 glosses as half an hour after chatzos; fixed clock minutes are a common practice (not verified as a ruling) | up |
+| `mincha-gedola-gra` | Mincha Gedola, Gra: 6.5 seasonal hours after sunrise | Shulchan Aruch OC 233:1; Mishna Berura 233:1–4 | up |
+| `mincha-gedola-greater` | Mincha Gedola: the later of 30 minutes after chatzos and 6.5 seasonal hours (Chabad practice) | Shulchan Aruch OC 233:1; Chabad practice | up |
+| `mincha-gedola-mga-72` | Mincha Gedola, Magen Avraham (72 fixed minutes) | Shulchan Aruch OC 233:1; Magen Avraham 233:3 | up |
+| `mincha-gedola-baal-hatanya` | Mincha Gedola, Baal HaTanya | Shulchan Aruch HaRav OC 443:4 (day from netz to shkia) | up |
+| `mincha-ketana-gra` | Mincha Ketana, Gra: 9.5 seasonal hours | Shulchan Aruch OC 233:1; Mishna Berura 233:1–4 | up |
+| `mincha-ketana-mga-72` | Mincha Ketana, Magen Avraham (72 fixed minutes) | Shulchan Aruch OC 233:1; Magen Avraham 233:3 | up |
+| `mincha-ketana-baal-hatanya` | Mincha Ketana, Baal HaTanya | Shulchan Aruch HaRav OC 443:4 | up |
+| `plag-hamincha-gra` | Plag HaMincha, Gra (and Levush): 1¼ seasonal hours before sunset, day from sunrise to sunset | Berachos 26a–26b; Shulchan Aruch OC 233:1; Magen Avraham 233:3 | up |
+| `plag-hamincha-mga-72` | Plag HaMincha, Magen Avraham (72 fixed minutes) | Terumas HaDeshen, cited in Magen Avraham 233:3; Mishna Berura 233:4, 261:25 | up |
+| `plag-hamincha-mga-16.1` | Plag HaMincha, Magen Avraham (16.1°) | Magen Avraham 233:3; Mishna Berura 233:4 | up |
+| `plag-hamincha-baal-hatanya` | Plag HaMincha, Baal HaTanya | Shulchan Aruch HaRav OC 443:4; as calculated in Chabad practice | up |
+| `plag-hamincha-levush` | Plag HaMincha, Levush: 1¼ hours before sunset as Biur Halacha reports it, computed here as the Gra's (seasonal hours, sunrise to sunset) | Levush OC 267, as reported in Biur Halacha 261:2 s.v. "להקדים"; Magen Avraham 233:3 reads the Levush as counting from tzeis | up |
+| `bein-hashmashos-rabbeinu-tam` | Start of bein hashmashos, Rabbeinu Tam: 3¼ mil (58.5 minutes) after sunset, lasting 13.5 minutes | Tosafos Shabbos 35a, Pesachim 94a; Shulchan Aruch OC 261:2 | down |
+| `bein-hashmashos-geonim-13.5` | End of bein hashmashos, Geonim and Gra: ¾ mil of 18 minutes (13.5 minutes) after sunset | Biur Halacha 261:2; Mishna Berura 261:23; mil of 18 minutes: Shulchan Aruch OC 459:2 | up |
+| `bein-hashmashos-geonim-16.875` | End of bein hashmashos, Geonim: ¾ mil of 22.5 minutes (16.875 minutes) after sunset | Biur Halacha 261:2; mil of 22.5 minutes: Biur Halacha 459:2 | up |
+| `bein-hashmashos-geonim-18` | End of bein hashmashos, Geonim: ¾ mil of 24 minutes (18 minutes) after sunset | Biur Halacha 261:2; mil of 24 minutes: Shulchan Aruch HaRav 459:10 | up |
+| `bein-hashmashos-yereim-18` | Start of bein hashmashos, Yereim: ¾ mil of 24 minutes (18 minutes) before sunset | Sefer Yereim 274 (Vilna ed.); Biur Halacha 261:2; Shulchan Aruch HaRav 261:5; mil of 24 minutes: Shulchan Aruch HaRav 459:10 | down |
+| `bein-hashmashos-yereim-16.875` | Start of bein hashmashos, Yereim: ¾ mil of 22.5 minutes (16.875 minutes) before sunset | Sefer Yereim 274; Biur Halacha 261:2; mil of 22.5 minutes: Biur Halacha 459:2 | down |
+| `bein-hashmashos-yereim-13.5` | Start of bein hashmashos, Yereim: ¾ mil of 18 minutes (13.5 minutes) before sunset | Sefer Yereim 274; Biur Halacha 261:2; mil of 18 minutes: Shulchan Aruch OC 459:2 | down |
+| `tzeis-8.5` | Nightfall at 8.5° (three small stars) | Shulchan Aruch OC 293:2 (three small stars); 8.5° as calculated in Chabad practice; attribution to R. Tukaczinsky not verified | up |
+| `tzeis-7.083` | Nightfall at 7.083° (three medium stars, about 29 minutes after sunset in Jerusalem at the equinox) | Shulchan Aruch OC 562:1 (three medium stars); 7.083° attributed to Dr. Baruch Cohn (not verified: no primary source read) | up |
+| `tzeis-6.45` | Nightfall at 6.45° (three medium stars; custom in Israel) | Shulchan Aruch OC 562:1 (three medium stars); 6.45° as the custom of Eretz Yisrael per a published luach (secondary; not verified) | up |
+| `tzeis-42` | Nightfall 42 fixed minutes after sunset (a custom in the United States) | Custom; ¾ mil reckoning of the Geonim adapted to latitude (not verified against a printed source) | up |
+| `tzeis-50` | Nightfall 50 fixed minutes after sunset | Igros Moshe OC 4:62 (not verified: cited from secondary sources; given for New York) | up |
+| `tzeis-60` | Nightfall 60 fixed minutes after sunset | Custom (not verified against a printed source) | up |
+| `tzeis-72` | Nightfall 72 fixed minutes after sunset (4 mil of 18 minutes) | Pesachim 94a; Tosafos Shabbos 35a; Shulchan Aruch OC 261:2 | up |
+| `tzeis-rabbeinu-tam` | Nightfall of Rabbeinu Tam: 72 fixed minutes after sunset | Tosafos Shabbos 35a, Pesachim 94a; Shulchan Aruch OC 261:2 | up |
+| `tzeis-baal-hatanya` | Nightfall of the Baal HaTanya, 6° below the horizon | Chabad practice; no primary source for 6° was found (not verified) | up |
+| `tzeis-ateret-torah` | Nightfall, Ateret Torah: a fixed number of minutes after sunset (default 40) | Ateret Torah practice (Chacham Yosef Harari-Raful); not verified against a printed source | up |
+| `candle-lighting` | Candle lighting a fixed number of minutes before sunset, by local custom (18 common; Jerusalem 40) | Shulchan Aruch OC 261:2 (tosefes Shabbos); the minutes are local custom: Kaf HaChaim 261:23 (a third of an hour); Igros Moshe OC 2:6 and Yabia Omer 5:21 as cited by the OU (not verified) | down |
+| `havdala` | End of Shabbos or Yom Tov: three small stars (by degrees) or a fixed number of minutes | Shulchan Aruch OC 293:2 | up |
+| `shabbos-ends-no-havdala` | Shabbos ends (three small stars) before Tisha B'Av postponed to Sunday: no havdala over a cup tonight; say "Baruch HaMavdil bein kodesh lechol" before melacha | Shulchan Aruch OC 556:1; Mishnah Berurah 556:2; Shulchan Aruch OC 299:10; Shulchan Aruch OC 293:2 | up |
+| `havdala-after-fast` | Havdala over a cup, without candle or spices, when Tisha B'Av postponed from Shabbos ends | Shulchan Aruch OC 556:1 | up |
+| `candle-lighting-second-night` | Candles on the second night of Yom Tov, or Yom Tov after Shabbos: after nightfall | Shulchan Aruch OC 503:1 (no preparing from one day of Yom Tov for the next); lighting after nightfall follows from it and is not stated there | up |
+| `sof-zman-achilas-chametz-gra` | Latest time to eat chametz on Erev Pesach, Gra: 4 seasonal hours | Pesachim 11b; Shulchan Aruch OC 443:1 | down |
+| `sof-zman-achilas-chametz-mga-72` | Latest time to eat chametz, Magen Avraham (72 minutes) | Pesachim 11b; Shulchan Aruch OC 443:1 with Rema | down |
+| `sof-zman-biur-chametz-gra` | Latest time to burn chametz on Erev Pesach, Gra: 5 seasonal hours | Pesachim 11b; Shulchan Aruch OC 443:1 | down |
+| `sof-zman-biur-chametz-mga-72` | Latest time to burn chametz, Magen Avraham (72 minutes) | Pesachim 11b; Shulchan Aruch OC 443:1 with Rema | down |
+| `fast-begins` | A minor fast begins at dawn | Shulchan Aruch OC 564:1 | down |
+| `fast-begins-sunset` | Yom Kippur and Tisha B'Av begin at sunset the evening before (from bein hashmashos) | Shulchan Aruch OC 553:2, 608:1 | down |
+| `fast-ends` | A fast ends at nightfall (three medium stars) | Shulchan Aruch OC 562:1 | up |
 
 ## The calendar
 
@@ -154,7 +144,7 @@ Generated from [`src/zmanim/opinions.ts`](https://github.com/yskolnick/luach/blo
 
 Comments in `src/` that cite a halachic, legal or technical source, generated by scanning
 the code. Zmanim are in the table above; verse references for haftaros are in
-[`src/parsha/haftaros-data.ts`](https://github.com/yskolnick/luach/blob/main/src/parsha/haftaros-data.ts) and the [haftaros research note](https://github.com/yskolnick/luach/blob/main/docs/research/2026-10-21-haftaros.md).
+[`src/parsha/haftaros-data.ts`](https://github.com/yskolnick/luach/blob/main/src/parsha/haftaros-data.ts).
 
 | Where | Citation |
 |---|---|
@@ -190,8 +180,8 @@ the code. Zmanim are in the table above; verse references for haftaros are in
 | [`src/holidays/holidays.ts:258`](https://github.com/yskolnick/luach/blob/main/src/holidays/holidays.ts#L258) | Yom Kippur Katan: the day before Rosh Chodesh. On Shabbos it moves to Thursday (Magen Avraham 417:3; MB 417:4). On Friday: Magen Avraham 417:3 keeps it on Friday; MB 417:4 says those who say Selichos fast on Thursday and those who don't on Friday. Default Thursday (`yomKippurKatanOnFriday`; MB 550:11 and Aruch HaShulchan OC 417:11 for Thursday). Not before Tishrei: Erev Rosh Hashana is its own fast (SA OC 581:2), and Tishrei is skipped in this loop. Not before Iyar: Erev Rosh Chodesh is in Nisan, when one does not fast (MB 429:10). Not before Teves: it is in Chanukah (SA OC 670:1; some fast before Chanukah instead, MA and MB 686:1, not modelled). Before Cheshvan: Luach found no source for leaving it out, and Kaf HaChaim OC 417:16 says to fast; `yomKippurKatanCheshvan`. |
 | [`src/holidays/holidays.ts:280`](https://github.com/yskolnick/luach/blob/main/src/holidays/holidays.ts#L280) | No Shabbos Mevorchim before Tishrei (MA 417:1; MB 417:1, "בכסה ליום חגנו"); Tishrei is skipped above. |
 | [`src/holidays/holidays.ts:283`](https://github.com/yskolnick/luach/blob/main/src/holidays/holidays.ts#L283) | BeHaB: Monday, Thursday, Monday after the first Shabbos after Rosh Chodesh Cheshvan and Iyar (SA OC 492:1 with Rema; MB 492:3, "שבת הראשון שאחר ר"ח"). When the 1st is Shabbos it is Rosh Chodesh itself, so the count starts from the next Shabbos. |
-| [`src/holidays/holidays.ts:296`](https://github.com/yskolnick/luach/blob/main/src/holidays/holidays.ts#L296) | Modern Israeli days (Knesset laws; see docs/research/2026-10-21-modern-israeli-days.md) |
-| [`src/holidays/holidays.ts:316`](https://github.com/yskolnick/luach/blob/main/src/holidays/holidays.ts#L316) | Rules are applied from the year each was adopted (docs/research/2026-10-21-modern-israeli-days.md). Yom HaShoah: 27 Nisan (Knesset resolution, 1951). From the 1959 law, if it falls on Friday it is moved to Thursday; from 1997 (Amendment No. 3), if on Sunday it is moved to Monday. 1954 (a Friday) fell under the resolution alone, which had no weekday rule. |
+| [`src/holidays/holidays.ts:296`](https://github.com/yskolnick/luach/blob/main/src/holidays/holidays.ts#L296) | Modern Israeli days (Knesset laws) |
+| [`src/holidays/holidays.ts:316`](https://github.com/yskolnick/luach/blob/main/src/holidays/holidays.ts#L316) | Rules are applied from the year each was adopted. Yom HaShoah: 27 Nisan (Knesset resolution, 1951). From the 1959 law, if it falls on Friday it is moved to Thursday; from 1997 (Amendment No. 3), if on Sunday it is moved to Monday. 1954 (a Friday) fell under the resolution alone, which had no weekday rule. |
 | [`src/holidays/mourning.ts:24`](https://github.com/yskolnick/luach/blob/main/src/holidays/mourning.ts#L24) | `'sa-until-34'`: through Lag BaOmer, and the night of the 34th until sunrise; a haircut is allowed on Lag BaOmer when it is Friday (SA OC 493:1–2; MB 493:5–7). `'rema-until-lag'`: until Lag BaOmer, which is allowed from sunrise; when Lag BaOmer is Sunday, a haircut is allowed on the Friday before (Rema OC 493:2; MB 493:5, 10–11). `'rema-from-rosh-chodesh-iyar'`: from 2 Iyar until Shavuos, Lag BaOmer allowed from sunrise (Rema OC 493:3; MB 493:14–15). `'iyar-to-hagbalah'`: from the first day of Rosh Chodesh Iyar until the morning of 3 Sivan, Lag BaOmer allowed (Magen Avraham and Chayei Adam, cited in MB 493:15). `'except-rosh-chodesh-lag-sivan'`: the whole Sefirah except Rosh Chodesh Iyar, Lag BaOmer, and Rosh Chodesh Sivan until Shavuos (MB 493:15). `'arizal'`: no haircut until Erev Shavuos, Lag BaOmer and Rosh Chodesh included (Kaf HaChaim OC 493:13). Weddings are not addressed there, so they are `null`. |
 | [`src/holidays/mourning.ts:48`](https://github.com/yskolnick/luach/blob/main/src/holidays/mourning.ts#L48) | `'ashkenaz'`: weddings and haircuts from 17 Tammuz, laundry from Rosh Chodesh Av (Rema OC 551:2–4); haircuts and laundry until midday on 10 Av (MB 558:3). `'sephard'`: weddings from Rosh Chodesh Av (SA OC 551:2); haircuts and laundry in the week of Tisha B'Av only, allowed right after the fast (SA OC 551:3–4). |
 | [`src/holidays/mourning.ts:56`](https://github.com/yskolnick/luach/blob/main/src/holidays/mourning.ts#L56) | When meat and wine are given up before Tisha B'Av (SA OC 551:9). Never on Shabbos (MB 551:59). |
@@ -216,12 +206,12 @@ the code. Zmanim are in the table above; verse references for haftaros are in
 | [`src/holidays/types.ts:73`](https://github.com/yskolnick/luach/blob/main/src/holidays/types.ts#L73) | Yom Kippur Katan when Erev Rosh Chodesh is Friday. `'thursday'` (the default): Mishna Berura 417:4, for those who say Selichos. `'friday'`: Magen Avraham 417:3, and Mishna Berura 417:4 for those who do not say Selichos. (On Shabbos it is always Thursday.) |
 | [`src/holidays/types.ts:79`](https://github.com/yskolnick/luach/blob/main/src/holidays/types.ts#L79) | Keep Yom Kippur Katan before Rosh Chodesh Cheshvan (Kaf HaChaim OC 417:16: "צריך להתענות"). Default `false` (Luach found no source for leaving it out). |
 | [`src/learning/bavli.ts:2`](https://github.com/yskolnick/luach/blob/main/src/learning/bavli.ts#L2) | Daf Yomi (Babylonian Talmud, Vilna pagination): one folio (daf) a day. |
-| [`src/learning/cycles.ts:110`](https://github.com/yskolnick/luach/blob/main/src/learning/cycles.ts#L110) | Amud HaYomi (Dirshu): one amud a day, from Berachos 2a on 1 Cheshvan 5784 (16 October 2023), every day. How the cycle will handle Kinnim, Tamid and Middos after Me'ilah 22a (February 2038) is not yet published; until it is, this returns null from that point. |
-| [`src/learning/cycles.ts:181`](https://github.com/yskolnick/luach/blob/main/src/learning/cycles.ts#L181) | Rambam |
-| [`src/learning/cycles.ts:242`](https://github.com/yskolnick/luach/blob/main/src/learning/cycles.ts#L242) | Rambam, one chapter a day (Chabad cycle from 27 Nisan 5744, 29 April 1984; 1,017 days). |
-| [`src/learning/cycles.ts:251`](https://github.com/yskolnick/luach/blob/main/src/learning/cycles.ts#L251) | Rambam, three chapters a day (Chabad cycle from 27 Nisan 5744; 339 days). |
-| [`src/learning/cycles.ts:262`](https://github.com/yskolnick/luach/blob/main/src/learning/cycles.ts#L262) | The day number of Sefer HaMitzvos (Chabad), which runs in parallel with the three-chapter Rambam cycle (Day 1 is that cycle's first day; Day 1 fell on 1 March 2025, the start of a three-chapter cycle). The mitzvos for each day come from a published table that Luach does not ship. |
-| [`src/parsha/haftara.ts:4`](https://github.com/yskolnick/luach/blob/main/src/parsha/haftara.ts#L4) | Precedence on Shabbos (docs/research/2026-10-21-haftaros.md; SA OC 425, 428, 684, 685 with Rema and Mishna Berura): |
+| [`src/learning/cycles.ts:109`](https://github.com/yskolnick/luach/blob/main/src/learning/cycles.ts#L109) | Amud HaYomi (Dirshu): one amud a day, from Berachos 2a on 1 Cheshvan 5784 (16 October 2023), every day. How the cycle will handle Kinnim, Tamid and Middos after Me'ilah 22a (February 2038) is not yet published; until it is, this returns null from that point. |
+| [`src/learning/cycles.ts:180`](https://github.com/yskolnick/luach/blob/main/src/learning/cycles.ts#L180) | Rambam |
+| [`src/learning/cycles.ts:241`](https://github.com/yskolnick/luach/blob/main/src/learning/cycles.ts#L241) | Rambam, one chapter a day (Chabad cycle from 27 Nisan 5744, 29 April 1984; 1,017 days). |
+| [`src/learning/cycles.ts:250`](https://github.com/yskolnick/luach/blob/main/src/learning/cycles.ts#L250) | Rambam, three chapters a day (Chabad cycle from 27 Nisan 5744; 339 days). |
+| [`src/learning/cycles.ts:261`](https://github.com/yskolnick/luach/blob/main/src/learning/cycles.ts#L261) | The day number of Sefer HaMitzvos (Chabad), which runs in parallel with the three-chapter Rambam cycle (Day 1 is that cycle's first day; Day 1 fell on 1 March 2025, the start of a three-chapter cycle). The mitzvos for each day come from a published table that Luach does not ship. |
+| [`src/parsha/haftara.ts:4`](https://github.com/yskolnick/luach/blob/main/src/parsha/haftara.ts#L4) | Precedence on Shabbos (SA OC 425, 428, 684, 685 with Rema and Mishna Berura): |
 | [`src/parsha/haftara.ts:7`](https://github.com/yskolnick/luach/blob/main/src/parsha/haftara.ts#L7) | 1. Yom Tov and Chol Hamoed have their own haftara. 2. The four parshiyos (Shekalim, Zachor, Parah, HaChodesh) displace Rosh Chodesh (Rema 425:1; SA 685:1, with MB 685:3) and Machar Chodesh (SA 425:2 sets Machar Chodesh; SA 685:4 reads HaChodesh's haftara on 29 Adar). Aruch HaShulchan OC 425:4-5 states the rule for both: "וכל שכן שהפטרת 'מחר חדש' נדחית מפניהם", because Machar Chodesh has no Torah reading of its own ("כיון שאין בה קריאה בתורה"). Ashkenazim do not add verses from the displaced haftara (Rema 425:2; MB 425:11); Chabad adds the first and last verses. 3. Shabbos Chanukah displaces Rosh Chodesh Teves (SA 684:3; MB 684:11, "לענין לדחות פרסומי ניסא עדיף") and, all the more, Machar Chodesh (Aruch HaShulchan OC 425:4). 4. Shabbos Shuva (SA OC 428:8). Ashkenazim add verses after Hosea 14; by default Micah with Vayelech and Joel with Haazinu (MB 428:23; see `shuvaAddition`). 5. The three haftaros of affliction (the Shabbosos before Tisha B'Av; the third is Devarim's own) and the seven of consolation (after Tisha B'Av). Rosh Chodesh Av keeps the second of affliction by default (MB 425:8; see `roshChodeshAv`). Rosh Chodesh Elul on Shabbos: Ashkenazim and Chabad read Rosh Chodesh's and make up Re'eh's on Ki Seitzei (Rema 425:1; MB 425:7); Sephardim keep Re'eh's (SA 425:1; see `roshChodeshElul`). 6. Shabbos HaGadol, by custom (see `shabbosHagadol`). 7. Shabbos Rosh Chodesh (with the first and last verses of Machar Chodesh added by Sephardim and Chabad when Sunday is also Rosh Chodesh), then Machar Chodesh. 8. Otherwise the parsha's own; for joined parshiyos the second one's, except Acharei Mos–Kedoshim, where Ashkenazim and Chabad read Acharei Mos's (Rema OC 428:8). Ashkenazim read Kedoshim's "Hatishpot" (Ezekiel 22) only because Acharei Mos's "Halo kivnei kushiyim" (Amos 9) was already read; so when Acharei Mos fell on Machar Chodesh, Kedoshim reads Amos 9 (MB 428:26, citing R. Akiva Eiger: "וה"ה אם שבת פ' אחרי היה ער"ח ומפטירין מחר חודש דמפטירין בשבת פרשת קדושים הלוא כבני כושיים"). The MB names Machar Chodesh; Luach applies its reason to any special haftara that displaced Acharei Mos's, such as Shabbos HaGadol (*as built*). |
 | [`src/parsha/haftara.ts:61`](https://github.com/yskolnick/luach/blob/main/src/parsha/haftara.ts#L61) | Ashkenaz only: the verses added after Hosea 14 on Shabbos Shuva, so the haftara does not end on "ופושעים יכשלו בם" (MB 428:23). `'dagulMervava'` (default): Micah 7:18-20 when the parsha is Vayelech, Joel 2:15-27 when it is Haazinu (the Dagul Mervava, as MB 428:23 records him); `'micah'` or `'joel'` always; `'both'` (the Prague custom, per the Eliyahu Rabba in MB 428:23), in book order, Joel then Micah (*as built*). The MB ends that all follow the local custom. |
 | [`src/parsha/haftara.ts:70`](https://github.com/yskolnick/luach/blob/main/src/parsha/haftara.ts#L70) | Rosh Chodesh Av on Shabbos. `'affliction'` (default, all minhagim): the second haftara of affliction, "Shim'u" (the first view in the Rema OC 425:1; MB 425:8: the Gra rules so). `'roshChodesh'`: Isaiah 66, "השמים כסאי", which the Rema calls primary where there is no custom ("וי"א השמים כסאי וכן עיקר במקום שאין מנהג", Rema OC 425:1). |
@@ -236,7 +226,7 @@ the code. Zmanim are in the table above; verse references for haftaros are in
 | [`src/parsha/parsha.ts:228`](https://github.com/yskolnick/luach/blob/main/src/parsha/parsha.ts#L228) | Erev Tisha B'Av (Rema OC 553:2); 9 Av on Shabbos, when the fast is on Sunday. |
 | [`src/places/full.ts:2`](https://github.com/yskolnick/luach/blob/main/src/places/full.ts#L2) | `luach/places-full`: every city of 15,000+ people (about 34,000), from GeoNames (https://www.geonames.org/), CC-BY 4.0. A separate entry point so that the main bundle stays small. Use it with `searchPlaces(query, { places: fullPlaces() })`. |
 | [`src/places/full.ts:17`](https://github.com/yskolnick/luach/blob/main/src/places/full.ts#L17) | All cities of 15,000+ people. Parsed on first call. Aliases: the ASCII name, every other Hebrew name GeoNames has, and, for a city also in the built-in table, that table's name and spellings (e.g. "Tzfat" for Safed, "Boro Park" for Borough Park). |
-| [`src/places/israel.ts:9`](https://github.com/yskolnick/luach/blob/main/src/places/israel.ts#L9) | The boundary used by {@link isInIsrael}, as [longitude, latitude] points. It is a simplified outline, drawn for Luach, of the area where communities keep one day of Yom Tov: the State of Israel together with Judea and Samaria, the Golan Heights and Gaza. It is accurate to a few kilometres; near a border, or for any halachic question about where one day or two are kept, ask your rav and pass `israel` explicitly. It makes no political statement. Checked against GeoNames coordinates of places on both sides of each border (`test/places.test.ts`). |
+| [`src/places/israel.ts:9`](https://github.com/yskolnick/luach/blob/main/src/places/israel.ts#L9) | The boundary used by {@link isInIsrael}, as [longitude, latitude] points. It is a simplified outline, drawn for Luach, of the area where communities keep one day of Yom Tov: the State of Israel together with Judea and Samaria, the Golan Heights and Gaza. It is accurate to a few kilometres; near a border, or for any halachic question about where one day or two are kept, ask your rav and pass `israel` explicitly. It makes no political statement. Checked against GeoNames coordinates of places on both sides of each border. |
 | [`src/places/places.ts:6`](https://github.com/yskolnick/luach/blob/main/src/places/places.ts#L6) | City data: GeoNames (https://www.geonames.org/), licensed CC-BY 4.0. Country codes are GeoNames' (ISO 3166) and are not used to decide anything; the `israel` flag comes from {@link isInIsrael}. |
 | [`src/places/places.ts:10`](https://github.com/yskolnick/luach/blob/main/src/places/places.ts#L10) | No geocoding service is built in, and nothing here makes a network call. To find the user's location, use the platform (the browser Geolocation API, expo-location, …) and pass the coordinates and the device's IANA zone; see the docs, "Places". |
 | [`src/places/places.ts:34`](https://github.com/yskolnick/luach/blob/main/src/places/places.ts#L34) | IANA zone. |
@@ -275,58 +265,16 @@ the code. Zmanim are in the table above; verse references for haftaros are in
 
 ## Data that ships
 
-Every table in the package, its source and licence, is in [data sources](./data-sources).
+Every table in the package, its source and licence, is in [data sources](./data-sources.md).
 In short: calendar constants from the Rambam; city coordinates, elevations, time zones and
 Hebrew names from GeoNames (<https://www.geonames.org/>, CC-BY 4.0, credited in NOTICE);
 learning-cycle structure (counts and order, no text) from Sefaria's public structure data,
-checked against the cycles' published calendars; haftara verse references from the sources
-in the haftaros research note.
+checked against the cycles' published calendars; haftara verse references from published
+lists and the Shulchan Aruch.
 
 ## Clean room
 
 Luach is written from primary and public-domain sources. Code, tables and structure from
-other calendar and zmanim libraries and books are never copied. Nothing in `src/` imports any
-package (`npm run check:imports` and `npm run check:licenses` enforce this).
-
-### Test oracles and tools
-
-Development dependencies only; none ships in the package.
-
-| Package | Licence | Used for |
-|---|---|---|
-| `@babel/core` | MIT | Build, test or docs tooling |
-| `@babel/preset-env` | MIT | Build, test or docs tooling |
-| `@types/node` | MIT | Build, test or docs tooling |
-| `ajv` | MIT | Validates day output against its JSON Schema |
-| `astronomy-engine` | MIT | Independent solar positions (date-line and grazing-angle cases) |
-| `esbuild` | MIT | Build, test or docs tooling |
-| `eslint` | MIT | Build, test or docs tooling |
-| `fast-check` | MIT | Build, test or docs tooling |
-| `ical.js` | MPL-2.0 | Parses generated iCalendar files |
-| `playwright` | Apache-2.0 | Build, test or docs tooling |
-| `tsup` | MIT | Build, test or docs tooling |
-| `typedoc` | Apache-2.0 | Build, test or docs tooling |
-| `typedoc-plugin-markdown` | MIT | Build, test or docs tooling |
-| `typedoc-vitepress-theme` | MIT | Build, test or docs tooling |
-| `typescript` | Apache-2.0 | Build, test or docs tooling |
-| `typescript-eslint` | MIT | Build, test or docs tooling |
-| `vitepress` | MIT | Build, test or docs tooling |
-| `vitest` | MIT | Build, test or docs tooling |
-
-## Research notes and reports
-
-Each note records what was read, where, and what was concluded.
-
-- [`docs/research/2026-10-21-citation-audit-code.md`](https://github.com/yskolnick/luach/blob/main/docs/research/2026-10-21-citation-audit-code.md): Citation audit of the calendar, holiday and reading code (2026-10-21)
-- [`docs/research/2026-10-21-citation-audit-zmanim.md`](https://github.com/yskolnick/luach/blob/main/docs/research/2026-10-21-citation-audit-zmanim.md): Citation audit of the zmanim sources (2026-10-21)
-- [`docs/research/2026-10-21-citation-check-m1-m2.md`](https://github.com/yskolnick/luach/blob/main/docs/research/2026-10-21-citation-check-m1-m2.md): Citation check, milestones M1–M2 (2026-10-21)
-- [`docs/research/2026-10-21-haftaros.md`](https://github.com/yskolnick/luach/blob/main/docs/research/2026-10-21-haftaros.md): Haftaros by minhag: research notes
-- [`docs/research/2026-10-21-israeli-commemorations.md`](https://github.com/yskolnick/luach/blob/main/docs/research/2026-10-21-israeli-commemorations.md): Israeli official commemorations set by Hebrew date
-- [`docs/research/2026-10-21-learning-cycles.md`](https://github.com/yskolnick/luach/blob/main/docs/research/2026-10-21-learning-cycles.md): Daily learning cycles: start dates, units and structure
-- [`docs/research/2026-10-21-modern-israeli-days.md`](https://github.com/yskolnick/luach/blob/main/docs/research/2026-10-21-modern-israeli-days.md): Modern Israeli days: rules and their history (2026-10-21)
-- [`docs/research/2026-10-21-zmanim-opinions.md`](https://github.com/yskolnick/luach/blob/main/docs/research/2026-10-21-zmanim-opinions.md): Zmanim opinions: definitions, holders, sources (research notes)
-- [`docs/accuracy.md`](https://github.com/yskolnick/luach/blob/main/docs/accuracy.md): Accuracy report
-- [`docs/accuracy-zmanim.md`](https://github.com/yskolnick/luach/blob/main/docs/accuracy-zmanim.md): Zmanim accuracy (generated)
-- [`docs/data-sources.md`](https://github.com/yskolnick/luach/blob/main/docs/data-sources.md): Data sources
-- [`ROADMAP.md`](https://github.com/yskolnick/luach/blob/main/ROADMAP.md): Luach roadmap
+other calendar and zmanim libraries and books are never copied, and nothing in `src/`
+imports a package.
 

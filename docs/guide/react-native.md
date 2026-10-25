@@ -1,7 +1,6 @@
 # React Native
 
-Luach runs on Hermes, React Native's engine; CI runs the test suite's calculations in Hermes
-and checks the output is identical to Node.
+Luach runs on Hermes, React Native's engine, with the same output as Node.
 
 - Install with `npm install luach`; Metro uses the ESM build.
 - **Time zones:** current React Native builds of Hermes include `Intl` with time zones; pass
@@ -9,6 +8,6 @@ and checks the output is identical to Node.
   pass `fixedOffsetZone(-new Date().getTimezoneOffset())`, which is right for the current
   day but not across a DST change.
 - **Location** comes from the platform (`expo-location`) and stays on the device. See
-  [Places](./places).
+  [Places](./places.md).
 
 See `examples/react-native/DayScreen.tsx` in the repository.

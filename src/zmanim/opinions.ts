@@ -1,7 +1,7 @@
 /**
  * Every zman Luach computes: its definition, whose opinion it is, the source, and how it
  * is rounded. This table is the single place where citations live; the docs are generated
- * from it. Citations are checked against the texts (docs/research/2026-10-21-zmanim-opinions.md).
+ * from it. Citations are checked against the texts.
  *
  * Ask your rav. This library calculates; it does not rule.
  *
@@ -69,7 +69,7 @@ export const ZMANIM: Readonly<Record<string, ZmanDefinition>> = /*#__PURE__*/ de
   'sof-zman-shema-mga-90-zmaniyos': { opinion: 'Latest Shema, Magen Avraham with 90 proportional minutes', source: 'Magen Avraham OC 58:1; Mishna Berura 58:4', round: down },
   'sof-zman-shema-mga-16.1': { opinion: 'Latest Shema, Magen Avraham, day from alos to tzeis at 16.1°', source: 'Magen Avraham OC 58:1; Mishna Berura 58:4; 16.1° = Jerusalem equinox equivalent of 72 minutes (Peninei Halakha, Tefilla 11:2 n. 1)', round: down },
   'sof-zman-shema-baal-hatanya': { opinion: 'Latest Shema, Baal HaTanya: 3 seasonal hours of a day from netz amiti to shkia amitis (sun 1.583° below the horizon)', source: 'Shulchan Aruch HaRav OC 443:4; 1.583° as calculated in Chabad practice', round: down },
-  'sof-zman-shema-ateret-torah': { opinion: 'Latest Shema, Ateret Torah: day from alos (72 proportional minutes) to tzeis (40 minutes after sunset)', source: 'Ateret Torah luach (Chacham Yosef Harari-Raful); not verified against a printed source', round: down },
+  'sof-zman-shema-ateret-torah': { opinion: 'Latest Shema, Ateret Torah: day from alos (72 proportional minutes) to tzeis (40 minutes after sunset)', source: 'Ateret Torah practice (Chacham Yosef Harari-Raful); not verified against a printed source', round: down },
   'sof-zman-tefilla-gra': { opinion: 'Latest Shacharis, Gra: 4 seasonal hours of a sunrise-to-sunset day', source: 'Shulchan Aruch OC 89:1; Mishna Berura 58:4', round: down },
   'sof-zman-tefilla-mga-72': { opinion: 'Latest Shacharis, Magen Avraham, 72 fixed minutes', source: 'Shulchan Aruch OC 89:1 (until the end of the fourth hour); the day from alos to tzeis: Magen Avraham OC 58:1, Mishna Berura 58:4', round: down },
   'sof-zman-tefilla-mga-90': { opinion: 'Latest Shacharis, Magen Avraham, 90 fixed minutes', source: 'Shulchan Aruch OC 89:1 (until the end of the fourth hour); the day from alos to tzeis: Magen Avraham OC 58:1, Mishna Berura 58:4', round: down },
@@ -77,7 +77,7 @@ export const ZMANIM: Readonly<Record<string, ZmanDefinition>> = /*#__PURE__*/ de
   'sof-zman-tefilla-mga-90-zmaniyos': { opinion: 'Latest Shacharis, Magen Avraham, 90 proportional minutes', source: 'Shulchan Aruch OC 89:1 (until the end of the fourth hour); the day from alos to tzeis: Magen Avraham OC 58:1, Mishna Berura 58:4', round: down },
   'sof-zman-tefilla-mga-16.1': { opinion: 'Latest Shacharis, Magen Avraham, 16.1°', source: 'Shulchan Aruch OC 89:1 (until the end of the fourth hour); the day from alos to tzeis: Magen Avraham OC 58:1, Mishna Berura 58:4', round: down },
   'sof-zman-tefilla-baal-hatanya': { opinion: 'Latest Shacharis, Baal HaTanya', source: 'Shulchan Aruch OC 89:1 (four hours); the day from netz to shkiah: Shulchan Aruch HaRav OC 443:4. (Shulchan Aruch HaRav OC 89:1 counts from alos instead.)', round: down },
-  'sof-zman-tefilla-ateret-torah': { opinion: 'Latest Shacharis, Ateret Torah', source: 'Ateret Torah luach (Chacham Yosef Harari-Raful); not verified against a printed source', round: down },
+  'sof-zman-tefilla-ateret-torah': { opinion: 'Latest Shacharis, Ateret Torah', source: 'Ateret Torah practice (Chacham Yosef Harari-Raful); not verified against a printed source', round: down },
 
   // ---- Mincha ----
   'mincha-gedola-30': { opinion: 'Mincha Gedola: 30 fixed minutes after chatzos', source: 'Shulchan Aruch OC 233:1 (six and a half seasonal hours), which Mishna Berura 233:1 glosses as half an hour after chatzos; fixed clock minutes are a common practice (not verified as a ruling)', round: up },
@@ -113,7 +113,7 @@ export const ZMANIM: Readonly<Record<string, ZmanDefinition>> = /*#__PURE__*/ de
   'tzeis-72': { opinion: 'Nightfall 72 fixed minutes after sunset (4 mil of 18 minutes)', source: 'Pesachim 94a; Tosafos Shabbos 35a; Shulchan Aruch OC 261:2', round: up },
   'tzeis-rabbeinu-tam': { opinion: 'Nightfall of Rabbeinu Tam: 72 fixed minutes after sunset', source: 'Tosafos Shabbos 35a, Pesachim 94a; Shulchan Aruch OC 261:2', round: up },
   'tzeis-baal-hatanya': { opinion: 'Nightfall of the Baal HaTanya, 6° below the horizon', source: 'Chabad practice; no primary source for 6° was found (not verified)', round: up },
-  'tzeis-ateret-torah': { opinion: 'Nightfall, Ateret Torah: a fixed number of minutes after sunset (default 40)', source: 'Ateret Torah luach (Chacham Yosef Harari-Raful); not verified against a printed source', round: up },
+  'tzeis-ateret-torah': { opinion: 'Nightfall, Ateret Torah: a fixed number of minutes after sunset (default 40)', source: 'Ateret Torah practice (Chacham Yosef Harari-Raful); not verified against a printed source', round: up },
 
   // ---- Shabbos, Yom Tov, Pesach, fasts ----
   'candle-lighting': { opinion: 'Candle lighting a fixed number of minutes before sunset, by local custom (18 common; Jerusalem 40)', source: 'Shulchan Aruch OC 261:2 (tosefes Shabbos); the minutes are local custom: Kaf HaChaim 261:23 (a third of an hour); Igros Moshe OC 2:6 and Yabia Omer 5:21 as cited by the OU (not verified)', round: down },

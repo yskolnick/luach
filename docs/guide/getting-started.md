@@ -31,12 +31,12 @@ info.parsha?.name;           // "לך לך"
 
 | You want | Use | Guide |
 |---|---|---|
-| Hebrew ↔ Gregorian, molad, yahrzeits, gematriya | `HebrewDate`, `molad`, `anniversary`, `gematriya` | [Dates](./dates) |
-| Holidays, fasts, Omer, Tachanun… | `holidaysForYear`, `holidaysOn`, `omerText`, `tefillahOn` | [Holidays](./holidays) |
-| Parsha and haftara | `parshaFor`, `haftaraFor` | [Parsha](./parsha) |
-| Daf Yomi and other cycles | `dafYomi`, `mishnaYomis`, … | [Learning](./learning) |
-| Zmanim | `ZmanimCalendar` | [Zmanim](./zmanim) |
-| Cities, Israel or not | `searchPlaces`, `isInIsrael` | [Places](./places) |
-| JSON, iCal, the command line | `dayInfo`, `toICalendar`, `luach` | [Outputs](./outputs) |
-| Right-to-left text | `isolate` option | [RTL](./rtl) |
-| React Native | | [React Native](./react-native) |
+| Hebrew ↔ Gregorian, molad, yahrzeits, gematriya | `HebrewDate`, `molad`, `anniversary`, `gematriya` | [Dates](./dates.md) |
+| Holidays, fasts, Omer, Tachanun… | `holidaysForYear`, `holidaysOn`, `omerText`, `tefillahOn` | [Holidays](./holidays.md) |
+| Parsha and haftara | `parshaFor`, `haftaraFor` | [Parsha](./parsha.md) |
+| Daf Yomi and other cycles | `dafYomi`, `mishnaYomis`, … | [Learning](./learning.md) |
+| Zmanim | `ZmanimCalendar` | [Zmanim](./zmanim.md) |
+| Cities, Israel or not | `searchPlaces`, `isInIsrael` | [Places](./places.md) |
+| JSON, iCal, the command line | `dayInfo`, `toICalendar`, `luach` | [Outputs](./outputs.md) |
+| Right-to-left text | `isolate` option | [RTL](./rtl.md) |
+| React Native | | [React Native](./react-native.md) |

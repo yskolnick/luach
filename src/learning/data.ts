@@ -2,9 +2,7 @@
  * Structure of the texts used by the learning cycles: names (Sefaria-style transliteration
  * and Hebrew) and sizes. Counts and orders are facts, compiled for Luach from the cycles'
  * own calendars and checked against Sefaria's public structure API (counts only; no text).
- * Sources: docs/research/2026-10-21-learning-cycles.md; docs/data-sources.md.
- *
- * Compiled from docs/research/data/learning/*.json.
+ * Sources: docs/data-sources.md.
  *
  * @packageDocumentation
  */

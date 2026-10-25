@@ -16,4 +16,4 @@ haftara.
 Haftaros are references only (no text), for Ashkenaz, Sephardi, Chabad and Teimani
 (`null` where no reliable source was found). Special haftaros (the four parshiyos, Rosh
 Chodesh, Machar Chodesh, Chanukah, the three and the seven) follow the order of
-precedence documented on [`haftaraFor`](/api/).
+precedence documented on `haftaraFor`.

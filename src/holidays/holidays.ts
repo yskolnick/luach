@@ -293,7 +293,7 @@ export function holidaysForYear(year: number, options: HolidayOptions = {}): Hol
     }
   }
 
-  // ---- Modern Israeli days (Knesset laws; see docs/research/2026-10-21-modern-israeli-days.md) ----
+  // ---- Modern Israeli days (Knesset laws) ----
   if (options.modernIsraeli) addModernIsraeli(b);
   if (options.israeliCommemorations) addCommemorations(b);
 
@@ -313,7 +313,7 @@ function gregorianYearOf(date: HebrewDate): number {
 
 function addModernIsraeli(b: Builder): void {
   const flags: Partial<HolidayFlags> = { modernIsraeli: true, optional: true };
-  // Rules are applied from the year each was adopted (docs/research/2026-10-21-modern-israeli-days.md).
+  // Rules are applied from the year each was adopted.
   // Yom HaShoah: 27 Nisan (Knesset resolution, 1951). From the 1959 law, if it falls on Friday
   // it is moved to Thursday; from 1997 (Amendment No. 3), if on Sunday it is moved to Monday.
   // 1954 (a Friday) fell under the resolution alone, which had no weekday rule.
@@ -350,8 +350,7 @@ function addModernIsraeli(b: Builder): void {
 }
 
 /**
- * Israeli commemorations set by Hebrew date, with each law's moving rule
- * (docs/research/2026-10-21-israeli-commemorations.md). Days whose date is left to a
+ * Israeli commemorations set by Hebrew date, with each law's moving rule. Days whose date is left to a
  * minister's discretion (Hebrew Language Day, Liberation Day) are not listed.
  */
 const COMMEMORATIONS: {

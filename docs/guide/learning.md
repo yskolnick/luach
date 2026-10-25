@@ -12,6 +12,6 @@ nachYomi(d)?.text;     // "Jeremiah 39"
 ```
 
 Each cycle is computed from its start date and the structure of its text — no tables. Start
-dates and sources: [research note](https://github.com/yskolnick/luach/blob/main/docs/research/2026-10-21-learning-cycles.md).
+dates and their sources are cited in the code (`src/learning/`).
 Cycles that only exist as a publisher's day-by-day table (Chofetz Chaim, Tanya, Sefer
 HaMitzvos content) are not included.

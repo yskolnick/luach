@@ -12,5 +12,4 @@ or open-source licences screen:
 The NOTICE also credits GeoNames (CC-BY 4.0) for the city data.
 
 Luach is a clean-room implementation: written from the Rambam, NOAA, Meeus (the method) and
-named halachic works, with no code from GPL or LGPL calendar libraries. Those are used only
-as test oracles and are never shipped.
+named halachic works, with no code from other calendar or zmanim libraries.

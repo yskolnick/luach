@@ -7,7 +7,7 @@ outline: [2, 3]
 > **Ask your rav. This library calculates; it does not rule.**
 
 Every place where Luach had to choose, between opinions, customs, or ways to calculate, is
-listed here: what it does, why, the sources it rests on, what it was checked against, how
+listed here: what it does, why, the sources it rests on, how
 confident the reasoning is, and what is still open. It is here so that scholars, rabbanim and
 developers can examine it, question it and correct it.
 
@@ -29,7 +29,6 @@ so that people can check it. They are not a psak.
   *secondary* means it was confirmed through a named secondary source; *not verified* means
   nobody has checked it in print. *No source recorded* means none is known: the choice was a
   convenience.
-- **Checked against:** the independent oracle or published data the tests compare with.
 - **Confidence:** *High*, *Medium* or *Low*.
 - **Open:** known gaps, disagreements, and what would change it.
 
@@ -40,8 +39,7 @@ Open an issue with the **Question about a source or a halachic choice** template
 is wrong or unclear, and give your source. Corrections to sources are especially welcome.
 
 Every zman's opinion and source is on [Zmanim: opinions and sources](./zmanim.md); every citation
-in the code is on [Sources](../sources.md); the checks against other calendars are in the
-[accuracy report](../accuracy.md).
+in the code is on [Sources](../sources.md).
 
 
 ## Calendar and dates
@@ -56,8 +54,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
   calendar throughout avoids a silent switch in 1582.
 - **Sources:** Rambam, Hilchos Kiddush HaChodesh 6–8: BaHaRaD (6:8), the 19-year cycle,
   and the four dechiyos (7:1–7) (*verified* in the citation check). ADR 0004.
-- **Checked against:** an independent calendar library on every day from 1900 to 2240; 20,000 random round trips over
-  years 1–9999; published Rosh Hashana dates.
 - **Confidence:** High.
 - **Open:** dates before 1582 are proleptic Gregorian, not the Julian dates historians use;
   this is documented, not converted.
@@ -68,7 +64,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **What it does:** every date in 9999 works; answers that need a date in year 10000 are null.
 - **Why:** 9999 is documented as supported; a guessed answer would be worse than none.
 - **Sources:** the supported range above; the calendar arithmetic of Rosh Hashana 10000 (Rambam, Hilchos Kiddush HaChodesh 7).
-- **Checked against:** unit tests over every day of 9999.
 - **Confidence:** High.
 - **Open:** nothing.
 
@@ -79,7 +74,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **Why:** thousands are written as a letter with a geresh (ה׳ = 5000), so an exact
   multiple of 1000 is ambiguous; reading it as the units digit is the safer guess for dates.
 - **Sources:** *no source recorded*.
-- **Checked against:** an independent calendar library for 1–999; round trips for 1–9999 except exact thousands.
 - **Confidence:** Low (a convention, not a source).
 - **Open:** a printed convention for writing exact thousands would settle it.
 
@@ -89,7 +83,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **What it does:** `formatHebrewDate` writes 5787 as תשפ״ז; `thousands: true` gives ה׳תשפ״ז.
 - **Why:** this is how years are usually written.
 - **Sources:** *no source recorded* (common usage).
-- **Checked against:** unit tests only.
 - **Confidence:** Medium.
 - **Open:** nothing.
 
@@ -101,7 +94,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **Why:** between sunset and nightfall the date is in doubt; the caller should choose the
   boundary that suits the question.
 - **Sources:** *no source recorded* for sunset as the default.
-- **Checked against:** unit tests only.
 - **Confidence:** Medium.
 - **Open:** nothing.
 
@@ -122,9 +114,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
   - 30 Adar I → 30 Shevat and the "first anniversary" rule: Magen Avraham 568:20; Mishna
     Berura 568:42, which notes that some later authorities say always Rosh Chodesh and
     concludes "והעולם נוהגין כהמ״א" (*verified*).
-  - Research: [citation check](https://github.com/yskolnick/luach/blob/main/docs/research/2026-10-21-citation-check-m1-m2.md).
-- **Checked against:** an independent calendar library's yahrzeit rule, for deaths in 5700–5800 followed 40 years
-  ahead (more than 10,000 dates), with the Adar I custom. Birthday defaults: unit tests only.
 - **Confidence:** High for the sources; the choice of defaults is a judgement.
 - **Open:**
   - Not modelled: the Rema's exception that a death in Adar II of a leap year keeps Adar II
@@ -132,8 +121,7 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
   - The defaults are open for comment.
 - **Update 2026-10-21:** a birthday for 30 Adar I observed in a common year is now 1 Nisan,
   not 30 Shevat: Magen Avraham OC 55:10 and Mishna Berura 55:45 (the age is not complete until
-  the 1st of the next month) and MB 55:44 (*verified*); an independent calendar library agrees and is
-  now a test oracle. New option `adarI` for one born in Adar I whose birthday falls in a leap
+  the 1st of the next month) and MB 55:44 (*verified*). New option `adarI` for one born in Adar I whose birthday falls in a leap
   year: `'levush'` (default; MB 55:43, "the consensus of the later authorities") or
   `'magen-avraham'` (MA 55:10, Adar II) (*verified*).
 
@@ -147,8 +135,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
   `isInIsrael`; without a place, the diaspora stays the default; an explicit option wins.
 - **Why:** a user in Jerusalem who forgets the option should not get two days of Yom Tov.
 - **Sources:** the outline is [What `isInIsrael` covers](#what-isinisrael-covers).
-- **Checked against:** the `isInIsrael` border tests, and tests that a place in Israel gives
-  Israel rules unless the option says otherwise.
 - **Confidence:** Medium. Near a border the outline is approximate ([What `isInIsrael` covers](#what-isinisrael-covers)).
 - **Open:** near a border, pass `israel` explicitly and ask your rav.
 
@@ -162,8 +148,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
   statement.
 - **Sources:** *no external source recorded*. The outline was drawn for Luach from public map
   knowledge ([data sources](../data-sources.md)).
-- **Checked against:** border tests: Eilat, Metula, Majdal Shams, Ma'ale Adumim, Efrat and
-  Ariel inside; Aqaba, Taba, Quneitra, Tyre and El Arish outside. No point in Gaza is tested.
 - **Confidence:** Medium for the outline; the question of which places keep one day near the
   borders is halachic, and the library does not decide it.
 - **Open:** near a border, ask your rav. A sourced outline would be welcome.
@@ -179,7 +163,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **Why:** Jerusalem spreads Shushan Purim over three days; the event marks the third.
 - **Sources:** SA OC 688:6: Megillah on Friday, Al HaNissim on Shabbos, the seudah on Sunday
   (*verified*).
-- **Checked against:** an independent calendar library, every year 5660–6000.
 - **Confidence:** High for the dates. Choosing the Sunday to carry the name is a convention.
 - **Open:** an app may want all three days listed.
 
@@ -192,7 +175,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
   night is the right one.
 - **Sources:** Rema OC 581:1 gives the weekday rule; the four-day reason is Mishna Berura
   581:6 (*verified*; the citation check corrected the attribution).
-- **Checked against:** an independent calendar library, every year 5660–6000.
 - **Confidence:** High.
 - **Open:** Sephardim say Selichos from Rosh Chodesh Elul (SA OC 581:1); this event is
   Ashkenazi only.
@@ -206,7 +188,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
   luchos.
 - **Sources:** Mishna Berura 417:4; Magen Avraham 417:3 (*verified*). The month exclusions
   are **not** in the MB or MA; they are a siddur and luach custom, and lists differ.
-- **Checked against:** an independent calendar library, every year 5660–6000.
 - **Confidence:** Medium.
 - **Open:** see also [Yom Kippur Katan when Erev Rosh Chodesh is Friday](#yom-kippur-katan-when-erev-rosh-chodesh-is-friday). Erev Rosh
   Chodesh on Friday is now an option (`yomKippurKatanOnFriday`), with the Magen Avraham and
@@ -216,9 +197,8 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 
 - **Status:** Default.
 - **What it does:** an option `yomKippurKatanOnFriday`: Thursday (default) or Friday. On Shabbos it is Thursday.
-- **Why:** the sources differ, so both are offered; the default is the behaviour before, and agrees with the oracle.
-- **Sources:** Magen Avraham OC 417:3 (Friday); Mishna Berura 417:4 (Thursday for those who say Selichos, Friday for those who don't) (*verified*, citation audit).
-- **Checked against:** an independent calendar library (Thursday); unit tests for both options.
+- **Why:** the sources differ, so both are offered; the default is the behaviour before.
+- **Sources:** Magen Avraham OC 417:3 (Friday); Mishna Berura 417:4 (Thursday for those who say Selichos, Friday for those who don't) (*verified*).
 - **Confidence:** High for the sources; the default is a judgement.
 - **Open:** the month exclusions (in [Yom Kippur Katan](#yom-kippur-katan)) still have no source.
 
@@ -231,7 +211,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **Sources:** SA OC 581:2 (Erev Rosh Hashana); MB 429:10 (Erev Rosh Chodesh Iyar is in
   Nisan); SA OC 670:1 and MA, MB 686:1 (Chanukah); Kaf HaChaim OC 417:16 (Cheshvan: "צריך
   להתענות"); MB 550:11 and Aruch HaShulchan OC 417:11 (Thursday) (*verified*, Sefaria).
-- **Checked against:** `test/sourced-options.test.ts`; the comparison with an independent calendar library for the other months.
 - **Confidence:** Medium: the default for Cheshvan (off) has no source.
 - **Open:** whether Cheshvan should be on by default.
 
@@ -241,7 +220,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **What it does:** no Yom Kippur Katan before Cheshvan unless `yomKippurKatanCheshvan`.
 - **Why:** common printed calendars leave it out.
 - **Sources:** Kaf HaChaim OC 417:16 for the option (*verified*).
-- **Checked against:** `test/sourced-options.test.ts`; the comparison with an independent calendar library.
 - **Confidence:** Low as to a source for the default; none was found.
 - **Open:** a source for leaving it out.
 
@@ -252,7 +230,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
   Cheshvan and of Iyar.
 - **Why:** the fast follows the Yamim Tovim, after the Shabbos on which it is announced.
 - **Sources:** SA OC 492:1 with the Rema; Mishna Berura 492:3 (*verified*).
-- **Checked against:** unit tests only; the comparison with an independent calendar library does not include BeHaB.
 - **Confidence:** Medium.
 - **Open:** corrected in [BeHaB from the first Shabbos after Rosh Chodesh](#behab-from-the-first-shabbos-after-rosh-chodesh). The edge case recorded here
   (MB 492:3 speaks of the first Shabbos *after* Rosh Chodesh, but the code counted 1 Cheshvan
@@ -264,7 +241,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **What it does:** BeHaB starts after the first Shabbos *after* Rosh Chodesh; a Shabbos that is Rosh Chodesh is not counted.
 - **Why:** the source says so; before, a Rosh Chodesh Shabbos was counted and the fasts came a week early.
 - **Sources:** Mishna Berura 492:3, "שבת הראשון שאחר ר"ח" (*verified*).
-- **Checked against:** an independent calendar library; unit test for 5785 Cheshvan.
 - **Confidence:** High.
 - **Open:** nothing.
 
@@ -276,8 +252,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **Sources:** eating until alos: SA OC 564:1 (*verified*); the choice of alos is custom. End
   at three medium stars: SA OC 562:1 (*verified*). 7.083° per Dr. Baruch Cohn (*not
   verified*). *No source recorded* for choosing 7.083° over 6.45° (the Israeli custom).
-- **Checked against:** both component times against an independent zmanim library; `fastTimes` itself has
-  unit tests only.
 - **Confidence:** Low for the choice of default.
 - **Open:** whether the default should be 6.45° in Israel.
 
@@ -287,7 +261,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **What it does:** on that Shabbos the day view gives when Shabbos ends (not havdala) and when the fast begins; havdala over a cup comes when the fast ends on Sunday night.
 - **Why:** havdala over a cup is not said on Motzaei Shabbos then; showing a havdala time was wrong.
 - **Sources:** Shulchan Aruch OC 556:1; Mishna Berura 556:2; Rema OC 299:10 ("HaMavdil" before melacha) (*verified*).
-- **Checked against:** unit, CLI and iCal tests for 2 August 2025, New York.
 - **Confidence:** High.
 - **Open:** nothing.
 
@@ -296,8 +269,7 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **Status:** Settled.
 - **What it does:** see [Modern Israeli days before their amendments](#modern-israeli-days-before-their-amendments).
 - **Why:** so a historical date matches what was observed.
-- **Sources:** [modern Israeli days](https://github.com/yskolnick/luach/blob/main/docs/research/2026-10-21-modern-israeli-days.md).
-- **Checked against:** an independent calendar library, every year 5660–6000 (differences explained).
+- **Sources:** the Knesset laws and their amendments.
 - **Confidence:** Medium (the Knesset's own PDFs could not be opened).
 - **Open:** whether the Yom HaShoah Friday rule was in the 1959 law or the 1961 amendment;
   it changes no date.
@@ -309,15 +281,13 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
   Friday → Thursday from 1959 and Sunday → Monday from 1997; Yom HaAtzmaut Monday → Tuesday
   from 2004. These days are optional and off by default.
 - **Why:** a historical date should match what was observed that year.
-- **Sources:** [modern Israeli days](https://github.com/yskolnick/luach/blob/main/docs/research/2026-10-21-modern-israeli-days.md): the law
+- **Sources:** the law
   texts on Wikisource, the Knesset committee protocol of 11 March 1997 (Amendment No. 3),
-  and news and educational sources listed there.
-- **Checked against:** an independent calendar library, every year 5660–6000 (differences explained in
-  [Accuracy](https://github.com/yskolnick/luach/blob/main/docs/accuracy.md)).
+  and news and educational sources.
 - **Confidence:** Medium. The Knesset's own PDFs could not be opened.
 - **Open:**
   - **Resolved 2026-10-21:** the Friday → Thursday rule for Yom HaShoah now applies from
-    1959, the year of the law, as the research note says; 1954 stays on Friday. Whether the
+    1959, the year of the law; 1954 stays on Friday. Whether the
     rule was in the 1959 law or added in 1961 is still unconfirmed (it affects no year: no
     27 Nisan fell on Friday between 1959 and 1961).
   - Not modelled: the 1954 date of Yom HaAtzmaut's Shabbos rule, and the uncertain 1950
@@ -329,15 +299,13 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **What it does:** optional. Each is listed from the year of its law. Yom HaAliyah on
   7 Cheshvan only; Begin Day on 4 Adar II in a leap year; Chag HaBanot on 1 Teves.
 - **Why:** each follows its statute.
-- **Sources:** [Israeli commemorations](https://github.com/yskolnick/luach/blob/main/docs/research/2026-10-21-israeli-commemorations.md):
+- **Sources:** the Knesset laws:
   - Yom HaAliyah: the 2016 law, s. 2(א), sets 7 Cheshvan; 10 Nisan appears only in the
     purpose clause (Confidence: high).
   - Begin Day: the 1998 law says "ד׳ באדר"; Begin died on 4 Adar II 5752. The leap-year
     month is a judgement (Confidence: low).
   - Chag HaBanot: an ethnic custom, not an official day; 1 Teves per the Ministry of
     Education (Confidence: medium).
-- **Checked against:** an independent calendar library from the later of the two first years, Israel mode, with
-  explained differences. Begin Day is not compared.
 - **Confidence:** Medium.
 - **Open:** Begin Day in a leap year.
 
@@ -355,8 +323,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
   3 days (Talmidei Rabbeinu Yonah, cited in the Beis Yosef OC 426; MB 426:20), 7 days
   (SA OC 426:4), half a month (Rema OC 426:3), 15 days (SA OC 426:3; MB 426:17), all
   *verified*; the citation check found two of these attributions swapped and fixed them.
-- **Checked against:** the molad's day, hour and chalakim match an independent calendar library for Tishrei and Nisan
-  5660–6000. The instant is not checked against an outside source.
 - **Confidence:** Medium.
 - **Open:** a source for the longitude convention used by luchos would settle this.
   Night-only and Motzaei Shabbos rules are not modelled.
@@ -373,7 +339,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **Sources:** SA OC 131:6–7 with the Rema; Rema 494:3; Mishna Berura 131:36 for the days of
   tashlumin after Shavuos (*verified*). The end of Tishrei has **no Shulchan Aruch source**;
   it is luach custom.
-- **Checked against:** unit tests only.
 - **Confidence:** Medium.
 - **Open:** customs differ widely; the defaults should be confirmed against a printed luach.
 
@@ -388,7 +353,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **Sources:** SA OC 131:7; Kitzur SA 22:8; Sha'arei Teshuvah 131:19; Aruch HaShulchan OC
   131:12; Kaf HaChaim OC 131:98 (citing Chaim Sha'al on the custom in Israel) (*verified*,
   Sefaria).
-- **Checked against:** `test/sourced-options.test.ts`.
 - **Confidence:** Medium: the reading of "Match the customs" is Luach's; the Israeli Ashkenazi
   custom rests on Kaf HaChaim's report.
 - **Open:** a `nusach` option for `tefillahOn`, if wanted.
@@ -401,7 +365,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **Sources:** Kaf HaChaim OC 131:98 (Knesses HaGedolah); Sha'arei Teshuvah 131:19; Aruch
   HaShulchan OC 131:12 ("ופסח שני לא חשבו והוא פלא, ומנהג הספרדים שלא ליפול בו")
   (*verified*, Sefaria).
-- **Checked against:** `test/sourced-options.test.ts`.
 - **Confidence:** High.
 - **Open:** nothing.
 
@@ -413,8 +376,7 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **Why:** the change is at Musaf of the first day of Pesach, so Shacharis is still winter;
   and Ashkenazim outside Israel say neither in summer.
 - **Sources:** SA OC 114:1–3; Rema OC 114:3 ("ואנו בני אשכנז לא מזכירין טל"); MB 114:3, 13;
-  Tashbetz Katan 101 (Israel) (*verified* except the Tashbetz Katan, found by a research agent).
-- **Checked against:** `test/amidah-season.test.ts`.
+  Tashbetz Katan 101 (Israel) (*verified* except the Tashbetz Katan, found in a secondary search).
 - **Confidence:** High.
 - **Open:** nothing.
 
@@ -426,8 +388,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **Why:** a default had to be chosen.
 - **Sources:** the count itself: Vayikra 23:15–16; Menachos 65b–66a (*verified*). *No source
   recorded* for the wording of any nusach.
-- **Checked against:** the day numbers and sefiros match an independent calendar library for all 49 days; the wording
-  has unit tests only.
 - **Confidence:** Low for the wording.
 - **Open:** each wording should be checked against a named siddur.
 
@@ -437,7 +397,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **What it does:** `mourningPeriods` gives `restrictions: null` unless a custom is named.
 - **Why:** the customs differ too much to apply one silently.
 - **Sources:** the customs themselves are in [Mourning restrictions by named custom](#mourning-restrictions-by-named-custom).
-- **Checked against:** `test/mourning.test.ts`.
 - **Confidence:** Not applicable.
 - **Open:** nothing.
 
@@ -453,9 +412,8 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
   meat on 10 Av without a Three Weeks custom) are `null`.
 - **Sources:** SA and Rema OC 493:1–3; MB 493:5–7, 10–11, 14–15; Kaf HaChaim OC 493:13
   (the Arizal); SA and Rema OC 551:2–4, 9; MB 551:58–59; SA and Rema OC 558:1; MB 558:3–4
-  (*verified*, Sefaria). Kaf HaChaim OC 551:125 (from 2 Av) was found by a research agent and
+  (*verified*, Sefaria). Kaf HaChaim OC 551:125 (from 2 Av) was found in a secondary search and
   not re-read.
-- **Checked against:** `test/mourning.test.ts`, a test per rule.
 - **Confidence:** Medium: the sources are read, but the exceptions (a bris, a seudas mitzvah,
   Shabbos Chazon, mourners, children) are not modelled.
 - **Open:** more customs on request.
@@ -472,8 +430,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
   the sky is, which does not depend on the visible horizon.
 - **Sources:** R. Isser Zalman Meltzer, cited in Peninei Halakha, Tefilla 11:6 n. 7
   (*secondary*); Zmanim KeHilchasam, ch. 2 §§7, 9 (*secondary*, through a blog).
-- **Checked against:** sea-level times against an independent zmanim library; elevation only by direction
-  (earlier sunrise, later sunset).
 - **Confidence:** Medium.
 - **Open:** Peninei Halakha reports that the Shulchan Aruch HaRav uses a sunrise for about
   800 m everywhere, citing Igros Moshe OC 1:97 (*not verified*).
@@ -485,7 +441,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
   can be turned off.
 - **Why:** a rounded time should never be less stringent than the exact one.
 - **Sources:** *no source recorded* (a safety convention).
-- **Checked against:** unit tests; oracle comparisons run unrounded.
 - **Confidence:** High that it is the safer direction.
 - **Open:** a fast's start is rounded down, because it is a deadline for eating.
 
@@ -501,9 +456,7 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
     261:23; Yabia Omer 5:21) (*secondary*).
   - Three small stars: SA OC 293:2 (*verified*); 8.5° per R. Tukaczinsky and Chabad practice
     (*secondary*).
-  - Second night: SA OC 503:1 (not in the research note).
-- **Checked against:** an independent zmanim library for candle lighting (within 10 seconds; 34 at Tromsø) and
-  for tzeis 8.5°.
+  - Second night: SA OC 503:1.
 - **Confidence:** Medium.
 - **Open:** local customs (Jerusalem 40 minutes and others) are options, not defaults.
 
@@ -513,7 +466,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **What it does:** a place may carry its documented custom (Jerusalem 40, Haifa 30); the day view, CLI and iCal use it unless the caller sets the minutes, and label it with the source.
 - **Why:** the minutes are a local custom; a city whose custom is documented should not get the generic 18.
 - **Sources:** Peninei Halakha, Shabbat 3:2 (Jerusalem 40, Haifa 30) and Zemanim 13:5 n. 11 (Jerusalem) (*verified*, read on ph.yhb.org.il). Not set without a source: Zichron Yaakov 30, Petach Tikva 40, the Shomron 30.
-- **Checked against:** unit and CLI tests.
 - **Confidence:** Medium: one published source per city.
 - **Open:** Lu'ach Eretz Yisrael is reported to give Jerusalem 25 (not verified); other cities need sources.
 
@@ -527,8 +479,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **Sources:** Magen Avraham 233:4 (chatzos is the sun's midpoint) (*verified*); SA OC 233:1
   and MB 233:1–4 (*verified*); "the later of" is Chabad practice (*secondary*; no primary
   source found).
-- **Checked against:** an independent zmanim library (chatzos and 30 minutes within 15 seconds; Gra within
-  1 second).
 - **Confidence:** High for the Gra; Medium for "the later of".
 - **Open:** the constant 15-second difference for chatzos is not explained.
 
@@ -540,10 +490,9 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **Why:** the Magen Avraham reports that the Levush counts the day from sunrise to sunset.
 - **Sources:** Magen Avraham 233:3 and 267:1 (*verified*). The Levush's own text was **not
   read** (*not verified*).
-- **Checked against:** the Gra's plag is checked against an independent zmanim library (within 8 seconds).
 - **Confidence:** Medium.
 - **Open:** the source is corrected in [Plag HaMincha of the Levush: the source](#plag-hamincha-of-the-levush-the-source). The second
-  citation audit found the source is Levush OC 267 as reported in Biur Halacha 261:2, and that
+  check of the citation found the source is Levush OC 267 as reported in Biur Halacha 261:2, and that
   Magen Avraham 233:3 reads the Levush as counting from tzeis; the sources above are kept
   for the record. The Levush should still be read in the original.
 
@@ -553,7 +502,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **What it does:** unchanged calculation (the Gra's); the citation now names where the Levush's view is reported.
 - **Why:** the earlier citation, Magen Avraham 233:3, reads the Levush differently (from tzeis).
 - **Sources:** Levush OC 267, as reported in Biur Halacha 261:2 s.v. "להקדים" (*verified*); Magen Avraham 233:3 (*verified*).
-- **Checked against:** the [citation audit](https://github.com/yskolnick/luach/blob/main/docs/research/2026-10-21-citation-audit-zmanim.md).
 - **Confidence:** Medium: the Levush itself was not read.
 - **Open:** reading the Levush directly; whether to offer MA's reading as an option.
 
@@ -563,9 +511,8 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **What it does:** with elevation on, the horizon dip uses a radius of 6,371 km.
 - **Why:** the standard mean radius.
 - **Sources:** *no source recorded*.
-- **Checked against:** never compared with an outside oracle.
 - **Confidence:** Medium.
-- **Open:** a comparison with a luach that uses elevation would test it.
+- **Open:** whether elevation should apply beyond sunrise and sunset.
 
 ### No made-up times at high latitudes {#no-made-up-times-at-high-latitudes}
 
@@ -573,10 +520,9 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **What it does:** when the sun does not reach an angle, the time is `null` with a reason.
   Fallbacks (`nearestDay`, `halfNight`) exist but are off and are labelled when used.
 - **Why:** a made-up time could be used as if it were real.
-- **Sources:** the research recommends returning null and offering the Chabad fallback only
+- **Sources:** the recommendation is to return null and offering the Chabad fallback only
   as an explicit option (*secondary*). The opinions of Igros Moshe, the Minchas Yitzchak and
   the London Beth Din on high latitudes are *not verified* and are not cited.
-- **Checked against:** unit tests (London 16.1° in June; Tromsø without sunrise).
 - **Confidence:** High that null is the safe default.
 - **Open:** neither fallback cites a source.
 
@@ -586,7 +532,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **What it does:** the high-latitude fallbacks apply only when the sun never gets low enough; in polar night the time stays null.
 - **Why:** in polar night the sun never rises to the angle, so any time would be invented.
 - **Sources:** *No source recorded* for the fallbacks themselves (see [No made-up times at high latitudes](#no-made-up-times-at-high-latitudes)).
-- **Checked against:** Svalbard in winter and summer; astronomy-engine for edge days.
 - **Confidence:** High for the null; the fallbacks remain a judgement.
 - **Open:** nothing.
 
@@ -596,7 +541,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **What it does:** UTC offsets keep seconds (local mean time before standard time); rounding is to whole minutes of the local clock.
 - **Why:** rounding the offset moved historical zmanim by up to 30 seconds.
 - **Sources:** the IANA time-zone database through `Intl`.
-- **Checked against:** Jerusalem 1900 noon (09:39:20Z).
 - **Confidence:** High.
 - **Open:** nothing.
 
@@ -609,7 +553,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **Why:** a set that covers the times most printed luachos show.
 - **Sources:** *no source recorded* for the selection; each zman's own sources are on
   [Zmanim and sources](https://github.com/yskolnick/luach/blob/main/docs/halacha/zmanim.md).
-- **Checked against:** each zman against an independent zmanim library.
 - **Confidence:** Low (a selection, not a source).
 - **Open:** apps should show the opinions their community follows.
 
@@ -629,10 +572,7 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
     Vilna Gaon's custom (every year except when Erev Pesach is Shabbos) is not built.
   - Kedoshim: Rema OC 428:8, ArtScroll, a published Ashkenazi luach and Chabad; Hertz, Koren and
     Sefaria swap it with Amos.
-  - [haftaros](https://github.com/yskolnick/luach/blob/main/docs/research/2026-10-21-haftaros.md); a value was recorded only when two
-    sources agreed.
-- **Checked against:** an independent library on every Shabbos 5660–6000; seven variants explained
-  in [Accuracy](https://github.com/yskolnick/luach/blob/main/docs/accuracy.md).
+  - A value was recorded only when two sources agreed.
 - **Confidence:** High for Ashkenaz and Chabad; Medium for Sephardi (Sefaria's Sephardi data
   is incomplete); Low for Teimani (several values are null).
 - **Open:** *no source recorded* for choosing "every year" as the Sephardi default for
@@ -642,9 +582,8 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 
 - **Status:** Default.
 - **What it does:** Ashkenazi Kedoshim reads Amos 9:7-15 when Acharei Mos's own haftara was displaced; otherwise Ezekiel 22:1-16.
-- **Why:** the source says so; the accuracy page had called the difference a Rema-vs-Hertz variant.
+- **Why:** the source says so; it had been treated as a Rema-vs-Hertz variant.
 - **Sources:** Mishna Berura 428:26, citing R. Akiva Eiger, who names Machar Chodesh (*verified*). Applying the same reason to Shabbos HaGadol and Rosh Chodesh is Luach's reading.
-- **Checked against:** an independent library, every Shabbos 5660–6000 (it agrees, apart from ending Ezekiel 22 at 22:19).
 - **Confidence:** High for Machar Chodesh; Medium for the extension.
 - **Open:** whether the MB's reason covers Shabbos HaGadol and Rosh Chodesh.
 
@@ -654,7 +593,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **What it does:** Ashkenazi Shabbos Shuva adds Micah 7:18-20 with Vayelech and Joel 2:15-27 with Haazinu; option `shuvaAddition`.
 - **Why:** the source says so; before, Joel was always added.
 - **Sources:** Mishna Berura 428:23, recording the Dagul Mervava (*verified*). Joel before Micah for `'both'`: *no source recorded* (book order).
-- **Checked against:** an independent library for the Vayelech years.
 - **Confidence:** High.
 - **Open:** the order for `'both'`.
 
@@ -664,7 +602,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **What it does:** options `roshChodeshAv` and `roshChodeshElul`; defaults unchanged.
 - **Why:** the Rema and the Mishna Berura differ, so both are offered.
 - **Sources:** Rema OC 425:1; Mishna Berura 425:7–8; Shulchan Aruch OC 425:1 (*verified*).
-- **Checked against:** unit tests.
 - **Confidence:** High for the sources; the defaults are the behaviour before.
 - **Open:** nothing.
 
@@ -677,7 +614,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
   found no source either way.
 - **Sources:** SA OC 425:2, 685:4, 684:3; Aruch HaShulchan OC 425:4–5 (the displacement
   itself, *verified*); no Chabad source read for the added verses.
-- **Checked against:** nothing; the oracle tests do not cover Chabad.
 - **Confidence:** Low.
 - **Open:** a Chabad source such as Sefer HaMinhagim for these two days.
 
@@ -689,7 +625,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **Why:** the simplest custom; the others are options.
 - **Sources:** Rema OC 292:2 records the custom of saying Pirkei Avos in the summer
   (*verified*). *No source recorded* for one chapter rather than doubling up.
-- **Checked against:** unit tests only.
 - **Confidence:** Medium.
 - **Open:** some read only until Shavuos; customs for the end of the summer differ.
 
@@ -699,7 +634,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **What it does:** Pirkei Avos is not said on Shabbos 8 Av; option `until: 'shavuos'` for one round before Shavuos.
 - **Why:** the source says so; before, a chapter was said on 8 Av and every later chapter shifted.
 - **Sources:** Rema OC 553:2, "אם חל [ערב ת"ב] בשבת אין אומרים פרקי אבות"; Kaf HaChaim 292:23 (*verified*).
-- **Checked against:** an independent library, every Shabbos 5700–5900, Israel and diaspora.
 - **Confidence:** High.
 - **Open:** what is read on a seventh Shabbos before Shavuos (null).
 
@@ -708,8 +642,7 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **Status:** Default.
 - **What it does:** a week runs Sunday to Shabbos, counted from 6 March 2005.
 - **Why:** back-computed from Megillah 2 in October 2018 (Jewish Link, 4 October 2018).
-- **Sources:** [learning cycles](https://github.com/yskolnick/luach/blob/main/docs/research/2026-10-21-learning-cycles.md).
-- **Checked against:** an independent library, 2005–2060.
+- **Sources:** the cycles' published calendars.
 - **Confidence:** Low. The back-computation puts Megillah 2 a day off the newspaper's date,
   so some groups may start the week on Shabbos.
 - **Open:** confirmation from the organisers.
@@ -721,8 +654,6 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
   cycles.
 - **Why:** the 14th cycle's start is well documented; the early ones are not.
 - **Sources:** Yeshiva World and the ArtScroll blog for the 14th cycle.
-- **Checked against:** all 1,421 days of the dafyomi.co.il chart (2022–2026); an independent library
-  1990–2060.
 - **Confidence:** High from 2021; Low before it. Early cycles may have run at another pace.
 - **Open:** the first cycle's start date.
 
@@ -732,6 +663,5 @@ in the code is on [Sources](../sources.md); the checks against other calendars a
 - **What it does:** returns null after Me'ilah 22a (10 February 2038).
 - **Why:** Dirshu has not published how Kinnim, Tamid and Middos will be learned.
 - **Sources:** the Dirshu luach 5784 (Berachos 2a on 16 October 2023).
-- **Checked against:** about 1,000 days of Dirshu's luach; an independent library to 2037.
 - **Confidence:** High up to 2038.
 - **Open:** Dirshu's plan for the end of Kodashim.

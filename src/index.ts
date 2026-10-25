@@ -6,8 +6,8 @@
  * @module luach
  */
 
-// The public API, listed by name so that internal helpers stay internal. A test
-// (test/public-api.test.ts) pins this list; change it deliberately.
+// The public API, listed by name so that internal helpers stay internal; change it
+// deliberately.
 
 export { civilToDays, daysToCivil, formatIsoDate, parseIsoDate, type CivilDate } from './time/civil.js';
 export { fixedOffsetZone, UTC, offsetMinutes, civilDateAt, type TimeZoneProvider, type TimeZone } from './time/zone.js';

@@ -201,14 +201,14 @@
       "sephardi": "Ezekiel 22:1-16",
       "chabad": "Amos 9:7-15",
       "teimani": "Ezekiel 22:1-16",
-      "notes": "Sources: SA OC 428:8 (Rema: Amos 9:7 'Halo kivnei kushiyim' is the haftara of Acharei Mos), EnWP (ArtScroll, Hirsch, Dotan), AHT (Rema, Levush, Aruch HaShulchan, Ezras Torah luach, Frankfurt, Posen, Chabad), CHB 2027-05-01 (Chabad Amos). Disputed in Ashkenaz: Hertz, Koren and SEF give Ashkenazim Ezekiel 22:1-19 (or 1-16) for Acharei Mos and Amos for Kedoshim. Because Ezekiel 22 disparages Jerusalem, the Vilna Gaon and R. Soloveitchik read Amos even if it repeats on consecutive weeks (EnWP). Teimani from HeWP (generic) and AHT (most non-Ashkenazi communities, incl. Rambam); EnWP silent."
+      "notes": "Sources: SA OC 428:8 (Rema: Amos 9:7 'Halo kivnei kushiyim' is the haftara of Acharei Mos), EnWP (ArtScroll, Hirsch, Dotan), AHT (Rema, Levush, Aruch HaShulchan, a published Ashkenazi luach, Frankfurt, Posen, Chabad), CHB 2027-05-01 (Chabad Amos). Disputed in Ashkenaz: Hertz, Koren and SEF give Ashkenazim Ezekiel 22:1-19 (or 1-16) for Acharei Mos and Amos for Kedoshim. Because Ezekiel 22 disparages Jerusalem, the Vilna Gaon and R. Soloveitchik read Amos even if it repeats on consecutive weeks (EnWP). Teimani from HeWP (generic) and AHT (most non-Ashkenazi communities, incl. Rambam); EnWP silent."
     },
     "kedoshim": {
       "ashkenaz": "Ezekiel 22:1-16",
       "sephardi": "Ezekiel 20:2-20",
       "chabad": "Ezekiel 20:2-20",
       "teimani": "Ezekiel 20:1-15",
-      "notes": "Sources: EnWP (ArtScroll), AHT (Ezras Torah luach, Frankfurt, Posen, Levush), SEF (S), HeWP, CHB 2024-05-11 (Chabad Ezekiel 20:2-20). Disputed in Ashkenaz: Hertz, Koren, SEF etc. give Amos 9:7-15 here (see acharei-mos); Hirsch gives Ezekiel 22:1-19. Teimani Baladi Ezekiel 20:1-15 (HeWP, AHT); Shami begin at 20:1 and run to 20:20 (AHT)."
+      "notes": "Sources: EnWP (ArtScroll), AHT (a published Ashkenazi luach, Frankfurt, Posen, Levush), SEF (S), HeWP, CHB 2024-05-11 (Chabad Ezekiel 20:2-20). Disputed in Ashkenaz: Hertz, Koren, SEF etc. give Amos 9:7-15 here (see acharei-mos); Hirsch gives Ezekiel 22:1-19. Teimani Baladi Ezekiel 20:1-15 (HeWP, AHT); Shami begin at 20:1 and run to 20:20 (AHT)."
     },
     "emor": {
       "ashkenaz": "Ezekiel 44:15-31",
@@ -525,7 +525,7 @@
       "sephardi": "Ezekiel 45:18-46:15",
       "chabad": "Ezekiel 45:18-46:15; Isaiah 66:1; Isaiah 66:23-24; Isaiah 66:23",
       "teimani": null,
-      "notes": "HaChodesh on Shabbos Rosh Chodesh Nisan: HaChodesh takes precedence (EnWP; Rema OC 425:1). Chabad adds the first and last verse(s) of the Rosh Chodesh haftara (SHM; CHB 2022-04-02), and on erev Rosh Chodesh the first and last verse of Machar Chodesh (SHM; not checked on chabad.org). Dotan (via EnWP): Sephardim and Mizrachim add Isaiah 66:1 and 66:23 (or I Samuel 20:18 and 20:42 on the eve); single source, not encoded. Teimani not found."
+      "notes": "HaChodesh on Shabbos Rosh Chodesh Nisan: HaChodesh takes precedence (EnWP; Rema OC 425:1). Chabad adds the first and last verse(s) of the Rosh Chodesh haftara (SHM; CHB 2022-04-02), and on erev Rosh Chodesh the first and last verse of Machar Chodesh (SHM; not checked on a CHB page). Dotan (via EnWP): Sephardim and Mizrachim add Isaiah 66:1 and 66:23 (or I Samuel 20:18 and 20:42 on the eve); single source, not encoded. Teimani not found."
     },
     "shabbos-chanukah-1": {
       "ashkenaz": "Zechariah 2:14-4:7",
@@ -546,7 +546,7 @@
       "sephardi": "Zechariah 2:14-4:7",
       "chabad": "Zechariah 2:14-4:7; Isaiah 66:1; Isaiah 66:23-24; Isaiah 66:23",
       "teimani": null,
-      "notes": "Shabbos Chanukah that is Rosh Chodesh Teves: read the Chanukah haftara ('Roni v'simchi', SA OC 684:3; MB 684:11, because publicising the miracle comes first). Chabad adds the first and last verse(s) of Isaiah 66, and when that Shabbos is 30 Kislev (also the eve of the second day of Rosh Chodesh) also I Samuel 20:18 and 20:42: CHB 2022-12-24 and 2015-12-12 show 'Zechariah 2:14-4:7; Isaiah 66:1; Isaiah 66:23-24; Isaiah 66:23; I Samuel 20:18; I Samuel 20:42'. The value encoded here is for a Shabbos that is Rosh Chodesh but not also the eve of Rosh Chodesh. It is inferred from the same Chabad pattern verified for Shekalim (CHB 2025-03-01) and HaChodesh (CHB 2022-04-02) on Rosh Chodesh, but no dated chabad.org page for that exact case was found. For 30 Kislev, use shabbos-chanukah-rosh-chodesh-and-erev. Teimani not found."
+      "notes": "Shabbos Chanukah that is Rosh Chodesh Teves: read the Chanukah haftara ('Roni v'simchi', SA OC 684:3; MB 684:11, because publicising the miracle comes first). Chabad adds the first and last verse(s) of Isaiah 66, and when that Shabbos is 30 Kislev (also the eve of the second day of Rosh Chodesh) also I Samuel 20:18 and 20:42: CHB 2022-12-24 and 2015-12-12 show 'Zechariah 2:14-4:7; Isaiah 66:1; Isaiah 66:23-24; Isaiah 66:23; I Samuel 20:18; I Samuel 20:42'. The value encoded here is for a Shabbos that is Rosh Chodesh but not also the eve of Rosh Chodesh. It is inferred from the same Chabad pattern verified for Shekalim (CHB 2025-03-01) and HaChodesh (CHB 2022-04-02) on Rosh Chodesh, but no dated CHB page for that exact case was found. For 30 Kislev, use shabbos-chanukah-rosh-chodesh-and-erev. Teimani not found."
     },
     "shabbos-chanukah-rosh-chodesh-and-erev": {
       "ashkenaz": "Zechariah 2:14-4:7",
@@ -567,7 +567,7 @@
       "sephardi": "Hosea 14:2-10; Micah 7:18-20",
       "chabad": "Hosea 14:2-10; Micah 7:18-20",
       "teimani": "Hosea 14:2-10",
-      "notes": "Shabbos between Rosh Hashana and Yom Kippur (Vayelech or Haazinu); always 'Shuva' (SA OC 428:8). Ashkenaz: AHT ('common Ashkenazi custom'), HeWP and EnWP (Dotan, Koren, Hirsch, Jerusalem Crown) give Hosea + Joel 2:15-27. Many Ashkenazim (Hertz; Prague, Berlin, Lakewood per AHT; SEF) add both Joel 2:15-27 and Micah 7:18-20, and some start Joel at 2:11. Sephardi: Hosea + Micah (HeWP, EnWP, AHT). Chabad: Hosea + Micah per CHB 2027-10-09 and 2029-09-15, chabad.org/566239 and HeWP. AHT lists Chabad as adding both Joel and Micah, but the Chabad sources were preferred. Teimani: HeWP, and AHT ('some Yemenites add nothing'); Shami add Micah 7:18-20."
+      "notes": "Shabbos between Rosh Hashana and Yom Kippur (Vayelech or Haazinu); always 'Shuva' (SA OC 428:8). Ashkenaz: AHT ('common Ashkenazi custom'), HeWP and EnWP (Dotan, Koren, Hirsch, Jerusalem Crown) give Hosea + Joel 2:15-27. Many Ashkenazim (Hertz; Prague, Berlin, Lakewood per AHT; SEF) add both Joel 2:15-27 and Micah 7:18-20, and some start Joel at 2:11. Sephardi: Hosea + Micah (HeWP, EnWP, AHT). Chabad: Hosea + Micah per CHB 2027-10-09 and 2029-09-15, CHB-n (Shabbos Shuva) and HeWP. AHT lists Chabad as adding both Joel and Micah, but the Chabad sources were preferred. Teimani: HeWP, and AHT ('some Yemenites add nothing'); Shami add Micah 7:18-20."
     },
     "affliction-1": {
       "ashkenaz": "Jeremiah 1:1-2:3",
@@ -658,7 +658,7 @@
       "sephardi": "Jonah 1:1-4:11; Micah 7:18-20",
       "chabad": "Jonah 1:1-4:11; Micah 7:18-20",
       "teimani": "Jonah 1:1-4:11; Micah 7:18-20",
-      "notes": "Sources: Talmud Megillah 31a (via AHT), AHT, OU Haftarah Helper, EnWP, HeWP, chabad.org/569551 (Chabad: 'Book of Jonah; Micha 7:18-20'). Frankfurt (and per HeWP some other Ashkenazim) read Jonah without the Micah verses. Italians prefix Obadiah 1:21. Teimani from the generic entries in EnWP and HeWP; no Yemenite variant reported."
+      "notes": "Sources: Talmud Megillah 31a (via AHT), AHT, OU Haftarah Helper, EnWP, HeWP, CHB-n (Chabad: 'Book of Jonah; Micha 7:18-20'). Frankfurt (and per HeWP some other Ashkenazim) read Jonah without the Micah verses. Italians prefix Obadiah 1:21. Teimani from the generic entries in EnWP and HeWP; no Yemenite variant reported."
     },
     "sukkos-1": {
       "ashkenaz": "Zechariah 14:1-21",

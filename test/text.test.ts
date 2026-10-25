@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest';
-import { gematriya as hebcalGematriya } from '@hebcal/core';
 import { gematriya, parseGematriya, formatHebrewDate, ashkenazi, sephardi, en, he, isolate, extendLocale, monthName, stripBidiControls } from '../src/index';
 import { RLI, PDI } from '../src/text/rtl';
 
@@ -25,10 +24,6 @@ describe('gematriya', () => {
   it('an exact thousand is written like its units digit (documented ambiguity)', () => {
     expect(gematriya(1000)).toBe('א׳');
     expect(parseGematriya('א׳')).toBe(1);
-  });
-  it('oracle: hebcal letters agree for 1–999 (ignoring punctuation)', () => {
-    const strip = (s: string) => s.replace(/[׳״'"]/g, '');
-    for (let n = 1; n <= 999; n++) expect(strip(gematriya(n))).toBe(strip(hebcalGematriya(n)));
   });
   it('rejects junk', () => {
     expect(() => parseGematriya('abc')).toThrow(RangeError);

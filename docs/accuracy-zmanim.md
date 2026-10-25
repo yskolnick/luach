@@ -1,6 +1,6 @@
 # Zmanim accuracy (generated)
 
-Luach against kosher-zmanim 0.9 (test-only oracle), every day of 2025–2028, 19 cities, rounding off. Cells: largest difference in seconds. `n` = null on one side only (boundary days when the sun first or last reaches an angle). `g` = days where the sun only grazes the angle (lowest point within 0.5°), where any two methods diverge. kosher-zmanim gives Chatham's times a civil day ahead (its issue #37); the comparison asks it for the neighbouring date that lands on Luach's day. Days where no neighbouring date does (kosher-zmanim's solar transit jumps a day when it falls within seconds of 00:00 UTC) are excluded and counted.
+Luach against an independent zmanim library, every day of 2025–2028, 19 cities, rounding off. Cells: largest difference in seconds. `n` = null on one side only (boundary days when the sun first or last reaches an angle). `g` = days where the sun only grazes the angle (lowest point within 0.5°), where any two methods diverge. The library gives Chatham's times a civil day ahead; the comparison asks it for the neighbouring date that lands on Luach's day. Days where no neighbouring date does (the library's solar transit jumps a day when it falls within seconds of 00:00 UTC) are excluded and counted.
 
 Compared values: 1,368,750.
 
@@ -58,7 +58,7 @@ Compared values: 1,368,750.
 | bein-hashmashos-yereim-16.875 | 6 | 6 | 6 | 6 | 6 | 6 | 7 | 6 | 6 | 6 | 6 | 9 | 9 | 9 | 9 | 10 | 6 | 6 | 34 n2 |
 | bein-hashmashos-yereim-13.5 | 6 | 6 | 6 | 6 | 6 | 6 | 7 | 6 | 6 | 6 | 6 | 9 | 9 | 9 | 9 | 10 | 6 | 6 | 34 n2 |
 
-Days kosher-zmanim could not produce (transit day-jump near 00:00 UTC): Chatham 67.
+Days the library could not produce (transit day-jump near 00:00 UTC): Chatham 67.
 
 Grazing-day differences over 60 s:
 

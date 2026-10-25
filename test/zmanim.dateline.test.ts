@@ -1,5 +1,5 @@
 /**
- * Regression for kosher-zmanim issue #37: zmanim for Sydney, Auckland and Chatham must fall
+ * Near the date line, zmanim for Sydney, Auckland, Chatham, Apia and Kiritimati must fall
  * on the requested civil day, every day of 2025–2028, and agree with astronomy-engine (MIT).
  */
 import { describe, expect, it } from 'vitest';
@@ -15,7 +15,7 @@ const CITIES = [
   { name: 'Kiritimati', latitude: 1.87, longitude: -157.43, timeZone: 'Pacific/Kiritimati' },
 ];
 
-describe('date line: zmanim on the right day (kosher-zmanim #37 regression)', () => {
+describe('date line: zmanim on the right day', () => {
   for (const c of CITIES) {
     it(c.name, () => {
       const obs = new Astronomy.Observer(c.latitude, c.longitude, 0);

@@ -88,10 +88,6 @@ function codeCitations() {
 
 // ---- Oracles ----
 const ROLE = {
-  '@hebcal/core': 'Calendar, holidays and parsha, compared day by day',
-  '@hebcal/learning': 'Learning cycles, compared day by day',
-  '@hebcal/leyning': 'Haftaros, compared Shabbos by Shabbos',
-  'kosher-zmanim': 'Zmanim, compared value by value',
   'astronomy-engine': 'Independent solar positions (date-line and grazing-angle cases)',
   'ajv': 'Validates day output against its JSON Schema',
   'ical.js': 'Parses generated iCalendar files',
@@ -187,10 +183,8 @@ export function render() {
 
   o += '## Clean room\n\n';
   o += 'Luach is written from primary and public-domain sources. Code, tables and structure from\n';
-  o += 'hebcal (GPL), KosherJava and kosher-zmanim (LGPL), KosherCocoa and the code of *Calendrical\n';
-  o += 'Calculations* are never copied. Some of them are installed only as test oracles: their output\n';
-  o += 'is compared with Luach\'s, and nothing in `src/` imports them (`npm run check:imports` and\n';
-  o += '`npm run check:licenses` enforce this).\n\n';
+  o += 'other calendar and zmanim libraries and books are never copied. Nothing in `src/` imports any\n';
+  o += 'package (`npm run check:imports` and `npm run check:licenses` enforce this).\n\n';
   o += '### Test oracles and tools\n\n';
   o += 'Development dependencies only; none ships in the package.\n\n';
   o += '| Package | Licence | Used for |\n|---|---|---|\n';

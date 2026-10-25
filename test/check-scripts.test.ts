@@ -7,7 +7,7 @@ import { tmpdir } from 'node:os';
 import { join, dirname, resolve } from 'node:path';
 
 const SCRIPTS = resolve('scripts');
-const PKG = { name: 'probe', license: 'Apache-2.0', devDependencies: { '@hebcal/core': '*', 'kosher-zmanim': '*' } };
+const PKG = { name: 'probe', license: 'Apache-2.0', devDependencies: { '@acme/oracle': '*', 'other-oracle': '*' } };
 
 function run(script: string, files: Record<string, string>): { ok: boolean; out: string } {
   const dir = mkdtempSync(join(tmpdir(), 'luach-probe-'));
@@ -31,8 +31,8 @@ describe('check-imports', () => {
     const r = imports([
       "import { a } from './a.js';",
       "export * from './b.js';",
-      "const s = 'eval(1) fetch(x) require(\"@hebcal/core\")';",
-      '// eval(1) import("@hebcal/core")',
+      "const s = 'eval(1) fetch(x) require(\"@acme/oracle\")';",
+      '// eval(1) import("@acme/oracle")',
       '/* new Function("x") */',
       'const t = `a ${s} eval( b`;',
       'const re = /eval\\(|\\/\\*/g;',
@@ -43,13 +43,13 @@ describe('check-imports', () => {
     expect(r.ok).toBe(true);
   });
   for (const [what, code, message] of [
-    ['a static import of an oracle', "import { HDate } from '@hebcal/core';", 'imports devDependency "@hebcal/core"'],
-    ['a dynamic import', "const m = await import('kosher-zmanim');", 'imports devDependency "kosher-zmanim"'],
-    ['a template-literal dynamic import', 'const m = await import(`@hebcal/core`);', 'imports devDependency "@hebcal/core"'],
+    ['a static import of an oracle', "import { HDate } from '@acme/oracle';", 'imports devDependency "@acme/oracle"'],
+    ['a dynamic import', "const m = await import('other-oracle');", 'imports devDependency "other-oracle"'],
+    ['a template-literal dynamic import', 'const m = await import(`@acme/oracle`);', 'imports devDependency "@acme/oracle"'],
     ['a computed dynamic import', "const n = '@heb' + 'cal/core'; const m = await import(n);", 'import() with a computed specifier'],
-    ['createRequire', "import { createRequire } from 'node:module';\nconst x = createRequire(import.meta.url)('@hebcal/core');", 'uses createRequire'],
-    ['an oracle named in a string', "const name = '@hebcal/core'; declare const r: (s: string) => unknown; r(name);", 'names devDependency "@hebcal/core"'],
-    ['require', "const k = require('kosher-zmanim');", 'imports devDependency "kosher-zmanim"'],
+    ['createRequire', "import { createRequire } from 'node:module';\nconst x = createRequire(import.meta.url)('@acme/oracle');", 'uses createRequire'],
+    ['an oracle named in a string', "const name = '@acme/oracle'; declare const r: (s: string) => unknown; r(name);", 'names devDependency "@acme/oracle"'],
+    ['require', "const k = require('other-oracle');", 'imports devDependency "other-oracle"'],
     ['a package that is not a dependency', "import x from 'left-pad';", 'not a runtime dependency'],
     ['eval hidden between "/*" and "*/" in strings', 'const s="/*"; eval("1"); const t="*/";', 'uses eval'],
     ['eval after a regex holding "/*"', 'const r = /a\\/*/; eval("1"); const t = "*/";', 'uses eval'],
@@ -74,8 +74,8 @@ describe('check-licenses on dist/', () => {
     expect(r.ok).toBe(true);
   });
   for (const [what, file, text, message] of [
-    ['oracle package text', 'dist/index.js', '// adapted from @hebcal/core\nexport const x = 1;', 'contains "@hebcal/"'],
-    ['kosher-zmanim text in a map', 'dist/index.js.map', '{"sources":["../node_modules/kosher-zmanim/x.ts"]}', 'contains "kosher-zmanim"'],
+    ['a devDependency named in the text', 'dist/index.js', '// adapted from @acme/oracle\nexport const x = 1;', 'contains "@acme/oracle"'],
+    ['a dependency\'s source in a map', 'dist/index.js.map', '{"sources":["../node_modules/other-oracle/x.ts"]}', 'contains "node_modules/"'],
     ['GPL text', 'dist/index.d.ts', '/* GNU General Public License */ export {};', 'contains "GNU General Public"'],
     ['a require of a package', 'dist/index.cjs', "const x = require('left-pad');", 'loads "left-pad"'],
     ['createRequire', 'dist/index.js', "import { createRequire } from 'node:module'; const r = createRequire(import.meta.url);", 'uses createRequire'],

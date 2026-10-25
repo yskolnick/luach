@@ -260,7 +260,7 @@ export function rambamThreeChapters(date: HebrewDate | number): LearningPortion 
 
 /**
  * The day number of Sefer HaMitzvos (Chabad), which runs in parallel with the
- * three-chapter Rambam cycle (Day 1 is that cycle's first day; chabad.org shows "Day 1" on
+ * three-chapter Rambam cycle (Day 1 is that cycle's first day; Day 1 fell on
  * 1 March 2025, the start of a three-chapter cycle). The mitzvos for each day come from a
  * published table that Luach does not ship.
  */

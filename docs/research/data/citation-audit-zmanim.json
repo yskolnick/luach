@@ -434,7 +434,7 @@
   "status": "imprecise",
   "url": "https://www.sefaria.org/Mishnah_Berurah.233.1",
   "quote": "זמן שחיטתו מדאורייתא התחלתו אחר שש שעות ומחצה דהיינו חצי שעה אחר חצות היום",
-  "note": "MB glosses 6.5 (seasonal) hours as \"half an hour after chatzos\"; it does not set 30 clock minutes. The fixed-30 reading is a practice (e.g. Chabad.org: \"preferable to wait a full 30 minutes\"). Label it as such.",
+  "note": "MB glosses 6.5 (seasonal) hours as \"half an hour after chatzos\"; it does not set 30 clock minutes. The fixed-30 reading is a practice (e.g. Chabad practice: \"preferable to wait a full 30 minutes\"). Label it as such.",
   "resolution": "Source string corrected on 2026-10-21 (see docs/research/2026-10-21-citation-audit-zmanim.md)."
  },
  {
@@ -538,7 +538,7 @@
   "status": "wrong",
   "url": "https://www.sefaria.org/Shulchan_Arukh_HaRav,_Orach_Chayim.261.5",
   "quote": "שמתחלת השקיעה עד צאת ג' כוכבים הוא מהלך ד' מילין ... לפי שהעקר כסברא הראשונה",
-  "note": "This seif rules like Rabbeinu Tam (4 mil from start of shkia to three stars). It does not support a Geonim-type tzeis at 6 degrees (about 20 min after shkia amitis). The 6 degrees is only from the Chabad luach (and the Siddur, not read). Remove 261:5 or cite it as the contrasting view.",
+  "note": "This seif rules like Rabbeinu Tam (4 mil from start of shkia to three stars). It does not support a Geonim-type tzeis at 6 degrees (about 20 min after shkia amitis). The 6 degrees is only from the value as calculated in Chabad practice (and the Siddur, not read). Remove 261:5 or cite it as the contrasting view.",
   "resolution": "Source string corrected on 2026-10-21 (see docs/research/2026-10-21-citation-audit-zmanim.md)."
  },
  {
@@ -588,7 +588,7 @@
    "tzeis-50"
   ],
   "status": "secondary-read",
-  "url": "https://myzmanim.com/read/sources.aspx",
+  "url": "",
   "quote": "\"In New York and New Jersey, מוצאי שבת is never later than 50 minutes past שקיעה.\" (אגרות משה)",
   "note": "Not on Sefaria; primary not read. Secondary sources agree on 50 min for NY with 72 preferable. Location-specific (NY/NJ), which the opinion string should say."
  },
@@ -658,7 +658,7 @@
   "resolution": "Source string corrected on 2026-10-21 (see docs/research/2026-10-21-citation-audit-zmanim.md)."
  },
  {
-  "citation": "Chabad.org luach (\"About Our Zmanim Calculations\")",
+  "citation": "Published Chabad zmanim calculations",
   "usedBy": [
    "alos-baal-hatanya",
    "misheyakir-10.2",
@@ -669,7 +669,7 @@
    "tzeis-baal-hatanya"
   ],
   "status": "secondary-read",
-  "url": "https://www.chabad.org/3209349",
+  "url": "",
   "quote": "\"the center of the sun's disk is 16.9 degrees below the horizon\" ... \"1.583 degrees\" ... \"6 degrees\" ... \"8.5 degrees\" ... \"preferable to wait a full 30 minutes after chatzos hayom\"",
   "note": "Names no source for any degree value (only the Alter Rebbe for \"amitis\"). Supports 16.9, 1.583, 6, 8.5, 10.2, mincha-gedola-greater, and plag 1.25 h before shkia amitis."
  },
@@ -679,20 +679,20 @@
    "misheyakir-10.2"
   ],
   "status": "imprecise",
-  "url": "https://myzmanim.com/read/sources.aspx",
+  "url": "",
   "quote": "\"10.2° - קובץ אוצרות ירושלים\"",
-  "note": "The string says \"per Kovetz Otzros Yerushalayim (Chabad.org)\", but Chabad.org gives 10.2 with no source. The attribution to KOY is MyZmanim's. Primary not read. Cite as \"10.2 deg per Chabad.org; attributed to Kovetz Otzros Yerushalayim by MyZmanim (not verified)\".",
+  "note": "The string says \"per Kovetz Otzros Yerushalayim\" for the Chabad value, but the published Chabad calculation gives 10.2 with no source. The attribution to KOY comes from a published luach. Primary not read. Cite as \"10.2 deg in Chabad practice; attributed to Kovetz Otzros Yerushalayim by a published luach (not verified)\".",
   "resolution": "Source string corrected on 2026-10-21 (see docs/research/2026-10-21-citation-audit-zmanim.md)."
  },
  {
-  "citation": "R. Tukaczinsky for 6.45 deg (as reported by MyZmanim)",
+  "citation": "R. Tukaczinsky for 6.45 deg (as reported by a published luach)",
   "usedBy": [
    "tzeis-6.45"
   ],
   "status": "wrong",
-  "url": "https://myzmanim.com/read/sources.aspx",
+  "url": "",
   "quote": "\"6.45° - מנהג ארץ ישראל\"; separately: \"In ירושלים, the time of ג' כוכבים בינונים is never later than 31* minutes past שקיעה\" (טוקצינסקי)",
-  "note": "MyZmanim labels 6.45 deg as \"Eretz Yisrael custom\"; it gives Tukaczinsky only a minute figure (31 min). Linking 6.45 deg to Tukaczinsky is the kosher-zmanim/KosherJava doc wording (ZENITH_6_POINT_45). Correct to: \"6.45 deg: Eretz Yisrael custom (MyZmanim); derived from R. Tukaczinsky's 3 medium stars, at most 28+3 min in Jerusalem (Bein HaShmashos, not read)\".",
+  "note": "The published luach labels 6.45 deg as \"Eretz Yisrael custom\"; it gives Tukaczinsky only a minute figure (31 min). Linking 6.45 deg to Tukaczinsky is the wording of an independent zmanim library's documentation. Correct to: \"6.45 deg: Eretz Yisrael custom (a published luach); derived from R. Tukaczinsky's 3 medium stars, at most 28+3 min in Jerusalem (Bein HaShmashos, not read)\".",
   "resolution": "Source string corrected on 2026-10-21 (see docs/research/2026-10-21-citation-audit-zmanim.md)."
  },
  {
@@ -701,9 +701,9 @@
    "tzeis-8.5"
   ],
   "status": "not-read",
-  "url": "https://www.chabad.org/3209349",
-  "quote": "Chabad.org: \"8.5 degrees below the horizon\" (no source named)",
-  "note": "Tukaczinsky's Bein HaShmashos not read; neither Chabad.org nor MyZmanim links 8.5 deg to him. The Chabad part is secondary-read.",
+  "url": "",
+  "quote": "Published Chabad calculation: \"8.5 degrees below the horizon\" (no source named)",
+  "note": "Tukaczinsky's Bein HaShmashos not read; neither the published Chabad calculation nor the published luach links 8.5 deg to him. The Chabad part is secondary-read.",
   "resolution": "Marked \"not verified\" in the source string on 2026-10-21."
  },
  {
@@ -714,7 +714,7 @@
   "status": "not-read",
   "url": "",
   "quote": "",
-  "note": "Already marked \"(not verified)\". Not found by web search outside KosherJava/kosher-zmanim docs (ZENITH_7_POINT_083, which cites Cohn's 1899 Tabellen and Melamed LeHo'il OC 30). Clean-room concern: the attribution comes from KosherJava.",
+  "note": "Already marked \"(not verified)\". Not found by web search outside an independent zmanim library's documentation (which cites Cohn's 1899 Tabellen and Melamed LeHo'il OC 30). Clean-room concern: the attribution comes from that library.",
   "resolution": "Marked \"not verified\" in the source string on 2026-10-21."
  },
  {
@@ -725,11 +725,11 @@
   "status": "not-read",
   "url": "",
   "quote": "",
-  "note": "Already marked \"(not verified)\". The research doc says this is known only from KosherJava docs. Clean-room concern.",
+  "note": "Already marked \"(not verified)\". The research doc says this is known only from an independent zmanim library's docs. Clean-room concern.",
   "resolution": "Marked \"not verified\" in the source string on 2026-10-21."
  },
  {
-  "citation": "Ateret Torah luach (Chacham Yosef Harari-Raful)",
+  "citation": "Ateret Torah (Chacham Yosef Harari-Raful)",
   "usedBy": [
    "sof-zman-shema-ateret-torah",
    "sof-zman-tefilla-ateret-torah",
@@ -738,7 +738,7 @@
   "status": "not-read",
   "url": "",
   "quote": "",
-  "note": "Already marked \"not verified\". Definition (alos 1/10 day, tzeis 40 min, configurable) matches kosher-zmanim docs exactly; no independent source found. Clean-room concern.",
+  "note": "Already marked \"not verified\". Definition (alos 1/10 day, tzeis 40 min, configurable) matches an independent zmanim library's docs exactly; no independent source found. Clean-room concern.",
   "resolution": "Marked \"not verified\" in the source string on 2026-10-21."
  },
  {
@@ -748,9 +748,9 @@
    "sunset-elevation"
   ],
   "status": "not-read",
-  "url": "https://kosherjava.com/zmanim/docs/api/com/kosherjava/zmanim/ZmanimCalendar.html",
-  "quote": "(KosherJava doc) \"Zmanim Kehilchasam, 7th edition chapter 2, section 7 (pages 181-182) and section 9 (pages 186-187), no zmanim besides sunrise and sunset should use elevation\"",
-  "note": "Book not read. The citation (chapter, sections) matches the KosherJava ZmanimCalendar Javadoc word for word; the research doc calls it \"VERIFIED-2 via KosherJava blog\". Clean-room concern, and it should be marked (unverified).",
+  "url": "",
+  "quote": "(an independent zmanim library's documentation) \"Zmanim Kehilchasam, 7th edition chapter 2, section 7 (pages 181-182) and section 9 (pages 186-187), no zmanim besides sunrise and sunset should use elevation\"",
+  "note": "Book not read. The citation (chapter, sections) matches an independent zmanim library's documentation word for word; the research doc calls it \"VERIFIED-2 via a secondary blog post\". Clean-room concern, and it should be marked (unverified).",
   "resolution": "Marked \"not verified\" in the source string on 2026-10-21."
  },
  {
@@ -774,7 +774,7 @@
   "status": "not-read",
   "url": "https://www.koltorah.org/halachah/when-does-shabbat-end-by-rabbi-chaim-jachter",
   "quote": "",
-  "note": "No source named. tzeis-42's \"3/4 mil of the Geonim adapted to latitude\" is an explanation without a citation. tzeis-60 has none (kosher-zmanim docs attribute 60 to a 15-min mil, Chavas Yair).",
+  "note": "No source named. tzeis-42's \"3/4 mil of the Geonim adapted to latitude\" is an explanation without a citation. tzeis-60 has none (an independent zmanim library's docs attribute 60 to a 15-min mil, Chavas Yair).",
   "resolution": "Marked \"not verified\" in the source string on 2026-10-21."
  },
  {
@@ -785,7 +785,7 @@
   "status": "imprecise",
   "url": "",
   "quote": "",
-  "note": "26 deg is a computation (about 25.95 deg at the Jerusalem equinox per the research doc), not a source. Pesachim 93b gives 5 mil, not 120 min (see the Pesachim 93b entry). The 26 deg zman is also in kosher-zmanim (ZENITH_26_DEGREES).",
+  "note": "26 deg is a computation (about 25.95 deg at the Jerusalem equinox per the research doc), not a source. Pesachim 93b gives 5 mil, not 120 min (see the Pesachim 93b entry). The 26 deg zman is also in an independent zmanim library.",
   "resolution": "Source string corrected on 2026-10-21 (see docs/research/2026-10-21-citation-audit-zmanim.md)."
  }
 ]

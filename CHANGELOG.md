@@ -8,6 +8,12 @@ All notable changes for users of the `luach` package. This project follows
 ### Documentation
 - The README now opens with a notice that Luach was written entirely by AI and may contain
   mistakes, and the package description says so too.
+- The docs no longer name other calendar or zmanim libraries: comparisons are described as
+  against an independent library, with the same results.
+
+### Tests
+- The tests that compare Luach with other libraries are no longer in this repository, and
+  those libraries are no longer development dependencies.
 
 ## 0.1.0 — 2026-10-24
 

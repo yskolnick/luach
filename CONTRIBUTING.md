@@ -6,8 +6,7 @@ most useful thing you can send; a wrong zman or date is treated as urgent.
 ## Ground rules
 
 - **Write it yourself, from sources.** Do not submit code, tables or structure copied or
-  adapted from other calendar or zmanim libraries (hebcal, KosherJava, kosher-zmanim,
-  KosherCocoa, *Calendrical Calculations* and others), whatever their licence. Work from
+  adapted from other calendar or zmanim libraries, apps or books, whatever their licence. Work from
   the primary sources: the Rambam, the Shulchan Aruch and its commentaries, named halachic
   works, NOAA and Meeus. Say which source you used in the pull request.
 - **Cite every opinion.** A new zman or custom names the opinion it follows and where it is

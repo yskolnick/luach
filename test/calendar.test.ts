@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import fc from 'fast-check';
-import { HDate } from '@hebcal/core';
 import { HebrewDate, Month, civilToDays, daysToCivil, isLeapYear, yearLength, yearType, monthLength, molad } from '../src/index';
 import { roshHashanaDays, hebrewToDays } from '../src/calendar/year';
 import { dayOfWeekOfDays } from '../src/time/civil';
@@ -41,26 +40,6 @@ describe('known dates (published)', () => {
   });
 });
 
-describe('oracle: @hebcal/core (test-only)', () => {
-  it('every day 1900-01-01 … 2240-12-31 converts identically', () => {
-    const start = civilToDays(1900, 1, 1);
-    const end = civilToDays(2240, 12, 31);
-    for (let d = start; d <= end; d++) {
-      const c = daysToCivil(d);
-      const ours = HebrewDate.fromEpochDays(d);
-      const theirs = new HDate(new Date(c.year, c.month - 1, c.day));
-      if (ours.year !== theirs.getFullYear() || ours.month !== theirs.getMonth() || ours.day !== theirs.getDate()) {
-        throw new Error(`Mismatch on ${c.year}-${c.month}-${c.day}: ours ${ours}, hebcal ${theirs.getFullYear()}-${theirs.getMonth()}-${theirs.getDate()}`);
-      }
-    }
-  });
-  it('year lengths and leap years 1–9999 sampled', () => {
-    for (let y = 2; y < 9999; y += 7) {
-      expect(isLeapYear(y)).toBe(HDate.isLeapYear(y));
-      expect(yearLength(y)).toBe(HDate.daysInYear(y));
-    }
-  });
-});
 
 describe('properties over Hebrew years 5660–6000', () => {
   it('year lengths are 353–355 or 383–385, matching leap years', () => {
@@ -120,21 +99,6 @@ describe('molad', () => {
   it('first molad is BaHaRaD', () => {
     const m = molad(1, Month.TISHREI);
     expect([m.dayOfWeek, m.hours, m.parts]).toEqual([1, 5, 204]);
-  });
-  it('matches hebcal molad for 5660–6000 Tishrei and Nisan', async () => {
-    const { Molad } = await import('@hebcal/core');
-    for (let y = FIRST; y <= LAST; y += 1) {
-      for (const mo of [Month.TISHREI, Month.NISAN]) {
-        const ours = molad(y, mo);
-        const theirs = new Molad(y, mo);
-        expect([ours.clock.dayOfWeek, ours.clock.hour, ours.clock.minute, ours.clock.chalakim]).toEqual([
-          theirs.getDow(),
-          theirs.getHour(),
-          theirs.getMinutes(),
-          theirs.getChalakim(),
-        ]);
-      }
-    }
   });
 });
 

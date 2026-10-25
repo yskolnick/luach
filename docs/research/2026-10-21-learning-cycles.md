@@ -2,8 +2,8 @@
 
 - Date: 2026-10-21
 - Purpose: Facts Luach needs to compute "what is learned on date D" for the main daily-learning cycles. It covers start dates, units, ordered unit lists with sizes, cycle lengths, siyum dates and special rules, each with sources and verification data points.
-- Method: The cycles' own publishers' calendars (Dirshu, ArtScroll, OU, Chabad.org), Wikipedia, and Sefaria's public API for structural counts. **Kollel Iyun Hadaf's weekly "Yomi" charts** (dafyomi.co.il) were downloaded for every week from Tishrei 5783 to Elul 5786 (208 pages, 2022-09-25 to 2026-09-05, with a few weeks missing) and parsed into a day-by-day table. That table was used as an independent check. Candidate rules were written as small scripts in a scratch area (not in `src/`) and compared day by day against those calendars.
-- Clean room: no hebcal, KosherJava, kosher-zmanim or *Calendrical Calculations* code or data files were opened. Two hebcal.com *blog posts* came up in web searches and their prose was read, but every fact taken from them was confirmed from another source listed below. Only facts are recorded: dates, counts and orders.
+- Method: The cycles' own publishers' calendars (Dirshu, ArtScroll, OU, Chabad), Wikipedia, and Sefaria's public API for structural counts. **Kollel Iyun Hadaf's weekly "Yomi" charts** (dafyomi.co.il) were downloaded for every week from Tishrei 5783 to Elul 5786 (208 pages, 2022-09-25 to 2026-09-05, with a few weeks missing) and parsed into a day-by-day table. That table was used as an independent check. Candidate rules were written as small scripts in a scratch area (not in `src/`) and compared day by day against those calendars.
+- Clean room: no code or data files from any other calendar library were opened. Two blog posts by a calendar website came up in web searches and their prose was read, but every fact taken from them was confirmed from another source listed below. Only facts are recorded: dates, counts and orders.
 - Licences: Sefaria's API was used only for counts and order (chapter, mishnah and amud counts, and Vilna Yerushalmi pagination from the `alt_structs.Vilna` index field). Sefaria's texts carry individual licences (several CC-BY, CC-BY-SA, CC-BY-NC, public domain), and no text was used. Counts and orders are facts and not copyrightable. Publishers' calendars (Dirshu, ArtScroll, OU, Kollel Iyun Hadaf) are copyrighted documents, so only individual facts were taken from them for verification. No tables were reproduced.
 - Output data: `data-staging/learning/*.json` (structure) and `data-staging/learning/cycles.json` (epochs and day rules).
 
@@ -181,15 +181,15 @@ All 1,421 chart days match, from Challah in 5783 to Kelim 28 in Elul 5786. Tohor
 - **3 chapters a day:** 339-day cycle = 4 intro days + 335 × 3 = 1,005 chapter units. Cycles began on 2023-04-23 (2 Iyar 5783, the 43rd), 2024-03-27, 2025-03-01 and **2026-02-03 (16 Shevat 5786, the 46th)**. The next begins **2027-01-08 (29 Teves 5787)**; the siyum is 2027-01-07.
 - **1 chapter a day:** 1,017-day cycle = 12 intro days + 1,005 units. Cycles began on 2023-04-23 (15th) and **2026-02-03 (16th)**. The next begins **2028-11-16 (27 Cheshvan 5789)**.
 
-**Intro days, 1-chapter track** (Chabad.org; checked against dafyomi.co.il):
+**Intro days, 1-chapter track** (Chabad's published daily-study pages; checked against dafyomi.co.il):
 1–3. Hakdamah in three parts.
 4–6. Positive mitzvot 1–83, 84–166, 167–248.
 7–9. Negative mitzvot 1–122, **123–244**, **245–365** and the closing paragraph.
 10–12. "Minyan hamitzvos al seder hahalachos" in three parts: to the end of Nashim; Kedushah to the end of Korbanos; Taharah to the end of Shoftim.
 
-Chabad's page for 30 Apr 2023 shows "Negative Commandments: Part 2", running from 123 to 244: [chabad.org](https://www.chabad.org/dailystudy/rambam.asp?tdate=4/30/2023&rambamChapters=1). Sefaria's calendar gives 123–245 / 246–365, so the intro needs Chabad's own table.
+Chabad's page for 30 Apr 2023 shows "Negative Commandments: Part 2", running from 123 to 244. Sefaria's calendar gives 123–245 / 246–365, so the intro needs Chabad's own table.
 
-**Intro days, 3-chapter track:** (1) Hakdamah, (2) all positive mitzvot, (3) all negative mitzvot, (4) the listing by hilchos (Chabad.org, 26 Apr 2023: "Listing of Mitzvot: Part 1–3").
+**Intro days, 3-chapter track:** (1) Hakdamah, (2) all positive mitzvot, (3) all negative mitzvot, (4) the listing by hilchos (Chabad's published daily-study page, 26 Apr 2023: "Listing of Mitzvot: Part 1–3").
 
 **Chapter units.** These are the 83 hilchos in Sefaria's order with Sefaria's chapter counts (`rambam.json`; Sefaria counts 1,006 including the two special items), with two exceptions:
 - **Seder Tefillos** (end of Sefer Ahavah): 5 units in the 3-chapter track, 4 days in the 1-chapter track (dafyomi.co.il rows for 5–8 Aug 2023; the 4th day runs "until the end of Sefer Ahavah").
@@ -198,16 +198,16 @@ Chabad's page for 30 Apr 2023 shows "Negative Commandments: Part 2", running fro
 Both tracks therefore have 1,005 units.
 
 **Sefer HaMitzvos.**
-- Chabad's "Daily Mitzvah" is numbered by the day of the **1-chapter** cycle. 2026-02-03 is "Day 1: Maimonides' Introduction to Sefer Hamitzvot" ([chabad.org](https://www.chabad.org/dailystudy/seferHamitzvos.asp?tdate=2/3/2026)), and 2026-10-21 is "Day 261" (P181, N309, N298, P184).
+- Chabad's "Daily Mitzvah" is numbered by the day of the **1-chapter** cycle. 2026-02-03 is "Day 1: Maimonides' Introduction to Sefer Hamitzvot", and 2026-10-21 is "Day 261" (P181, N309, N298, P184).
 - Which mitzvot belong to each day is **a published table** (the mitzvot that correspond to that day's chapter). It cannot be derived from chapter counts.
 
 **Verification.**
 
 | Date | Track | Assignment | Source |
 |---|---|---|---|
-| 2026-10-21 | 3 chapters | Rotzeach uShmiras Nefesh 8–10 | [Chabad.org](https://www.chabad.org/dailystudy/rambam.asp?tdate=10/21/2026&rambamChapters=3) |
-| 2026-10-21 | 1 chapter | Issurei Biah 2 | [Chabad.org](https://www.chabad.org/dailystudy/rambam.asp?tdate=10/21/2026&rambamChapters=1) |
-| 2026-10-21 | Sefer HaMitzvos | Day 261 | Chabad.org |
+| 2026-10-21 | 3 chapters | Rotzeach uShmiras Nefesh 8–10 | Chabad's published daily-study page |
+| 2026-10-21 | 1 chapter | Issurei Biah 2 | Chabad's published daily-study page |
+| 2026-10-21 | Sefer HaMitzvos | Day 261 | Chabad's published daily-study page |
 | 2026-06-21 | 1 / 3 chapters | Eruvin 1 / Maaser Sheni 11 – Bikurim 2 | dafyomi.co.il ymi86-40 |
 | 2025-02-09 | 1 / 3 chapters | She'ar Avos haTumah 10 / Sanhedrin 22–24 | dafyomi.co.il ymi85-20 |
 
@@ -272,7 +272,7 @@ Other programs exist and were not researched: 929 (one chapter Sunday–Thursday
 ## 7. Tanya yomi (Chabad)
 
 **Facts.**
-- The daily Tanya cycle "begins and ends on 19 Kislev" ([Chabad.org: What Is Chitas?](https://www.chabad.org/library/article_cdo/aid/6031317/jewish/What-Is-Chitas-The-Daily-Study-Program.htm)).
+- The daily Tanya cycle "begins and ends on 19 Kislev" (Chabad's own explanation of the program, "What Is Chitas?").
 - There are **two tracks**: an ordinary-year track with slightly longer portions, and a leap-year track with smaller portions so the cycle lasts an extra month. The leap track continues "several months after the leap year has concluded", meaning until the next 19 Kislev.
 - Portions are assigned to Hebrew dates (as in Hayom Yom). On 10 Cheshvan 5787 (2026-10-21) Sefaria gives Iggeret HaKodesh 26.
 - 5787 is a leap year, so the leap track applies from 19 Kislev 5787 to 18 Kislev 5788.
@@ -383,8 +383,8 @@ Publishers and programs:
 - ArtScroll "Free Yomi Downloads": https://blog.artscroll.com/2023/04/03/free-yomi-downloads/
 - OU Nach Yomi 2026–2028: https://outorah.org/p/246875/
 - OU Nach Yomi 2007 launch: https://www.ou.org/news/first_it_was_daf_yomi_now_its_nach_yomi_ou_webcast_of_a_biblical_cycle_to_b/
-- Chabad.org Rambam and Sefer HaMitzvos daily pages: https://www.chabad.org/dailystudy/rambam.asp, https://www.chabad.org/dailystudy/seferHamitzvos.asp
-- Chabad.org, "What Is Chitas?": https://www.chabad.org/library/article_cdo/aid/6031317/jewish/What-Is-Chitas-The-Daily-Study-Program.htm
+- Chabad's published Rambam and Sefer HaMitzvos daily-study pages
+- Chabad, "What Is Chitas?"
 - CCHF Daily Companion: https://cchf.global/daily-companion/
 
 Third-party calendars and reference works:
@@ -397,7 +397,7 @@ Third-party calendars and reference works:
 ## Correction (same day)
 
 Sefer HaMitzvos follows the **three-chapter** cycle (339 days), not the one-chapter cycle:
-chabad.org shows "Day 1: Maimonides' Introduction to Sefer Hamitzvot" on 1 Adar 5785
-(1 March 2025), which began a three-chapter cycle but was day 679 of the one-chapter cycle
-(https://www.chabad.org/dailystudy/seferHamitzvos.asp?tdate=3/1/2025). The two cycles both
+Chabad's published daily-study page shows "Day 1: Maimonides' Introduction to Sefer Hamitzvot" on 1 Adar 5785
+(1 March 2025), which began a three-chapter cycle but was day 679 of the one-chapter cycle.
+The two cycles both
 restarted on 2026-02-03, which is why 2026-10-21 is Day 261 in both.

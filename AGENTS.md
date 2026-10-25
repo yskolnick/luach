@@ -5,11 +5,11 @@ starting.
 
 ## Rules
 
-1. **Clean room.** Never copy code, tables or structure from hebcal, KosherJava,
-   kosher-zmanim, KosherCocoa or *Calendrical Calculations*. Implement from the Rambam,
-   NOAA, Meeus (the method) and named halachic works. GPL/LGPL libraries are
-   devDependencies used only as test oracles; `src/` imports nothing.
-   `npm run check:imports` and `npm run check:licenses` enforce this.
+1. **Clean room.** Never copy code, tables or structure from another calendar or zmanim
+   library, app or book, whatever its licence. Implement from the Rambam, NOAA, Meeus (the
+   method) and named halachic works. `src/` imports nothing.
+   `npm run check:imports` and `npm run check:licenses` enforce this. Don't name other
+   calendar or zmanim libraries, apps or luachs anywhere in this repository.
 2. **Accuracy first.** Every feature ships with tests against an independent oracle.
    Never return a made-up time: return `null` with a reason.
 3. **The library rules on nothing halachic.** Every zman names its opinion and source.

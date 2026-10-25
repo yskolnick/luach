@@ -70,7 +70,7 @@ laws.
 - **1949:** Yom HaAtzmaut law (passed 12 April 1949), fixing 5 Iyar.
 - **1950** (5 Iyar was Shabbos, 22 April 1950): per Hebrew Wikipedia, the law was amended (ס״ח תש״י 105)
   and the day was **postponed to Sunday, 6 Iyar**, with memorial events on Thursday. I have not
-  confirmed this in a primary source. Hebcal shows 3 Iyar for 1950.
+  confirmed this in a primary source. An independent calendar library shows 3 Iyar for 1950.
 - **1951** (5 Iyar was Friday): second amendment (ס״ח תשי״א 109). Friday → Thursday 4 Iyar.
 - **1954** (5 Iyar was Shabbos): third amendment (ס״ח תשי״ד 80). Shabbos → Thursday 3 Iyar. This is the
   current Fri/Sat rule.

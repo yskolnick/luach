@@ -22,7 +22,7 @@
     ],
     "chapterUnits": 1005,
     "cycleDays": 1017,
-    "note": "The intro day splits are a published table (Chabad.org; checked against dafyomi.co.il). Sefaria shows 123-245 / 246-365 for the negative-commandment days; Chabad shows 123-244 / 245-365."
+    "note": "The intro day splits are a published table (Chabad's published daily-study pages; checked against dafyomi.co.il). Sefaria shows 123-245 / 246-365 for the negative-commandment days; Chabad shows 123-244 / 245-365."
   },
   "threeChapter": {
     "introDays": [
@@ -39,7 +39,7 @@
   "sources": [
     "https://www.sefaria.org/api/index (Mishneh Torah)",
     "https://www.sefaria.org/api/shape/Mishneh_Torah,_Foundations_of_the_Torah (one call per hilchos)",
-    "https://www.chabad.org/dailystudy/rambam.asp?tdate=4/30/2023&rambamChapters=1"
+    "Chabad's published Rambam daily-study page for 30 Apr 2023 (1-chapter track)"
   ],
   "licenceNote": "Structure (counts only) read from Sefaria's public API (api/shape, api/v2/raw/index). Counts and orderings are facts; no text was copied. Sefaria texts carry per-text licences; no text is used here.",
   "research": "docs/research/2026-10-21-learning-cycles.md",

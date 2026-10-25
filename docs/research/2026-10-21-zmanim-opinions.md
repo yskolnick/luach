@@ -2,7 +2,7 @@
 
 Date: 2026-10-21. Status: background research for Luach (clean-room, Apache-2.0).
 
-Clean-room note: no code or code comments from KosherJava, kosher-zmanim, KosherCocoa or hebcal were copied. Their public docs were used only to learn which opinions exist, and that use is marked "existence only". Every halachic attribution below either comes from a text read on Sefaria or is marked as secondary or unverified.
+Clean-room note: no code or code comments from any other calendar or zmanim library were copied. Their public docs were used only to learn which opinions exist, and that use is marked "existence only". Every halachic attribution below either comes from a text read on Sefaria or is marked as secondary or unverified.
 
 ## Verification legend
 
@@ -83,14 +83,14 @@ Definition sources:
 | `alos-16.1` | Sun 16.1° below geometric horizon | 72 min in Jerusalem at equinox. Peninei Halakha's preferred view; Yechave Daas 2:8 (per PH) | Peninei Halakha, Prayer 11:2 n.1 (cites BH and Yechave Daas 2:8) | VERIFIED-2 | https://www.sefaria.org/Peninei_Halakhah,_Prayer.11.2 |
 | `alos-18` | 18° (astronomical twilight) | Astronomical; PH notes no light is visible before about 18° | PH 11:2 n.1 | VERIFIED-2 (as astronomy) | same |
 | `alos-19.8` | 19.8° | 90 min in Jerusalem at equinox. Per PH, "many calendars" use 19.75° | PH 11:2 n.1 ("19.75") | VERIFIED-2 | same |
-| `alos-26` | 26° | 120 min at equinox. Lechumra only | Chabad-oriented site ties Admur's 120 min to ≈26° | VERIFIED-2 (weak) / COMPUTED | https://sites.google.com/site/zmanimadmorhazaken/ (alos page) |
-| `alos-baal-hatanya` | 16.9° | Chabad (Alter Rebbe): 72 min before *netz amiti* at Jerusalem equinox | Chabad.org "About Our Zmanim Calculations" | VERIFIED-2 (Chabad.org page) | https://www.chabad.org/3209349 |
+| `alos-26` | 26° | 120 min at equinox. Lechumra only | Chabad-oriented site ties Admur's 120 min to ≈26° | VERIFIED-2 (weak) / COMPUTED | |
+| `alos-baal-hatanya` | 16.9° | Chabad (Alter Rebbe): 72 min before *netz amiti* at Jerusalem equinox | Chabad practice (published calculation) | VERIFIED-2 (published Chabad calculation) | |
 
 Notes:
 
 - **17.5°**: Peninei Halakha suggests this for "first glimmer" (MA/Pri Megadim) vs. 16.1° for "east lit up" (Gra / Eliyah Rabbah). VERIFIED-2.
 - **MB 89:2** says alos is "מה שמתחיל השחר להבריק במקצתו". VERIFIED.
-- **Chabad 120 min.** A Chabad zmanim site (Hebrew, secondary) argues that the Alter Rebbe holds alos = 120 min (24-min mil per Siddur). It cites R' Avraham Chaim Naeh, *Shaarei Tziyon* §37. That is distinct from Chabad.org's published 16.9°. VERIFIED-2 (secondary only).
+- **Chabad 120 min.** A Chabad zmanim site (Hebrew, secondary) argues that the Alter Rebbe holds alos = 120 min (24-min mil per Siddur). It cites R' Avraham Chaim Naeh, *Shaarei Tziyon* §37. That is distinct from the 16.9° published in Chabad practice. VERIFIED-2 (secondary only).
 - **96 min is about 21°, not 20°.** My computation gives 21.0°. Do not label 96 min as "20°".
 
 ## 2. Misheyakir
@@ -99,10 +99,10 @@ The base text is SA OC 58:1: "משיכיר את חבירו הרגיל עמו ק�
 
 | id | Definition | Holder | Source | Status | URL |
 |---|---|---|---|---|---|
-| `misheyakir-10.2` | 10.2° | Chabad.org (≈45 min Jerusalem equinox). MyZmanim attributes it to *Kovetz Otzros Yerushalayim* | Chabad.org zmanim page; MyZmanim sources page | VERIFIED-2 | https://www.chabad.org/3209349 ; https://myzmanim.com/read/sources.aspx |
-| `misheyakir-11` | 11° | Peninei Halakha's practical ruling (≈48 min equinox). MyZmanim attributes it to R' Meir Posen | PH Prayer 11:2 n.2 | VERIFIED-2 | https://www.sefaria.org/Peninei_Halakhah,_Prayer.11.2 |
-| `misheyakir-11.5` | 11.5° | "Minhag Eretz Yisrael" per MyZmanim (≈50–52 min) | MyZmanim sources page | VERIFIED-2 | https://myzmanim.com/read/sources.aspx |
-| `misheyakir-12.85` | 12.85° | ≈57 min. *Birur Halacha* (R' Y.A. Zilber) OC 18, for she'as hadchak only | existence only (KosherJava docs) | UNVERIFIED | |
+| `misheyakir-10.2` | 10.2° | Chabad practice (≈45 min Jerusalem equinox). A published luach (not verified) attributes it to *Kovetz Otzros Yerushalayim* | Chabad practice (published calculation); a published luach's sources page | VERIFIED-2 | |
+| `misheyakir-11` | 11° | Peninei Halakha's practical ruling (≈48 min equinox). A published luach (not verified) attributes it to R' Meir Posen | PH Prayer 11:2 n.2 | VERIFIED-2 | https://www.sefaria.org/Peninei_Halakhah,_Prayer.11.2 |
+| `misheyakir-11.5` | 11.5° | "Minhag Eretz Yisrael" per a published luach (≈50–52 min; not verified) | a published luach's sources page | VERIFIED-2 | |
+| `misheyakir-12.85` | 12.85° | ≈57 min. *Birur Halacha* (R' Y.A. Zilber) OC 18, for she'as hadchak only | existence only (an independent zmanim library's docs) | UNVERIFIED | |
 
 Minute traditions:
 
@@ -112,7 +112,7 @@ Minute traditions:
 - Jerusalem: 50–55 min.
 - Bnei Brak (some): 45 min.
 
-All of these are VERIFIED-2 via PH 11:2 n.2 and MyZmanim.
+All of these are VERIFIED-2 via PH 11:2 n.2 and a published luach.
 
 Also found but not in the request: 9.5° and 7.65° (US poskim, 45 / 35–36 min). These are existence only and UNVERIFIED.
 
@@ -121,9 +121,9 @@ Also found but not in the request: 9.5° and 7.65° (US poskim, 45 / 35–36 min
 | id | Definition | Holder | Source | Status | URL |
 |---|---|---|---|---|---|
 | `netz-sea-level` | Upper limb at the sea-level horizon (center 0.833° down, standard refraction) | Most printed luchos; R' Isser Zalman Meltzer (per PH): calculate as at sea level | PH Prayer 11:6 n.7 | VERIFIED-2 | https://www.sefaria.org/Peninei_Halakhah,_Prayer.11.6 |
-| `netz-elevation` | Sunrise from the observer's elevation (dip correction) | Some; *Birur Halacha* (Zilber) vol. 6 ch. 58 pp. 34, 42 (per KosherJava blog) | secondary | VERIFIED-2 (weak) | https://kosherjava.com/tag/sea-level |
+| `netz-elevation` | Sunrise from the observer's elevation (dip correction) | Some; *Birur Halacha* (Zilber) vol. 6 ch. 58 pp. 34, 42 (per a secondary blog post) | secondary | VERIFIED-2 (weak) | |
 | `netz-visible` | First actual sight over local terrain (mountains) | Divrei Yosef (per PH). Maharil Diskin: ignore near hills (Mount of Olives) but count far ones (Moav) | PH 11:6 n.7 | VERIFIED-2 | as above |
-| `netz-amiti-baal-hatanya` | Sun's center 1.583° below horizon (≈3.5 min after sea-level sunrise). Used only to compute zmanim, not published | Chabad (Alter Rebbe) | Chabad.org "About Our Zmanim Calculations" | VERIFIED-2 | https://www.chabad.org/3209349 |
+| `netz-amiti-baal-hatanya` | Sun's center 1.583° below horizon (≈3.5 min after sea-level sunrise). Used only to compute zmanim, not published | Chabad (Alter Rebbe) | Chabad practice (published calculation) | VERIFIED-2 | |
 
 Definition of netz:
 
@@ -135,7 +135,7 @@ Why luchos use sea level for degree-based zmanim:
 
 - Alos, misheyakir and tzeis by degrees measure *sky brightness* (solar depression). They are not tied to the visible horizon.
 - PH 11:6 n.7: misheyakir "is dependent upon light ... no connection to the visible sunrise". VERIFIED-2.
-- *Zmanim KeHilchasam* (R' Dovid Yehuda Bursztyn), 7th ed., ch. 2 §7 pp. 181–182 and §9 pp. 186–187: no zman other than sunrise/sunset should use elevation. VERIFIED-2 via KosherJava blog (secondary).
+- *Zmanim KeHilchasam* (R' Dovid Yehuda Bursztyn), 7th ed., ch. 2 §7 pp. 181–182 and §9 pp. 186–187: no zman other than sunrise/sunset should use elevation. VERIFIED-2 via a secondary blog post.
 
 Elevation debate (per PH 11:6 n.7):
 
@@ -175,8 +175,8 @@ The question is how the day is bounded:
 | `sof-zman-shma-mga-120` | alos 120 → tzeis 120 | +3 / +4 | stringency | MA 89:2 | VERIFIED (components) |
 | `sof-zman-shma-mga-16.1` | alos 16.1° → tzeis 16.1° | +3 / +4 | MA in degrees (Jerusalem rabbis / Tukaczinsky symmetric approach per PH 11:10 n.14) | MA 58:1; PH 11:10 n.14 | VERIFIED + VERIFIED-2 |
 | `sof-zman-shma-mga-18` / `-19.8` | symmetric 18° / 19.8° | +3 / +4 | MA in degrees | MA 58:1; PH 11:10 n.14 (19.75° noted, criticized) | VERIFIED-2 |
-| `sof-zman-shma-baal-hatanya` / `-tfila-` | netz amiti → shkia amitis (1.583°) | +3 / +4 | Chabad | Chabad.org; SAHR 443:4; Siddur (UNVERIFIED primary) | VERIFIED-2 |
-| `sof-zman-shma-ateret-torah` / `-tfila-` | alos 72 zmaniyos (1/10 of day before sunrise) → 40 min after sunset (25 min in Israel) | +3 / +4 | Chacham Yosef Harari-Raful (Ateret Torah) | luach of Yeshivat Ateret Torah; existence only | UNVERIFIED |
+| `sof-zman-shma-baal-hatanya` / `-tfila-` | netz amiti → shkia amitis (1.583°) | +3 / +4 | Chabad | Chabad practice (published calculation); SAHR 443:4; Siddur (UNVERIFIED primary) | VERIFIED-2 |
+| `sof-zman-shma-ateret-torah` / `-tfila-` | alos 72 zmaniyos (1/10 of day before sunrise) → 40 min after sunset (25 min in Israel) | +3 / +4 | Chacham Yosef Harari-Raful (Ateret Torah) | a published luach; existence only | UNVERIFIED |
 | `sof-zman-shma-alos16.1-tzeis7.083` | asymmetric 16.1° → 7.083° | +3 | some Sefardi luchos (Ma'amar Mordechai 233:3, Ben Ish Chai Vayakhel 4, Divrei Yosef hold alos→tzeis-geonim, per PH 11:10 n.14) | PH 11:10 n.14 | VERIFIED-2 (concept); exact degrees UNVERIFIED |
 | `sof-zman-shma-3h-before-chatzos` | 3 fixed hours before chatzos | | "Komarno"/Yaavetz | existence only | UNVERIFIED |
 
@@ -199,8 +199,8 @@ Recommended string: **"Magen Avraham OC 58:1; Mishna Berura 58:4 (day from alos)
 |---|---|---|---|---|
 | `chatzos-astronomical` | Solar transit (local apparent noon) | MA 233:4 s.v. "שעות זמניות": mincha time is "מחצות היום ... משינטה החמה למערב ... באמצע היום ממש". Chatzos is the sun's true midpoint. | VERIFIED | https://www.sefaria.org/Magen_Avraham.233 |
 | `chatzos-midpoint` | Midpoint of sunrise and sunset (or of alos and tzeis if symmetric) | MB 233:4 (12 equal parts); PH 11:10 n.14 notes asymmetric days push chatzos off true midday | VERIFIED / VERIFIED-2 | |
-| `chatzos-baal-hatanya` | Midpoint of netz amiti and shkia amitis | Chabad.org | VERIFIED-2 | https://www.chabad.org/3209349 |
-| `chatzos-halayla` | Solar anti-transit, ≈ midpoint of sunset and next sunrise | MA 233:4 refers to siman 1 (Zohar): night counted as 12 hours for chatzos halayla. Chabad.org: midpoint shkia amitis → netz amiti | VERIFIED (MA) / VERIFIED-2 | |
+| `chatzos-baal-hatanya` | Midpoint of netz amiti and shkia amitis | Chabad practice (published calculation) | VERIFIED-2 | |
+| `chatzos-halayla` | Solar anti-transit, ≈ midpoint of sunset and next sunrise | MA 233:4 refers to siman 1 (Zohar): night counted as 12 hours for chatzos halayla. Chabad practice: midpoint shkia amitis → netz amiti | VERIFIED (MA) / VERIFIED-2 | |
 
 The asymmetric/symmetric chatzos controversy is discussed in Minchas Yitzchak 4:53 per the Seforim Blog (Gewirtz). That is VERIFIED-2 only for the existence of the discussion.
 
@@ -217,12 +217,12 @@ Base texts (VERIFIED: https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.233.1
 |---|---|---|---|---|
 | `mincha-gedola-gra` | chatzos + 0.5 shaah zmanis (sunrise→sunset) | Gra | SA 233:1; MB 233:1, 233:4 | VERIFIED |
 | `mincha-gedola-30-min` | chatzos + 30 fixed min | | MB 233:1 wording "חצי שעה אחר חצות" (read literally) | VERIFIED (wording); fixed-minute reading is interpretation |
-| `mincha-gedola-greater-of` | later of the two above (winter: 30 min) | Chabad practice ("preferable to wait the full 30 minutes") | Chabad.org | VERIFIED-2. Primary source for "later of" UNVERIFIED |
+| `mincha-gedola-greater-of` | later of the two above (winter: 30 min) | Chabad practice ("preferable to wait the full 30 minutes") | Chabad practice (published guidance) | VERIFIED-2. Primary source for "later of" UNVERIFIED |
 | `mincha-gedola-mga-*` | 6.5 h on the MGA day | MA | MB 233:4 | VERIFIED |
 | `mincha-ketana-gra` / `-mga-*` | 9.5 h | | SA 233:1; MB 233:3 | VERIFIED |
 | `plag-gra` | 10.75 h of the sunrise→sunset day (= 1.25 h before sunset) | Gra, Levush (per MA), Bach; SAHR 443:4 / Siddur; Kitzur SA. Common practice (Kaf HaChaim 233:7 per secondary) | MB 233:4; MA 233:3 | VERIFIED |
 | `plag-mga-72` (+ `-72-zmaniyos`, `-90`, `-96`, `-120`, `-16.1`, `-18`, `-19.8`, `-26`) | 10.75 h of alos→tzeis day (= 1.25 h before tzeis) | Terumas HaDeshen (per MA 233:3); MB 233:4 "כך סתם המחבר"; MB 261:25 | MA 233:3; MB 233:4; MB 261:25 | VERIFIED |
-| `plag-baal-hatanya` | 1.25 h before shkia amitis (netz amiti→shkia amitis day) | Chabad | Chabad.org; SAHR 443:4 | VERIFIED-2 |
+| `plag-baal-hatanya` | 1.25 h before shkia amitis (netz amiti→shkia amitis day) | Chabad | Chabad practice (published calculation); SAHR 443:4 | VERIFIED-2 |
 | `plag-ateret-torah` | 10.75 h on Ateret Torah day (alos 72 zmaniyos → sunset+40) | Chacham Y. Harari-Raful | existence only | UNVERIFIED |
 | `plag-alos16.1-tzeis-geonim` | asymmetric day ending at tzeis Geonim | Ahavat Shalom (R' Y.M. Hillel, 3.8°) and others | existence only | UNVERIFIED |
 | `plag-yereim` (stringency) | 1.25 h before *start* of sunset, and this is treated as "night" | Yereim/Geonim | SAHR 261:5 (lechumra: refrain from melacha after accepting from 1.25 h before sunset) | VERIFIED |
@@ -242,9 +242,9 @@ On MA's reading, the day ends at the end of shkiah (about 13.5–15 min after su
 
 | id | Definition | Source | Status |
 |---|---|---|---|
-| `shkiah-sea-level` | Upper limb at the sea-level horizon (center 0.833° down) | Chabad.org (published shkiah); standard practice | VERIFIED-2 |
+| `shkiah-sea-level` | Upper limb at the sea-level horizon (center 0.833° down) | Chabad practice (published shkiah); standard practice | VERIFIED-2 |
 | `shkiah-elevation` | Elevation-adjusted | see §3 (Zmanim KeHilchasam allows elevation *only* for sunrise/sunset; PH 11:6 n.7) | VERIFIED-2 |
-| `shkiah-amitis-baal-hatanya` | center 1.583° below horizon (≈3.5 min after sea-level) | Chabad.org | VERIFIED-2 |
+| `shkiah-amitis-baal-hatanya` | center 1.583° below horizon (≈3.5 min after sea-level) | Chabad practice (published calculation) | VERIFIED-2 |
 
 Halachic meaning:
 
@@ -287,16 +287,16 @@ Base texts (VERIFIED):
 | `tzeis-geonim-3.65` | 3.65° | R' Yedidya Manet, *Zmanei HaHalacha LeMa'aseh* (different refraction) | existence only | UNVERIFIED | |
 | `tzeis-geonim-3.8` | 3.8° (13.5 + ½ min heref ayin of R' Yosi) | | existence only | UNVERIFIED | |
 | `tzeis-geonim-4.42` / `-4.66` / `-4.8` | 16.875 / 18 / 18.6 min | Geonim with 22.5/24-min mil; 4.8° per *Aizehu Bein HaShmashos* (R' Y.M. Shlezinger) | BH 261:2 (mil); rest existence only | VERIFIED (concept) / UNVERIFIED (attributions) | |
-| `tzeis-baal-hatanya` | 6° | Chabad: ≈20 min after shkia amitis (¾ of a 24-min mil + 2 min R' Yosi) | Chabad.org | VERIFIED-2 | https://www.chabad.org/3209349 |
+| `tzeis-baal-hatanya` | 6° | Chabad: ≈20 min after shkia amitis (¾ of a 24-min mil + 2 min R' Yosi) | Chabad practice (published calculation) | VERIFIED-2 | |
 | `tzeis-geonim-5.95` | 5.95° (24 min) | Hazmanim BaHalacha (per docs) | existence only | UNVERIFIED |
-| `tzeis-6.45` | 6.45° | Rav Tukaczinsky (3 medium stars, Jerusalem ≤31 min incl. 3-min correction); Israeli custom for ending rabbinic fasts. MyZmanim lists "6.45° (Eretz Yisrael custom)" | MyZmanim sources page (*Bein HaShmashos* 28+3 min) | VERIFIED-2 | https://myzmanim.com/read/sources.aspx |
+| `tzeis-6.45` | 6.45° | Rav Tukaczinsky (3 medium stars, Jerusalem ≤31 min incl. 3-min correction); Israeli custom for ending rabbinic fasts. A published luach lists "6.45° (Eretz Yisrael custom)" (not verified) | a published luach's sources page (*Bein HaShmashos* 28+3 min) | VERIFIED-2 | |
 | `tzeis-7.083` | 7°5′ | Dr. Baruch (Berthold) Cohn, *Tabellen ...* (Strasbourg 1899); endorsed by R' D.Z. Hoffmann, *Melamed LeHo'il* OC 30 | existence only | UNVERIFIED (primary not read) | |
 | `tzeis-7.67` | 7.67° (45 min NY solstice) | Igros Moshe EH 4:4 (per docs) | existence only | UNVERIFIED | |
-| `tzeis-8.5` | 8.5° (≈36 min Jerusalem equinox) | Rav Tukaczinsky's observation of 3 *small* stars (*Bein HaShmashos*; Jerusalem ≤40+3 min). Chabad uses it for end of Shabbos/Yom Tov. "Most luach writers" per Hazmanim BaHalacha (Avodah secondary) | MyZmanim sources page; Chabad.org; Jewish Action review (8.5° "generally" used for motzei Shabbos, based on SA 293:2) | VERIFIED-2 | https://myzmanim.com/read/sources.aspx ; https://www.chabad.org/3209349 |
+| `tzeis-8.5` | 8.5° (≈36 min Jerusalem equinox) | Rav Tukaczinsky's observation of 3 *small* stars (*Bein HaShmashos*; Jerusalem ≤40+3 min). Chabad uses it for end of Shabbos/Yom Tov. "Most luach writers" per Hazmanim BaHalacha (Avodah secondary) | a published luach's sources page; Chabad practice (published calculation); Jewish Action review (8.5° "generally" used for motzei Shabbos, based on SA 293:2) | VERIFIED-2 | |
 | `tzeis-8.5` "Ohr Meir" attribution | R' Meir Posen, *Ohr Meir* | | none found | UNVERIFIED |
-| `tzeis-9.3`, `tzeis-9.75` | Itim LeBina stringent / 60 min NY | | existence only | UNVERIFIED |
+| `tzeis-9.3`, `tzeis-9.75` | a published luach's stringent value / 60 min NY | | existence only | UNVERIFIED |
 | `tzeis-42-min` | 42 fixed min | US communal practice | Kol Torah (R' Jachter) secondary | VERIFIED-2 (as custom) | https://www.koltorah.org/halachah/when-does-shabbat-end-by-rabbi-chaim-jachter |
-| `tzeis-50-min` | 50 fixed min | Igros Moshe OC 4:62 (NY/NJ: sky full of stars ≈50 min; 72 recommended) | secondary quotes (Avodah, MyZmanim, Kol Torah) | VERIFIED-2 | https://myzmanim.com/read/sources.aspx |
+| `tzeis-50-min` | 50 fixed min | Igros Moshe OC 4:62 (NY/NJ: sky full of stars ≈50 min; 72 recommended) | secondary quotes (Avodah, a published luach, Kol Torah) | VERIFIED-2 | |
 | `tzeis-60-min` | 60 min | 4 × 15-min mil (Chavas Yair, Divrei Malkiel) | existence only | UNVERIFIED |
 | `tzeis-72-min` (`tzeis-rt`) | 72 fixed min | Rabbeinu Tam | SA OC 261:2; Tosafos Shabbos 35a | VERIFIED |
 | `tzeis-72-zmaniyos` | 1.2 shaos zmaniyos after sunset | RT with proportional mil | Rambam PhM Berachos 1:1 (proportional); SA 261:2 | VERIFIED (components) |
@@ -318,9 +318,9 @@ Base texts:
 
 | id | Offset before sea-level sunset | Holder / place | Source | Status |
 |---|---|---|---|---|
-| `candles-18` | 18 min | General Ashkenazi/diaspora custom; Chabad.org | Chabad.org (custom). OU (Outorah) traces origins to the six shofar blasts (Shabbos 35b; *Minhagei Eretz Yisrael* (Gliss) 20:9) or to the Yereim's ¾ mil (Yereim 274; Shu"t Mahari Shteif 1) | VERIFIED-2 (custom); no binding primary source |
+| `candles-18` | 18 min | General Ashkenazi/diaspora custom; Chabad practice | Chabad practice (custom). OU (Outorah) traces origins to the six shofar blasts (Shabbos 35b; *Minhagei Eretz Yisrael* (Gliss) 20:9) or to the Yereim's ¾ mil (Yereim 274; Shu"t Mahari Shteif 1) | VERIFIED-2 (custom); no binding primary source |
 | `candles-40` | 40 min | Jerusalem (and Petach Tikva, founded by Jerusalemites) | OU cites *Shita Mekubetzes* Beitza 30a; Yabia Omer 5:21 calls it without halachic basis; Kaf HaChaim 261:23 and Igros Moshe OC 2:6 note 18–20 min communities in Jerusalem; Gewirtz (Seforim Blog 2019): origin unknown | VERIFIED-2 |
-| `candles-30` | 30 min | Haifa, Zichron Yaakov | hebcal docs (existence only) | UNVERIFIED (no halachic source) |
+| `candles-30` | 30 min | Haifa, Zichron Yaakov | an independent calendar library's docs (existence only) | UNVERIFIED (no halachic source) |
 | `candles-20` | 20 min | Tzfas / some Israeli cities; also 20–22 min customs | none confirmed | UNVERIFIED |
 | `candles-22` | 22 min | "half a shaah" custom | OU (no citation) | UNVERIFIED |
 | `candles-15` / `candles-10` | 15 (Satmar, *Divrei Yoel*) / 10 (Igros Moshe OC 2:6) | | OU footnotes | VERIFIED-2 |
@@ -332,10 +332,10 @@ The library should treat candle-lighting offsets as **location customs (data)**,
 
 | id | Definition | Source | Status |
 |---|---|---|---|
-| `havdala-8.5` | 8.5° | SA OC 293:2 (3 small stars); Tukaczinsky; Chabad.org | VERIFIED (SA) + VERIFIED-2 |
+| `havdala-8.5` | 8.5° | SA OC 293:2 (3 small stars); Tukaczinsky; Chabad practice | VERIFIED (SA) + VERIFIED-2 |
 | `havdala-72-rt` | 72 min (or 16.1°) | SA 261:2 (RT); Igros Moshe OC 4:62 recommends 72 for the G-d-fearing | VERIFIED / VERIFIED-2 |
 | `havdala-50` | 50 min (NY) | Igros Moshe OC 4:62 | VERIFIED-2 |
-| `havdala-42` / `havdala-40` | fixed | US communal custom; Kaf HaChaim (40 min in EY, per MyZmanim); Nevreshes (40) | VERIFIED-2 |
+| `havdala-42` / `havdala-40` | fixed | US communal custom; Kaf HaChaim (40 min in EY, per a published luach; not verified); Nevreshes (40) | VERIFIED-2 |
 | `havdala-7.083` | 7.083° | many European luchos (Cohn) | UNVERIFIED |
 
 ## 12. Erev Pesach: chametz
@@ -352,7 +352,7 @@ Base text: SA OC 443:1 (VERIFIED, https://www.sefaria.org/Shulchan_Arukh,_Orach_
 | `sof-biur-chametz-gra` | sunrise + 5 shaos zmaniyos | VERIFIED |
 | `sof-achilas-chametz-mga-72` / `-72-zmaniyos` / `-16.1` | alos + 4 h on the MGA day | VERIFIED (MA 58:1 logic; MA 443 also discusses; PH notes MA 443:3 is uncertain about day bounds) |
 | `sof-biur-chametz-mga-*` | alos + 5 h on the MGA day | as above |
-| `sof-achilas-chametz-baal-hatanya` / `sof-biur-...` | netz amiti + 4 / + 5 | VERIFIED-2 (SAHR 443:4 + Chabad.org) |
+| `sof-achilas-chametz-baal-hatanya` / `sof-biur-...` | netz amiti + 4 / + 5 | VERIFIED-2 (SAHR 443:4 + Chabad practice (published calculation)) |
 | `sof-...-fixed-hours` (Terumas HaDeshen 121) | 2 / 1 fixed hours before chatzos | VERIFIED (Rema cites it); niche |
 
 ## 13. Fasts
@@ -366,11 +366,11 @@ Base texts (all VERIFIED):
 | id | Definition | Holder | Source | Status |
 |---|---|---|---|---|
 | `fast-start-alos-*` | any alos opinion (72, 16.1°, 90, 19.8°; 120/26° lechumra) | | SA 564:1 | VERIFIED (rule); choice of alos is custom |
-| `fast-end-6.45` | 6.45° | Israel custom (Tukaczinsky's 3 medium stars) | MyZmanim | VERIFIED-2 |
+| `fast-end-6.45` | 6.45° | Israel custom (Tukaczinsky's 3 medium stars) | a published luach | VERIFIED-2 |
 | `fast-end-7.083` | 7.083° | European luchos | | UNVERIFIED |
-| `fast-end-41-min` | NY, for one who finds fasting hard ≈41 min (MyZmanim's "7.12°" for R' Moshe) | Igros Moshe (exact siman unverified) | MyZmanim | VERIFIED-2 (minutes) / UNVERIFIED (siman) |
+| `fast-end-41-min` | NY, for one who finds fasting hard ≈41 min (a published luach's "7.12°" for R' Moshe) | Igros Moshe (exact siman unverified) | a published luach | VERIFIED-2 (minutes) / UNVERIFIED (siman) |
 | `fast-end-8.5` | 8.5° | stringent | | VERIFIED-2 |
-| `fast-end-25-min` | 25 min after sunset (bein hashmashos for milah) | Shemiras Shabbos KeHilchasa, quoting R' S.Z. Auerbach | MyZmanim | VERIFIED-2 |
+| `fast-end-25-min` | 25 min after sunset (bein hashmashos for milah) | Shemiras Shabbos KeHilchasa, quoting R' S.Z. Auerbach | a published luach | VERIFIED-2 |
 
 Tisha B'Av vs. minor fasts:
 
@@ -454,7 +454,7 @@ Short canonical strings for code. Use only the VERIFIED ones as authoritative. T
 - "Igros Moshe OC 1:97 (netz at Jerusalem altitude), per Peninei Halakha"
 - "Zmanim KeHilchasam (Bursztyn), 7th ed., ch. 2 §§7, 9 (elevation only for sunrise/sunset)"
 - "R' Y.M. Tukaczinsky, Bein HaShmashos (Jerusalem: 3 medium stars ≤28+3 min; 3 small stars ≤40+3 min)" (basis of 6.45° and 8.5°)
-- "Chabad.org, About Our Zmanim Calculations (alos 16.9°, misheyakir 10.2°, netz/shkia amitis 1.583°, tzeis 6°, Shabbos end 8.5°)"
+- "Published Chabad zmanim calculations (alos 16.9°, misheyakir 10.2°, netz/shkia amitis 1.583°, tzeis 6°, Shabbos end 8.5°)"
 - "Siddur Admur HaZaken (northern lands: alos at chatzos from 18 Iyar)"
 - Candle-lighting customs: Jerusalem 40, general 18. Cite as minhag; Yabia Omer 5:21; Igros Moshe OC 2:6; Kaf HaChaim 261:23.
 
@@ -509,8 +509,6 @@ Short canonical strings for code. Use only the VERIFIED ones as authoritative. T
 - https://www.sefaria.org/Peninei_Halakhah,_Prayer.11.2
 - https://www.sefaria.org/Peninei_Halakhah,_Prayer.11.6
 - https://www.sefaria.org/Peninei_Halakhah,_Prayer.11.10
-- https://www.chabad.org/3209349
-- https://myzmanim.com/read/sources.aspx
 - https://outorah.org/p/34953
 - https://seforimblog.com/?p=4062
 - https://halachipedia.com/index.php?title=Plag_Hamincha

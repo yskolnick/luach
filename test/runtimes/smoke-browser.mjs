@@ -58,7 +58,7 @@ try {
   if (errors.length) throw new Error(errors.join('\n'));
   if (!r) throw new Error('the page did not finish');
   if (r.hebrew !== '5787-8-10') throw new Error(`conversion ${JSON.stringify(r)}`);
-  // kosher-zmanim gives 06:46:35 IDT (sea level); rounded up: 06:47 (as in smoke.mjs).
+  // An independent zmanim library gives 06:46:35 IDT (sea level); rounded up: 06:47 (as in smoke.mjs).
   if (r.sunrise !== '06:47') throw new Error(`sunrise ${JSON.stringify(r)}`);
   if (!r.candles || !r.ics) throw new Error(`missing results ${JSON.stringify(r)}`);
   console.log(`OK (browser, ${browser.version()}):`, r.text, 'sunrise', r.sunrise, 'candles', r.candles);

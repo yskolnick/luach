@@ -25,9 +25,9 @@ The mil lengths behind the minute-based opinions all check out: Shulchan Aruch O
    uses. The source now cites SA OC 89:1 for the four hours and Shulchan Aruch HaRav OC 443:4
    ("מנץ החמה עד שקיעת החמה") for the day, and notes that SAHR 89:1 counts from alos.
 2. **Baal HaTanya, nightfall at 6°: Shulchan Aruch HaRav OC 261:5.** The seif rules like
-   Rabbeinu Tam (four mil from sunset), not 6°. Removed; the source is the Chabad luach, which
+   Rabbeinu Tam (four mil from sunset), not 6°. Removed; the source is the value as calculated in Chabad practice, which
    names no primary source, marked not verified.
-3. **6.45° attributed to R. Tukaczinsky.** MyZmanim, the cited reporter, calls 6.45° the custom
+3. **6.45° attributed to R. Tukaczinsky.** The cited reporter, a published luach, calls 6.45° the custom
    of Eretz Yisrael and gives R. Tukaczinsky only a minute figure. The source now says so.
 
 ## Imprecise, and what changed
@@ -51,21 +51,21 @@ The mil lengths behind the minute-based opinions all check out: Shulchan Aruch O
 - **19.8°: Peninei Halakha, Tefilla 11:2.** PH gives 19.75° and cautions against relying on such
   calendars. Now labelled as a computed equivalent of 90 minutes, with PH's caution.
 - **16.1° = 72 minutes: Peninei Halakha, Tefilla 11:10.** The equivalence is in 11:2 n. 1.
-- **10.2°: Kovetz Otzros Yerushalayim via Chabad.org.** Chabad.org names no source; the
-  attribution comes from MyZmanim. Now said, not verified.
+- **10.2°: Kovetz Otzros Yerushalayim via Chabad practice.** The published Chabad calculation names no source; the
+  attribution comes from a published luach. Now said, not verified.
 - **Bein hashmashos rows** cited Biur Halacha 261:2 for ¾ mil but not the mil's length; each now
   cites the mil it uses.
 
 ## Not verified, now marked
 
 Zmanim KeHilchasam (elevation), Dr. Baruch Cohn (7.083°), Birur Halacha (12.85°), the Ateret
-Torah luach, R. Tukaczinsky for 8.5°, Igros Moshe OC 4:62 (50 minutes), the 42- and 60-minute
+Torah definition (Chacham Yosef Harari-Raful), R. Tukaczinsky for 8.5°, Igros Moshe OC 4:62 (50 minutes), the 42- and 60-minute
 customs, and 11.5° for misheyakir. Each source string now says "not verified" or "secondary".
 
 ## Clean room
 
-Several attributions are known to this project only from the documentation of KosherJava and
-kosher-zmanim (LGPL), which Luach may not use as a source: Zmanim KeHilchasam ch. 2 §§7, 9;
+Several attributions are known to this project only from the documentation of other zmanim
+libraries, which Luach may not use as a source: Zmanim KeHilchasam ch. 2 §§7, 9;
 6.45° to R. Tukaczinsky; 7.083° to Dr. Baruch Cohn; 12.85° to Birur Halacha; and the Ateret
 Torah definition. The values are facts and the opinions are real, but until a halachic source is
 read for each, they are marked not verified. Reading those sources is open work.
@@ -73,6 +73,6 @@ read for each, they are marked not verified. Reading those sources is open work.
 ## Sources consulted
 
 - Sefaria: <https://www.sefaria.org> (references and links per citation in the data file).
-- MyZmanim, sources page: <https://myzmanim.com/read/sources.aspx>
-- Chabad.org zmanim explanation: <https://www.chabad.org/3209349>
+- A published luach's sources page.
+- The published explanation of how zmanim are calculated in Chabad practice.
 - OU Torah article on candle-lighting times: <https://outorah.org/p/34953>

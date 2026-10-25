@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { HDate, HebrewCalendar } from '@hebcal/core';
-import { anniversary, barMitzvahDate, HebrewDate, Month, isLeapYear, monthLength } from '../src/index';
+import { anniversary, barMitzvahDate, Month, isLeapYear, monthLength } from '../src/index';
 
 describe('anniversary rules', () => {
   it('Adar of a common year in a leap year', () => {
@@ -46,9 +45,6 @@ describe('anniversary rules', () => {
     expect(isLeapYear(5797)).toBe(false);
     const b = barMitzvahDate(birth);
     expect([b.year, b.month, b.day]).toEqual([5797, Month.NISAN, 1]);
-    // Oracle: hebcal's birthday rule agrees.
-    const t = new HDate(HebrewCalendar.getBirthdayOrAnniversary(5797, new HDate(30, 12, 5784))!);
-    expect([t.getFullYear(), t.getMonth(), t.getDate()]).toEqual([5797, Month.NISAN, 1]);
     // A yahrzeit keeps 30 Shevat (unchanged).
     const y = anniversary(birth, 5797, { kind: 'yahrzeit' });
     expect([y.month, y.day]).toEqual([Month.SHEVAT, 30]);
@@ -77,31 +73,5 @@ describe('anniversary rules', () => {
     expect([bm.year, bm.month, bm.day]).toEqual([5795, Month.ADAR_II, 15]);
     const bmDefault = barMitzvahDate({ year: 5782, month: Month.ADAR_I, day: 15 });
     expect([bmDefault.year, bmDefault.month, bmDefault.day]).toEqual([5795, Month.ADAR_I, 15]);
-  });
-  it('oracle: hebcal birthday matches the birthday defaults (5700–5800 births, 30 years)', () => {
-    let checked = 0;
-    for (let d = new HebrewDate(5700, 7, 1); d.year < 5800; d = d.addDays(5)) {
-      for (let target = d.year + 1; target <= d.year + 30; target += 4) {
-        const ours = anniversary(d, target, { kind: 'birthday' });
-        const t = new HDate(HebrewCalendar.getBirthdayOrAnniversary(target, new HDate(d.day, d.month, d.year))!);
-        expect([ours.year, ours.month, ours.day], `${d} → ${target}`).toEqual([t.getFullYear(), t.getMonth(), t.getDate()]);
-        checked++;
-      }
-    }
-    expect(checked).toBeGreaterThan(5000);
-  });
-  it('oracle: hebcal yahrzeit matches the "firstAnniversary" + Adar I options (5700–5800 deaths, 40 years)', () => {
-    let checked = 0;
-    for (let d = new HebrewDate(5700, 7, 1); d.year < 5800; d = d.addDays(3)) {
-      for (let target = d.year + 1; target <= d.year + 40; target += 3) {
-        const ours = anniversary(d, target, { kind: 'yahrzeit', adarInLeapYear: 'adar1', missingThirtieth: 'firstAnniversary' });
-        const theirs = HebrewCalendar.getYahrzeit(target, new HDate(d.day, d.month, d.year));
-        if (!theirs) continue;
-        const t = new HDate(theirs);
-        expect([ours.year, ours.month, ours.day], `${d} → ${target}`).toEqual([t.getFullYear(), t.getMonth(), t.getDate()]);
-        checked++;
-      }
-    }
-    expect(checked).toBeGreaterThan(10000);
   });
 });

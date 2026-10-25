@@ -38,7 +38,10 @@ for (const name of Object.keys(pkg.peerDependencies ?? {})) check(name);
 
 // The built package (when dist/ exists): it loads only runtime dependencies (and node:
 // built-ins in the CLI), and contains no text from the copyleft test oracles.
-const ORACLE_TEXT = ['@hebcal/', 'kosher-zmanim', 'GNU General Public', 'GNU Lesser General Public'];
+// No GPL or LGPL text, no source from node_modules, and no test-only package named (scoped
+// packages, and any devDependency whose name is not an ordinary word).
+const devNames = Object.keys(pkg.devDependencies ?? {}).filter((n) => n.startsWith('@') || n.includes('-'));
+const ORACLE_TEXT = ['GNU General Public', 'GNU Lesser General Public', 'node_modules/', ...devNames];
 const runtimeDeps = new Set([...Object.keys(pkg.dependencies ?? {}), ...Object.keys(pkg.peerDependencies ?? {})]);
 function walk(dir) {
   return readdirSync(dir).flatMap((f) => {

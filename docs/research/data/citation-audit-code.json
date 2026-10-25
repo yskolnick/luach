@@ -658,7 +658,7 @@
   "status": "imprecise",
   "url": "https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.428.4",
   "quote": "לעולם קורין צו את אהרן קודם פסח בפשוט' ומצורע במעוברת חוץ מבה\"ח מעוברת (וה\"ש מעוברת) שקורים אחרי מות קודם הפסח",
-  "note": "Comment omits the SA's stated exception (Acharei Mos before Pesach). Code treats Metzora as a minimum, so output still reaches Acharei Mos (e.g. 5771, matches hebcal). 'Haazinu before Sukkos' is inferred from the RH-weekday discussion, not stated.",
+  "note": "Comment omits the SA's stated exception (Acharei Mos before Pesach). Code treats Metzora as a minimum, so output still reaches Acharei Mos (e.g. 5771, matches an independent calendar library). 'Haazinu before Sukkos' is inferred from the RH-weekday discussion, not stated.",
   "resolution": "Comment now states the exception (2026-10-21)."
  },
  {

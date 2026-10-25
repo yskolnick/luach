@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest';
-import { HDate, OmerEvent } from '@hebcal/core';
 import { HebrewDate, Month, holidaysOn, holidaysForYear, holidayName, ashkenazi, he, en, sephardi, omerDay, omerText, omerTextEnglish, omerSefirah, talUmatarStart, amidahSeason, birkasHachamaDates, kiddushLevana, moladInstant, tefillahOn, mourningPeriods, isMelachaForbidden, fastOn, nextHoliday, civilToDays, formatIsoDate } from '../src/index';
 import { dayOfWeekOfDays } from '../src/time/civil';
 
@@ -131,13 +130,18 @@ describe('names', () => {
 });
 
 describe('Omer', () => {
-  it('days match hebcal', () => {
+  it('days 1–49 from the second night of Pesach', () => {
     for (let n = 1; n <= 49; n++) {
       const d = new HebrewDate(5787, Month.NISAN, 15).addDays(n);
       expect(omerDay(d)).toBe(n);
     }
     expect(omerDay(new HebrewDate(5787, Month.NISAN, 15))).toBeNull();
     expect(omerDay(new HebrewDate(5787, Month.SIVAN, 6))).toBeNull();
+  });
+  it('sefirah', () => {
+    expect(omerSefirah(1, 'he')).toBe('חסד שבחסד');
+    expect(omerSefirah(49, 'he')).toBe('מלכות שבמלכות');
+    expect(omerSefirah(8, 'ashkenazi')).toBe("Chesed sheb'Gevurah");
   });
   it('text', () => {
     expect(omerText(1)).toBe('היום יום אחד לעומר');
@@ -149,12 +153,6 @@ describe('Omer', () => {
     expect(omerText(49)).toBe('היום תשעה וארבעים יום שהם שבעה שבועות לעומר');
     expect(omerTextEnglish(8)).toBe('Today is eight days, which are one week and one day, of the Omer.');
     expect(omerTextEnglish(7)).toBe('Today is seven days, which is one week, of the Omer.');
-  });
-  it('sefirah matches hebcal for all 49 days', () => {
-    for (let n = 1; n <= 49; n++) {
-      expect(omerSefirah(n, 'he')).toBe(new OmerEvent(new HDate(), n).sefira('he').replace(/[֑-ׇ]/g, ''));
-    }
-    expect(omerSefirah(8, 'ashkenazi')).toBe("Chesed sheb'Gevurah");
   });
 });
 
@@ -184,8 +182,8 @@ describe('seasonal', () => {
     expect(ds.map(formatIsoDate)).toEqual(['1953-04-08', '1981-04-08', '2009-04-08', '2037-04-08']);
     for (const d of ds) expect(dayOfWeekOfDays(civilToDays(d.year, d.month, d.day))).toBe(3);
   });
-  it('molad instant: hebcal molad Tishrei 5787 (Jerusalem mean time)', () => {
-    // hebcal gives the molad's clock reading; the instant is that reading minus 2h20m56.5s.
+  it('molad instant: Tishrei 5787 (Jerusalem mean time)', () => {
+    // The molad is announced as a Jerusalem clock reading; the instant is that reading minus 2h20m56.5s.
     const t = moladInstant(5787, Month.TISHREI);
     const kl = kiddushLevana(5787, Month.TISHREI);
     expect(kl.earliest.sevenDays.time.getTime() - t.getTime()).toBe(7 * 864e5);

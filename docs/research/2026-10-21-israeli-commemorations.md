@@ -1,6 +1,6 @@
 # Israeli official commemorations set by Hebrew date
 
-Research date: 2026-10-21. This is clean-room research: no hebcal or KosherJava code was read.
+Research date: 2026-10-21. This is clean-room research: no code from any other calendar or zmanim library was read.
 
 Sources, in order of preference:
 1. The statute text on Hebrew Wikisource (`he.wikisource.org`). The OpenLawBot project mirrors the official Reshumot text and quotes the "התקבל בכנסת ביום …" line.

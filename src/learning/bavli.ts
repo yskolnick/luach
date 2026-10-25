@@ -6,7 +6,7 @@
  * Kinnim, Tamid and Middos, which Daf Yomi counts as dafim 22–37 of one sequence
  * (Kinnim 23–25, Tamid 26–33, Middos 34–37). Shekalim had 13 dafim in cycles 1–7 and,
  * from cycle 8 (1975), 22 dafim (the Vilna Yerushalmi pagination), giving 2,702 and then
- * 2,711 dafim a cycle. Sources: docs/research/2026-10-21-learning-cycles.md.
+ * 2,711 dafim a cycle.
  *
  * @packageDocumentation
  */

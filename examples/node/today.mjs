@@ -1,4 +1,4 @@
-// node examples/node/today.mjs   (after `npm run build` in the repository, or with luach installed)
+// node examples/node/today.mjs   (with luach installed: npm install luach)
 import { HebrewDate, formatHebrewDate, ashkenazi, holidaysBetween, holidayName, getPlace, ZmanimCalendar, zmanLabel } from '../../dist/index.js';
 
 const place = getPlace('lakewood');

@@ -1,7 +1,7 @@
 /**
  * The haftara: by minhag, with the special haftaros and their order of precedence.
  *
- * Precedence on Shabbos (docs/research/2026-10-21-haftaros.md; SA OC 425, 428, 684, 685
+ * Precedence on Shabbos (SA OC 425, 428, 684, 685
  * with Rema and Mishna Berura):
  *
  * 1. Yom Tov and Chol Hamoed have their own haftara.

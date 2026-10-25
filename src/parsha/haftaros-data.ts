@@ -1,7 +1,7 @@
 /**
  * Haftara references by minhag (Ashkenaz, Sephardi, Chabad, Teimani). References only, no text.
- * Compiled from independent sources and cross-checked (docs/research/2026-10-21-haftaros.md;
- * raw data docs/research/data/haftaros.json). `null` where no reliable source was found.
+ * Compiled from published lists and the Shulchan Aruch, recorded only where two sources
+ * agree. `null` where no reliable source was found.
  *
  * @packageDocumentation
  */

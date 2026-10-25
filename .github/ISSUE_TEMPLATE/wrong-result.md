@@ -1,7 +1,7 @@
 ---
 name: Wrong date, zman or reading
 about: Luach gives a result you believe is wrong
-labels: accuracy
+labels: wrong-result
 ---
 
 **What did you call?** (code or CLI command, Luach version)

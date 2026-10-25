@@ -15,7 +15,7 @@ d.yearType;           // "shleimim" | "kesidran" | "chaserim"
 
 **The day starts at nightfall.** `HebrewDate.fromGregorian(2026, 10, 21, { afterSunset: true })`
 gives the next Hebrew date. To decide by the actual sunset at a place, use
-`hebrewDateAt(new Date(), place)` (see [Zmanim](./zmanim)).
+`hebrewDateAt(new Date(), place)` (see [Zmanim](./zmanim.md)).
 
 **Range:** Hebrew years 1–9999. Gregorian dates are *proleptic*: the Gregorian rules are
 extended back before 1582, so there is no silent switch to the Julian calendar.

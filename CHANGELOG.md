@@ -5,6 +5,10 @@ All notable changes for users of the `luach` package. This project follows
 
 ## Unreleased
 
+### Documentation
+- The README now opens with a notice that Luach was written entirely by AI and may contain
+  mistakes, and the package description says so too.
+
 ## 0.1.0 — 2026-10-24
 
 ### Changed (breaking)
@@ -21,7 +25,7 @@ All notable changes for users of the `luach` package. This project follows
   `JERUSALEM_LONGITUDE`, `dafYomiCycleStart`; `foldName`, `nameSkeleton` (also from
   `luach/places-full`); `icalEscape`, `icalFold`; `lookup`, `lookupIn`; and the character
   constants `GERESH`, `GERSHAYIM`, `RLI`, `LRI`, `FSI`, `PDI`. Use `HebrewDate`,
-  `ZmanimCalendar` and the documented functions instead. A test pins the public list.
+  `ZmanimCalendar` and the documented functions instead.
 - A calendar call given a place but not `israel` now decides from the place: a location
   inside Israel without its own `israel` flag used to get diaspora rules. Applies to
   `dayInfo`, `toICalendar`, `fastTimes` and `isMelachaForbiddenAt`; `israel` still wins.
@@ -77,13 +81,10 @@ All notable changes for users of the `luach` package. This project follows
 - `parseHebrewDate` for "י״ד אדר תשפ״ז" and "14 Adar II 5787"; `moladAnnouncement`;
   `formatTime`.
 - The `luach` command line (`npx luach today --city lakewood`).
-- Tested on Hermes (React Native): output identical to Node.
+- Runs on Hermes (React Native) with the same output as Node.
 - Optional Israeli commemorations by Hebrew date (`israeliCommemorations: true`): Sigd, Yom
   HaAliyah, Herzl, Ben-Gurion, Jabotinsky, Rabin, the 7 October memorial day and others,
   each with its law's moving rule.
-- Documentation site (VitePress) with guides, zmanim sources and the API reference.
-- An Expo demo app (`apps/demo`, not published): today, zmanim with opinion pickers, the
-  week, and settings; Hebrew and English, light and dark.
 
 ### Changed
 - A birthday or bar mitzvah for someone born on 30 Adar I, in a common year, is 1 Nisan

@@ -12,7 +12,7 @@ import { deepFreeze } from '../util/freeze.js';
  * It is accurate to a few kilometres; near a border, or for any halachic question about
  * where one day or two are kept, ask your rav and pass `israel` explicitly. It makes no
  * political statement. Checked against GeoNames coordinates of places on both sides of
- * each border (`test/places.test.ts`).
+ * each border.
  */
 export const ISRAEL_BOUNDARY: ReadonlyArray<readonly [number, number]> = /*#__PURE__*/ deepFreeze([
   // Lebanon, west to east, round the Galilee panhandle (Metula) and north of Ghajar

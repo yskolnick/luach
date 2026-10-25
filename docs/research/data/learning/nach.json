@@ -1,0 +1,244 @@
+{
+  "cycle": "Nevi'im and Ketuvim in the order used by the OU Nach Yomi (one chapter a day)",
+  "totalChapters": 742,
+  "torahChapters": 187,
+  "sources": [
+    "https://www.sefaria.org/api/shape/Tanakh",
+    "https://res.cloudinary.com/ouwp/images/v1768325263/ouredesign/main/WI-Nach-Yomi_2026-2028_v6/WI-Nach-Yomi_2026-2028_v6.pdf"
+  ],
+  "licenceNote": "Structure (counts only) read from Sefaria's public API (api/shape, api/v2/raw/index). Counts and orderings are facts; no text was copied. Sefaria texts carry per-text licences; no text is used here.",
+  "research": "docs/research/2026-10-21-learning-cycles.md",
+  "units": [
+    {
+      "name": "Joshua",
+      "he": "יהושע",
+      "section": "Prophets",
+      "chapters": 24
+    },
+    {
+      "name": "Judges",
+      "he": "שופטים",
+      "section": "Prophets",
+      "chapters": 21
+    },
+    {
+      "name": "I Samuel",
+      "he": "שמואל א",
+      "section": "Prophets",
+      "chapters": 31
+    },
+    {
+      "name": "II Samuel",
+      "he": "שמואל ב",
+      "section": "Prophets",
+      "chapters": 24
+    },
+    {
+      "name": "I Kings",
+      "he": "מלכים א",
+      "section": "Prophets",
+      "chapters": 22
+    },
+    {
+      "name": "II Kings",
+      "he": "מלכים ב",
+      "section": "Prophets",
+      "chapters": 25
+    },
+    {
+      "name": "Isaiah",
+      "he": "ישעיהו",
+      "section": "Prophets",
+      "chapters": 66
+    },
+    {
+      "name": "Jeremiah",
+      "he": "ירמיהו",
+      "section": "Prophets",
+      "chapters": 52
+    },
+    {
+      "name": "Ezekiel",
+      "he": "יחזקאל",
+      "section": "Prophets",
+      "chapters": 48
+    },
+    {
+      "name": "Hosea",
+      "he": "הושע",
+      "section": "Prophets",
+      "chapters": 14
+    },
+    {
+      "name": "Joel",
+      "he": "יואל",
+      "section": "Prophets",
+      "chapters": 4
+    },
+    {
+      "name": "Amos",
+      "he": "עמוס",
+      "section": "Prophets",
+      "chapters": 9
+    },
+    {
+      "name": "Obadiah",
+      "he": "עובדיה",
+      "section": "Prophets",
+      "chapters": 1
+    },
+    {
+      "name": "Jonah",
+      "he": "יונה",
+      "section": "Prophets",
+      "chapters": 4
+    },
+    {
+      "name": "Micah",
+      "he": "מיכה",
+      "section": "Prophets",
+      "chapters": 7
+    },
+    {
+      "name": "Nahum",
+      "he": "נחום",
+      "section": "Prophets",
+      "chapters": 3
+    },
+    {
+      "name": "Habakkuk",
+      "he": "חבקוק",
+      "section": "Prophets",
+      "chapters": 3
+    },
+    {
+      "name": "Zephaniah",
+      "he": "צפניה",
+      "section": "Prophets",
+      "chapters": 3
+    },
+    {
+      "name": "Haggai",
+      "he": "חגי",
+      "section": "Prophets",
+      "chapters": 2
+    },
+    {
+      "name": "Zechariah",
+      "he": "זכריה",
+      "section": "Prophets",
+      "chapters": 14
+    },
+    {
+      "name": "Malachi",
+      "he": "מלאכי",
+      "section": "Prophets",
+      "chapters": 3
+    },
+    {
+      "name": "Psalms",
+      "he": "תהילים",
+      "section": "Writings",
+      "chapters": 150
+    },
+    {
+      "name": "Proverbs",
+      "he": "משלי",
+      "section": "Writings",
+      "chapters": 31
+    },
+    {
+      "name": "Job",
+      "he": "איוב",
+      "section": "Writings",
+      "chapters": 42
+    },
+    {
+      "name": "Song of Songs",
+      "he": "שיר השירים",
+      "section": "Writings",
+      "chapters": 8
+    },
+    {
+      "name": "Ruth",
+      "he": "רות",
+      "section": "Writings",
+      "chapters": 4
+    },
+    {
+      "name": "Lamentations",
+      "he": "איכה",
+      "section": "Writings",
+      "chapters": 5
+    },
+    {
+      "name": "Ecclesiastes",
+      "he": "קהלת",
+      "section": "Writings",
+      "chapters": 12
+    },
+    {
+      "name": "Esther",
+      "he": "אסתר",
+      "section": "Writings",
+      "chapters": 10
+    },
+    {
+      "name": "Daniel",
+      "he": "דניאל",
+      "section": "Writings",
+      "chapters": 12
+    },
+    {
+      "name": "Ezra",
+      "he": "עזרא",
+      "section": "Writings",
+      "chapters": 10
+    },
+    {
+      "name": "Nehemiah",
+      "he": "נחמיה",
+      "section": "Writings",
+      "chapters": 13
+    },
+    {
+      "name": "I Chronicles",
+      "he": "דברי הימים א",
+      "section": "Writings",
+      "chapters": 29
+    },
+    {
+      "name": "II Chronicles",
+      "he": "דברי הימים ב",
+      "section": "Writings",
+      "chapters": 36
+    }
+  ],
+  "torah": [
+    {
+      "name": "Genesis",
+      "he": "בראשית",
+      "chapters": 50
+    },
+    {
+      "name": "Exodus",
+      "he": "שמות",
+      "chapters": 40
+    },
+    {
+      "name": "Leviticus",
+      "he": "ויקרא",
+      "chapters": 27
+    },
+    {
+      "name": "Numbers",
+      "he": "במדבר",
+      "chapters": 36
+    },
+    {
+      "name": "Deuteronomy",
+      "he": "דברים",
+      "chapters": 34
+    }
+  ]
+}

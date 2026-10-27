@@ -252,8 +252,14 @@ in the code is on [Sources](../sources.md).
 - **Sources:** eating until alos: SA OC 564:1 (*verified*); the choice of alos is custom. End
   at three medium stars: SA OC 562:1 (*verified*). 7.083° per Dr. Baruch Cohn (*not
   verified*). *No source recorded* for choosing 7.083° over 6.45° (the Israeli custom).
+  **2026-10-27:** a published sources table derives a nearby angle, 7.12°, from Igros Moshe's
+  41 minutes in New York for "one who finds fasting hard" (*secondary*; siman needed): that
+  figure is a leniency, and 7.083° should not be presented as the plain time of three medium
+  stars without saying so. The same table gives 6.45° for Eretz Yisrael from R. Tukaczinsky's
+  28 minutes (Sefer Bein HaShmashos) and Nivreshes (*secondary*).
 - **Confidence:** Low for the choice of default.
-- **Open:** whether the default should be 6.45° in Israel.
+- **Open:** whether the default should be 6.45° in Israel, and whether 7.083° should stay the
+  default outside it now that its nearest attributed source is a leniency.
 
 ### Shabbos before a postponed Tisha B'Av {#shabbos-before-a-postponed-tisha-b-av}
 
@@ -433,6 +439,11 @@ in the code is on [Sources](../sources.md).
 - **Confidence:** Medium.
 - **Open:** Peninei Halakha reports that the Shulchan Aruch HaRav uses a sunrise for about
   800 m everywhere, citing Igros Moshe OC 1:97 (*not verified*).
+  **2026-10-27:** with `useElevation` on, Luach's Gra day (and so its Shema, Tefilla, Mincha
+  and Plag of the Gra) runs from the elevated sunrise to the elevated sunset. A published
+  luach keeps the seasonal hours of the Gra and the Baal HaTanya on sea-level sunrise and
+  sunset even when it shows the elevated times. *No source recorded* for either practice;
+  the code is unchanged until one is found.
 
 ### Rounding {#rounding}
 
@@ -443,6 +454,12 @@ in the code is on [Sources](../sources.md).
 - **Sources:** *no source recorded* (a safety convention).
 - **Confidence:** High that it is the safer direction.
 - **Open:** a fast's start is rounded down, because it is a deadline for eating.
+  **2026-10-27:** a published luach rounds only sunrise, misheyakir, earliest mincha and
+  nightfall later and everything else earlier, so its alos and plag are a minute earlier than
+  Luach's on some days. Luach rounds alos, plag and Mincha Gedola up (as the earliest time
+  for tefillin, Maariv and Mincha). Whether those three should instead follow the stricter
+  reading as deadlines (alos for eating, plag for Mincha) is open; see the rounding of
+  `fast-begins`, which is already down.
 
 ### Candle lighting 18 minutes; havdala at 8.5° {#candle-lighting-18-minutes-havdala-at-8-5}
 
@@ -481,6 +498,13 @@ in the code is on [Sources](../sources.md).
   source found).
 - **Confidence:** High for the Gra; Medium for "the later of".
 - **Open:** the constant 15-second difference for chatzos is not explained.
+  **Explained 2026-10-27:** published luchos take chatzos as the midpoint of sunrise and
+  sunset (so does a Star-K article on polar zmanim, R. D. Heber); Luach takes the sun's
+  transit. The two differ by a few seconds (13 s in New York in late October), because
+  refraction and the sun's changing declination make the morning and afternoon halves
+  unequal. Mincha Gedola "30 minutes" inherits the difference. The midpoint (MB 233:4;
+  Peninei Halakha, Tefilla 11:10 n. 14) is planned as `chatzos-midpoint`; which should be
+  the default is open.
 
 ### Plag HaMincha of the Levush {#plag-hamincha-of-the-levush}
 
@@ -523,8 +547,14 @@ in the code is on [Sources](../sources.md).
 - **Sources:** the recommendation is to return null and offering the Chabad fallback only
   as an explicit option (*secondary*). The opinions of Igros Moshe, the Minchas Yitzchak and
   the London Beth Din on high latitudes are *not verified* and are not cited.
+  Sources for rules not yet built (added 2026-10-27, all *secondary*, through R. Dovid Heber's
+  Star-K article on zmanim in the Arctic, with guidelines from R. Moshe Heinemann): Ben Ish
+  Chai, Rav Pe'alim 2, Sod Yesharim 4 (when the sun is up or down for 24 hours, 6:00 is
+  sunrise and 18:00 sunset); Moadim U'Zmanim 2:155 (the day turns at the sun's lowest point in
+  summer and its highest in winter); Minchas Elazar; Tiferes Yisroel; Zecher Simcha 30; R. J.D.
+  Bleich, Tradition 36:3.
 - **Confidence:** High that null is the safe default.
-- **Open:** neither fallback cites a source.
+- **Open:** neither fallback cites a source; the opt-in rules above are not built.
 
 ### No fallback in polar night {#no-fallback-in-polar-night}
 
@@ -555,6 +585,63 @@ in the code is on [Sources](../sources.md).
   [Zmanim and sources](https://github.com/yskolnick/luach/blob/main/docs/halacha/zmanim.md).
 - **Confidence:** Low (a selection, not a source).
 - **Open:** apps should show the opinions their community follows.
+
+### Tzeis 42 minutes: its source {#tzeis-42-minutes-its-source}
+
+- **Status:** Default (an option; never a default).
+- **What it does:** `tzeis42` is unchanged: 42 fixed minutes after sunset. Its source line
+  no longer says it is "the ¾ mil of the Geonim adapted to latitude".
+- **Why:** that explanation had no source. R. Yaakov Hoffman ("When is Shabbos Over?")
+  reports that twentieth-century New York calendars took candle lighting, 18 minutes before
+  sunset, and added an hour; he calls it oversimplified and says that if fixed minutes are
+  used at all, 50 is more appropriate (Igros Moshe OC 4:62; the Chazon Ish similarly).
+- **Sources:** R. Y. Hoffman, "When is Shabbos Over?" (*secondary*); Igros Moshe OC 4:62
+  (*secondary*, through Hoffman and a published sources table; the teshuva not read).
+- **Confidence:** Medium for the origin (one author); High that no posek for 42 was found.
+- **Open:** a posek who gives 42 minutes, if there is one.
+
+### Attributions for the degree-based tzeis and misheyakir {#attributions-for-the-degree-based-tzeis-and-misheyakir}
+
+- **Status:** Settled (the angles are unchanged; only their source lines).
+- **What it does:** 8.5° is now attributed to R. Y.M. Tukaczinsky, Sefer Bein HaShmashos;
+  6.45° to his 28 minutes for three medium stars and to Nivreshes; 10.2° to Kovetz Otzros
+  Yerushalayim; 11.5° to the custom of Eretz Yisrael (Kaf HaChaim and Sefer Eretz Yisrael, 60
+  minutes before sunrise in Jerusalem); 11° also to the ruling of R. Meir Posen; 50 minutes to
+  Igros Moshe OC 4:62. All are *secondary*: each is reported by two independent published
+  sources (R. Y. Hoffman's article and two sources tables), none was read in the sefer.
+- **Why:** before, several of these said "not verified" or "a published luach that names no
+  source". Two named reports that agree are a stronger record, and the sefarim they name are
+  what a scholar should check.
+- **Sources:** as listed; each line in `src/zmanim/opinions.ts` names its reports.
+- **Confidence:** Medium.
+- **Open:**
+  - 12.85° (misheyakir) is attributed to R. Zilber's Birur Halacha; his Beis Baruch is
+    reported as 52 minutes before sunrise in Jerusalem, lechatchila 42, which is *later* than
+    12.85° (about 57 minutes at the equinox). The two sefarim must be read before 12.85° is
+    relied on.
+  - Rabbeinu Tam's 72 minutes is recorded as a stringency for ending Shabbos and not for use
+    as a leniency (Nit'ei Gavriel, Hilchos Shabbos vol. 1 p. 929ff, through Hoffman).
+  - The 25 minutes after sunset for a bris (Shemiras Shabbos KeHilchasa in the name of
+    R. Shlomo Zalman Auerbach) and Rabbeinu Tam at 90 and 120 minutes are not built.
+
+### Shabbos is on the local Saturday everywhere {#shabbos-is-on-the-local-saturday-everywhere}
+
+- **Status:** Default.
+- **What it does:** the weekday, and so Shabbos, Yom Tov and the parsha, follow the civil
+  calendar of the place: Saturday is Shabbos in Tokyo, Auckland and Honolulu alike. The
+  halachic date line is not modelled.
+- **Why:** the poskim differ on where the line runs, and a library that moved Shabbos to
+  Sunday in Japan on its own would be ruling. Luach calculates; it does not rule.
+- **Sources:** Chazon Ish (Kuntres Shemoneh Esreh Sha'os): 125.2°E, drawn around the Asian
+  and Australian coasts, so Japan, New Zealand, Tasmania and Fiji keep Shabbos on the local
+  Sunday; R. Y.M. Tukaczinsky: 144.8°W, so Hawaii keeps it on the local Friday; the
+  mid-Pacific poskim (Bnai Tzion, about 177°E; R. B. Rabinowitz-Thumim, Atzei Sadeh and Alei
+  Yonah, 169.7°W). All *secondary*, through R. Dovid Heber's Star-K article on the
+  International Dateline, which also records R. Moshe Heinemann's guidance to follow the
+  majority and keep the Torah prohibitions on the minority's day.
+- **Confidence:** High that the civil weekday is what Luach should return by default.
+- **Open:** an opt-in that reports, for a place east of 125.2°E or west of 144.8°W, which
+  opinions put Shabbos on another day. Ask your rav before travelling across the Pacific.
 
 
 ## Readings and learning

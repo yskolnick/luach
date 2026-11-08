@@ -5,9 +5,12 @@ All notable changes for users of the `luach` package. This project follows
 
 ## Unreleased
 
+## 0.1.1 — 2026-11-08
+
 ### Documentation
-- The README now opens with a notice that Luach was built mostly by AI and may contain
-  mistakes, and the package description says so too.
+- The README, which is also the npm page, now opens with a notice that Luach was built
+  mostly by AI and may contain mistakes. The package description says so too, and the
+  keywords include `ai-generated`. No code changes.
 
 ## 0.1.0 — 2026-10-24
 

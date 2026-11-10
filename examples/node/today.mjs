@@ -1,5 +1,5 @@
 // node examples/node/today.mjs   (with luach installed: npm install luach)
-import { HebrewDate, formatHebrewDate, ashkenazi, holidaysBetween, holidayName, getPlace, ZmanimCalendar, zmanLabel } from '../../dist/index.js';
+import { HebrewDate, formatHebrewDate, ashkenazi, holidaysBetween, holidayName, getPlace, Zmanim, zmanLabel } from '../../dist/index.js';
 
 const place = getPlace('lakewood');
 const today = HebrewDate.today({ timeZone: place.timeZone });
@@ -9,7 +9,9 @@ for (const e of holidaysBetween(today, today.addDays(7))) {
   console.log(e.date.toCivil(), holidayName(e, ashkenazi));
 }
 
-const z = new ZmanimCalendar(place, today);
-for (const zman of [z.alos72(), z.sunrise(), z.sofZmanShemaMga72(), z.sofZmanShemaGra(), z.sunset(), z.tzeis8Point5()]) {
-  console.log(zman.localTime(), zmanLabel(zman.id, ashkenazi), `(${zman.source})`);
+// The opinions a user follows; anything left out uses a documented default.
+const zmanim = new Zmanim(place, { shema: 'sof-zman-shema-mga-72' });
+for (const zman of zmanim.at(new Date()).slots()) {
+  console.log(zman.localTime() ?? '—', zmanLabel(zman.id, ashkenazi), `(${zman.source})`);
 }
+console.log('Next:', zmanim.next(new Date())?.localTime());

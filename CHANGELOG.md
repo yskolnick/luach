@@ -5,6 +5,48 @@ All notable changes for users of the `luach` package. This project follows
 
 ## Unreleased
 
+This release replaces the zmanim interface. Every time Luach computes is unchanged.
+
+### Added
+- `Zmanim`: a place and the opinions its user follows, in one object.
+  `new Zmanim(place, opinions?, settings?)`, then `.on(date)` or `.at(instant)` for a day,
+  `.next(now, which?)`, `.between(from, to, which?)` and `.hebrewDateAt(instant)`.
+  `.at(instant)` gives the civil day *at the place*, never on the device's clock.
+- `ZmanimDay`: `.slot('shema')` (the user's opinion), `.slots(part?)` (the day in order),
+  `.get(id)` (any opinion by id) and `.shaahZmanis(day)`.
+- Opinions are one plain object, `{ shema: 'sof-zman-shema-mga-72', tzeis: 'tzeis-8.5', … }`,
+  checked by TypeScript and at run time; `Zmanim.defaults`, `Zmanim.choices(choice)` for a
+  settings screen, and `Zmanim.parseOpinions(json)` to read stored settings back (it never throws,
+  and reads the method names of 0.1).
+- `Zman.explain()`: how the time was calculated that day, step by step, with the local time of
+  each step, then how it was rounded. `Zman.exact`, `Zman.kind` (`'earliest' | 'deadline'`),
+  `Zman.slot` and `Zman.remaining(now)` (a countdown that is never generous).
+- `zmanName(id, locale)`: a name split into the time and the opinion, for a heading and a label.
+- The day JSON gains `exact`, `kind` and `slot` for every zman.
+
+### Changed (breaking)
+- `ZmanimCalendar` and its 87 methods are removed. Use `new Zmanim(place).on(date).get(id)`:
+  `z.sofZmanShemaGra()` becomes `day.get('sof-zman-shema-gra')`, `z.alos16Point1()` becomes
+  `day.get('alos-16.1')`, `z.tzeis8Point5()` becomes `day.get('tzeis-8.5')`. Every id is in the
+  [table of zmanim](docs/halacha/zmanim.md); `Zmanim.parseOpinions` converts old method names.
+- `ZmanimCalendar`'s `rounding: false` is gone: `Zman.time` is always rounded on the safe side,
+  and `Zman.exact` is the exact instant.
+- `havdala({ degrees })`, `candleLightingSecondNight({ … })` and `candleLighting(minutes)` are
+  replaced by the `havdala` opinion (a tzeis id) and the `candleLightingMinutes` setting.
+- `dayInfo`, `toICalendar`, `fastTimes`, `isMelachaForbiddenAt` and `hebrewDateAt` take
+  `opinions` and the settings: `boundary` becomes `opinions.dayBoundary`, `begins` and `ends`
+  become `opinions.fastBegins` and `opinions.fastEnds`, melacha's `ends` becomes
+  `opinions.havdala`, `beginsMinutesBeforeSunset` becomes `candleLightingMinutes`. Their `zmanim`
+  lists take ids or slots (`'sof-zman-shema-gra'`, `'shema'`) instead of method names, and
+  `DEFAULT_DAY_ZMANIM` lists ids.
+- Removed exports: `ZmanimCalendar`, `DEPRESSION_RANGE`, `MINUTES_RANGE`, and the types
+  `DayBoundary`, `FastTimesOptions` and `MelachaOptions` (now `ZmanimOptions`).
+- The day JSON's havdala, second-night candle lighting and "Shabbos ends" name the tzeis opinion
+  they follow in their `source`.
+
+### Fixed
+- The React Native example passed a JavaScript `Date` to `dayInfo`, which takes a civil date.
+
 ## 0.1.1 — 2026-11-08
 
 ### Documentation

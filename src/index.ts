@@ -36,11 +36,15 @@ export {
 } from './holidays/mourning.js';
 export { PARSHIYOS, readingCycle, parshaFor, parshaName, pirkeiAvos, type ParshaId, type ShabbosReading, type PirkeiAvosOptions } from './parsha/parsha.js';
 export { locate, dafYomi, BAVLI_TRACTATES, type TractateSpan, type DafPortion } from './learning/bavli.js';
-export { Zman, type RoundingDirection, type ZmanUnavailableReason } from './zmanim/zman.js';
-export { ZMANIM, zmanLabel, type ZmanDefinition } from './zmanim/opinions.js';
+export { Zman, type RoundingDirection, type ZmanUnavailableReason, type ZmanKind, type Explanation, type ExplainStep } from './zmanim/zman.js';
+export { ZMANIM, zmanLabel, type ZmanDefinition, type ZmanId, type ZmanIdIn, type Slot, type Moment } from './zmanim/opinions.js';
+export {
+  Zmanim, ZmanimDay, zmanName,
+  type Role, type Opinions, type DaySlot, type DayPart, type DayName, type ZmanimSettings, type OpinionProblem, type ParsedOpinions,
+} from './zmanim/zmanim.js';
 export { type NoEventReason } from './zmanim/solar.js';
-export { DEPRESSION_RANGE, MINUTES_RANGE, ZmanimCalendar, type GeoLocation, type ZmanimOptions, type ShaahZmanis } from './zmanim/calendar.js';
-export { hebrewDateAt, fastTimes, isMelachaForbiddenAt, type DayBoundary, type FastTimesOptions, type MelachaOptions } from './zmanim/day.js';
+export { type GeoLocation, type ShaahZmanis } from './zmanim/calendar.js';
+export { hebrewDateAt, fastTimes, isMelachaForbiddenAt, type ZmanimOptions } from './zmanim/day.js';
 export { yerushalmiYomi, amudYomi, dafHaShavua, mishnaYomis, rambamOneChapter, rambamThreeChapters, seferHaMitzvosDay, nachYomi, type LearningPortion } from './learning/cycles.js';
 export { haftaraFor, fastMinchaHaftara, type HaftaraMinhag, type HaftaraOptions, type Haftara } from './parsha/haftara.js';
 export { LOCAL_CANDLE_LIGHTING, builtInPlaces, getPlace, searchPlaces, nearestPlace, distanceKm, ISRAEL_BOUNDARY, isInIsrael, type Place, type CandleLightingCustom, type SearchOptions } from './places/places.js';

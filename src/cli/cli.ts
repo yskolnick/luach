@@ -29,7 +29,8 @@ import { holidayName } from '../holidays/names.js';
 import { dayInfo, type DayLocation } from '../day/day-info.js';
 import { toICalendar, type IcalLearning } from '../output/ical.js';
 import { getPlace, searchPlaces, isInIsrael, foldName, distanceKm, type Place } from '../places/places.js';
-import { ZmanimCalendar, type ZmanimOptions } from '../zmanim/calendar.js';
+import { Zmanim, type ZmanimSettings } from '../zmanim/zmanim.js';
+import type { ZmanId } from '../zmanim/opinions.js';
 import { ZMANIM, zmanLabel } from '../zmanim/opinions.js';
 import type { Zman } from '../zmanim/zman.js';
 
@@ -157,7 +158,7 @@ function place(flags: Record<string, string | true>): DayLocation | undefined {
 }
 
 /** Zmanim options from the flags: --elevation turns on elevation-adjusted sunrise and sunset. */
-function zmanimOptions(flags: Record<string, string | true>): ZmanimOptions {
+function zmanimOptions(flags: Record<string, string | true>): ZmanimSettings {
   return elevationFlag(flags) !== undefined ? { useElevation: true } : {};
 }
 
@@ -211,14 +212,10 @@ function printZmanim(date: CivilDate, flags: Record<string, string | true>): voi
   const loc = place(flags);
   if (!loc) throw new Error('zmanim needs a place: --city or --lat/--lon');
   const locale = LOCALES[str(flags, 'locale') ?? 'ashkenazi'] ?? ashkenazi;
-  const z = new ZmanimCalendar(loc, date, { ...zmanimOptions(flags), ...(loc.candleLighting ? { candleLightingMinutes: loc.candleLighting.minutes } : {}) });
-  const methods = Object.getOwnPropertyNames(ZmanimCalendar.prototype).filter((n) => /^(alos|misheyakir|sunrise|sofZman|chatzos|mincha|plag|sunset|beinHashmashos|tzeis|candle|havdala)/.test(n));
-  const shown = flags.all ? methods : ['alos72', 'alos16Point1', 'misheyakir11', 'sunrise', 'sofZmanShemaMga72', 'sofZmanShemaGra', 'sofZmanTefillaGra', 'chatzos', 'minchaGedolaGreater', 'minchaKetanaGra', 'plagHaminchaGra', 'sunset', 'tzeis8Point5', 'tzeis72'];
-  const out: ReturnType<Zman['toJSON']>[] = [];
-  for (const m of shown) {
-    const f = (z as unknown as Record<string, () => Zman>)[m];
-    if (typeof f === 'function') out.push(f.call(z).toJSON());
-  }
+  const day = new Zmanim(loc, {}, { ...zmanimOptions(flags), ...(loc.candleLighting ? { candleLightingMinutes: loc.candleLighting.minutes } : {}) }).on(date);
+  const all = (Object.keys(ZMANIM) as ZmanId[]).filter((id) => 'at' in ZMANIM[id]);
+  const shown: readonly ZmanId[] = flags.all ? all : ['alos-72', 'alos-16.1', 'misheyakir-11', 'sunrise', 'sof-zman-shema-mga-72', 'sof-zman-shema-gra', 'sof-zman-tefilla-gra', 'chatzos', 'mincha-gedola-greater', 'mincha-ketana-gra', 'plag-hamincha-gra', 'sunset', 'tzeis-8.5', 'tzeis-72'];
+  const out: ReturnType<Zman['toJSON']>[] = shown.map((id) => day.get(id).toJSON());
   if (flags.json) return line(JSON.stringify(out, null, 2));
   line(`Zmanim for ${formatIsoDate(date)} (${typeof loc.timeZone === 'string' ? loc.timeZone : loc.timeZone.name})`);
   const note = elevationNote(loc, flags);

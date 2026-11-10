@@ -1,7 +1,7 @@
 // React Native (Expo or bare). Hermes runs Luach; see the note on time zones below.
 import { useMemo } from 'react';
 import { FlatList, Text, View } from 'react-native';
-import { dayInfo, ashkenazi, fixedOffsetZone, type GeoLocation } from 'luach';
+import { Zmanim, dayInfo, ashkenazi, fixedOffsetZone, type GeoLocation } from 'luach';
 
 /**
  * Time zones: on current React Native, Hermes ships Intl with time-zone support, so pass the
@@ -10,7 +10,8 @@ import { dayInfo, ashkenazi, fixedOffsetZone, type GeoLocation } from 'luach';
  * not across a DST change.
  */
 export function DayScreen({ place }: { place: GeoLocation }) {
-  const info = useMemo(() => dayInfo(new Date(), { location: place, locale: ashkenazi }), [place]);
+  // The civil day at the place, not on the phone's clock.
+  const info = useMemo(() => dayInfo(new Zmanim(place).at(new Date()).date, { location: place, locale: ashkenazi }), [place]);
   return (
     <View accessible accessibilityLabel={`${info.weekdayName}, ${info.hebrew.formatted}`}>
       <Text style={{ fontSize: 22 }}>{info.hebrew.formatted}</Text>

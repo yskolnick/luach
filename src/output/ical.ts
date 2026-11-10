@@ -18,16 +18,21 @@ import { dafYomi } from '../learning/bavli.js';
 import { mishnaYomis, nachYomi, rambamOneChapter, rambamThreeChapters, yerushalmiYomi } from '../learning/cycles.js';
 import type { DayLocation } from '../day/day-info.js';
 import { dayInfo } from '../day/day-info.js';
-import { ZmanimCalendar } from '../zmanim/calendar.js';
 import { zmanLabel } from '../zmanim/opinions.js';
-import { zmanMethod } from '../zmanim/methods.js';
+import { zmanimFor } from '../zmanim/day.js';
+import type { ZmanId } from '../zmanim/opinions.js';
+import type { DaySlot, Opinions, ZmanimSettings } from '../zmanim/zmanim.js';
 import { gematriya } from '../text/gematriya.js';
+
+const DAY_SLOTS: readonly string[] = ['alos', 'misheyakir', 'sunrise', 'shema', 'tefilla', 'chatzos', 'minchaGedola', 'minchaKetana', 'plag', 'sunset', 'tzeis'];
 
 /** Learning cycles that can be included. */
 export type IcalLearning = 'dafYomi' | 'yerushalmiYomi' | 'mishnaYomis' | 'rambamOneChapter' | 'rambamThreeChapters' | 'nachYomi';
 
 /** Options for {@link toICalendar}. */
-export interface ICalOptions {
+export interface ICalOptions extends ZmanimSettings {
+  /** The user's opinions, for the zmanim, havdala and fasts. Anything left out uses `Zmanim.defaults`. */
+  opinions?: Opinions;
   /** Calendar name (X-WR-CALNAME). Default "Luach". */
   name?: string;
   /** Names. Default Hebrew. */
@@ -48,10 +53,10 @@ export interface ICalOptions {
   /** Candle lighting and havdala (needs `location`). Default true when a location is given. */
   candleLighting?: boolean;
   /**
-   * Zmanim to add as timed events, by {@link ZmanimCalendar} method name (e.g. `sofZmanShemaGra`).
-   * Default none. A name that is not a zman method throws a RangeError.
+   * Zmanim to add as timed events: slots of the day, each by the user's opinion (`'shema'`), or
+   * zman ids (`'sof-zman-shema-gra'`). Default none. An unknown name throws a RangeError.
    */
-  zmanim?: readonly string[];
+  zmanim?: readonly (DaySlot | ZmanId)[];
   /** Timestamp for DTSTAMP. Default now. Pass a fixed value for reproducible files. An invalid Date throws a RangeError. */
   now?: Date;
 }
@@ -111,9 +116,16 @@ export function toICalendar(start: CivilDate | HebrewDate, end: CivilDate | Hebr
   const israel = israelFor(options.israel, options.location);
   const now = options.now ?? new Date();
   if (!(now instanceof Date) || !Number.isFinite(now.getTime())) throw new RangeError('options.now is not a valid Date');
-  const zmanMethods = options.location
-    ? (options.zmanim ?? []).map((m) => zmanMethod(new ZmanimCalendar(options.location!, h0), m))
-    : [];
+  const zmanim = options.location ? zmanimFor(options.location, { ...options, israel }) : null;
+  const wanted = options.zmanim ?? [];
+  // Check the names once, up front, so a typo fails before any work is done.
+  if (zmanim) {
+    const first = zmanim.on(h0);
+    for (const w of wanted) {
+      if (DAY_SLOTS.includes(w)) first.slot(w as DaySlot);
+      else first.get(w as ZmanId);
+    }
+  }
   const items: Item[] = [];
   const rtl = locale.dir === 'rtl';
 
@@ -141,16 +153,17 @@ export function toICalendar(start: CivilDate | HebrewDate, end: CivilDate | Hebr
       }
       if (text) items.push({ uid: `${d.toString()}-${l}`, summary: text, categories: 'learning', allDay: c });
     }
-    if (options.location) {
-      const z = new ZmanimCalendar(options.location, d);
+    if (options.location && zmanim) {
+      const day = zmanim.on(d);
       if (options.candleLighting !== false) {
-        const info = dayInfo(d, { location: options.location, israel, locale });
+        const { opinions, useElevation, candleLightingMinutes, ateretTorahMinutes, highLatitudeFallback, algorithm } = options;
+        const info = dayInfo(d, { opinions, useElevation, candleLightingMinutes, ateretTorahMinutes, highLatitudeFallback, algorithm, location: options.location, israel, locale, zmanim: [] });
         if (info.candleLighting?.time) items.push({ uid: `${d.toString()}-candles`, summary: rtl ? 'הדלקת נרות' : 'Candle lighting', description: `${info.candleLighting.opinion}. ${info.candleLighting.source}`, categories: 'candle-lighting', at: new Date(info.candleLighting.time) });
         if (info.havdala?.time) items.push({ uid: `${d.toString()}-havdala`, summary: info.havdala.id === 'havdala' ? (rtl ? 'הבדלה' : 'Havdala') : zmanLabel(info.havdala.id, locale), description: `${info.havdala.opinion}. ${info.havdala.source}`, categories: 'havdala', at: new Date(info.havdala.time) });
         if (info.shabbosEnds?.time) items.push({ uid: `${d.toString()}-shabbos-ends`, summary: zmanLabel(info.shabbosEnds.id, locale), description: `${info.shabbosEnds.opinion}. ${info.shabbosEnds.source}`, categories: 'shabbos-ends', at: new Date(info.shabbosEnds.time) });
       }
-      for (const f of zmanMethods) {
-        const zm = f.call(z);
+      for (const w of wanted) {
+        const zm = DAY_SLOTS.includes(w) ? day.slot(w as DaySlot) : day.get(w as ZmanId);
         if (zm.time) items.push({ uid: `${d.toString()}-${zm.id}`, summary: zm.opinion, description: zm.source, categories: 'zman', at: zm.time });
       }
     }

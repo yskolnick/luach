@@ -437,8 +437,8 @@ in the code is on [Sources](../sources.md).
 ### Rounding {#rounding}
 
 - **Status:** Default.
-- **What it does:** times are rounded to the minute: earliest times up, deadlines down. It
-  can be turned off.
+- **What it does:** times are rounded to the minute: earliest times up, deadlines down. The
+  exact time is always there as well (`exact`), and `explain()` says which way a time was rounded.
 - **Why:** a rounded time should never be less stringent than the exact one.
 - **Sources:** *no source recorded* (a safety convention).
 - **Confidence:** High that it is the safer direction.

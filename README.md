@@ -47,18 +47,36 @@ HebrewDate.fromGregorian(2026, 10, 21, { afterSunset: true }); // 11 Cheshvan
 ### Zmanim
 
 ```ts
-import { ZmanimCalendar, getPlace } from 'luach';
+import { Zmanim, getPlace } from 'luach';
 
-const zmanim = new ZmanimCalendar(getPlace('jerusalem')!, { year: 2026, month: 10, day: 21 });
-const shema = zmanim.sofZmanShemaGra();
-shema.localTime(); // "09:35" (a deadline, so rounded down)
-shema.opinion;     // "Latest Shema, Gra: 3 seasonal hours of a sunrise-to-sunset day"
-shema.source;      // "Shulchan Aruch OC 58:1; Mishna Berura 58:4"
+// A place and the opinions its user follows. Anything left out uses a documented default.
+const zmanim = new Zmanim(getPlace('jerusalem')!, { shema: 'sof-zman-shema-mga-72' });
+const day = zmanim.on({ year: 2026, month: 10, day: 21 }); // or zmanim.at(new Date())
+
+const shema = day.slot('shema'); // the user's opinion
+shema.localTime(); // "08:59" (a deadline, so rounded down)
+shema.opinion;     // "Latest Shema, Magen Avraham: 3 seasonal hours of a day from alos to tzeis, 72 fixed minutes"
+shema.source;      // "Magen Avraham OC 58:1, 233:3; Mishna Berura 58:4; …"
+
+day.get('sof-zman-shema-gra').localTime(); // "09:35": any opinion, by id
+zmanim.next(new Date());                   // the next of the day's times, across midnight
 ```
 
-Every opinion has its own method (`sofZmanShemaMga72`, `tzeis8Point5`, `tzeisRabbeinuTam`
-and many more). When the sun never reaches an angle, the method returns `null` with a reason
-rather than a guessed time.
+Every zman explains how it was calculated, step by step, with the local time of each step:
+
+```ts
+shema.explain().text;
+// "Sunrise at sea level: 06:46:33. 72 minutes before that: 05:34:33. Sunset at sea level:
+//  18:00:30. 72 minutes after that: 19:12:30. 3 seasonal hours into the day from 05:34:33 to
+//  19:12:30 (Magen Avraham: a twelfth of alos 72 to tzeis 72; an hour is 68.2 min today):
+//  08:59:02. Shown as 08:59: rounded down, because it is a deadline."
+```
+
+Every opinion has an id (`sof-zman-shema-gra`, `tzeis-8.5`, `tzeis-rabbeinu-tam` and many more);
+`Zmanim.choices('tzeis')` lists the ones for a settings screen. `zmanim.at(instant)` gives the
+day *at the place*, never on the device's clock. `time` is rounded on the safe side, so it can be
+displayed by cutting off the seconds; `exact` holds the exact instant. When the sun never reaches
+an angle, the time is `null` with a reason rather than a guessed time.
 
 ### Right-to-left text
 

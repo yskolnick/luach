@@ -4,14 +4,14 @@ Luach ships a small table of about 200 cities and, as a separate import, every c
 15,000+ people (GeoNames, CC-BY 4.0). It never looks anything up over the network.
 
 ```ts
-import { searchPlaces, getPlace, ZmanimCalendar } from 'luach';
+import { searchPlaces, getPlace, Zmanim } from 'luach';
 import { fullPlaces } from 'luach/places-full'; // ~900 KB gzip: import only if you need it
 
 searchPlaces('Bene Beraq')[0].id;        // "bnei-brak"
 searchPlaces('בני ברק')[0].name;           // "Bnei Brak"
 searchPlaces('Manchester', { places: fullPlaces() });
 
-const z = new ZmanimCalendar(getPlace('lakewood')!, { year: 2027, month: 3, day: 14 });
+const z = new Zmanim(getPlace('lakewood')!).on({ year: 2027, month: 3, day: 14 });
 ```
 
 ## Your user's own location
@@ -28,7 +28,7 @@ navigator.geolocation.getCurrentPosition((pos) => {
     elevation: pos.coords.altitude ?? 0,
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
   };
-  const z = new ZmanimCalendar(here, HebrewDate.today());
+  const today = new Zmanim(here).at(new Date()); // the day at that place
 });
 
 // React Native (Expo)

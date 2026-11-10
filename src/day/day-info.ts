@@ -24,11 +24,11 @@ import { parshaFor, parshaName, type ParshaId } from '../parsha/parsha.js';
 import { haftaraFor, type HaftaraMinhag } from '../parsha/haftara.js';
 import { dafYomi } from '../learning/bavli.js';
 import { amudYomi, mishnaYomis, nachYomi, rambamOneChapter, rambamThreeChapters, yerushalmiYomi } from '../learning/cycles.js';
-import { ZmanimCalendar, type GeoLocation, type ZmanimOptions } from '../zmanim/calendar.js';
-import { fastTimes } from '../zmanim/day.js';
-import { ZMANIM } from '../zmanim/opinions.js';
-import { zmanMethod } from '../zmanim/methods.js';
-import { Zman } from '../zmanim/zman.js';
+import type { GeoLocation } from '../zmanim/calendar.js';
+import { fastTimes, zmanimFor } from '../zmanim/day.js';
+import { zmanDefinition, type ZmanId } from '../zmanim/opinions.js';
+import type { Zman } from '../zmanim/zman.js';
+import type { DaySlot, Opinions, ZmanimDay, ZmanimSettings } from '../zmanim/zmanim.js';
 
 /** `$id` of the JSON Schema for {@link DayInfo}. */
 export const DAY_INFO_SCHEMA_ID = 'https://raw.githubusercontent.com/yskolnick/luach/main/schema/day.schema.json';
@@ -43,7 +43,9 @@ export type DayLocation = GeoLocation & {
 };
 
 /** Options for {@link dayInfo}. */
-export interface DayInfoOptions extends ZmanimOptions {
+export interface DayInfoOptions extends ZmanimSettings {
+  /** The user's opinions: the zmanim, havdala, the fast's start and end. Anything left out uses `Zmanim.defaults`. */
+  opinions?: Opinions;
   /** Where. Without it there are no zmanim. */
   location?: DayLocation;
   /**
@@ -60,17 +62,18 @@ export interface DayInfoOptions extends ZmanimOptions {
   /** Tefillah customs. */
   tefillah?: Omit<TefillahOptions, 'israel'>;
   /**
-   * Which zmanim to include, by method name of {@link ZmanimCalendar} (e.g. "sofZmanShemaGra").
-   * Default: a common set (see {@link DEFAULT_DAY_ZMANIM}); every one is labelled with its opinion.
+   * Which zmanim to include: slots of the day, each by the user's opinion (`'shema'`), or
+   * zman ids (`'sof-zman-shema-mga-72'`). Default: a common set (see {@link DEFAULT_DAY_ZMANIM});
+   * every one is labelled with its opinion.
    */
-  zmanim?: readonly string[];
+  zmanim?: readonly (DaySlot | ZmanId)[];
 }
 
 /** The default zmanim in a day view: a widely used set, not a ruling. */
 export const DEFAULT_DAY_ZMANIM = /*#__PURE__*/ deepFreeze([
-  'alos72', 'alos16Point1', 'misheyakir11', 'sunrise', 'sofZmanShemaMga72', 'sofZmanShemaGra', 'sofZmanTefillaGra',
-  'chatzos', 'minchaGedolaGreater', 'minchaKetanaGra', 'plagHaminchaGra', 'sunset', 'tzeis8Point5', 'tzeisRabbeinuTam',
-] as const);
+  'alos-72', 'alos-16.1', 'misheyakir-11', 'sunrise', 'sof-zman-shema-mga-72', 'sof-zman-shema-gra', 'sof-zman-tefilla-gra',
+  'chatzos', 'mincha-gedola-greater', 'mincha-ketana-gra', 'plag-hamincha-gra', 'sunset', 'tzeis-8.5', 'tzeis-rabbeinu-tam',
+] as const satisfies readonly ZmanId[]);
 
 /** The JSON for one day. */
 export interface DayInfo {
@@ -107,20 +110,13 @@ export interface DayInfo {
   readonly fastBeginsTonight: { readonly id: string; readonly begins: ReturnType<Zman['toJSON']> } | null;
 }
 
-/** A Zman at the time of `base`, under another id from the opinions table. */
-function relabel(id: string, base: Zman): Zman {
-  const def = ZMANIM[id]!;
-  return new Zman({
-    id,
-    time: base.time,
-    opinion: def.opinion,
-    source: `${def.source}; time: ${base.opinion}`,
-    rounded: base.rounded,
-    timeZone: base.timeZone,
-    ...(base.reason ? { reason: base.reason } : {}),
-    ...(base.fallback ? { fallback: base.fallback } : {}),
-  });
+/** The user's `from` opinion as the catalogue entry `id` (havdala at the user's tzeis, …). */
+function as(day: ZmanimDay, id: string, from: ZmanId): Zman {
+  const def = zmanDefinition(id)!;
+  return day.labelled(id, from, def.opinion, `${def.source}; time: ${day.get(from).opinion}`);
 }
+
+const DAY_SLOTS: readonly string[] = ['alos', 'misheyakir', 'sunrise', 'shema', 'tefilla', 'chatzos', 'minchaGedola', 'minchaKetana', 'plag', 'sunset', 'tzeis'];
 
 function holy(d: HebrewDate, opts: HolidayOptions): boolean {
   return d.isShabbos || holidaysOn(d, opts).some((e) => e.flags.melachaForbidden);
@@ -147,9 +143,11 @@ export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = 
   let fast: DayInfo['fast'] = null;
   let fastBeginsTonight: DayInfo['fastBeginsTonight'] = null;
   if (options.location) {
-    const z = new ZmanimCalendar(options.location, h, options);
+    const zopts = { ...options, ...hopts };
+    const z = zmanimFor(options.location, zopts);
+    const day = z.on(h);
     const names = options.zmanim ?? DEFAULT_DAY_ZMANIM;
-    zmanim = names.map((n) => zmanMethod(z, n).call(z).toJSON());
+    zmanim = names.map((n) => (DAY_SLOTS.includes(n) ? day.slot(n as DaySlot) : day.get(n as ZmanId)).toJSON());
     const today = holy(h, hopts);
     // After 29 Elul 9999 (the last supported day) comes Rosh Hashana 10000, always Yom Tov.
     const tomorrow = h.epochDays === MAX_DAYS || holy(h.next(), hopts);
@@ -162,23 +160,25 @@ export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = 
     const custom = options.candleLightingMinutes === undefined ? options.location.candleLighting : undefined;
     if (beforeSunset) {
       candleLighting = custom
-        ? { ...z.candleLighting(custom.minutes).toJSON(), opinion: `Candle lighting ${custom.minutes} minutes before sunset, ${custom.custom}`, source: `${custom.source}; Shulchan Aruch OC 261:2 (tosefes Shabbos)` }
-        : z.candleLighting().toJSON();
+        ? zmanimFor(options.location, { ...zopts, candleLightingMinutes: custom.minutes }).on(h)
+            .labelled('candle-lighting', 'candle-lighting', `Candle lighting ${custom.minutes} minutes before sunset, ${custom.custom}`, `${custom.source}; Shulchan Aruch OC 261:2 (tosefes Shabbos)`)
+            .toJSON()
+        : day.get('candle-lighting').toJSON();
     }
-    else if (tomorrow && today) candleLighting = z.candleLightingSecondNight().toJSON();
-    const ft = fastTimes(h, options.location, { ...options, ...hopts });
+    else if (tomorrow && today) candleLighting = as(day, 'candle-lighting-second-night', z.opinions.havdala).toJSON();
+    const ft = fastTimes(h, options.location, zopts);
     if (ft) fast = { id: ft.fast.id, begins: ft.begins.toJSON(), ends: ft.ends.toJSON() };
-    const next = h.epochDays < MAX_DAYS ? fastTimes(h.next(), options.location, { ...options, ...hopts }) : null;
+    const next = h.epochDays < MAX_DAYS ? fastTimes(h.next(), options.location, zopts) : null;
     if (next && next.fast.flags.fast === 'major') fastBeginsTonight = { id: next.fast.id, begins: next.begins.toJSON() };
     // Tisha B'Av postponed from Shabbos to Sunday: no havdala over a cup on Motzaei Shabbos;
     // it is said over a cup, without candle or spices, when the fast ends (SA OC 556:1).
     // Melacha after Shabbos needs "HaMavdil bein kodesh lechol" (MB 556:2; SA OC 299:10).
     const deferred = next?.fast.id === 'tisha-bav' && h.isShabbos;
     if (today && !tomorrow) {
-      if (deferred) shabbosEnds = relabel('shabbos-ends-no-havdala', z.havdala()).toJSON();
-      else havdala = z.havdala().toJSON();
+      if (deferred) shabbosEnds = as(day, 'shabbos-ends-no-havdala', z.opinions.havdala).toJSON();
+      else havdala = as(day, 'havdala', z.opinions.havdala).toJSON();
     }
-    if (ft && ft.fast.id === 'tisha-bav' && h.prev().isShabbos) havdala = relabel('havdala-after-fast', ft.ends).toJSON();
+    if (ft && ft.fast.id === 'tisha-bav' && h.prev().isShabbos) havdala = as(day, 'havdala-after-fast', z.opinions.fastEnds).toJSON();
   }
 
   return {

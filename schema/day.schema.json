@@ -47,7 +47,16 @@
             "string",
             "null"
           ],
-          "format": "date-time"
+          "format": "date-time",
+          "description": "The time, rounded to the minute on the safe side (earliest times up, deadlines down): safe to display by truncating. Null when it does not occur (see reason)."
+        },
+        "exact": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time",
+          "description": "The exact instant, to the millisecond on the safe side. For calculation, not display."
         },
         "local": {
           "type": [
@@ -84,6 +93,17 @@
         },
         "fallback": {
           "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "earliest",
+            "deadline"
+          ],
+          "description": "An earliest time (rounded up for display) or a deadline (rounded down)."
+        },
+        "slot": {
+          "type": "string",
+          "description": "The kind of time: alos, shema, tzeis, candleLighting, havdala, fast and so on."
         }
       },
       "additionalProperties": false

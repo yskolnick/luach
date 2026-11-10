@@ -35,7 +35,7 @@ info.parsha?.name;           // "לך לך"
 | Holidays, fasts, Omer, Tachanun… | `holidaysForYear`, `holidaysOn`, `omerText`, `tefillahOn` | [Holidays](./holidays.md) |
 | Parsha and haftara | `parshaFor`, `haftaraFor` | [Parsha](./parsha.md) |
 | Daf Yomi and other cycles | `dafYomi`, `mishnaYomis`, … | [Learning](./learning.md) |
-| Zmanim | `ZmanimCalendar` | [Zmanim](./zmanim.md) |
+| Zmanim, by the user's opinions | `Zmanim` | [Zmanim](./zmanim.md) |
 | Cities, Israel or not | `searchPlaces`, `isInIsrael` | [Places](./places.md) |
 | JSON, iCal, the command line | `dayInfo`, `toICalendar`, `luach` | [Outputs](./outputs.md) |
 | Right-to-left text | `isolate` option | [RTL](./rtl.md) |

@@ -1,0 +1,41 @@
+name: Release
+
+# Tags a version that is on npm and makes its GitHub release, with that version's section of
+# CHANGELOG.md as the notes. Runs only in the public repository.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'The version on npm (e.g. 0.2.0)'
+        required: true
+      ref:
+        description: 'The commit or branch to tag'
+        required: true
+        default: main
+
+permissions:
+  contents: write # to create the tag and the release
+
+jobs:
+  release:
+    if: github.repository == 'yskolnick/luach'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+      - name: The version is on npm
+        run: '[ "$(npm view "luach@${{ inputs.version }}" version)" = "${{ inputs.version }}" ]'
+      - name: Release notes from CHANGELOG.md
+        run: |
+          awk -v v="## ${{ inputs.version }} " 'index($0, v) == 1 { f = 1; next } /^## / { if (f) exit } f' CHANGELOG.md > notes.md
+          [ -s notes.md ]
+      - name: Tag and release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v${{ inputs.version }}" \
+            --target "$(git rev-parse HEAD)" \
+            --title "${{ inputs.version }}" \
+            --notes-file notes.md

@@ -5,6 +5,8 @@ All notable changes for users of the `luach` package. This project follows
 
 ## Unreleased
 
+## 0.2.0 — 2026-11-10
+
 This release replaces the zmanim interface. Every time Luach computes is unchanged.
 
 ### Added

@@ -9,6 +9,7 @@ Small, copyable programs. None of this is shipped in the npm package.
 | `react/` | A React component showing the day |
 | `react-native/` | A React Native component (Hermes-safe; see the note on time zones) |
 | `cli/` | Using the `luach` command |
-| `server/` | Your own JSON and iCal API with Node's built-in `http` module |
+| `server/` | Your own JSON and iCal API with Node's built-in `http` module, including `/now` |
+| `home-assistant/` | Home Assistant sensors (melacha in effect, candle lighting, havdala, Omer) from `/now` |
 
 Ask your rav. Luach calculates; it does not rule.

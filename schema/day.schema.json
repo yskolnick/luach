@@ -12,6 +12,7 @@
     "hebrew",
     "israel",
     "events",
+    "erev",
     "parsha",
     "haftara",
     "omer",
@@ -62,7 +63,8 @@
           "type": [
             "string",
             "null"
-          ]
+          ],
+          "description": "The wall-clock time only (HH:MM) at the location, with no date: a time can fall on a different civil day from the one asked about. Compare time (the instant), not local."
         },
         "timeZone": {
           "type": "string"
@@ -256,6 +258,30 @@
         }
       }
     },
+    "erev": {
+      "description": "The eve of Shabbos and/or of a Yom Tov, as a fact about this civil day: the day is not itself Shabbos or a Yom Tov on which melacha is forbidden (Yom Kippur counts), and the next day is Shabbos (erev-shabbos) and/or such a Yom Tov for the day's Israel or diaspora setting (erev-yom-tov). Both can apply, erev-shabbos first. Usually empty. A day that is itself Shabbos or Yom Tov is always empty, even when another holy day follows: that case is left out. The eve of Yom Kippur has erev-yom-kippur only, never erev-yom-tov (the sources name that day \"Erev Yom Kippur\"), named as the day's own event is; erev-shabbos still comes first when Yom Kippur falls on Shabbos. It says nothing about candle lighting (see candleLighting); name is the everyday word in the locale asked for.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "enum": [
+              "erev-shabbos",
+              "erev-yom-tov",
+              "erev-yom-kippur"
+            ]
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "parsha": {
       "type": [
         "object",
@@ -375,61 +401,69 @@
       }
     },
     "learning": {
-      "type": "object",
-      "required": [
-        "dafYomi",
-        "yerushalmiYomi",
-        "amudYomi",
-        "mishnaYomis",
-        "rambamOneChapter",
-        "rambamThreeChapters",
-        "nachYomi"
-      ],
-      "additionalProperties": false,
-      "properties": {
-        "dafYomi": {
-          "type": [
-            "string",
-            "null"
-          ]
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "dafYomi",
+            "yerushalmiYomi",
+            "amudYomi",
+            "mishnaYomis",
+            "rambamOneChapter",
+            "rambamThreeChapters",
+            "nachYomi"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "dafYomi": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "yerushalmiYomi": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "amudYomi": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "mishnaYomis": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "rambamOneChapter": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "rambamThreeChapters": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "nachYomi": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
         },
-        "yerushalmiYomi": {
-          "type": [
-            "string",
-            "null"
-          ]
-        },
-        "amudYomi": {
-          "type": [
-            "string",
-            "null"
-          ]
-        },
-        "mishnaYomis": {
-          "type": [
-            "string",
-            "null"
-          ]
-        },
-        "rambamOneChapter": {
-          "type": [
-            "string",
-            "null"
-          ]
-        },
-        "rambamThreeChapters": {
-          "type": [
-            "string",
-            "null"
-          ]
-        },
-        "nachYomi": {
-          "type": [
-            "string",
-            "null"
-          ]
+        {
+          "type": "null"
         }
-      }
+      ],
+      "description": "The daily learning (daf yomi, Yerushalmi, amud yomi, mishna yomis, Rambam, Nach yomi), or null. It is included only when the caller passes the learning plug-in: dayInfo(date, { learning: dayLearning }), with dayLearning from 'luach/learning'."
     },
     "location": {
       "type": [
@@ -442,6 +476,7 @@
         "elevation",
         "timeZone"
       ],
+      "description": "The place, for display. It does not carry the place's own candle-lighting custom or its id: to compute for the same place again, keep the Place object (or its id) you used, not this object.",
       "additionalProperties": false,
       "properties": {
         "name": {

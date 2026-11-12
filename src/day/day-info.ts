@@ -1,6 +1,6 @@
 /**
  * Everything about one day, as plain JSON: an app can render a whole day from one call.
- * The shape is described by `docs/schema/day.schema.json` (also exported as
+ * The shape is described by `schema/day.schema.json` (also exported as
  * {@link DAY_INFO_SCHEMA_ID}).
  *
  * @packageDocumentation
@@ -11,36 +11,29 @@ import { israelFor } from '../places/israel.js';
 import { HebrewDate } from '../calendar/hebrew-date.js';
 import { MAX_DAYS } from '../calendar/year.js';
 import { formatIsoDate, type CivilDate } from '../time/civil.js';
-import { formatHebrewDate, monthName, weekdayName } from '../text/format.js';
+import { weekdayName } from '../text/format.js';
 import { he } from '../locales/he.js';
-import { gematriya } from '../text/gematriya.js';
+import { wordName } from '../locales/terms.js';
 import type { Locale } from '../locales/types.js';
 import { holidaysOn } from '../holidays/holidays.js';
-import { holidayName } from '../holidays/names.js';
-import type { HolidayFlags, HolidayOptions } from '../holidays/types.js';
+import type { HolidayOptions } from '../holidays/types.js';
 import { omerDay, omerSefirah, omerText, omerTextEnglish } from '../holidays/omer.js';
 import { tefillahOn, type TefillahDay, type TefillahOptions } from '../holidays/tefillah.js';
 import { parshaFor, parshaName, type ParshaId } from '../parsha/parsha.js';
 import { haftaraFor, type HaftaraMinhag } from '../parsha/haftara.js';
-import { dafYomi } from '../learning/bavli.js';
-import { amudYomi, mishnaYomis, nachYomi, rambamOneChapter, rambamThreeChapters, yerushalmiYomi } from '../learning/cycles.js';
-import type { GeoLocation } from '../zmanim/calendar.js';
+import type { DayLocation } from '../zmanim/day-location.js';
+import { eveningOf } from './evening.js';
+import { holidayName } from '../holidays/names.js';
+import { eventJson, hebrewDateJson, locationJson, type EventJson, type HebrewDateJson, type LocationJson } from './json.js';
 import { fastTimes, zmanimFor } from '../zmanim/day.js';
-import { zmanDefinition, type ZmanId } from '../zmanim/opinions.js';
+import { type ZmanId } from '../zmanim/opinions.js';
 import type { Zman } from '../zmanim/zman.js';
-import type { DaySlot, Opinions, ZmanimDay, ZmanimSettings } from '../zmanim/zmanim.js';
+import type { DaySlot, Opinions, ZmanimSettings } from '../zmanim/zmanim.js';
 
 /** `$id` of the JSON Schema for {@link DayInfo}. */
 export const DAY_INFO_SCHEMA_ID = 'https://raw.githubusercontent.com/yskolnick/luach/main/schema/day.schema.json';
 
-/**
- * A place for {@link dayInfo}: a GeoLocation, optionally with a name, an Israel flag and a
- * documented local candle-lighting custom (as on a built-in `Place`).
- */
-export type DayLocation = GeoLocation & {
-  readonly israel?: boolean;
-  readonly candleLighting?: { readonly minutes: number; readonly custom: string; readonly source: string };
-};
+export type { DayLocation };
 
 /** Options for {@link dayInfo}. */
 export interface DayInfoOptions extends ZmanimSettings {
@@ -67,7 +60,19 @@ export interface DayInfoOptions extends ZmanimSettings {
    * every one is labelled with its opinion.
    */
   zmanim?: readonly (DaySlot | ZmanId)[];
+  /**
+   * The learning of the day (daf yomi and the other cycles): pass `dayLearning` from
+   * `luach/learning`. Without it the day's `learning` is null, and the learning tables are not
+   * part of your bundle.
+   */
+  learning?: DayLearningSource;
 }
+
+/** The plug-in that fills a day's `learning`: `dayLearning` from `luach/learning`. */
+export type DayLearningSource = (date: HebrewDate, locale: Locale) => DayLearning;
+
+/** A day's learning, cycle by cycle: the name of the portion, or null when the cycle is not running that day. */
+export type DayLearning = Readonly<Record<string, string | null>>;
 
 /** The default zmanim in a day view: a widely used set, not a ruling. */
 export const DEFAULT_DAY_ZMANIM = /*#__PURE__*/ deepFreeze([
@@ -81,17 +86,31 @@ export interface DayInfo {
   readonly gregorian: string;
   readonly weekday: number;
   readonly weekdayName: string;
-  readonly hebrew: { readonly year: number; readonly month: number; readonly day: number; readonly monthName: string; readonly formatted: string };
+  readonly hebrew: HebrewDateJson;
   readonly israel: boolean;
-  readonly events: readonly { id: string; name: string; flags: HolidayFlags; day?: number; candlesTonight?: number; moved?: boolean }[];
+  readonly events: readonly EventJson[];
+  /**
+   * The eve of Shabbos and/or of a Yom Tov, as a fact about this civil day: the day is not itself
+   * Shabbos or a Yom Tov on which melacha is forbidden (Yom Kippur counts), and the next day is
+   * Shabbos (`erev-shabbos`) and/or such a Yom Tov for the day's Israel or diaspora setting
+   * (`erev-yom-tov`). Both can apply, `erev-shabbos` first (a Friday before a Yom Tov that falls
+   * on Shabbos). Usually empty. A day that is itself Shabbos or Yom Tov is always empty, even when
+   * another holy day follows. It is not a claim about an instant: it says nothing about candle
+   * lighting, which `candleLighting` gives. `name` is the `termName` in the caller's locale.
+   * The eve of Yom Kippur has `erev-yom-kippur` only, never `erev-yom-tov` (the sources name that
+   * day "Erev Yom Kippur"), named as the day's own event is; `erev-shabbos` still comes first when
+   * Yom Kippur falls on Shabbos.
+   */
+  readonly erev: readonly { readonly id: 'erev-shabbos' | 'erev-yom-tov' | 'erev-yom-kippur'; readonly name: string }[];
   /** This week's reading (the Shabbos on or after this day). */
   /** The coming Shabbos's reading; null only in the last days of year 9999 (that Shabbos is in year 10000). */
   readonly parsha: { readonly date: string; readonly ids: readonly ParshaId[] | null; readonly name: string | null; readonly holiday?: string } | null;
   readonly haftara: { readonly key: string; readonly reference: string | null } | null;
   readonly omer: { readonly day: number; readonly text: string; readonly textEnglish: string; readonly sefirah: string } | null;
   readonly tefillah: TefillahDay;
-  readonly learning: Readonly<Record<string, string | null>>;
-  readonly location: { readonly name?: string; readonly latitude: number; readonly longitude: number; readonly elevation: number; readonly timeZone: string } | null;
+  /** The learning of the day when `learning: dayLearning` was passed; otherwise null. */
+  readonly learning: DayLearning | null;
+  readonly location: LocationJson | null;
   readonly zmanim: readonly ReturnType<Zman['toJSON']>[];
   readonly candleLighting: ReturnType<Zman['toJSON']> | null;
   /**
@@ -110,17 +129,9 @@ export interface DayInfo {
   readonly fastBeginsTonight: { readonly id: string; readonly begins: ReturnType<Zman['toJSON']> } | null;
 }
 
-/** The user's `from` opinion as the catalogue entry `id` (havdala at the user's tzeis, …). */
-function as(day: ZmanimDay, id: string, from: ZmanId): Zman {
-  const def = zmanDefinition(id)!;
-  return day.labelled(id, from, def.opinion, `${def.source}; time: ${day.get(from).opinion}`);
-}
-
 const DAY_SLOTS: readonly string[] = ['alos', 'misheyakir', 'sunrise', 'shema', 'tefilla', 'chatzos', 'minchaGedola', 'minchaKetana', 'plag', 'sunset', 'tzeis'];
 
-function holy(d: HebrewDate, opts: HolidayOptions): boolean {
-  return d.isShabbos || holidaysOn(d, opts).some((e) => e.flags.melachaForbidden);
-}
+const HOLIDAY_KEYS = ['modernIsraeli', 'israeliCommemorations', 'behab', 'yomKippurKatan', 'yomKippurKatanOnFriday', 'yomKippurKatanCheshvan', 'shovavim', 'shabbosMevorchim'] as const;
 
 /** Everything about `date` (a civil date or a Hebrew date's daytime). */
 export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = {}): DayInfo {
@@ -128,12 +139,28 @@ export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = 
   const civil = h.toCivil();
   const locale = options.locale ?? he;
   const israel = israelFor(options.israel, options.location);
-  const hopts: HolidayOptions = { ...options.holidays, israel };
+  // The holiday options are `options.holidays`; the same keys given at the top level (as the
+  // functions that take ZmanimOptions take them) are read too, so the day's events and its fast
+  // can never follow different options.
+  const flat: Record<string, unknown> = {};
+  for (const k of HOLIDAY_KEYS) if ((options as Record<string, unknown>)[k] !== undefined) flat[k] = (options as Record<string, unknown>)[k];
+  const hopts: HolidayOptions = { ...flat, ...options.holidays, israel };
   const events = holidaysOn(h, hopts);
   const reading = parshaFor(h, { israel });
   const haft = haftaraFor(h, { israel, minhag: options.minhag ?? 'ashkenaz' });
   const om = omerDay(h);
-  const str = (p: { text: string; textHe: string } | null) => (p ? (locale.dir === 'rtl' ? p.textHe : p.text) : null);
+  const erev: { id: 'erev-shabbos' | 'erev-yom-tov' | 'erev-yom-kippur'; name: string }[] = [];
+  if (!h.isShabbos && !events.some((e) => e.flags.melachaForbidden)) {
+    // After 29 Elul 9999 (the last supported day) comes Rosh Hashana 10000, always Yom Tov.
+    const last = h.epochDays >= MAX_DAYS;
+    const next = last ? null : h.next();
+    if (next?.isShabbos) erev.push({ id: 'erev-shabbos', name: wordName('erev-shabbos', locale) });
+    // The eve of Yom Kippur is named as itself, with the name of the day's own event, and is not
+    // also the eve of a Yom Tov.
+    const yk = events.find((e) => e.id === 'erev-yom-kippur');
+    if (yk) erev.push({ id: 'erev-yom-kippur', name: holidayName(yk, locale) });
+    else if (last || holidaysOn(next!, hopts).some((e) => e.flags.melachaForbidden)) erev.push({ id: 'erev-yom-tov', name: wordName('erev-yom-tov', locale) });
+  }
   const style = locale.base === 'he' ? 'he' : locale.base === 'sephardi' ? 'sephardi' : 'ashkenazi';
 
   let zmanim: ReturnType<Zman['toJSON']>[] = [];
@@ -148,37 +175,14 @@ export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = 
     const day = z.on(h);
     const names = options.zmanim ?? DEFAULT_DAY_ZMANIM;
     zmanim = names.map((n) => (DAY_SLOTS.includes(n) ? day.slot(n as DaySlot) : day.get(n as ZmanId)).toJSON());
-    const today = holy(h, hopts);
-    // After 29 Elul 9999 (the last supported day) comes Rosh Hashana 10000, always Yom Tov.
-    const tomorrow = h.epochDays === MAX_DAYS || holy(h.next(), hopts);
-    // Lighting after nightfall is only for a second holy night that is Yom Tov: from Shabbos
-    // into Yom Tov, or from Yom Tov into Yom Tov (SA OC 503:1). Shabbos itself begins at sunset
-    // (SA OC 261:2), so on a Yom Tov that falls on Friday the candles for Shabbos are lit at
-    // the usual time before sunset.
-    const beforeSunset = tomorrow && (!today || (h.epochDays < MAX_DAYS && h.next().isShabbos));
-    // The place's documented custom applies when the caller has not chosen the minutes.
-    const custom = options.candleLightingMinutes === undefined ? options.location.candleLighting : undefined;
-    if (beforeSunset) {
-      candleLighting = custom
-        ? zmanimFor(options.location, { ...zopts, candleLightingMinutes: custom.minutes }).on(h)
-            .labelled('candle-lighting', 'candle-lighting', `Candle lighting ${custom.minutes} minutes before sunset, ${custom.custom}`, `${custom.source}; Shulchan Aruch OC 261:2 (tosefes Shabbos)`)
-            .toJSON()
-        : day.get('candle-lighting').toJSON();
-    }
-    else if (tomorrow && today) candleLighting = as(day, 'candle-lighting-second-night', z.opinions.havdala).toJSON();
     const ft = fastTimes(h, options.location, zopts);
     if (ft) fast = { id: ft.fast.id, begins: ft.begins.toJSON(), ends: ft.ends.toJSON() };
     const next = h.epochDays < MAX_DAYS ? fastTimes(h.next(), options.location, zopts) : null;
     if (next && next.fast.flags.fast === 'major') fastBeginsTonight = { id: next.fast.id, begins: next.begins.toJSON() };
-    // Tisha B'Av postponed from Shabbos to Sunday: no havdala over a cup on Motzaei Shabbos;
-    // it is said over a cup, without candle or spices, when the fast ends (SA OC 556:1).
-    // Melacha after Shabbos needs "HaMavdil bein kodesh lechol" (MB 556:2; SA OC 299:10).
-    const deferred = next?.fast.id === 'tisha-bav' && h.isShabbos;
-    if (today && !tomorrow) {
-      if (deferred) shabbosEnds = as(day, 'shabbos-ends-no-havdala', z.opinions.havdala).toJSON();
-      else havdala = as(day, 'havdala', z.opinions.havdala).toJSON();
-    }
-    if (ft && ft.fast.id === 'tisha-bav' && h.prev().isShabbos) havdala = as(day, 'havdala-after-fast', z.opinions.fastEnds).toJSON();
+    const evening = eveningOf(h, options.location, zopts);
+    candleLighting = evening.candles?.toJSON() ?? null;
+    havdala = evening.havdala?.toJSON() ?? null;
+    shabbosEnds = evening.shabbosEnds?.toJSON() ?? null;
   }
 
   return {
@@ -186,16 +190,10 @@ export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = 
     gregorian: formatIsoDate(civil),
     weekday: h.dayOfWeek,
     weekdayName: weekdayName(h.dayOfWeek, locale),
-    hebrew: { year: h.year, month: h.month, day: h.day, monthName: monthName(h.month, h.year, locale), formatted: formatHebrewDate(h, { locale }) },
+    hebrew: hebrewDateJson(h, locale),
     israel,
-    events: events.map((e) => ({
-      id: e.id,
-      name: holidayName(e, locale),
-      flags: e.flags,
-      ...(e.day !== undefined ? { day: e.day } : {}),
-      ...(e.candlesTonight !== undefined ? { candlesTonight: e.candlesTonight } : {}),
-      ...(e.moved ? { moved: true } : {}),
-    })),
+    events: events.map((e) => eventJson(e, locale)),
+    erev,
     parsha: reading
       ? {
           date: formatIsoDate(reading.date.toCivil()),
@@ -207,18 +205,8 @@ export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = 
     haftara: haft ? { key: haft.key, reference: haft.reference } : null,
     omer: om ? { day: om, text: omerText(om), textEnglish: omerTextEnglish(om), sefirah: omerSefirah(om, style) } : null,
     tefillah: tefillahOn(h, { ...options.tefillah, israel }),
-    learning: {
-      dafYomi: (() => { const d = dafYomi(h); return d ? (locale.dir === 'rtl' ? `${d.tractateHe} ${gematriya(d.daf)}` : `${d.tractate} ${d.daf}`) : null; })(),
-      yerushalmiYomi: str(yerushalmiYomi(h)),
-      amudYomi: str(amudYomi(h)),
-      mishnaYomis: str(mishnaYomis(h)),
-      rambamOneChapter: str(rambamOneChapter(h)),
-      rambamThreeChapters: str(rambamThreeChapters(h)),
-      nachYomi: str(nachYomi(h)),
-    },
-    location: options.location
-      ? { ...(options.location.name ? { name: options.location.name } : {}), latitude: options.location.latitude, longitude: options.location.longitude, elevation: options.location.elevation ?? 0, timeZone: typeof options.location.timeZone === 'string' ? options.location.timeZone : options.location.timeZone.name }
-      : null,
+    learning: options.learning ? options.learning(h, locale) : null,
+    location: options.location ? locationJson(options.location) : null,
     zmanim,
     candleLighting,
     havdala,

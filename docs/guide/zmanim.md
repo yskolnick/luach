@@ -1,7 +1,8 @@
 # Zmanim
 
 ```ts
-import { Zmanim, getPlace } from 'luach';
+import { Zmanim } from 'luach';
+import { getPlace } from 'luach/places';
 
 // A place and the opinions its user follows. Anything left out uses a documented default.
 const zmanim = new Zmanim(getPlace('lakewood')!, { shema: 'sof-zman-shema-mga-72', tzeis: 'tzeis-72' });
@@ -47,7 +48,8 @@ keeps what is valid, reports what is not, and reads the method names of Luach 0.
 (`"sofZmanShemaMga72"`).
 
 Settings that are facts about the place or the user rather than opinions go in the third
-argument: `candleLightingMinutes` (a local custom; default 18), `useElevation`,
+argument: `candleLightingMinutes` (a local custom; default the place's documented custom, such
+as Jerusalem's 40 minutes on the built-in place, otherwise 18), `useElevation`,
 `ateretTorahMinutes`, `highLatitudeFallback`, `algorithm`.
 
 ## Next, and a range
@@ -128,3 +130,8 @@ These take the same `opinions` and settings as `Zmanim`:
   from candle lighting to the `havdala` opinion.
 - `dayInfo(date, { location, opinions, zmanim: ['shema', 'sunset', 'tzeis-72'] })`: everything about
   a day; `zmanim` takes the day's slots (by the user's opinion) or ids.
+
+The questions an app asks at an instant take the same arguments, and are in
+[At this instant](./at-this-instant.md): `hebrewDateSpanAt` (the Hebrew date with the times that
+began and end it), `fastAt`, `nightOf`, `kiddushLevanaAt`, `melachaRunAt` (Shabbos or Yom Tov
+now or next, and until when) and `timesBetween` (every zman and calendar time in a range).

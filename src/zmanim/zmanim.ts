@@ -16,12 +16,14 @@
  * @packageDocumentation
  */
 
+import type { DayLocation } from './day-location.js';
 import { HebrewDate } from '../calendar/hebrew-date.js';
 import { assertCivil, civilToDays, daysToCivil, type CivilDate } from '../time/civil.js';
 import { civilDateAt, localParts, type TimeZone } from '../time/zone.js';
 import { he } from '../locales/he.js';
 import type { Locale } from '../locales/types.js';
 import { DayCalculator, type GeoLocation, type ShaahZmanis, type TraceStep } from './calendar.js';
+import { isInIsrael } from '../places/israel.js';
 import { LEGACY_METHOD_IDS } from './legacy.js';
 import { DAYS, ZMANIM, zmanDefinition, zmanLabel, type Moment, type Slot, type ZmanId, type ZmanIdIn } from './opinions.js';
 import { roundToLocalMinute, Zman, type ExplainStep, type Explanation, type ZmanKind, type ZmanUnavailableReason } from './zman.js';
@@ -64,11 +66,15 @@ export type DaySlot = 'alos' | 'misheyakir' | 'sunrise' | 'shema' | 'tefilla' | 
 export type DayPart = 'morning' | 'afternoon' | 'evening';
 
 /** A named halachic day whose seasonal hour {@link ZmanimDay.shaahZmanis} gives. */
-export type DayName = 'gra' | 'mga-72' | 'mga-90' | 'mga-72-zmaniyos' | 'mga-90-zmaniyos' | 'mga-16.1' | 'baal-hatanya' | 'ateret-torah';
+export type DayName = 'gra' | 'mga-72' | 'mga-90' | 'mga-96' | 'mga-120' | 'mga-72-zmaniyos' | 'mga-90-zmaniyos' | 'mga-96-zmaniyos' | 'mga-16.1' | 'baal-hatanya' | 'ateret-torah';
 
 /** Facts about the place and the user that are not opinions. */
 export interface ZmanimSettings {
-  /** Minutes before sunset for candle lighting: a custom of the place or the shul, not an opinion. Default 18 (0–180). */
+  /**
+   * Minutes before sunset for candle lighting: a custom of the place or the shul, not an opinion
+   * (0–180). Default: the place's documented custom when it has one (`candleLighting` on a
+   * built-in `Place`, such as Jerusalem's 40 minutes), otherwise 18.
+   */
   readonly candleLightingMinutes?: number;
   /** Elevation-adjusted sunrise and sunset, and the Gra day built on them. Default false (sea level). Degree-based zmanim are always at sea level. */
   readonly useElevation?: boolean;
@@ -145,14 +151,25 @@ function kindOf(id: string): ZmanKind {
   return zmanDefinition(id)!.round === 'up' ? 'earliest' : 'deadline';
 }
 
+/** The note on the 18-minute default in Israel. @internal */
+export const CANDLE_ISRAEL_NOTE = '(Luach has no documented custom for this place)';
+
 /** Zmanim at one place, by one set of opinions. Immutable. */
 export class Zmanim {
   /** The place. */
   readonly place: GeoLocation;
   /** The opinions in force: the ones given, and the defaults for the rest. */
   readonly opinions: Readonly<Required<Opinions>>;
-  /** Settings that are not opinions. */
+  /** Settings that are not opinions: the ones given, and the place's candle-lighting custom when the minutes were not given. */
   readonly settings: Readonly<ZmanimSettings>;
+  /** The place's documented candle-lighting custom, when it sets the minutes. @internal */
+  readonly candleCustom: DayLocation['candleLighting'] | undefined;
+  /**
+   * A note on the candle-lighting time, when the location is in Israel and neither a documented
+   * custom of the place nor `candleLightingMinutes` sets it: some cities there have their own
+   * custom. Never a guess at which city; null otherwise. @internal
+   */
+  readonly candleNote: string | null;
   private readonly days = new Map<number, ZmanimDay>();
 
   /**
@@ -166,11 +183,17 @@ export class Zmanim {
       const p = problemWith(k, v);
       if (p) throw new RangeError(`opinions.${k}: ${p}`);
     }
+    // The place's documented custom sets the candle-lighting minutes unless the caller did.
+    const custom = settings.candleLightingMinutes === undefined ? (place as DayLocation).candleLighting : undefined;
+    const effective: ZmanimSettings = custom ? { ...settings, candleLightingMinutes: custom.minutes } : settings;
     // Checks the place and the settings once, so that queries never throw.
-    new DayCalculator(place, { year: 2000, month: 1, day: 1 }, settings);
+    new DayCalculator(place, { year: 2000, month: 1, day: 1 }, effective);
     this.place = place;
     this.opinions = Object.freeze({ ...DEFAULTS, ...opinions });
-    this.settings = Object.freeze({ ...settings });
+    this.settings = Object.freeze({ ...effective });
+    this.candleCustom = custom;
+    // Every location in Israel with no custom of its own and no minutes given: a built-in place without a documented custom, a city of the full table, a record of the caller's, or bare coordinates.
+    this.candleNote = !custom && settings.candleLightingMinutes === undefined && isInIsrael(place.latitude, place.longitude) ? CANDLE_ISRAEL_NOTE : null;
   }
 
   /** The documented defaults: conveniences, not rulings. */
@@ -275,6 +298,17 @@ export class Zmanim {
   }
 
   /**
+   * The times of `which` (as {@link Zmanim.next} takes it; default all of {@link Zmanim.order}) on
+   * the civil day `day`, in the order asked, including those that do not occur. For the calendar
+   * functions that need each time with the day whose view gives it. Internal.
+   * @internal
+   */
+  dayTimes(day: CivilDate, which?: DaySlot | Role | ZmanId | readonly (DaySlot | Role | ZmanId)[]): Zman[] {
+    const d = this.on(day);
+    return this.resolve(which).map((id) => d.get(id));
+  }
+
+  /**
    * The Hebrew date at `instant` at the place: the civil date there, moved on once the
    * `dayBoundary` opinion (default sunset) has passed. Where the boundary does not occur that
    * day (polar regions) the civil date is used.
@@ -310,12 +344,12 @@ export class Zmanim {
     const list: readonly string[] = which === undefined ? ORDER : typeof which === 'string' ? [which] : which;
     return list.map((w) => {
       if (isRole(w)) {
-        if (CALENDAR_ROLES.includes(w)) throw new RangeError(`"${w}" depends on the calendar: use dayInfo, fastTimes or hebrewDateAt`);
+        if (CALENDAR_ROLES.includes(w)) throw new RangeError(`"${w}" depends on the calendar: use dayInfo, fastTimes or hebrewDateAt (timesBetween lists the calendar's times itself)`);
         return this.opinions[w];
       }
       const def = zmanDefinition(w);
       if (!def?.at) throw new RangeError(`Unknown zman "${w}"`);
-      if (CALENDAR_SLOTS.includes(def.slot)) throw new RangeError(`"${w}" depends on the calendar: use dayInfo`);
+      if (CALENDAR_SLOTS.includes(def.slot)) throw new RangeError(`"${w}" depends on the calendar: use dayInfo (timesBetween lists the calendar's times itself)`);
       return w as ZmanId;
     });
   }
@@ -364,7 +398,10 @@ export class ZmanimDay {
     const def = zmanDefinition(id);
     if (!def) throw new RangeError(`Unknown zman "${String(id)}"`);
     if (!def.at) throw new RangeError(`"${id}" is not computed on its own: use dayInfo or fastTimes`);
-    z = this.build(id, id, def.opinion, def.source);
+    const custom = id === 'candle-lighting' ? this.owner.candleCustom : undefined;
+    z = custom
+      ? this.build(id, id, `Candle lighting ${custom.minutes} minutes before sunset, ${custom.custom}`, `${custom.source}; Shulchan Aruch OC 261:2 (tosefes Shabbos)`)
+      : this.build(id, id, id === 'candle-lighting' && this.owner.candleNote ? `${def.opinion} ${this.owner.candleNote}` : def.opinion, def.source);
     this.cache.set(id, z);
     return z;
   }

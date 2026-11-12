@@ -1,0 +1,48 @@
+# Home Assistant: Luach sensors from the REST integration (the `rest:` key).
+#
+# Add this to configuration.yaml (or to a file it includes), change the address and the place,
+# and restart. Not tested against a live Home Assistant: see README.md.
+#
+# One request a minute gives every sensor below, from one instant, so they agree with each other.
+# The server is examples/server, run somewhere your Home Assistant can reach.
+#
+# `null` is "Luach has no time to decide by" (far north in summer, for instance). It is never
+# shown as off: each sensor that can be null is unavailable then.
+#
+# This reports times and dates. It does not rule: ask your rav.
+
+rest:
+  - resource: "http://YOUR-SERVER:8080/now?city=jerusalem"
+    scan_interval: 60
+    binary_sensor:
+      - name: "Luach melacha in effect"
+        value_template: "{{ 'on' if value_json.melacha.inProgress else 'off' }}"
+        availability: "{{ value_json.melacha.inProgress is not none }}"
+
+      - name: "Luach fast in progress"
+        value_template: "{{ 'on' if value_json.fast is not none and value_json.fast.inProgress else 'off' }}"
+        availability: "{{ value_json.fast is none or value_json.fast.inProgress is not none }}"
+
+    sensor:
+      # The candle lighting of the Shabbos or Yom Tov run that is on, or else of the next one.
+      - name: "Luach candle lighting"
+        value_template: "{{ value_json.melacha.begins.time }}"
+        device_class: timestamp
+        availability: "{{ value_json.melacha.begins.time is not none }}"
+
+      # Havdala, or the end of Shabbos or Yom Tov, of that run.
+      - name: "Luach havdala"
+        value_template: "{{ value_json.melacha.ends.time }}"
+        device_class: timestamp
+        availability: "{{ value_json.melacha.ends.time is not none }}"
+
+      - name: "Luach Hebrew date"
+        value_template: "{{ value_json.hebrewDate.formatted }}"
+
+      # The Omer day being counted: the night in progress until its morning (the person's alos here;
+      # when a night ends is their choice, so change `alos` to `sunrise` or `tzeis` if you prefer),
+      # then the coming night's. "none" when no day is counted.
+      - name: "Luach Omer tonight"
+        value_template: >-
+          {% set n = value_json.night if as_timestamp(now()) < as_timestamp(value_json.night.alos.time, 0) else value_json.nextNight %}
+          {{ n.omer if n.omer is not none else 'none' }}

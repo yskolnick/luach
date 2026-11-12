@@ -121,17 +121,27 @@ export function zoneName(zone: TimeZone): string {
  * instant is returned.
  */
 export function zonedToInstant(date: CivilDate, minutesOfDay: number, zone: TimeZone): number {
-  const local = civilToDays(date.year, date.month, date.day) * MS_PER_DAY + minutesOfDay * 60000;
-  const o1 = offsetMinutes(zone, local);
-  let t = local - Math.round(o1 * 60000);
-  const o2 = offsetMinutes(zone, t);
-  if (o2 !== o1) {
-    const t2 = local - Math.round(o2 * 60000);
-    // Overlap: both readings valid; prefer the earlier instant. Gap: neither maps back.
-    if (offsetMinutes(zone, t2) === o2) t = Math.min(t, t2);
-    else t = local - Math.round(Math.min(o1, o2) * 60000);
-  }
-  return t;
+  return zonedMsToInstant(date, minutesOfDay * 60000, zone);
+}
+
+/** {@link zonedToInstant} with the time of day in milliseconds, so seconds are exact. */
+export function zonedMsToInstant(date: CivilDate, msOfDay: number, zone: TimeZone): number {
+  const local = civilToDays(date.year, date.month, date.day) * MS_PER_DAY + msOfDay;
+  // Every offset in the world is within a day of the wall-clock reading read as UTC, so the
+  // offsets a day before and a day after bracket any change of offset the reading can meet.
+  const before = offsetMinutes(zone, local - MS_PER_DAY);
+  const after = offsetMinutes(zone, local + MS_PER_DAY);
+  if (before === after) return local - Math.round(before * 60000);
+  const tBefore = local - Math.round(before * 60000);
+  const tAfter = local - Math.round(after * 60000);
+  const okBefore = offsetMinutes(zone, tBefore) === before;
+  const okAfter = offsetMinutes(zone, tAfter) === after;
+  // A wall time shown twice (the clock going back) has two readings: the earlier instant.
+  if (okBefore && okAfter) return Math.min(tBefore, tAfter);
+  if (okBefore) return tBefore;
+  if (okAfter) return tAfter;
+  // A wall time that does not exist (the clock going forward): one gap later.
+  return local - Math.round(Math.min(before, after) * 60000);
 }
 
 /** The civil date shown on a wall clock in `zone` at `epochMs`. */

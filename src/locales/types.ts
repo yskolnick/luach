@@ -3,7 +3,8 @@
  *
  * A locale is a plain object mapping stable keys to display strings, e.g.
  * `{ 'month.7': 'Tishrei', 'weekday.6': 'Shabbos', 'holiday.pesach-1': 'Pesach I' }`.
- * Four ship with Luach: {@link he}, {@link ashkenazi}, {@link sephardi} and {@link en}.
+ * Seven ship with Luach: {@link he}, {@link ashkenazi}, {@link sephardi}, {@link en}, and
+ * {@link chabad}, {@link israeli} and {@link yi}, which follow their base set except where they say otherwise.
  * To change a name, spread one and override keys:
  *
  * ```ts
@@ -17,6 +18,7 @@
  * - `weekday.N` (0 = Sunday … 6 = Shabbos);
  * - `holiday.<id>` for every holiday id;
  * - `parsha.<id>` for every parsha id;
+ * - `term.<key>` for the everyday words (Shabbos, Havdala, Mincha …), see `termName`;
  * - other `<module>.<id>` keys documented with each module.
  *
  * @packageDocumentation

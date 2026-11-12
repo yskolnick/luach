@@ -12,6 +12,7 @@ import { holidaysOn } from '../holidays/holidays.js';
 import { israelFor } from '../places/israel.js';
 import type { HolidayEvent, HolidayOptions } from '../holidays/types.js';
 import type { GeoLocation } from './calendar.js';
+import type { DayLocation } from './day-location.js';
 import { zmanDefinition } from './opinions.js';
 import type { Zman } from './zman.js';
 import { Zmanim, type Opinions, type ZmanimSettings } from './zmanim.js';
@@ -24,6 +25,21 @@ import { Zmanim, type Opinions, type ZmanimSettings } from './zmanim.js';
 export interface ZmanimOptions extends HolidayOptions, ZmanimSettings {
   /** The user's opinions; anything left out uses `Zmanim.defaults`. */
   readonly opinions?: Opinions;
+  /**
+   * Which custom the Chanukah lighting's `earliest` follows on a weekday evening (`nightOf`,
+   * `nowInfo`): `'sunset'` or `'tzeis'`. A custom, not an opinion about a time of day, so it is
+   * not among the {@link Opinions}. Left out, the custom is nightfall (`'tzeis'`) as Luach's
+   * default, not a ruling: the result says `isDefault` and `customs` lists both.
+   */
+  readonly chanukahLighting?: ChanukahCustom;
+}
+
+/** A custom for the earliest time to light the Chanukah lights on a weekday evening. */
+export type ChanukahCustom = 'sunset' | 'tzeis';
+
+/** Throws a RangeError for a `chanukahLighting` that is neither `'sunset'` nor `'tzeis'`. */
+function checkChanukahLighting(v: unknown): void {
+  if (v !== undefined && v !== 'sunset' && v !== 'tzeis') throw new RangeError(`chanukahLighting must be "sunset" or "tzeis", not ${JSON.stringify(v) ?? String(v)}`);
 }
 
 /**
@@ -31,6 +47,7 @@ export interface ZmanimOptions extends HolidayOptions, ZmanimSettings {
  * @internal
  */
 export function zmanimFor(location: GeoLocation, o: ZmanimOptions): Zmanim {
+  checkChanukahLighting(o.chanukahLighting);
   const settings: { -readonly [K in keyof ZmanimSettings]: ZmanimSettings[K] } = {};
   if (o.useElevation !== undefined) settings.useElevation = o.useElevation;
   if (o.candleLightingMinutes !== undefined) settings.candleLightingMinutes = o.candleLightingMinutes;
@@ -79,12 +96,25 @@ export function fastTimes(date: HebrewDate, location: GeoLocation, options: Zman
 
 /**
  * True if melacha is forbidden at `instant` because of Shabbos or Yom Tov: from candle
- * lighting (the `candleLightingMinutes` setting, default 18) to the `havdala` opinion (default
- * 8.5°). Motzaei Shabbos after havdala time is not forbidden. Yom Kippur counts as Yom Tov.
- * Israel or the diaspora (the second day of Yom Tov): `options.israel` if given, otherwise
- * from the location.
+ * lighting to the `havdala` opinion (default 8.5°). Motzaei Shabbos after havdala time is not
+ * forbidden. Yom Kippur counts as Yom Tov. Israel or the diaspora (the second day of Yom Tov):
+ * `options.israel` if given, otherwise from the location.
+ *
+ * Where the havdala time does not occur (far north in summer, with the default
+ * `highLatitudeFallback: 'none'`), Luach has no time at which Shabbos or Yom Tov ends. The
+ * function then answers by the civil day, which is not a time from any source: from candle
+ * lighting (where that occurs) the evening before a holy day is forbidden, and the end of a
+ * holy day is taken as the end of the civil day. Where candle lighting or sunset does not
+ * occur either, the whole answer is by the civil day. Setting `highLatitudeFallback` gives that
+ * rule's time instead.
+ *
+ * Candle lighting is `options.candleLightingMinutes` before sunset if given; otherwise the
+ * place's documented custom (`location.candleLighting`, as on a built-in `Place`), exactly as
+ * the day view chooses; otherwise 18 minutes. The custom is the place's, the 18 minutes is a
+ * default, not a ruling. Ask your rav.
  */
-export function isMelachaForbiddenAt(instant: Date, location: GeoLocation, options: ZmanimOptions = {}): boolean {
+export function isMelachaForbiddenAt(instant: Date, location: DayLocation, options: ZmanimOptions = {}): boolean {
+  // Zmanim takes the place's documented custom when the caller has not chosen the minutes.
   const z = zmanimFor(location, options);
   const todayZ = z.at(instant);
   const civil = todayZ.date;
@@ -98,20 +128,22 @@ export function isMelachaForbiddenAt(instant: Date, location: GeoLocation, optio
     const day = z.on(d);
     return { start: day.get('candle-lighting').exact ?? null, end: day.get(z.opinions.havdala).exact ?? null, sunset: day.get('sunset').exact ?? null };
   };
-  // At high latitudes the previous evening's candle lighting or havdala time can fall after
-  // midnight, on this civil date.
+  // At high latitudes the previous evening's candle lighting, sunset or havdala time can fall
+  // after midnight, on this civil date: until then the previous day is still in effect.
   const y = bounds(today.prev());
-  if (y.start !== null && y.end !== null) {
-    if (t < y.start.getTime()) return holy(today.prev());
-    if (t < y.end.getTime()) return holy(today.prev()) || holy(today);
-  }
+  if (y.start !== null && t < y.start.getTime()) return holy(today.prev());
+  if (y.end !== null && t < y.end.getTime()) return holy(today.prev()) || holy(today);
+  // No havdala time, but the sun has not yet set on the previous day.
+  if (y.end === null && y.sunset !== null && t < y.sunset.getTime()) return holy(today.prev()) || holy(today);
   const b = bounds(today);
-  if (b.sunset === null || b.start === null || b.end === null) {
+  if (b.sunset === null || b.start === null) {
     // Polar day or night: fall back to the civil day.
     return holy(today);
   }
   if (t < b.start.getTime()) return holy(today);
-  if (t >= b.end.getTime()) return holyTomorrow();
-  // Between candle lighting and havdala time: forbidden if today is holy (still ending) or tomorrow is (beginning).
+  // Candle lighting occurs but the havdala time does not: there is no time at which the day
+  // ends, so it ends with the civil day (see above).
+  if (b.end !== null && t >= b.end.getTime()) return holyTomorrow();
+  // From candle lighting to havdala time: forbidden if today is holy (still ending) or tomorrow is (beginning).
   return holy(today) || holyTomorrow();
 }

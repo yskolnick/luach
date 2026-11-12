@@ -5,6 +5,179 @@ All notable changes for users of the `luach` package. This project follows
 
 ## Unreleased
 
+## 0.3.1 — 2026-11-12
+
+### Changed
+- The README (the npm page), the docs home page and the package description now say that Luach
+  is VERY BETA and constantly changing: its API, defaults and results may change in any release
+  until 1.0, so pin an exact version and read this changelog before upgrading. No code changed.
+
+## 0.3.0 — 2026-11-12
+
+### Added
+- The earliest time to light the Chanukah lights, by custom. `Night.chanukahLighting` (and
+  `night.chanukahLighting` and `nextNight.chanukahLighting` in `nowInfo`, described in
+  `schema/now.schema.json`) gives `lights`, `evening` (`weekday`, `erev-shabbos` or
+  `motzaei-shabbos`), `custom` (the custom in force), `isDefault`, `customs` (each with its
+  `earliest` time, opinion and source), `earliest`,
+  `before` (the Shabbos candles on Erev Shabbos) and `until` (dawn of the morning after); it is
+  `null` outside Chanukah. It is built only from times Luach already computes. On a weekday it
+  offers two customs, from sunset and from nightfall; the new option `chanukahLighting: 'sunset' |
+  'tzeis'` chooses one. Left out, the custom is nightfall (`'tzeis'`) as a default, not a ruling:
+  `isDefault` is `true`, a weekday `earliest` is the nightfall time, and `customs` lists both.
+  `nowInfo.settings.chanukahLighting` gives the custom in force and
+  `settings.chanukahLightingIsDefault` says whether it is the default; `luach now` marks the line
+  "(Luach's default)" where it marks a chosen one "(your choice)". On Erev Shabbos the earliest is plag
+  hamincha and on Motzaei Shabbos when Shabbos ends. The command line's `luach now` prints it with
+  `--chanukah-lighting sunset|tzeis`, and the example server's `/now` takes `chanukahLighting`. The
+  `ChanukahLighting` and `ChanukahCustom` types. See "At this instant" and the halachic choices.
+- The day view has `erev`: an array, usually empty, of `{ id: 'erev-shabbos' | 'erev-yom-tov' | 'erev-yom-kippur', name }`
+  for a civil day that is itself neither Shabbos nor a Yom Tov on which melacha is forbidden and is
+  followed by Shabbos and/or such a Yom Tov (for the Israel or diaspora setting; Yom Kippur counts;
+  both can apply, Shabbos first; the eve of Yom Kippur has `erev-yom-kippur` only, never
+  `erev-yom-tov`, because the sources name that day "Erev Yom Kippur"; it is named as the day's
+  event is, and `erev-shabbos` still comes first when Yom Kippur falls on Shabbos). A day that is itself Shabbos or Yom Tov gets an empty array. The
+  `name` is the everyday word in the locale (`term.erev-shabbos`, `term.erev-yom-tov`), so it can be
+  changed like any name. `schema/day.schema.json` describes it, and the command line's `today` and
+  `date` print the name under the weekday line. It is separate from the `erev` flag on a holiday
+  event, which is unchanged.
+- Change any name: `nameEntries(locale)` lists every name Luach gives (months, weekdays, holidays,
+  zmanim, parshiyos and the everyday words) with its key, group and current name, and whether it
+  differs from the built-in set; `parseNames(json)` reads a person's saved changes back without
+  throwing, keeps the valid ones and reports the rest (including a name that drops or adds a
+  `{n}` or `{month}` placeholder, and `term.havdala` or `term.candle-lighting`, which are
+  `zman.havdala` and `zman.candle-lighting`); `extendLocale` applies them. The `NameEntry`
+  and `ParsedNames` types. The command line takes `--names '<json>'` and the example server a `names`
+  query parameter. See the guide, "Change any name".
+- The command line's `--locale` and the example server's `locale` also take `chabad`, `israeli` and `yi`.
+- `formatTime` options `padHour: false` ("6:41" instead of "06:41") and `uppercase: true` ("6:41 PM"),
+  and the `TimeFormatOptions` type. The defaults are unchanged.
+- `termName(key, locale)` and the `TermKey` type: the everyday words (Shabbos, Motzei Shabbos, Yom Tov,
+  Shacharis, Mincha, Maariv, Musaf, Sefiras HaOmer, the menorah; the eve of Shabbos, the eve of a Yom
+  Tov and the night after a Yom Tov; "Parshas", "Parsha" and "Omer" as the calendar file and command
+  line write them) by name set, and Havdala and candle lighting, which give the name of `zman.havdala`
+  and `zman.candle-lighting`. Override any with `term.<key>` in a locale's `names`; for Havdala and
+  candle lighting, change the `zman.*` key. In the Hebrew sets Yom Tov, Musaf, Sefiras HaOmer, the
+  menorah, "parsha" (פרשה) and "omer" (עומר) are plain Hebrew, chosen for Luach, with no written
+  source yet; the command line's day text in `--locale he` or `yi` prints the last two in Hebrew.
+- Three name sets, `chabad`, `israeli` and `yi` (Yiddish, in Hebrew letters). Each follows its base
+  set (`ashkenazi`, `sephardi`, `he`) except where it names something itself, and none does yet.
+  See the guide, "Names and name sets".
+
+### Fixed
+- The calendar file (`toICalendar`) wrote candle lighting and havdala in fixed English or Hebrew; it now
+  uses the locale's names for them (`zman.candle-lighting`, `zman.havdala`), so a changed name shows. The
+  names of the built-in sets are unchanged.
+- The command line's day text writes candle lighting, havdala and "Shabbos ends" with the locale's
+  everyday words rather than fixed English; with `--locale sephardi` or `en` the last reads "Shabbat ends",
+  and with `--locale he` or `yi` the first two are in Hebrew. The melacha line of `luach now` names
+  Shabbos the same way.
+
+### Changed (breaking)
+- The built-in city table moved to `luach/places`: `builtInPlaces`, `getPlace`, `searchPlaces`,
+  `nearestPlace`, `distanceKm`, `LOCAL_CANDLE_LIGHTING` and the `Place`, `CandleLightingCustom` and
+  `SearchOptions` types. `isInIsrael` and `ISRAEL_BOUNDARY` stay in `luach`.
+  Before: `import { getPlace, Zmanim } from 'luach'`.
+  After: `import { Zmanim } from 'luach'; import { getPlace } from 'luach/places'`.
+- The learning cycles moved to `luach/learning`: `dafYomi`, `locate`, `BAVLI_TRACTATES`,
+  `yerushalmiYomi`, `amudYomi`, `dafHaShavua`, `mishnaYomis`, `rambamOneChapter`,
+  `rambamThreeChapters`, `seferHaMitzvosDay`, `nachYomi` and their types.
+  Before: `import { dafYomi } from 'luach'`. After: `import { dafYomi } from 'luach/learning'`.
+- `dayInfo` and `nowInfo` leave `learning` null unless you pass the plug-in, so the learning
+  tables are no longer part of every bundle. `dayLearning` gives exactly what `learning` held before.
+  Before: `dayInfo(date, { location })`.
+  After: `import { dayLearning } from 'luach/learning'; dayInfo(date, { location, learning: dayLearning })`.
+- `toICalendar`'s `learning` option takes `icalLearning([...])` instead of a list of names; a plain
+  list throws a `TypeError`.
+  Before: `toICalendar(from, to, { learning: ['dafYomi'] })`.
+  After: `import { icalLearning } from 'luach/learning'; toICalendar(from, to, { learning: icalLearning(['dafYomi']) })`.
+- The `IcalLearning` type is now the plug-in's type (what `icalLearning` returns); the names are
+  `IcalLearningName` in `luach/learning`.
+- The example server's `/day` and `/now` leave `learning` null unless the request has `learning=1`
+  (and `/calendar.ics` takes the cycles by name: `learning=dafYomi,mishnaYomis`). The `luach` command
+  includes the learning, as before.
+
+### Added
+- Erev Pesach chametz times for every Shema opinion's day: `sof-zman-achilas-chametz-` and
+  `sof-zman-biur-chametz-` with `mga-90`, `mga-72-zmaniyos`, `mga-90-zmaniyos`, `mga-16.1`,
+  `baal-hatanya` and `ateret-torah` (eating until the end of the 4th seasonal hour, burning until
+  the end of the 5th, of that day).
+- More zmanim, 26 in all (122 now): `chatzos-midpoint` (midway between sunrise and sunset);
+  `tzeis-72-zmaniyos`, `tzeis-90`, `tzeis-96`, `tzeis-120`, `tzeis-90-zmaniyos`,
+  `tzeis-96-zmaniyos` and `tzeis-120-zmaniyos` (nightfall after sunset by the same minutes as the
+  matching `alos-` entries); the Magen Avraham days `mga-96`, `mga-96-zmaniyos` and `mga-120`
+  (a stringency), each with `sof-zman-shema-`, `sof-zman-tefilla-`, `plag-hamincha-`,
+  `sof-zman-achilas-chametz-` and `sof-zman-biur-chametz-`; and `plag-hamincha-` for
+  `mga-72-zmaniyos`, `mga-90` and `mga-90-zmaniyos`. `DayName`, the argument of
+  `shaahZmanis`, includes the three new days. Each names its opinion and source; none is a default.
+- `nowInfo(instant, place, options)`: everything true at an instant at a place as one plain JSON
+  document: the clock there, the Hebrew date and when it changes, whether melacha is forbidden and
+  until when (`null`, never off, where Luach has no time), the fast, the night in progress and the
+  next one (their Omer count and Chanukah lights), what comes next, Kiddush Levana, the settings in
+  force, `validUntil` (ask again then) and the whole day view of the place's civil day. Its schema
+  ships as `luach/schema/now.schema.json` (`NOW_INFO_SCHEMA_ID`).
+- `luach now [place]`: the same, in words, or the document with `--json`; `--at <instant>` asks
+  about another moment.
+- `examples/server` serves it at `/now`, and `examples/home-assistant` shows Home Assistant
+  sensors reading it.
+- `zonedParts(instant, timeZone)`: the wall clock in a zone at an instant (date, time to the
+  second, day of the week and the zone's offset), never the machine's. `zonedInstant(parts,
+  timeZone)` is the other way: the instant at which a zone's clock shows a date and time. A time
+  skipped by a clock change becomes one gap later, a time shown twice is the earlier instant,
+  and an invalid date or time throws a `RangeError`.
+
+- `hebrewDateSpanAt(instant, place, options)`: the Hebrew date at an instant (always what
+  `hebrewDateAt` gives), the civil date there, and the `dayBoundary` times that began and end it.
+- `fastAt(instant, place, options)`: the fast of the place's today or tomorrow (or of yesterday,
+  while it is still on after local midnight) with its start and end, and whether it is in progress:
+  `true`, `false`, or `null` where a time it needs does not occur.
+- `nightOf(date, place, options)`: the night that begins a Hebrew date: the evening's sunset and
+  nightfall, the morning's dawn and sunrise, the events, the Omer day counted, the Chanukah lights
+  lit, and the candles, end of Shabbos or Yom Tov and havdala of the evening.
+- `kiddushLevanaAt(instant, place, options)`: Kiddush Levana for the month whose latest time has
+  not passed, with every opinion's earliest and latest time and each night in the window.
+- `melachaRunAt(instant, place, options)`: the run of consecutive days on which melacha is
+  forbidden (Shabbos, Yom Tov, Yom Kippur) that is in progress or next, with the eve, each day's
+  events and candles, the first candles and the end, and whether it is in progress: `true`, `false`,
+  or `null` where a time it needs does not occur.
+- `timesBetween(from, to, place, options)`: every time in a range in time order, with the Hebrew
+  date whose day view gives it: the zmanim chosen with `which`, and candle lighting, havdala, the
+  end of Shabbos and a fast's start and end.
+
+### Changed
+- `luach`: an unknown `--locale` is a usage error (it fell back to `ashkenazi` without a word).
+- `Zmanim` uses the place's documented candle-lighting custom when `candleLightingMinutes` is
+  not given, as the day view does: `new Zmanim(getPlace('jerusalem')).on(date).get('candle-lighting')`
+  is 40 minutes before sunset, not 18, and names the custom and its source. `zmanim.settings`
+  shows the minutes in force. Pass `candleLightingMinutes` to choose the minutes yourself. A
+  place without a documented custom is unchanged.
+- `isMelachaForbiddenAt` takes a `DayLocation` and uses the place's documented candle-lighting
+  custom when `candleLightingMinutes` is not given, as the day view does (Jerusalem: 40 minutes
+  before sunset, not 18). Pass `candleLightingMinutes` to choose the minutes yourself.
+- For every location in Israel that has no documented candle-lighting custom and no
+  `candleLightingMinutes` (a built-in place such as Tel Aviv, a city of the full table, a record of
+  your own, or bare coordinates), the candle-lighting zman's opinion now ends with a note: "Luach
+  has no documented custom for this place". `nowInfo`'s
+  `settings.candleLightingNote` carries it, and `luach` prints it with the time. The time is still
+  18 minutes. To combine a GPS position with a chosen city, spread the city and set the position:
+  `{ ...getPlace('jerusalem'), latitude, longitude }`.
+
+### Fixed
+- `slot('chametzEat')` and `slot('chametzBurn')` follow every Shema opinion's day; for an opinion
+  with no chametz entry of its own they gave the Gra's later times.
+- `isMelachaForbiddenAt`: where the sun sets after local midnight (far north in June), the day
+  before stays in effect until that sunset. It had answered "not forbidden" from midnight while the
+  sun was still up on Shabbos.
+- `toICalendar`: a range can end on the last supported day (29 Elul 9999).
+- `dayInfo`: holiday options given at the top level (`{ yomKippurKatan: true }`) are read as well as
+  under `holidays`, so a day's events and its fast follow the same options.
+- `isMelachaForbiddenAt` now answers "forbidden" from candle lighting on the evening before
+  Shabbos or Yom Tov where candle lighting occurs but the havdala time does not (Stockholm in
+  June, for example). It had answered by the civil day and said "not forbidden" until midnight.
+  Where the havdala time does not occur Luach still has no time at which Shabbos or Yom Tov
+  ends, and the end is the end of the civil day; setting `highLatitudeFallback` gives that
+  rule's time instead.
+
 ## 0.2.0 — 2026-11-10
 
 This release replaces the zmanim interface. Every time Luach computes is unchanged.

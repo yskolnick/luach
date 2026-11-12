@@ -35,6 +35,7 @@ import { festivalOn } from '../holidays/holidays.js';
 import { lookupIn, type Locale } from '../locales/types.js';
 import { NAMES } from './names-data.js';
 import { he } from '../locales/he.js';
+import { hebrewDateArg } from '../calendar/date-input.js';
 
 /** The 54 parshiyos in order. Index = position in the Torah. */
 export const PARSHIYOS = [
@@ -163,6 +164,7 @@ export function readingCycle(year: number, options?: { israel?: boolean }): Shab
  * for the last days of year 9999, whose coming Shabbos is in year 10000, outside the range.
  */
 export function parshaFor(date: HebrewDate, options?: { israel?: boolean }): ShabbosReading | null {
+  date = hebrewDateArg(date, 'parshaFor');
   if (date.epochDays + ((6 - date.dayOfWeek + 7) % 7) > MAX_DAYS) return null;
   const shabbos = date.onOrAfter(6);
   // The cycle that contains this Shabbos began after Simchas Torah of this year or the year before.
@@ -211,6 +213,7 @@ export interface PirkeiAvosOptions {
  * then (*as built*). Returns null outside the season or when not read.
  */
 export function pirkeiAvos(date: HebrewDate, options?: PirkeiAvosOptions): number[] | null {
+  date = hebrewDateArg(date, 'pirkeiAvos');
   if (!date.isShabbos) return null;
   const israel = options?.israel ?? false;
   const untilShavuos = options?.until === 'shavuos';

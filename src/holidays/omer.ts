@@ -12,9 +12,11 @@
 
 import { HebrewDate } from '../calendar/hebrew-date.js';
 import { Month } from '../calendar/months.js';
+import { hebrewDateArg } from '../calendar/date-input.js';
 
 /** The Omer day (1–49) of a Hebrew date, or `null` outside the Omer. */
 export function omerDay(date: HebrewDate): number | null {
+  date = hebrewDateArg(date, 'omerDay');
   const n = date.daysSince(new HebrewDate(date.year, Month.NISAN, 15));
   return n >= 1 && n <= 49 ? n : null;
 }

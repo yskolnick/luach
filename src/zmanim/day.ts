@@ -16,6 +16,7 @@ import type { DayLocation } from './day-location.js';
 import { zmanDefinition } from './opinions.js';
 import type { Zman } from './zman.js';
 import { Zmanim, type Opinions, type ZmanimSettings } from './zmanim.js';
+import { hebrewDateArg, instantArg } from '../calendar/date-input.js';
 
 /**
  * Options for the functions that need both the calendar and the sun: the user's opinions,
@@ -64,6 +65,7 @@ export function zmanimFor(location: GeoLocation, o: ZmanimOptions): Zmanim {
  * the question. If the boundary does not occur that day (polar regions), the civil date is used.
  */
 export function hebrewDateAt(instant: Date, location: GeoLocation, options: ZmanimOptions = {}): HebrewDate {
+  instant = instantArg(instant, 'hebrewDateAt');
   return zmanimFor(location, options).hebrewDateAt(instant);
 }
 
@@ -74,6 +76,7 @@ export function hebrewDateAt(instant: Date, location: GeoLocation, options: Zman
  * diaspora: `options.israel` if given, otherwise from the location.
  */
 export function fastTimes(date: HebrewDate, location: GeoLocation, options: ZmanimOptions = {}): { fast: HolidayEvent; begins: Zman; ends: Zman } | null {
+  date = hebrewDateArg(date, 'fastTimes');
   const fast = holidaysOn(date, { ...options, israel: israelFor(options.israel, location) }).find((e) => e.flags.fast !== null);
   if (!fast) return null;
   const z = zmanimFor(location, options);
@@ -114,6 +117,7 @@ export function fastTimes(date: HebrewDate, location: GeoLocation, options: Zman
  * default, not a ruling. Ask your rav.
  */
 export function isMelachaForbiddenAt(instant: Date, location: DayLocation, options: ZmanimOptions = {}): boolean {
+  instant = instantArg(instant, 'isMelachaForbiddenAt');
   // Zmanim takes the place's documented custom when the caller has not chosen the minutes.
   const z = zmanimFor(location, options);
   const todayZ = z.at(instant);

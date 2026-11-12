@@ -22,6 +22,7 @@ import type { IcalLearning, IcalLearningItem } from '../output/ical.js';
 import { gematriya } from '../text/gematriya.js';
 import { dafYomi } from './bavli.js';
 import { amudYomi, mishnaYomis, nachYomi, rambamOneChapter, rambamThreeChapters, yerushalmiYomi } from './cycles.js';
+import { hebrewDateArg } from '../calendar/date-input.js';
 
 export { locate, dafYomi, BAVLI_TRACTATES, type TractateSpan, type DafPortion } from './bavli.js';
 export { yerushalmiYomi, amudYomi, dafHaShavua, mishnaYomis, rambamOneChapter, rambamThreeChapters, seferHaMitzvosDay, nachYomi, type LearningPortion } from './cycles.js';
@@ -35,6 +36,7 @@ const text = (locale: Locale, p: { text: string; textHe: string } | null): strin
  * not running that day. The locale defaults to {@link he}, as in `dayInfo`.
  */
 export function dayLearning(date: HebrewDate, locale: Locale = he): Readonly<Record<string, string | null>> {
+  date = hebrewDateArg(date, 'dayLearning');
   const d = dafYomi(date);
   return {
     dafYomi: d ? (locale.dir === 'rtl' ? `${d.tractateHe} ${gematriya(d.daf)}` : `${d.tractate} ${d.daf}`) : null,

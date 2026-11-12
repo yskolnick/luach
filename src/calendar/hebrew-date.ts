@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-import { civilToDays, daysToCivil, dayOfWeekOfDays, assertCivil, type CivilDate } from '../time/civil.js';
+import { civilToDays, daysToCivil, dayOfWeekOfDays, assertCivil, assertNotHebrewDate, type CivilDate } from '../time/civil.js';
 import { civilDateOf, type TimeZone } from '../time/zone.js';
 import type { MonthNumber } from './months.js';
 import {
@@ -18,6 +18,15 @@ import {
   monthsInYear,
   roshHashanaDays,
 } from './year.js';
+
+function wholeDays(n: unknown, fn: string): void {
+  if (typeof n !== 'number') throw new TypeError(`${fn} takes a whole number of days, not ${typeof n === 'string' ? JSON.stringify(n) : String(n)}`);
+  if (!Number.isInteger(n)) throw new RangeError(`${fn} takes a whole number of days, not ${n}`);
+}
+
+function otherHebrew(x: unknown, fn: string): void {
+  if (!HebrewDate[Symbol.hasInstance](x)) throw new TypeError(`${fn} takes a HebrewDate; for a civil date pass HebrewDate.fromCivil(date)`);
+}
 
 /** Plain-data form of a Hebrew date. */
 export interface HebrewDateParts {
@@ -43,6 +52,19 @@ export class HebrewDate implements HebrewDateParts {
   /** Days since 1970-01-01 of the civil day that this Hebrew date mostly overlaps (sunset to sunset). */
   readonly epochDays: number;
 
+  /**
+   * True for a `HebrewDate` from any copy of this library. An app can load it twice (through
+   * `import` and through `require`, or two installed versions); a date made by one copy is
+   * still a `HebrewDate` to the other. Recognised by shape: whole-number `year`, `month`,
+   * `day` and `epochDays`, and a `toCivil` method.
+   */
+  static [Symbol.hasInstance](x: unknown): boolean {
+    if (Function.prototype[Symbol.hasInstance].call(HebrewDate, x)) return true;
+    if (typeof x !== 'object' || x === null) return false;
+    const o = x as Record<string, unknown>;
+    return Number.isInteger(o.epochDays) && Number.isInteger(o.year) && Number.isInteger(o.month) && Number.isInteger(o.day) && typeof o.toCivil === 'function';
+  }
+
   /** Creates a Hebrew date. Throws a RangeError if it does not exist (e.g. 30 Teves, or Adar II in a common year). */
   constructor(year: number, month: number, day: number) {
     this.epochDays = hebrewToDays(year, month, day);
@@ -53,6 +75,7 @@ export class HebrewDate implements HebrewDateParts {
 
   /** The Hebrew date for a count of days since 1970-01-01. */
   static fromEpochDays(days: number): HebrewDate {
+    wholeDays(days, 'HebrewDate.fromEpochDays');
     const h = daysToHebrew(days);
     return new HebrewDate(h.year, h.month, h.day);
   }
@@ -68,6 +91,8 @@ export class HebrewDate implements HebrewDateParts {
 
   /** As {@link HebrewDate.fromGregorian}, from a {@link CivilDate}. */
   static fromCivil(date: CivilDate, options?: { afterSunset?: boolean }): HebrewDate {
+    assertNotHebrewDate(date, 'HebrewDate.fromCivil');
+    if (typeof date !== 'object' || date === null) throw new TypeError(`HebrewDate.fromCivil takes a civil date { year, month, day }, not ${String(date)}`);
     return HebrewDate.fromGregorian(date.year, date.month, date.day, options);
   }
 
@@ -76,10 +101,16 @@ export class HebrewDate implements HebrewDateParts {
    * otherwise in the runtime's local zone.
    */
   static fromDate(date: Date, options?: { timeZone?: TimeZone; afterSunset?: boolean }): HebrewDate {
+    if (Object.prototype.toString.call(date) !== '[object Date]') throw new TypeError(`HebrewDate.fromDate takes a Date, not ${typeof date === 'string' ? JSON.stringify(date) : String(date)}`);
+    if (Number.isNaN(date.getTime())) throw new RangeError('HebrewDate.fromDate: invalid Date');
     return HebrewDate.fromCivil(civilDateOf(date, options?.timeZone), options);
   }
 
-  /** Today's Hebrew date by the civil date in `timeZone` (default: the runtime's zone). Ignores sunset. */
+  /**
+   * Today's Hebrew date by the civil date in `timeZone` (default: the runtime's zone). Ignores
+   * sunset: after dark it is a day behind. For the Hebrew date at a place now, use
+   * `hebrewDateAt(new Date(), location)`.
+   */
   static today(options?: { timeZone?: TimeZone }): HebrewDate {
     return HebrewDate.fromDate(new Date(), options);
   }
@@ -136,6 +167,7 @@ export class HebrewDate implements HebrewDateParts {
 
   /** A date `n` days later (or earlier, for negative `n`). */
   addDays(n: number): HebrewDate {
+    wholeDays(n, 'addDays');
     return HebrewDate.fromEpochDays(this.epochDays + n);
   }
 
@@ -151,6 +183,7 @@ export class HebrewDate implements HebrewDateParts {
 
   /** Days from `other` to this date (positive if this is later). */
   daysSince(other: HebrewDate): number {
+    otherHebrew(other, 'daysSince');
     return this.epochDays - other.epochDays;
   }
 
@@ -171,6 +204,7 @@ export class HebrewDate implements HebrewDateParts {
 
   /** Negative, zero or positive, for sorting. */
   compare(other: HebrewDate): number {
+    otherHebrew(other, 'compare');
     return this.epochDays - other.epochDays;
   }
 

@@ -21,6 +21,7 @@ import { fastAt, hebrewDateSpanAt, kiddushLevanaAt, lastDaySunset, melachaRunAt,
 import { Zmanim } from '../zmanim/zmanim.js';
 import { eventJson, hebrewDateJson, locationJson, type EventJson, type HebrewDateJson, type LocationJson } from './json.js';
 import type { Zman } from '../zmanim/zman.js';
+import { instantArg } from '../calendar/date-input.js';
 
 /** `$id` of the JSON Schema for {@link NowInfo}. */
 export const NOW_INFO_SCHEMA_ID = 'https://raw.githubusercontent.com/yskolnick/luach/main/schema/now.schema.json';
@@ -160,6 +161,7 @@ const timeJson = (t: KiddushLevanaTime): TimeJson => ({ time: t.time.toISOString
  * Ask your rav. This library calculates; it does not rule.
  */
 export function nowInfo(instant: Date, location: DayLocation, options: NowInfoOptions = {}): NowInfo {
+  instant = instantArg(instant, 'nowInfo');
   const { locale: given, learning, ...zopts } = options;
   const locale = given ?? he;
   const tz = location.timeZone;

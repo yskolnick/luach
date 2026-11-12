@@ -12,12 +12,13 @@
 
 import { HebrewDate } from '../calendar/hebrew-date.js';
 import { Month } from '../calendar/months.js';
-import { assertCivil, daysToCivil, MS_PER_DAY, type CivilDate } from '../time/civil.js';
+import { daysToCivil, MS_PER_DAY, type CivilDate } from '../time/civil.js';
 import { assertTimeZone, zonedToInstant, type TimeZone } from '../time/zone.js';
 import { horizonDip, solarTransit, SUNRISE_ZENITH, timeAtZenith, type NoEventReason } from './solar.js';
 import { usnoTimeAtZenith } from './usno.js';
 import { DAYS, zmanDefinition, type Moment } from './opinions.js';
 import type { ZmanUnavailableReason } from './zman.js';
+import { dayArg, isHebrewDate } from '../calendar/date-input.js';
 
 /** A place on earth. */
 export interface GeoLocation {
@@ -118,9 +119,9 @@ export class DayCalculator {
       throw new RangeError(`Invalid elevation ${location.elevation}: metres above sea level must be a finite number`);
     }
     assertTimeZone(location.timeZone);
-    if (!(date instanceof HebrewDate)) assertCivil(date.year, date.month, date.day);
+    const day = dayArg(date, 'DayCalculator');
     this.location = location;
-    this.date = date instanceof HebrewDate ? date.toCivil() : date;
+    this.date = isHebrewDate(day) ? day.toCivil() : day;
     this.options = {
       rounding: options.rounding ?? true,
       useElevation: options.useElevation ?? false,

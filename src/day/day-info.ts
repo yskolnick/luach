@@ -29,6 +29,7 @@ import { fastTimes, zmanimFor } from '../zmanim/day.js';
 import { type ZmanId } from '../zmanim/opinions.js';
 import type { Zman } from '../zmanim/zman.js';
 import type { DaySlot, Opinions, ZmanimSettings } from '../zmanim/zmanim.js';
+import { hebrewOfDayArg } from '../calendar/date-input.js';
 
 /** `$id` of the JSON Schema for {@link DayInfo}. */
 export const DAY_INFO_SCHEMA_ID = 'https://raw.githubusercontent.com/yskolnick/luach/main/schema/day.schema.json';
@@ -133,9 +134,14 @@ const DAY_SLOTS: readonly string[] = ['alos', 'misheyakir', 'sunrise', 'shema', 
 
 const HOLIDAY_KEYS = ['modernIsraeli', 'israeliCommemorations', 'behab', 'yomKippurKatan', 'yomKippurKatanOnFriday', 'yomKippurKatanCheshvan', 'shovavim', 'shabbosMevorchim'] as const;
 
-/** Everything about `date` (a civil date or a Hebrew date's daytime). */
+/**
+ * Everything about `date`: a civil date, or a Hebrew date's daytime. A plain
+ * `{ year, month, day }` is always read as a civil (Gregorian) date; for a Hebrew date pass a
+ * `HebrewDate` (`new HebrewDate(5787, 9, 25)`). A `HebrewDate` from another copy of this
+ * library is read as the same Hebrew date.
+ */
 export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = {}): DayInfo {
-  const h = date instanceof HebrewDate ? date : HebrewDate.fromCivil(date);
+  const h = hebrewOfDayArg(date, 'dayInfo');
   const civil = h.toCivil();
   const locale = options.locale ?? he;
   const israel = israelFor(options.israel, options.location);
@@ -218,7 +224,9 @@ export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = 
 
 /** {@link dayInfo} for `count` consecutive days from `start`. */
 export function dayInfoRange(start: CivilDate | HebrewDate, count: number, options: DayInfoOptions = {}): DayInfo[] {
-  const h = start instanceof HebrewDate ? start : HebrewDate.fromCivil(start);
+  const h = hebrewOfDayArg(start, 'dayInfoRange');
+  if (typeof count !== 'number') throw new TypeError(`dayInfoRange takes a number of days, not ${String(count)}: for the days from start to end, pass end.epochDays - start.epochDays + 1`);
+  if (!Number.isInteger(count) || count < 0) throw new RangeError(`dayInfoRange takes a whole number of days, 0 or more, not ${count}`);
   const out: DayInfo[] = [];
   for (let i = 0; i < count; i++) out.push(dayInfo(h.addDays(i), options));
   return out;

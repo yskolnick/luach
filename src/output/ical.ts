@@ -21,6 +21,7 @@ import { termName } from '../locales/terms.js';
 import { zmanimFor } from '../zmanim/day.js';
 import type { ZmanId } from '../zmanim/opinions.js';
 import type { DaySlot, Opinions, ZmanimSettings } from '../zmanim/zmanim.js';
+import { hebrewOfDayArg } from '../calendar/date-input.js';
 
 const DAY_SLOTS: readonly string[] = ['alos', 'misheyakir', 'sunrise', 'shema', 'tefilla', 'chatzos', 'minchaGedola', 'minchaKetana', 'plag', 'sunset', 'tzeis'];
 
@@ -118,8 +119,8 @@ interface Item {
  * Import it into any calendar app or serve it as `text/calendar`.
  */
 export function toICalendar(start: CivilDate | HebrewDate, end: CivilDate | HebrewDate, options: ICalOptions = {}): string {
-  const h0 = start instanceof HebrewDate ? start : HebrewDate.fromCivil(start);
-  const h1 = end instanceof HebrewDate ? end : HebrewDate.fromCivil(end);
+  const h0 = hebrewOfDayArg(start, 'toICalendar');
+  const h1 = hebrewOfDayArg(end, 'toICalendar');
   if (h1.epochDays < h0.epochDays) throw new RangeError('end is before start');
   const locale = options.locale ?? he;
   const israel = israelFor(options.israel, options.location);
@@ -160,16 +161,18 @@ export function toICalendar(start: CivilDate | HebrewDate, end: CivilDate | Hebr
     }
     if (options.location && zmanim) {
       const day = zmanim.on(d);
+      // The place is in each timed event's UID, so calendars for two places can be subscribed together.
+      const at = `${options.location.latitude.toFixed(4)}_${options.location.longitude.toFixed(4)}`;
       if (options.candleLighting !== false) {
         const { opinions, useElevation, candleLightingMinutes, ateretTorahMinutes, highLatitudeFallback, algorithm } = options;
         const info = dayInfo(d, { opinions, useElevation, candleLightingMinutes, ateretTorahMinutes, highLatitudeFallback, algorithm, location: options.location, israel, locale, zmanim: [] });
-        if (info.candleLighting?.time) items.push({ uid: `${d.toString()}-candles`, summary: termName('candle-lighting', locale), description: `${info.candleLighting.opinion}. ${info.candleLighting.source}`, categories: 'candle-lighting', at: new Date(info.candleLighting.time) });
-        if (info.havdala?.time) items.push({ uid: `${d.toString()}-havdala`, summary: info.havdala.id === 'havdala' ? termName('havdala', locale) : zmanLabel(info.havdala.id, locale), description: `${info.havdala.opinion}. ${info.havdala.source}`, categories: 'havdala', at: new Date(info.havdala.time) });
-        if (info.shabbosEnds?.time) items.push({ uid: `${d.toString()}-shabbos-ends`, summary: zmanLabel(info.shabbosEnds.id, locale), description: `${info.shabbosEnds.opinion}. ${info.shabbosEnds.source}`, categories: 'shabbos-ends', at: new Date(info.shabbosEnds.time) });
+        if (info.candleLighting?.time) items.push({ uid: `${d.toString()}-candles-${at}`, summary: termName('candle-lighting', locale), description: `${info.candleLighting.opinion}. ${info.candleLighting.source}`, categories: 'candle-lighting', at: new Date(info.candleLighting.time) });
+        if (info.havdala?.time) items.push({ uid: `${d.toString()}-havdala-${at}`, summary: info.havdala.id === 'havdala' ? termName('havdala', locale) : zmanLabel(info.havdala.id, locale), description: `${info.havdala.opinion}. ${info.havdala.source}`, categories: 'havdala', at: new Date(info.havdala.time) });
+        if (info.shabbosEnds?.time) items.push({ uid: `${d.toString()}-shabbos-ends-${at}`, summary: zmanLabel(info.shabbosEnds.id, locale), description: `${info.shabbosEnds.opinion}. ${info.shabbosEnds.source}`, categories: 'shabbos-ends', at: new Date(info.shabbosEnds.time) });
       }
       for (const w of wanted) {
         const zm = DAY_SLOTS.includes(w) ? day.slot(w as DaySlot) : day.get(w as ZmanId);
-        if (zm.time) items.push({ uid: `${d.toString()}-${zm.id}`, summary: zm.opinion, description: zm.source, categories: 'zman', at: zm.time });
+        if (zm.time) items.push({ uid: `${d.toString()}-${zm.id}-${at}`, summary: zm.opinion, description: zm.source, categories: 'zman', at: zm.time });
       }
     }
   }

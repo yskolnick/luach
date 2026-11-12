@@ -13,6 +13,7 @@ import { HebrewDate } from '../calendar/hebrew-date.js';
 import { Month } from '../calendar/months.js';
 import { holidaysOn, purimMonth } from './holidays.js';
 import type { HolidayOptions } from './types.js';
+import { hebrewDateArg } from '../calendar/date-input.js';
 
 /** Options for {@link tefillahOn}. */
 export interface TefillahOptions extends HolidayOptions {
@@ -63,6 +64,7 @@ export interface TefillahDay {
 
 /** The changes to Shacharis on `date`. Defaults are documented on {@link TefillahOptions}. */
 export function tefillahOn(date: HebrewDate, options: TefillahOptions = {}): TefillahDay {
+  date = hebrewDateArg(date, 'tefillahOn');
   const israel = options.israel ?? false;
   const events = holidaysOn(date, { ...options, modernIsraeli: true });
   const has = (id: string) => events.some((e) => e.id === id);

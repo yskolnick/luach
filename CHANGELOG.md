@@ -5,6 +5,38 @@ All notable changes for users of the `luach` package. This project follows
 
 ## Unreleased
 
+### Fixed
+- A `HebrewDate` made by one copy of the library is read as the same Hebrew date by another.
+  An app that loads `luach` through both `import` and `require` has two copies. Until now,
+  `dayInfo` and the other functions that take a civil or a Hebrew date read the other copy's
+  `HebrewDate` as a civil date, so 25 Kislev 5787 came out as a day in the year 5787 CE.
+  `instanceof HebrewDate` is now true across copies too.
+- A function that takes a `HebrewDate` throws a `TypeError` when given a civil date
+  `{ year, month, day }`. Until now it read the civil date's numbers as a Hebrew date:
+  `holidaysOn({ year: 2026, month: 12, day: 5 })` returned `[]`, not Chanukah. It also throws
+  for a JavaScript `Date`, a string, `undefined` or `null`, and the message names the function
+  to call instead. A learning function's day count must be a whole number.
+- The functions that take an instant (`nowInfo`, `hebrewDateAt`, `melachaRunAt`,
+  `timesBetween`, `Zmanim.at` and others) throw a `TypeError` that says to pass a `Date` when
+  given a number, a string or `undefined`, and a `RangeError` for an invalid `Date`.
+- `dayInfoRange(start, count)` throws unless `count` is a whole number of 0 or more. A count of
+  `Infinity` ran until the process ran out of memory, and an end date returned `[]`.
+- iCalendar: the UIDs of candle lighting, havdala, the end of Shabbos and zmanim include the
+  place, so calendars for two places no longer replace each other's events. Calendar apps will
+  re-create these events once. Events without a place keep their UIDs.
+- `parseHebrewDate("3 Kislev")` says that the year is missing.
+
+### Changed
+- The command line checks its options. An unknown option (with the nearest name suggested), an
+  option the command does not use, an option with a missing value, an option given twice, an
+  argument too many or too few, and a year such as `luach holidays 2026` that looks like a civil
+  year are now errors with exit code 1. Until now they were ignored, so a typo such as
+  `--elevaton` gave times without the elevation, with no warning.
+- `luach zmanim` says in words why a time is missing; `--json` still gives the code.
+- `luach today` and `luach date` name the learning cycles ("Daf Yomi", "דף יומי") instead of
+  printing their keys (`dafYomi:`); `--json` keeps the keys.
+- `--city` with a name that several places share says which one it used and how to pick another.
+
 ## 0.3.1 — 2026-11-12
 
 ### Changed

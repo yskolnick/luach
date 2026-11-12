@@ -14,6 +14,7 @@ import { Month } from '../calendar/months.js';
 import { molad } from '../calendar/molad.js';
 import { PARTS_PER_HOUR } from '../calendar/year.js';
 import { daysToCivil, julianToDays, MS_PER_DAY, type CivilDate } from '../time/civil.js';
+import { hebrewDateArg } from '../calendar/date-input.js';
 
 /** When v'sein tal umatar starts in a given Hebrew year's winter. */
 export interface TalUmatarStart {
@@ -72,6 +73,7 @@ export function amidahSeason(date: HebrewDate, options?: { israel?: boolean; nus
   talUmatar: boolean;
   changesAtMusaf: boolean;
 } {
+  date = hebrewDateArg(date, 'amidahSeason');
   const y = date.year;
   const sheminiAtzeres = new HebrewDate(y, Month.TISHREI, 22);
   const pesach = new HebrewDate(y, Month.NISAN, 15);
@@ -97,6 +99,7 @@ export function birkasHachamaDates(fromYear: number, toYear: number): CivilDate[
 
 /** True if `date` is a Birkas HaChama day. */
 export function isBirkasHachama(date: HebrewDate): boolean {
+  date = hebrewDateArg(date, 'isBirkasHachama');
   const c = date.toCivil();
   return birkasHachamaDates(c.year, c.year).some((x) => x.month === c.month && x.day === c.day);
 }

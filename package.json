@@ -1,0 +1,123 @@
+{
+  "name": "luach",
+  "version": "0.3.1",
+  "description": "VERY BETA and constantly changing. Built mostly by AI; check before relying on it. Hebrew calendar, holidays, parsha, learning cycles and zmanim. Clean-room, zero dependencies, Apache-2.0.",
+  "keywords": [
+    "hebrew calendar",
+    "jewish calendar",
+    "luach",
+    "zmanim",
+    "parsha",
+    "daf yomi",
+    "holidays",
+    "sunrise",
+    "sunset",
+    "ai-generated",
+    "beta"
+  ],
+  "license": "Apache-2.0",
+  "author": "Yosef Skolnick",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yskolnick/luach.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yskolnick/luach/issues"
+  },
+  "homepage": "https://github.com/yskolnick/luach#readme",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./package.json": "./package.json",
+    "./schema/day.schema.json": "./schema/day.schema.json",
+    "./schema/now.schema.json": "./schema/now.schema.json",
+    "./learning": {
+      "import": {
+        "types": "./dist/learning.d.ts",
+        "default": "./dist/learning/index.js"
+      },
+      "require": {
+        "types": "./dist/learning.d.cts",
+        "default": "./dist/learning.cjs"
+      }
+    },
+    "./places": {
+      "import": {
+        "types": "./dist/places.d.ts",
+        "default": "./dist/places/index.js"
+      },
+      "require": {
+        "types": "./dist/places.d.cts",
+        "default": "./dist/places.cjs"
+      }
+    },
+    "./places-full": {
+      "import": {
+        "types": "./dist/places-full.d.ts",
+        "default": "./dist/places/full.js"
+      },
+      "require": {
+        "types": "./dist/places-full.d.cts",
+        "default": "./dist/places-full.cjs"
+      }
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "places": [
+        "dist/places.d.ts"
+      ],
+      "learning": [
+        "dist/learning.d.ts"
+      ],
+      "places-full": [
+        "dist/places-full.d.ts"
+      ]
+    }
+  },
+  "files": [
+    "dist",
+    "schema",
+    "NOTICE",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsup && node scripts/strip-data-maps.mjs",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "check:imports": "node scripts/check-imports.mjs",
+    "check:licenses": "node scripts/check-licenses.mjs",
+    "check:size": "node scripts/check-size.mjs",
+    "verify": "npm run typecheck && npm run lint && npm run check:imports && npm run build && npm run check:licenses && npm run check:size",
+    "prepublishOnly": "npm run verify"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "esbuild": "^0.25.12",
+    "eslint": "^9.39.5",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.72.0"
+  },
+  "bin": {
+    "luach": "./dist/cli/cli.js"
+  }
+}

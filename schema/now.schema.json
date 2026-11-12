@@ -1,0 +1,872 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/yskolnick/luach/main/schema/now.schema.json",
+  "title": "Luach now",
+  "description": "Everything true at one instant at one place, as returned by nowInfo() in the luach package. Instants are ISO 8601 UTC; civil dates are YYYY-MM-DD on the place's clock. Zmans, events and Hebrew dates have one shape each (see $defs). Every zman names its opinion and source; defaults are not rulings. Ask your rav.",
+  "type": "object",
+  "required": [
+    "$schema",
+    "instant",
+    "location",
+    "israel",
+    "clock",
+    "hebrewDate",
+    "day",
+    "settings",
+    "validUntil",
+    "melacha",
+    "fast",
+    "night",
+    "nextNight",
+    "upcoming",
+    "nextZman",
+    "kiddushLevana"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "zman": {
+      "type": "object",
+      "required": [
+        "id",
+        "time",
+        "local",
+        "timeZone",
+        "opinion",
+        "source",
+        "rounded"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "time": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time",
+          "description": "The time, rounded to the minute on the safe side (earliest times up, deadlines down): safe to display by truncating. Null when it does not occur (see reason)."
+        },
+        "exact": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time",
+          "description": "The exact instant, to the millisecond on the safe side. For calculation, not display."
+        },
+        "local": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The wall-clock time only (HH:MM) at the location, with no date: a time can fall on a different civil day from the one asked about. Compare time (the instant), not local."
+        },
+        "timeZone": {
+          "type": "string"
+        },
+        "opinion": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "rounded": {
+          "enum": [
+            "up",
+            "down",
+            null
+          ]
+        },
+        "reason": {
+          "enum": [
+            "sun-always-above",
+            "sun-always-below",
+            "no-sunrise",
+            "no-sunset",
+            "depends-on-missing-zman",
+            "not-applicable-today",
+            "requires-terrain-data"
+          ]
+        },
+        "fallback": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "earliest",
+            "deadline"
+          ],
+          "description": "An earliest time (rounded up for display) or a deadline (rounded down)."
+        },
+        "slot": {
+          "type": "string",
+          "description": "The kind of time: alos, shema, tzeis, candleLighting, havdala, fast and so on."
+        }
+      },
+      "additionalProperties": false
+    },
+    "flags": {
+      "type": "object",
+      "required": [
+        "yomTov",
+        "melachaForbidden",
+        "cholHamoed",
+        "fast",
+        "roshChodesh",
+        "modernIsraeli",
+        "minor",
+        "specialShabbos",
+        "erev",
+        "isruChag",
+        "optional"
+      ],
+      "properties": {
+        "yomTov": {
+          "type": "boolean"
+        },
+        "melachaForbidden": {
+          "type": "boolean"
+        },
+        "cholHamoed": {
+          "type": "boolean"
+        },
+        "roshChodesh": {
+          "type": "boolean"
+        },
+        "modernIsraeli": {
+          "type": "boolean"
+        },
+        "minor": {
+          "type": "boolean"
+        },
+        "specialShabbos": {
+          "type": "boolean"
+        },
+        "erev": {
+          "type": "boolean"
+        },
+        "isruChag": {
+          "type": "boolean"
+        },
+        "optional": {
+          "type": "boolean"
+        },
+        "fast": {
+          "enum": [
+            "major",
+            "minor",
+            null
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "event": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "flags"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "flags": {
+          "$ref": "#/$defs/flags"
+        },
+        "day": {
+          "type": "integer"
+        },
+        "candlesTonight": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 8
+        },
+        "moved": {
+          "type": "boolean"
+        }
+      },
+      "description": "A holiday or other event: a language-free id, its name in the requested locale, and its flags."
+    },
+    "hebrewDate": {
+      "type": "object",
+      "required": [
+        "year",
+        "month",
+        "day",
+        "monthName",
+        "formatted"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "year": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9999
+        },
+        "month": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 13,
+          "description": "Nisan = 1 … Adar (Adar I) = 12, Adar II = 13"
+        },
+        "day": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 30
+        },
+        "monthName": {
+          "type": "string"
+        },
+        "formatted": {
+          "type": "string"
+        }
+      },
+      "description": "A Hebrew date. month: Nisan = 1 … Adar (Adar I) = 12, Adar II = 13."
+    },
+    "kiddushLevanaTime": {
+      "type": "object",
+      "required": [
+        "time",
+        "opinion",
+        "source"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "time": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "opinion": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "description": "One time for Kiddush Levana, with the opinion and source it follows."
+    },
+    "night": {
+      "type": "object",
+      "required": [
+        "hebrewDate",
+        "sunset",
+        "tzeis",
+        "alos",
+        "sunrise",
+        "omer",
+        "chanukahLights",
+        "chanukahLighting"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "hebrewDate": {
+          "$ref": "#/$defs/hebrewDate",
+          "description": "The Hebrew date this night begins: the night is the evening before its daytime."
+        },
+        "sunset": {
+          "$ref": "#/$defs/zman",
+          "description": "The evening's sunset (the sunset opinion)."
+        },
+        "tzeis": {
+          "$ref": "#/$defs/zman",
+          "description": "The evening's nightfall (the tzeis opinion)."
+        },
+        "alos": {
+          "$ref": "#/$defs/zman",
+          "description": "The morning's dawn (the alos opinion)."
+        },
+        "sunrise": {
+          "$ref": "#/$defs/zman",
+          "description": "The morning's sunrise."
+        },
+        "omer": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 49,
+          "description": "The Omer day counted on this night, or null."
+        },
+        "chanukahLights": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 8,
+          "description": "The Chanukah lights lit on this night (1-8), or null."
+        },
+        "chanukahLighting": {
+          "anyOf": [
+            {
+              "type": "object",
+              "required": [
+                "lights",
+                "evening",
+                "custom",
+                "isDefault",
+                "customs",
+                "earliest",
+                "before",
+                "until"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "lights": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 8,
+                  "description": "How many lights this evening (1-8)."
+                },
+                "evening": {
+                  "enum": [
+                    "weekday",
+                    "erev-shabbos",
+                    "motzaei-shabbos"
+                  ],
+                  "description": "Friday (erev-shabbos), Saturday night (motzaei-shabbos) or any other evening."
+                },
+                "custom": {
+                  "enum": [
+                    "sunset",
+                    "tzeis"
+                  ],
+                  "description": "The custom in force: the caller's chanukahLighting, or tzeis (nightfall) when none is chosen."
+                },
+                "isDefault": {
+                  "type": "boolean",
+                  "description": "True when the caller chose no custom, so custom is Luach's default (a default, not a ruling); false when the caller chose it."
+                },
+                "customs": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "earliest",
+                      "opinion",
+                      "source"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "enum": [
+                          "sunset",
+                          "tzeis"
+                        ]
+                      },
+                      "earliest": {
+                        "$ref": "#/$defs/zman",
+                        "description": "The existing zman this custom takes as the earliest time. It keeps its own opinion and source for the time itself."
+                      },
+                      "opinion": {
+                        "type": "string",
+                        "description": "Why that time is the one for this custom."
+                      },
+                      "source": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "description": "Every custom Luach offers for the earliest time this evening, each with its opinion and source. On Erev Shabbos and Motzaei Shabbos both customs give the same time."
+                },
+                "earliest": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/zman"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "description": "The earliest time by the custom in force (custom): on a weekday evening the time of that custom; on Erev Shabbos and Motzaei Shabbos every custom gives the same one."
+                },
+                "before": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/zman"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "description": "Erev Shabbos: the Shabbos candle lighting, which the Chanukah lights come before; otherwise null. Where the caller's plag falls after it, both times are given as they are."
+                },
+                "until": {
+                  "$ref": "#/$defs/zman",
+                  "description": "Dawn of the morning after (the alos opinion): the lights may be lit all night, until dawn (Rema OC 672:2; Mishna Berura 672:11, with the berachah while the household is awake). The proper time is about half an hour from the earliest time (Shulchan Aruch OC 672:2), which Luach does not turn into a clock time."
+                }
+              },
+              "description": "When to light the Chanukah lights this evening, by custom, composed of times Luach already computes. Luach rules on no custom: when none is chosen it follows nightfall as a default."
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "When to light the Chanukah lights on this night, by custom, or null outside Chanukah."
+        }
+      },
+      "description": "A night: the evening that begins a Hebrew date, with its times and what is counted and lit on it. When a night ends (at dawn or at sunrise) is the reader's choice: the times are given to compare."
+    }
+  },
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "const": "https://raw.githubusercontent.com/yskolnick/luach/main/schema/now.schema.json",
+      "description": "The $id of this schema."
+    },
+    "instant": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The instant this document is true at."
+    },
+    "location": {
+      "type": "object",
+      "required": [
+        "latitude",
+        "longitude",
+        "elevation",
+        "timeZone"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "latitude": {
+          "type": "number"
+        },
+        "longitude": {
+          "type": "number"
+        },
+        "elevation": {
+          "type": "number"
+        },
+        "timeZone": {
+          "type": "string"
+        }
+      },
+      "description": "The place, for display; name is present only when the place has one (bare coordinates have none). It does not carry the place's own candle-lighting custom or its id (settings.candleLightingCustom says the custom in force): to compute for the same place again, keep the Place object (or its id) you used, not this object."
+    },
+    "israel": {
+      "type": "boolean",
+      "description": "Israel or the diaspora: decides Yom Tov Sheni, the length of Chol Hamoed and Isru Chag."
+    },
+    "clock": {
+      "type": "object",
+      "required": [
+        "date",
+        "time",
+        "dayOfWeek",
+        "timeZone",
+        "offsetMinutes"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "date": {
+          "type": "string",
+          "pattern": "^[+-]?\\d{4,6}-\\d{2}-\\d{2}$",
+          "description": "The civil date on the place's clock. Not the Hebrew date: that is hebrewDate."
+        },
+        "time": {
+          "type": "string",
+          "pattern": "^\\d{2}:\\d{2}:\\d{2}$",
+          "description": "The wall clock time, HH:MM:SS."
+        },
+        "dayOfWeek": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 6,
+          "description": "0 = Sunday … 6 = Shabbos"
+        },
+        "timeZone": {
+          "type": "string"
+        },
+        "offsetMinutes": {
+          "type": "number",
+          "description": "The zone's offset from UTC at the instant, in minutes east."
+        }
+      },
+      "description": "The place's clock at the instant."
+    },
+    "hebrewDate": {
+      "type": "object",
+      "required": [
+        "year",
+        "month",
+        "day",
+        "monthName",
+        "formatted",
+        "begins",
+        "ends"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "year": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9999
+        },
+        "month": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 13,
+          "description": "Nisan = 1 … Adar (Adar I) = 12, Adar II = 13"
+        },
+        "day": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 30
+        },
+        "monthName": {
+          "type": "string"
+        },
+        "formatted": {
+          "type": "string"
+        },
+        "begins": {
+          "$ref": "#/$defs/zman",
+          "description": "The dayBoundary time on the evening this Hebrew date began. time is null where it did not occur (the date then began at civil midnight)."
+        },
+        "ends": {
+          "$ref": "#/$defs/zman",
+          "description": "The dayBoundary time on the evening this Hebrew date ends. time is null where it does not occur (the date then ends at civil midnight)."
+        }
+      },
+      "description": "The Hebrew date now, by the dayBoundary opinion (a default of sunset, not a ruling), and the times that began and end it. Between sunset and nightfall the halachic date is in doubt."
+    },
+    "day": {
+      "$ref": "https://raw.githubusercontent.com/yskolnick/luach/main/schema/day.schema.json",
+      "description": "The whole day view (schema/day.schema.json) of the place's civil day, clock.date: today's zmanim, tonight's candle lighting and havdala, today's fast, as a luach page shows them for today. It is not the Hebrew date now, which changes at sunset: for that use hebrewDate, night and nextNight. After local midnight it is the new civil day, which may not hold the havdala of a run that ended after midnight or the end of a fast: use melacha.ends and fast.ends, which are always those of the run and the fast in the document. Its candleLighting, havdala and shabbosEnds are that day's evening; melacha.begins and melacha.ends are those of the run, which may be days apart. Its omer is the count of the civil day's date. When opinions are given, its zmanim lists the user's own time for each part of the day (Zmanim.order); otherwise a common set."
+    },
+    "settings": {
+      "type": "object",
+      "required": [
+        "opinions",
+        "candleLightingMinutes",
+        "candleLightingNote",
+        "candleLightingCustom",
+        "highLatitudeFallback",
+        "useElevation",
+        "chanukahLighting",
+        "chanukahLightingIsDefault"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "opinions": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "The opinions in force: for every role, the id of the zman followed (the user's, else Luach's default). A minor version can add roles."
+        },
+        "candleLightingMinutes": {
+          "type": "number",
+          "description": "Minutes before sunset for candle lighting, in force."
+        },
+        "candleLightingNote": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "A note for every location in Israel that has no documented candle-lighting custom and no candleLightingMinutes (a built-in place such as Tel Aviv, a city of the full table, a record of the caller's, or bare coordinates): (Luach has no documented custom for this place) Luach does not guess which city a position is in. Null otherwise."
+        },
+        "candleLightingCustom": {
+          "anyOf": [
+            {
+              "type": "object",
+              "required": [
+                "minutes",
+                "custom",
+                "source"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "minutes": {
+                  "type": "number"
+                },
+                "custom": {
+                  "type": "string"
+                },
+                "source": {
+                  "type": "string"
+                }
+              },
+              "description": "The place's documented candle-lighting custom, when it sets the minutes in force; null if the minutes were given or the place has none."
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "highLatitudeFallback": {
+          "enum": [
+            "none",
+            "nearestDay",
+            "halfNight"
+          ]
+        },
+        "useElevation": {
+          "type": "boolean"
+        },
+        "chanukahLighting": {
+          "enum": [
+            "sunset",
+            "tzeis"
+          ],
+          "description": "The custom in force for the Chanukah lighting on a weekday evening: the caller's choice, or tzeis (nightfall) when none is chosen."
+        },
+        "chanukahLightingIsDefault": {
+          "type": "boolean",
+          "description": "True when the caller chose no Chanukah lighting custom, so chanukahLighting is Luach's default (nightfall); a default, not a ruling."
+        }
+      },
+      "description": "What the answers in this document follow, so a consumer can show it. These are Luach defaults unless the caller chose; defaults are not rulings."
+    },
+    "validUntil": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The earliest instant after instant at which anything in this document changes (the exact times of melacha.begins and ends, fast.begins and ends, hebrewDate.ends, nextZman, the first of upcoming after the instant, the sunset of the run's last day, the turn of the Kiddush Levana month, and the start of the next civil day). The document may be stale after this instant; ask again then."
+    },
+    "melacha": {
+      "type": "object",
+      "required": [
+        "inProgress",
+        "begins",
+        "ends",
+        "eve",
+        "days"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "inProgress": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "Melacha is forbidden at the instant: true from begins until ends (exact times), false before or after. null means Luach has no time to decide by (a begin or end that does not occur, far north in summer); it never means off. Compare with null first."
+        },
+        "begins": {
+          "$ref": "#/$defs/zman",
+          "description": "The candle lighting that begins the run: the next, or that of the run in progress. time is null where it does not occur."
+        },
+        "ends": {
+          "$ref": "#/$defs/zman",
+          "description": "The end of the run, on the evening of its last day (havdala, or the end of Shabbos before Tisha B'Av postponed). time is null where it does not occur."
+        },
+        "eve": {
+          "type": "object",
+          "required": [
+            "date",
+            "hebrewDate",
+            "events"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "date": {
+              "type": "string",
+              "pattern": "^[+-]?\\d{4,6}-\\d{2}-\\d{2}$",
+              "description": "The civil date of the day before the first day."
+            },
+            "hebrewDate": {
+              "$ref": "#/$defs/hebrewDate"
+            },
+            "events": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/event"
+              }
+            }
+          },
+          "description": "The day before the first day, and its events (Erev Pesach, …)."
+        },
+        "days": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "date",
+              "hebrewDate",
+              "shabbos",
+              "events",
+              "candles"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "date": {
+                "type": "string",
+                "pattern": "^[+-]?\\d{4,6}-\\d{2}-\\d{2}$",
+                "description": "The civil date of the day's daytime."
+              },
+              "hebrewDate": {
+                "$ref": "#/$defs/hebrewDate"
+              },
+              "shabbos": {
+                "type": "boolean"
+              },
+              "events": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/event"
+                }
+              },
+              "candles": {
+                "$ref": "#/$defs/zman",
+                "description": "The candles that begin this day, lit the evening before."
+              }
+            }
+          },
+          "description": "Each consecutive day on which melacha is forbidden."
+        }
+      },
+      "description": "The run of consecutive days on which melacha is forbidden (Shabbos, Yom Tov, Yom Kippur) that is in progress, or else the next to begin."
+    },
+    "fast": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "event",
+            "hebrewDate",
+            "inProgress",
+            "begins",
+            "ends"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "event": {
+              "$ref": "#/$defs/event"
+            },
+            "hebrewDate": {
+              "$ref": "#/$defs/hebrewDate"
+            },
+            "inProgress": {
+              "type": [
+                "boolean",
+                "null"
+              ],
+              "description": "true from begins until ends (exact times), false before or after; null where the answer needs a time that does not occur. Never off: compare with null first."
+            },
+            "begins": {
+              "$ref": "#/$defs/zman"
+            },
+            "ends": {
+              "$ref": "#/$defs/zman"
+            }
+          },
+          "description": "The fast of the place's today or tomorrow (or of yesterday, while still on after local midnight): the one in progress, else the next, else today's that has ended. Compare the instant with begins and ends."
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "night": {
+      "$ref": "#/$defs/night",
+      "description": "The night of the Hebrew date now (hebrewDate): in progress once the date has begun (after its boundary), last night during its day. The Omer count and the Chanukah lights of that night are here. Not day.omer, which is the count of the civil day's date."
+    },
+    "nextNight": {
+      "$ref": "#/$defs/night",
+      "description": "The night after night: the coming night once the date has rolled over; the night that begins this evening during the day. What is counted tonight is nextNight until the date rolls over, then night. nextNight.chanukahLights is the candlesTonight of the Chanukah event of the Hebrew date now, hebrewDate (null where that is 0 or absent)."
+    },
+    "upcoming": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "zman",
+          "hebrewDate"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "zman": {
+            "$ref": "#/$defs/zman"
+          },
+          "hebrewDate": {
+            "$ref": "#/$defs/hebrewDate",
+            "description": "The Hebrew date whose day view gives the time."
+          }
+        }
+      },
+      "description": "Every calendar time after the instant (a time at the instant itself has happened and is not here) to the end of the seventh civil day after it, in time order (zmanim of the day, candle lighting, havdala or the end of Shabbos, a fast's start and end). Seven days always hold the next Shabbos. It contains melacha.begins and melacha.ends, and the fast's begins and ends, when they fall in that span and occur."
+    },
+    "nextZman": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/zman"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "The next of the day's zmanim by the user's opinions, by the exact time, among the previous civil day's (a time can fall after local midnight far north), today's and the next civil day's, or null if none occurs (polar regions). Candle lighting, havdala and fasts are in melacha, fast and upcoming."
+    },
+    "kiddushLevana": {
+      "type": "object",
+      "required": [
+        "year",
+        "month",
+        "molad",
+        "earliest",
+        "latest"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "year": {
+          "type": "integer"
+        },
+        "month": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 13
+        },
+        "molad": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The molad of the month."
+        },
+        "earliest": {
+          "type": "object",
+          "required": [
+            "threeDays",
+            "sevenDays"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "threeDays": {
+              "$ref": "#/$defs/kiddushLevanaTime"
+            },
+            "sevenDays": {
+              "$ref": "#/$defs/kiddushLevanaTime"
+            }
+          }
+        },
+        "latest": {
+          "type": "object",
+          "required": [
+            "halfMonth",
+            "fifteenDays"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "halfMonth": {
+              "$ref": "#/$defs/kiddushLevanaTime"
+            },
+            "fifteenDays": {
+              "$ref": "#/$defs/kiddushLevanaTime"
+            }
+          }
+        }
+      },
+      "description": "Kiddush Levana for the month whose latest time has not passed: every opinion, none chosen. Whether it is said on a night that is Shabbos or Yom Tov is not modelled. Ask your rav."
+    }
+  }
+}

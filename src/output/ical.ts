@@ -14,20 +14,29 @@ import { holidaysBetween } from '../holidays/holidays.js';
 import { holidayName } from '../holidays/names.js';
 import type { HolidayOptions } from '../holidays/types.js';
 import { parshaFor, parshaName } from '../parsha/parsha.js';
-import { dafYomi } from '../learning/bavli.js';
-import { mishnaYomis, nachYomi, rambamOneChapter, rambamThreeChapters, yerushalmiYomi } from '../learning/cycles.js';
 import type { DayLocation } from '../day/day-info.js';
 import { dayInfo } from '../day/day-info.js';
 import { zmanLabel } from '../zmanim/opinions.js';
+import { termName } from '../locales/terms.js';
 import { zmanimFor } from '../zmanim/day.js';
 import type { ZmanId } from '../zmanim/opinions.js';
 import type { DaySlot, Opinions, ZmanimSettings } from '../zmanim/zmanim.js';
-import { gematriya } from '../text/gematriya.js';
 
 const DAY_SLOTS: readonly string[] = ['alos', 'misheyakir', 'sunrise', 'shema', 'tefilla', 'chatzos', 'minchaGedola', 'minchaKetana', 'plag', 'sunset', 'tzeis'];
 
-/** Learning cycles that can be included. */
-export type IcalLearning = 'dafYomi' | 'yerushalmiYomi' | 'mishnaYomis' | 'rambamOneChapter' | 'rambamThreeChapters' | 'nachYomi';
+/** One learning item for a day, as {@link IcalLearning} gives it. */
+export interface IcalLearningItem {
+  /** The cycle's name, e.g. "dafYomi". */
+  readonly name: string;
+  /** The event's title. */
+  readonly text: string;
+}
+
+/**
+ * The learning to include in an iCalendar file: what `icalLearning([...])` from `luach/learning`
+ * returns. It gives the items for a day in a locale.
+ */
+export type IcalLearning = (date: HebrewDate, locale: Locale) => readonly IcalLearningItem[];
 
 /** Options for {@link toICalendar}. */
 export interface ICalOptions extends ZmanimSettings {
@@ -46,8 +55,8 @@ export interface ICalOptions extends ZmanimSettings {
   holidays?: boolean | Omit<HolidayOptions, 'israel'>;
   /** Include the parsha on each Shabbos. Default true. */
   parsha?: boolean;
-  /** Learning cycles to include. Default none. */
-  learning?: readonly IcalLearning[];
+  /** Learning cycles to include: `icalLearning(['dafYomi', 'mishnaYomis'])` from `luach/learning`. Default none. */
+  learning?: IcalLearning;
   /** For candle lighting, havdala and zmanim. Without it, only all-day events. */
   location?: DayLocation;
   /** Candle lighting and havdala (needs `location`). Default true when a location is given. */
@@ -114,6 +123,9 @@ export function toICalendar(start: CivilDate | HebrewDate, end: CivilDate | Hebr
   if (h1.epochDays < h0.epochDays) throw new RangeError('end is before start');
   const locale = options.locale ?? he;
   const israel = israelFor(options.israel, options.location);
+  if (options.learning !== undefined && typeof options.learning !== 'function') {
+    throw new TypeError("options.learning takes icalLearning([...]) from 'luach/learning', not a list of names");
+  }
   const now = options.now ?? new Date();
   if (!(now instanceof Date) || !Number.isFinite(now.getTime())) throw new RangeError('options.now is not a valid Date');
   const zmanim = options.location ? zmanimFor(options.location, { ...options, israel }) : null;
@@ -127,7 +139,6 @@ export function toICalendar(start: CivilDate | HebrewDate, end: CivilDate | Hebr
     }
   }
   const items: Item[] = [];
-  const rtl = locale.dir === 'rtl';
 
   if (options.holidays !== false) {
     const hopts = { ...(typeof options.holidays === 'object' ? options.holidays : {}), israel };
@@ -136,30 +147,24 @@ export function toICalendar(start: CivilDate | HebrewDate, end: CivilDate | Hebr
       items.push({ uid: `${e.date.toString()}-${e.id}${e.day ?? ''}`, summary: holidayName(e, locale), categories: ['holiday', ...cats].join(','), allDay: e.date.toCivil() });
     }
   }
-  for (let d = h0; d.epochDays <= h1.epochDays; d = d.next()) {
+  // Counted by index, so the last supported day can be the last day of the range (its next day does not exist).
+  for (let i = 0; i <= h1.epochDays - h0.epochDays; i++) {
+    const d = h0.addDays(i);
     const c = d.toCivil();
     if (options.parsha !== false && d.isShabbos) {
       const r = parshaFor(d, { israel });
-      if (r?.parsha) items.push({ uid: `${d.toString()}-parsha`, summary: `${rtl ? 'פרשת' : 'Parshas'} ${parshaName(r.parsha, locale)}`, categories: 'parsha', allDay: c });
+      if (r?.parsha) items.push({ uid: `${d.toString()}-parsha`, summary: `${termName('parshas', locale)} ${parshaName(r.parsha, locale)}`, categories: 'parsha', allDay: c });
     }
-    for (const l of options.learning ?? []) {
-      let text: string | null = null;
-      if (l === 'dafYomi') {
-        const p = dafYomi(d);
-        text = p ? (rtl ? `דף יומי: ${p.tractateHe} ${gematriya(p.daf)}` : `Daf Yomi: ${p.tractate} ${p.daf}`) : null;
-      } else {
-        const p = { yerushalmiYomi, mishnaYomis, rambamOneChapter, rambamThreeChapters, nachYomi }[l](d);
-        text = p ? (rtl ? p.textHe : p.text) : null;
-      }
-      if (text) items.push({ uid: `${d.toString()}-${l}`, summary: text, categories: 'learning', allDay: c });
+    if (options.learning) {
+      for (const item of options.learning(d, locale)) items.push({ uid: `${d.toString()}-${item.name}`, summary: item.text, categories: 'learning', allDay: c });
     }
     if (options.location && zmanim) {
       const day = zmanim.on(d);
       if (options.candleLighting !== false) {
         const { opinions, useElevation, candleLightingMinutes, ateretTorahMinutes, highLatitudeFallback, algorithm } = options;
         const info = dayInfo(d, { opinions, useElevation, candleLightingMinutes, ateretTorahMinutes, highLatitudeFallback, algorithm, location: options.location, israel, locale, zmanim: [] });
-        if (info.candleLighting?.time) items.push({ uid: `${d.toString()}-candles`, summary: rtl ? 'הדלקת נרות' : 'Candle lighting', description: `${info.candleLighting.opinion}. ${info.candleLighting.source}`, categories: 'candle-lighting', at: new Date(info.candleLighting.time) });
-        if (info.havdala?.time) items.push({ uid: `${d.toString()}-havdala`, summary: info.havdala.id === 'havdala' ? (rtl ? 'הבדלה' : 'Havdala') : zmanLabel(info.havdala.id, locale), description: `${info.havdala.opinion}. ${info.havdala.source}`, categories: 'havdala', at: new Date(info.havdala.time) });
+        if (info.candleLighting?.time) items.push({ uid: `${d.toString()}-candles`, summary: termName('candle-lighting', locale), description: `${info.candleLighting.opinion}. ${info.candleLighting.source}`, categories: 'candle-lighting', at: new Date(info.candleLighting.time) });
+        if (info.havdala?.time) items.push({ uid: `${d.toString()}-havdala`, summary: info.havdala.id === 'havdala' ? termName('havdala', locale) : zmanLabel(info.havdala.id, locale), description: `${info.havdala.opinion}. ${info.havdala.source}`, categories: 'havdala', at: new Date(info.havdala.time) });
         if (info.shabbosEnds?.time) items.push({ uid: `${d.toString()}-shabbos-ends`, summary: zmanLabel(info.shabbosEnds.id, locale), description: `${info.shabbosEnds.opinion}. ${info.shabbosEnds.source}`, categories: 'shabbos-ends', at: new Date(info.shabbosEnds.time) });
       }
       for (const w of wanted) {

@@ -1,5 +1,6 @@
 // node examples/node/today.mjs   (with luach installed: npm install luach)
-import { HebrewDate, formatHebrewDate, ashkenazi, holidaysBetween, holidayName, getPlace, Zmanim, zmanLabel } from '../../dist/index.js';
+import { HebrewDate, formatHebrewDate, ashkenazi, holidaysBetween, holidayName, Zmanim, zmanLabel } from '../../dist/index.js';
+import { getPlace } from '../../dist/places/index.js';
 
 const place = getPlace('lakewood');
 const today = HebrewDate.today({ timeZone: place.timeZone });

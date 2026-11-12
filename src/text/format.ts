@@ -66,14 +66,29 @@ export function formatHebrewDate(date: HebrewDateParts, options?: FormatOptions)
   return options?.isolate && locale.dir === 'rtl' ? isolate(s, 'rtl') : s;
 }
 
+/** Options for {@link formatTime}. Every option is a way of writing the same time; none changes it. */
+export interface TimeFormatOptions {
+  /** A 12-hour clock with am/pm ("9:05 pm"). Default `false`: 24 hours ("21:05"). */
+  readonly hour12?: boolean;
+  /** Seconds as well ("21:05:33"). Default `false`. */
+  readonly seconds?: boolean;
+  /** On the 24-hour clock, write the hour with two digits ("06:41"). Default `true`; `false` gives "6:41". */
+  readonly padHour?: boolean;
+  /** On the 12-hour clock, write "AM"/"PM". Default `false` ("am"/"pm"). */
+  readonly uppercase?: boolean;
+}
+
 /**
  * Formats an instant as wall-clock time in `timeZone`: "21:05" (default) or "9:05 pm".
  * Uses the zone module (Intl, or a provider), not the device's zone.
  */
-export function formatTime(instant: Date, timeZone: TimeZone, options?: { hour12?: boolean; seconds?: boolean }): string {
+export function formatTime(instant: Date, timeZone: TimeZone, options?: TimeFormatOptions): string {
   const p = localParts(instant.getTime(), timeZone);
   const mm = String(p.minute).padStart(2, '0');
   const ss = options?.seconds ? `:${String(p.second).padStart(2, '0')}` : '';
-  if (options?.hour12) return `${p.hour % 12 === 0 ? 12 : p.hour % 12}:${mm}${ss} ${p.hour < 12 ? 'am' : 'pm'}`;
-  return `${String(p.hour).padStart(2, '0')}:${mm}${ss}`;
+  if (options?.hour12) {
+    const period = p.hour < 12 ? 'am' : 'pm';
+    return `${p.hour % 12 === 0 ? 12 : p.hour % 12}:${mm}${ss} ${options.uppercase ? period.toUpperCase() : period}`;
+  }
+  return `${options?.padHour === false ? String(p.hour) : String(p.hour).padStart(2, '0')}:${mm}${ss}`;
 }

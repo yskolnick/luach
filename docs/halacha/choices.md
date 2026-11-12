@@ -108,7 +108,7 @@ in the code is on [Sources](../sources.md).
   for each kind of date.
 - **Sources:**
   - Birthday or bar mitzvah, Adar II: Rema OC 55:10, citing Mahari Mintz §9 (*verified*; the
-    check of the sources found that the ruling is the Rema's gloss, not the Mechaber's).
+    ruling is the Rema's gloss, not the Mechaber's).
   - Yahrzeit: Mechaber OC 568:7 gives Adar II, the Rema gives Adar I and notes that some
     observe both (*verified*).
   - 30 Adar I → 30 Shevat and the "first anniversary" rule: Magen Avraham 568:20; Mishna
@@ -174,7 +174,7 @@ in the code is on [Sources](../sources.md).
 - **Why:** the date follows the Rema's rule; the event is placed on the Shabbos so that its
   night is the right one.
 - **Sources:** Rema OC 581:1 gives the weekday rule; the four-day reason is Mishna Berura
-  581:6 (*verified*; a check of the sources corrected the attribution).
+  581:6 (*verified*).
 - **Confidence:** High.
 - **Open:** Sephardim say Selichos from Rosh Chodesh Elul (SA OC 581:1); this event is
   Ashkenazi only.
@@ -322,7 +322,7 @@ in the code is on [Sources](../sources.md).
   exact longitude, or for using mean rather than another local time. Kiddush Levana times:
   3 days (Talmidei Rabbeinu Yonah, cited in the Beis Yosef OC 426; MB 426:20), 7 days
   (SA OC 426:4), half a month (Rema OC 426:3), 15 days (SA OC 426:3; MB 426:17), all
-  *verified*; a check of the sources found two of these attributions swapped and fixed them.
+  *verified*.
 - **Confidence:** Medium.
 - **Open:** a source for the longitude convention used by luchos would settle this.
   Night-only and Motzaei Shabbos rules are not modelled.
@@ -444,11 +444,58 @@ in the code is on [Sources](../sources.md).
 - **Confidence:** High that it is the safer direction.
 - **Open:** a fast's start is rounded down, because it is a deadline for eating.
 
+### States change at the exact time {#states-change-at-the-exact-time}
+
+- **Status:** Default.
+- **What it does:** `hebrewDateAt`, `isMelachaForbiddenAt`, `hebrewDateSpanAt`, `fastAt` and
+  `melachaRunAt` change at a boundary's exact time (`exact`), not at the minute that is displayed
+  (`time`, rounded on the safe side). For up to a minute a state can change before the displayed
+  minute: a havdala time of 17:21:52 is shown as 17:22, and melacha is not forbidden from 17:21:52.
+  `Zmanim#next` and `Zmanim#between` list times by the displayed minute; `timesBetween` by the
+  exact time.
+- **Why:** the exact time is what is calculated; the displayed minute is a rounding of it for
+  reading. An app that must never show a state change before the time it prints should compare
+  with `time` itself.
+- **Sources:** *no source recorded* (a calculation convention).
+- **Confidence:** High that it follows the calculation.
+- **Open:** whether states should follow the displayed minute instead.
+
+### Where the havdala time or candle lighting does not occur {#where-havdala-does-not-occur}
+
+- **Status:** Default.
+- **What it does:** far north in summer the sun may not reach the `havdala` angle (with the default
+  `highLatitudeFallback: 'none'`), and in polar night or day there may be no sunset or candle
+  lighting. `isMelachaForbiddenAt`, which answers with a plain `true` or `false`, then answers by
+  the civil day: forbidden from candle lighting where that occurs, and, leaving Shabbos or Yom Tov,
+  until the end of its civil day, or until its sunset where that falls after midnight. That end
+  is not a time from any source, and it can be earlier than any high-latitude rule Luach offers.
+  `melachaRunAt` and `fastAt` give `inProgress: null` there instead, and `nowInfo` passes that on.
+  Setting `highLatitudeFallback` gives that rule's time, marked in `Zman.fallback`.
+- **Why:** Luach has no time to give there; a function that must answer yes or no answers by the
+  civil day, and the functions that can say "unknown" say it.
+- **Sources:** *no source recorded*.
+- **Confidence:** Low.
+- **Open:** what the answer should be there. Ask your rav.
+
+### The date line {#the-date-line}
+
+- **Status:** Default.
+- **What it does:** every date, Shabbos included, is the civil date in the place's time zone, so
+  places just west of the date line (Kiritimati, Samoa, Fiji, the Chatham Islands) keep Shabbos on
+  their own civil Saturday.
+- **Why:** Luach computes the civil date at the place from its zone; it does not model a halachic
+  date line, on which there are several opinions.
+- **Sources:** *no source recorded*.
+- **Confidence:** Low near the date line.
+- **Open:** a halachic date line as an option. Ask your rav.
+
 ### Candle lighting 18 minutes; havdala at 8.5° {#candle-lighting-18-minutes-havdala-at-8-5}
 
 - **Status:** Default.
-- **What it does:** candle lighting defaults to 18 minutes before sunset; havdala and
-  second-night candles to 8.5°.
+- **What it does:** candle lighting defaults to the place's documented custom where Luach has
+  one (a built-in place's `candleLighting`, such as Jerusalem's 40 minutes, with its source),
+  otherwise 18 minutes before sunset; havdala and second-night candles to 8.5°. The same
+  default applies everywhere: `Zmanim`, the day view, iCal and `isMelachaForbiddenAt`.
 - **Why:** 18 minutes is the most common diaspora custom; 8.5° is a widely printed time for
   three small stars.
 - **Sources:**
@@ -458,16 +505,33 @@ in the code is on [Sources](../sources.md).
     (*secondary*).
   - Second night: SA OC 503:1.
 - **Confidence:** Medium.
-- **Open:** local customs (Jerusalem 40 minutes and others) are options, not defaults.
+- **Open:** cities whose custom has no source in Luach get 18 minutes; see the next entry.
 
 ### Local candle-lighting customs {#local-candle-lighting-customs}
 
 - **Status:** Default.
-- **What it does:** a place may carry its documented custom (Jerusalem 40, Haifa 30); the day view, CLI and iCal use it unless the caller sets the minutes, and label it with the source.
+- **What it does:** a place may carry its documented custom (Jerusalem 40, Haifa 30); `Zmanim`, the day view, the CLI, iCal and every at-an-instant function use it unless the caller sets the minutes, and label it with the source. It applies when the city is given (a built-in place, or a location that carries `candleLighting`), never guessed from coordinates: times are always computed from the location's own coordinates. For a GPS position in a chosen city, spread the city and set the position: `{ ...getPlace('jerusalem'), latitude, longitude, elevation }`. Every location in Israel with no documented custom and no `candleLightingMinutes` (a built-in place such as Tel Aviv, a city of the full table, a record of the caller's, or bare coordinates) gets 18 minutes and a plain note in the zman's opinion: "Luach has no documented custom for this place"; to use a city's custom, pass that city or `candleLightingMinutes`. `nowInfo.settings.candleLightingNote` carries it. Jerusalem's custom is never attached to the other places of its district.
 - **Why:** the minutes are a local custom; a city whose custom is documented should not get the generic 18.
 - **Sources:** Peninei Halakha, Shabbat 3:2 (Jerusalem 40, Haifa 30) and Zemanim 13:5 n. 11 (Jerusalem) (*verified*, read on ph.yhb.org.il). Not set without a source: Zichron Yaakov 30, Petach Tikva 40, the Shomron 30.
 - **Confidence:** Medium: one published source per city.
-- **Open:** Another luach is reported to give Jerusalem 25 (not verified); other cities need sources.
+- **Open:** other values reported for Jerusalem (not verified); other cities need sources. Where a
+  custom ends is a question for a rav, so Luach does not infer a city from coordinates: bare
+  coordinates, even inside Jerusalem, get 18 minutes with the note, unless the caller passes the
+  city or the minutes.
+
+### The earliest time to light the Chanukah lights {#the-earliest-time-to-light-the-chanukah-lights}
+
+- **Status:** Default.
+- **What it does:** `nightOf(...).chanukahLighting` and `nowInfo`'s `night` and `nextNight` give the earliest time to light the Chanukah lights on each evening of Chanukah, by custom, from times Luach already computes. On a weekday it offers two customs: from sunset (the evening's `sunset`) and from nightfall (the evening's `tzeis`, so it follows the caller's nightfall opinion). The caller chooses with the `chanukahLighting` option (`'sunset'` or `'tzeis'`); with none chosen the custom in force is nightfall, a default, so a weekday `earliest` is the nightfall custom's time, `custom` says `'tzeis'`, `isDefault` is `true` (and `nowInfo`'s `settings.chanukahLightingIsDefault` too), and `customs` still lists both. On Erev Shabbos the earliest is the caller's `plag` and the Shabbos candle lighting is given as `before`; on Motzaei Shabbos it is when Shabbos ends (the caller's havdala time). `until` is the dawn of the morning after. Where plag falls after the candle lighting (a long candle-lighting custom with a Magen Avraham plag) both times are given as they are.
+- **Why:** the sources differ on what "sunset" means for the lights. Luach's default is nightfall, the reading of "the end of sunset" in Shulchan Aruch OC 672:1 as the Mishna Berura 672:1 explains it. It is a default, not a ruling: Luach rules on none of the customs, and the caller changes it with `chanukahLighting: 'sunset'`. It is marked as the default wherever it is shown (`isDefault`, and "Luach's default" on the command line). The special evenings do not depend on the choice, so they are given whichever custom is set.
+- **Sources:**
+  - From sunset: Rambam, Hilchos Megillah vChanukah 4:5; Beur HaGra OC 672:1 (*verified*).
+  - From nightfall, "the end of sunset", explained as when the stars come out: Shulchan Aruch OC 672:1; Mishna Berura 672:1 (*verified*).
+  - Erev Shabbos, before the Shabbos candles, from plag hamincha, with oil to burn until half an hour after the stars come out: Shulchan Aruch OC 679:1; Mishna Berura 679:2 (*verified*). The Mishna Berura reckons plag hamincha as an hour and a quarter of seasonal hours before nightfall (672:3, *verified*); Luach gives the caller's own plag opinion, which by default is counted from sunset and so is earlier than his. The Mishna Berura (233:4) states both ways of counting the day's hours: from dawn to nightfall, or from sunrise to sunset.
+  - Motzaei Shabbos: the lights first, Shulchan Aruch and Rema OC 681:2; havdala first, the Taz, cited in Mishna Berura 681:3 (*verified*).
+  - Until dawn: Rema OC 672:2; Mishna Berura 672:11, with the berachah while the household is awake (*verified*). The proper time to light is about half an hour from the earliest time (Shulchan Aruch OC 672:2) and is not turned into a clock time.
+- **Confidence:** Medium: the sources are read, but which customs are held where is not settled here.
+- **Open:** customs not offered yet: lighting shortly after sunset as in Chabad practice, and Rabbeinu Tam's sunset. On Erev Shabbos Luach has no plag counted from nightfall by the caller's own nightfall opinion, as the Mishna Berura counts it: the earliest shown follows the plag opinion chosen. Whether the lights or havdala come first on Motzaei Shabbos is left to the household.
 
 ### Mincha Gedola and chatzos {#mincha-gedola-and-chatzos}
 

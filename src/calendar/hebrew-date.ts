@@ -106,7 +106,11 @@ export class HebrewDate implements HebrewDateParts {
     return HebrewDate.fromCivil(civilDateOf(date, options?.timeZone), options);
   }
 
-  /** Today's Hebrew date by the civil date in `timeZone` (default: the runtime's zone). Ignores sunset. */
+  /**
+   * Today's Hebrew date by the civil date in `timeZone` (default: the runtime's zone). Ignores
+   * sunset: after dark it is a day behind. For the Hebrew date at a place now, use
+   * `hebrewDateAt(new Date(), location)`.
+   */
   static today(options?: { timeZone?: TimeZone }): HebrewDate {
     return HebrewDate.fromDate(new Date(), options);
   }

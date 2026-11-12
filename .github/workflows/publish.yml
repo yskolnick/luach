@@ -1,0 +1,42 @@
+name: Publish
+
+# Stages a release of `luach` on npm by trusted publishing, with provenance; no token is stored
+# anywhere. A staged release is not public until the owner approves it on npmjs.com, with 2FA.
+# Runs only from `main` in yskolnick/luach.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'The version to stage; must equal package.json (e.g. 0.3.2)'
+        required: true
+
+permissions:
+  contents: read
+  id-token: write # trusted publishing: npm reads the workflow's identity from GitHub
+
+jobs:
+  publish:
+    if: github.repository == 'yskolnick/luach'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: npm
+    steps:
+      - name: Only from main
+        run: test "$GITHUB_REF" = refs/heads/main
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: 'https://registry.npmjs.org'
+      # Staged publishing needs npm 11.15 or later; Node 22 ships npm 10.
+      - run: npm install -g npm@11
+      - name: The version asked for is the version in package.json, and not on npm yet
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          test "$(node -p "require('./package.json').version")" = "$VERSION"
+          ! npm view "luach@$VERSION" version 2>/dev/null | grep -q .
+      - run: npm ci
+      - run: npm run verify
+      - run: npm stage publish

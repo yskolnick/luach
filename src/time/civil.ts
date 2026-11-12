@@ -72,8 +72,21 @@ export function assertCivil(year: number, month: number, day: number): void {
   }
 }
 
+/**
+ * Throws a TypeError for a `HebrewDate` (or anything shaped like one) where a civil date is
+ * meant: its year, month and day would be read as Gregorian.
+ */
+export function assertNotHebrewDate(d: unknown, fn: string): void {
+  const o = d as { epochDays?: unknown; toCivil?: unknown } | null;
+  if (typeof o === 'object' && o !== null && typeof o.epochDays === 'number' && typeof o.toCivil === 'function') {
+    throw new TypeError(`${fn} takes a civil date, not a HebrewDate: pass date.toCivil()`);
+  }
+}
+
 /** Formats a civil date as ISO 8601 (`YYYY-MM-DD`, with a sign for years outside 0–9999). */
 export function formatIsoDate(d: CivilDate): string {
+  assertNotHebrewDate(d, 'formatIsoDate');
+  assertCivil(d.year, d.month, d.day);
   const y = d.year >= 0 && d.year <= 9999 ? String(d.year).padStart(4, '0') : (d.year < 0 ? '-' : '+') + String(Math.abs(d.year)).padStart(6, '0');
   return `${y}-${String(d.month).padStart(2, '0')}-${String(d.day).padStart(2, '0')}`;
 }

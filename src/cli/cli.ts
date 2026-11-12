@@ -43,7 +43,7 @@ import { Zmanim, type Opinions, type ZmanimSettings } from '../zmanim/zmanim.js'
 import type { ZmanId } from '../zmanim/opinions.js';
 import { ZMANIM, zmanLabel } from '../zmanim/opinions.js';
 import { termName } from '../locales/terms.js';
-import type { Zman } from '../zmanim/zman.js';
+import type { Zman, ZmanUnavailableReason } from '../zmanim/zman.js';
 
 declare const process: {
   argv: string[];
@@ -93,28 +93,127 @@ Choices (today, date, now, zmanim, ics):
 Ask your rav. This library calculates; it does not rule.
 `;
 
-function parseArgs(argv: string[]): { positional: string[]; flags: Record<string, string | true> } {
+type Command = 'today' | 'date' | 'now' | 'zmanim' | 'holidays' | 'convert' | 'ics' | 'cities';
+const COMMANDS: readonly Command[] = ['today', 'date', 'now', 'zmanim', 'holidays', 'convert', 'ics', 'cities'];
+const WITH_PLACE: readonly Command[] = ['today', 'date', 'now', 'zmanim', 'ics'];
+const NAMED: readonly Command[] = ['today', 'date', 'now', 'zmanim', 'holidays', 'ics'];
+
+/**
+ * Every option: whether it takes a value (`'number?'`: only when a number follows) and the
+ * commands that read it. An option not here, or given to a command that does not read it, is a
+ * usage error, so a typo never quietly changes an answer. The help text lists exactly these.
+ */
+export const FLAGS: Readonly<Record<string, { readonly value: 'none' | 'text' | 'number?'; readonly commands: readonly Command[] }>> = {
+  city: { value: 'text', commands: WITH_PLACE },
+  lat: { value: 'text', commands: WITH_PLACE },
+  lon: { value: 'text', commands: WITH_PLACE },
+  tz: { value: 'text', commands: WITH_PLACE },
+  elevation: { value: 'number?', commands: WITH_PLACE },
+  locale: { value: 'text', commands: NAMED },
+  names: { value: 'text', commands: NAMED },
+  israel: { value: 'none', commands: ['today', 'date', 'now', 'holidays', 'ics'] },
+  diaspora: { value: 'none', commands: ['today', 'date', 'now', 'holidays', 'ics'] },
+  json: { value: 'none', commands: ['today', 'date', 'now', 'zmanim', 'holidays'] },
+  all: { value: 'none', commands: ['zmanim'] },
+  at: { value: 'text', commands: ['now'] },
+  opinions: { value: 'text', commands: WITH_PLACE },
+  'candle-minutes': { value: 'text', commands: WITH_PLACE },
+  'high-latitude': { value: 'text', commands: WITH_PLACE },
+  'chanukah-lighting': { value: 'text', commands: ['now'] },
+  learning: { value: 'text', commands: ['ics'] },
+  help: { value: 'none', commands: COMMANDS },
+  version: { value: 'none', commands: COMMANDS },
+};
+
+/** How many arguments each command takes after its name (`Infinity`: any number, joined with spaces). */
+export const ARGS: Readonly<Record<Command, readonly [min: number, max: number]>> = {
+  today: [0, 0],
+  date: [1, 1],
+  now: [0, 0],
+  zmanim: [0, 1],
+  holidays: [0, 1],
+  convert: [1, Infinity],
+  ics: [2, 2],
+  cities: [1, Infinity],
+};
+
+/** Edit distance, for suggesting the option a typo meant. */
+function distance(a: string, b: string): number {
+  const row = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    let diag = row[0]!;
+    row[0] = i;
+    for (let j = 1; j <= b.length; j++) {
+      const up = row[j]!;
+      row[j] = Math.min(up + 1, row[j - 1]! + 1, diag + (a[i - 1] === b[j - 1] ? 0 : 1));
+      diag = up;
+    }
+  }
+  return row[b.length]!;
+}
+
+function closest(name: string): string | undefined {
+  let best: string | undefined;
+  let bestD = 3;
+  for (const k of Object.keys(FLAGS)) {
+    const d = distance(name, k);
+    if (d < bestD) [best, bestD] = [k, d];
+  }
+  return best;
+}
+
+function parseArgs(argv: string[]): { positional: string[]; flags: Record<string, string | true>; problems: string[] } {
   const positional: string[] = [];
   const flags: Record<string, string | true> = {};
+  const problems: string[] = [];
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i]!;
-    if (a.startsWith('--')) {
-      const eq = a.indexOf('=');
-      if (eq > 2) {
-        flags[a.slice(2, eq)] = a.slice(eq + 1);
-        continue;
-      }
-      const key = a.slice(2);
-      const next = argv[i + 1];
-      // --elevation takes a value only when one follows (bare --elevation uses the place's).
-      const takes = key === 'elevation' ? next !== undefined && NUMBER.test(next) : !['israel', 'diaspora', 'json', 'all', 'help', 'version'].includes(key);
-      if (next !== undefined && !next.startsWith('--') && takes) {
-        flags[key] = next;
-        i++;
-      } else flags[key] = true;
-    } else positional.push(a);
+    if (!a.startsWith('--')) {
+      positional.push(a);
+      continue;
+    }
+    const eq = a.indexOf('=');
+    const key = eq > 2 ? a.slice(2, eq) : a.slice(2);
+    const spec = Object.prototype.hasOwnProperty.call(FLAGS, key) ? FLAGS[key] : undefined;
+    if (!spec) {
+      const near = closest(key);
+      problems.push(`unknown option --${key}${near ? `; did you mean --${near}?` : ''} (see luach --help)`);
+      continue;
+    }
+    if (Object.prototype.hasOwnProperty.call(flags, key)) problems.push(`--${key} is given twice`);
+    if (eq > 2) {
+      if (spec.value === 'none') problems.push(`--${key} takes no value`);
+      flags[key] = a.slice(eq + 1);
+      continue;
+    }
+    const next = argv[i + 1];
+    // --elevation takes a value only when a number follows (bare --elevation uses the place's).
+    const takes = spec.value === 'text' || (spec.value === 'number?' && next !== undefined && NUMBER.test(next));
+    if (takes && next !== undefined && !next.startsWith('--')) {
+      flags[key] = next;
+      i++;
+    } else if (spec.value === 'text') problems.push(`--${key} needs a value`);
+    else flags[key] = true;
   }
-  return { positional, flags };
+  return { positional, flags, problems };
+}
+
+/** The usage problems in a command line, found before anything is worked out. */
+function usageProblems(cmd: string, rest: readonly string[], flags: Record<string, string | true>, problems: readonly string[]): string[] {
+  const out = [...problems];
+  if (!(COMMANDS as readonly string[]).includes(cmd)) return out;
+  const c = cmd as Command;
+  for (const k of Object.keys(flags)) {
+    const spec = FLAGS[k];
+    if (spec && !spec.commands.includes(c)) out.push(`--${k} is not used by "${c}" (it is for: ${spec.commands.join(', ')})`);
+  }
+  const [min, max] = ARGS[c];
+  if (rest.length > max) {
+    const extra = rest.slice(max);
+    const hint = WITH_PLACE.includes(c) && extra.length === 1 && !/^\d/.test(extra[0]!) ? `; for a place, write --city ${JSON.stringify(extra[0])}` : '';
+    out.push(`"${c}" does not take ${extra.map((r) => JSON.stringify(r)).join(' ')}${hint} (see luach --help)`);
+  } else if (rest.length < min) out.push(`"${c}" needs more arguments (see luach --help)`);
+  return out;
 }
 
 const NUMBER = /^-?\d+(\.\d+)?$/;
@@ -180,7 +279,15 @@ function findCity(city: string): Place | undefined {
   const strong = builtInCity(city);
   if (strong) return strong;
   const full = fullTable ? searchPlaces(city, { places: fullTable })[0] : undefined;
-  if (full && strongMatch(full, city)) return full;
+  if (full && strongMatch(full, city)) {
+    // Several places share the name: say which one is used, and how to choose another.
+    const same = searchPlaces(city, { places: fullTable!, limit: 50 }).filter((p) => foldName(p.name) === foldName(full.name));
+    if (same.length > 1 && full.id !== city) {
+      process.stderr.write(`luach: ${same.length} places are named "${full.name}"; using ${full.id} (${full.country}, ${full.timeZone}, ${full.latitude.toFixed(2)}, ${full.longitude.toFixed(2)}). For another, give its id: luach cities ${JSON.stringify(city)}
+`);
+    }
+    return full;
+  }
   return searchPlaces(city)[0] ?? full;
 }
 
@@ -302,6 +409,22 @@ function dated(z: { time: string | null; local: string | null; timeZone: string 
   return date === shown ? z.local : `${z.local} (${p.day} ${MONTHS[p.month - 1]})`;
 }
 
+/** The learning cycles' names, for the text output (`--json` keeps the keys). */
+const LEARNING_LABELS: Readonly<Record<string, readonly [en: string, he: string]>> = {
+  dafYomi: ['Daf Yomi', 'דף יומי'],
+  yerushalmiYomi: ['Yerushalmi Yomi', 'ירושלמי יומי'],
+  amudYomi: ['Amud Yomi', 'עמוד יומי'],
+  mishnaYomis: ['Mishna Yomis', 'משניות יומיות'],
+  rambamOneChapter: ['Rambam, one chapter', 'רמב״ם פרק אחד'],
+  rambamThreeChapters: ['Rambam, three chapters', 'רמב״ם שלושה פרקים'],
+  nachYomi: ['Nach Yomi', 'נ״ך יומי'],
+};
+
+function learningLabel(key: string, locale: Locale): string {
+  const names = LEARNING_LABELS[key];
+  return names ? names[locale.dir === 'rtl' ? 1 : 0] : key;
+}
+
 function printDay(date: CivilDate, flags: Record<string, string | true>): void {
   const loc = place(flags);
   const locale = localeFlag(flags);
@@ -317,7 +440,7 @@ function printDay(date: CivilDate, flags: Record<string, string | true>): void {
   for (const e of info.events) line(`  • ${e.name}`);
   if (info.parsha?.name) line(`  ${termName('parsha', locale)} (${info.parsha.date}): ${info.parsha.name}`);
   if (info.omer) line(`  ${termName('omer', locale)}: ${info.omer.textEnglish}`);
-  for (const [k, v] of Object.entries(info.learning ?? {})) if (v) line(`  ${k}: ${v}`);
+  for (const [k, v] of Object.entries(info.learning ?? {})) if (v) line(`  ${learningLabel(k, locale)}: ${v}`);
   if (info.zmanim.length) {
     line('  Zmanim:');
     const note = loc ? elevationNote(loc, flags) : '';
@@ -405,6 +528,17 @@ function printNow(flags: Record<string, string | true>): void {
   line('  Ask your rav. Each time follows a named opinion; see --json for sources.');
 }
 
+/** Why a time is missing, for the text output (`--json` gives the code). */
+const REASONS: Readonly<Record<ZmanUnavailableReason, string>> = {
+  'sun-always-above': 'the sun does not go that low today',
+  'sun-always-below': 'the sun does not rise that high today',
+  'no-sunrise': 'the sun does not rise today',
+  'no-sunset': 'the sun does not set today',
+  'depends-on-missing-zman': 'a time it is counted from does not occur today',
+  'not-applicable-today': 'not on this day',
+  'requires-terrain-data': 'it needs terrain data',
+};
+
 function printZmanim(date: CivilDate, flags: Record<string, string | true>): void {
   const loc = place(flags);
   if (!loc) throw new Error('zmanim needs a place: --city or --lat/--lon');
@@ -422,7 +556,7 @@ function printZmanim(date: CivilDate, flags: Record<string, string | true>): voi
   if (note) line(`  ${note}`);
   for (const r of out) {
     const custom = r.id === 'candle-lighting' && loc.candleLighting && zmanimOptions(flags).candleLightingMinutes === undefined ? `  (${loc.candleLighting.minutes} minutes, ${loc.candleLighting.custom}: ${loc.candleLighting.source})` : '';
-    line(`  ${dated(r, formatIsoDate(date)).padEnd(6)} ${zmanLabel(r.id, locale)}${r.reason ? `  [${r.reason}]` : ''}${custom}`);
+    line(`  ${dated(r, formatIsoDate(date)).padEnd(6)} ${zmanLabel(r.id, locale)}${r.reason ? `  (no time: ${REASONS[r.reason as ZmanUnavailableReason] ?? r.reason})` : ''}${custom}`);
   }
   line('Ask your rav. Sources: luach zmanim --json, or the ZMANIM table in the docs.');
   void ZMANIM;
@@ -439,11 +573,17 @@ export function main(argv: string[]): number {
 }
 
 function run(argv: string[]): number {
-  const { positional, flags } = parseArgs(argv);
+  const { positional, flags, problems } = parseArgs(argv);
   const [cmd, ...rest] = positional;
-  if (flags.version) return line(VERSION), 0;
   if (flags.help) return line(HELP), 0;
-  if (!cmd) return line(HELP), 1;
+  if (flags.version && !cmd && !problems.length) return line(VERSION), 0;
+  if (!cmd) {
+    if (problems.length) throw new CliProblem(problems.join('\nluach: '));
+    return line(HELP), 1;
+  }
+  const found = usageProblems(cmd, rest, flags, problems);
+  if (found.length) throw new CliProblem(found.join('\nluach: '));
+  if (flags.version) return line(VERSION), 0;
   switch (cmd) {
     case 'today':
       printDay(todayIn(place(flags)), flags);
@@ -459,6 +599,8 @@ function run(argv: string[]): number {
       return 0;
     case 'holidays': {
       const year = rest[0] ? Number(rest[0]) : HebrewDate.today().year;
+      if (!Number.isInteger(year) || year < 1 || year > 9999) throw new CliProblem(`holidays takes a Hebrew year, e.g. 5787; "${rest[0]}" is not one`);
+      if (year < 3000) throw new CliProblem(`holidays takes a Hebrew year; ${year} looks like a civil year (the Hebrew year that begins in it is ${year + 3761})`);
       const locale = localeFlag(flags);
       const events = holidaysForYear(year, { israel: israelFlag(flags) ?? false });
       if (flags.json) return line(JSON.stringify(events, null, 2)), 0;

@@ -40,6 +40,7 @@ import { Month } from '../calendar/months.js';
 import { festivalOn, holidaysOn, roshChodeshOn } from '../holidays/holidays.js';
 import { parshaFor } from './parsha.js';
 import { PARSHA_HAFTAROS, SPECIAL_HAFTAROS, type HaftaraRow } from './haftaros-data.js';
+import { hebrewDateArg } from '../calendar/date-input.js';
 
 /** Customs with haftara data. */
 export type HaftaraMinhag = 'ashkenaz' | 'sephardi' | 'chabad' | 'teimani';
@@ -127,6 +128,7 @@ function holidayKey(date: HebrewDate, israel: boolean): string | null {
  * For the Mincha haftara of a fast day, see {@link fastMinchaHaftara}.
  */
 export function haftaraFor(date: HebrewDate, options: HaftaraOptions = {}): Haftara | null {
+  date = hebrewDateArg(date, 'haftaraFor');
   const israel = options.israel ?? false;
   const minhag = options.minhag ?? 'ashkenaz';
   const hk = holidayKey(date, israel);
@@ -235,6 +237,7 @@ function ownHaftaraDisplaced(date: HebrewDate, parsha: string, options: HaftaraO
 
 /** The haftara at Mincha of a fast day (Ashkenaz and Chabad on all public fasts; Tisha B'Av for all who read it). */
 export function fastMinchaHaftara(date: HebrewDate, options: HaftaraOptions = {}): Haftara | null {
+  date = hebrewDateArg(date, 'fastMinchaHaftara');
   const minhag = options.minhag ?? 'ashkenaz';
   const events = holidaysOn(date, { israel: options.israel ?? false });
   // Communal fasts only (SA OC 566:1). Taanis Bechoros is the firstborn's fast (SA OC 470:1)

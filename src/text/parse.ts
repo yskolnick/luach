@@ -49,6 +49,7 @@ function monthTable(extra: readonly Locale[]): Map<string, { month: number; leap
 export function parseHebrewDate(text: string, options?: { locales?: readonly Locale[] }): HebrewDate {
   const months = monthTable(options?.locales ?? []);
   const tokens = text.trim().replace(/,/g, ' ').split(/\s+/).filter(Boolean);
+  if (tokens.length === 2) throw new RangeError(`"${text}" has no year: write the day, month and year, e.g. "${tokens.join(' ')} 5787"`);
   if (tokens.length < 3) throw new RangeError(`Not a Hebrew date: "${text}"`);
   const num = (t: string): number => (/^\d+$/.test(t) ? Number(t) : parseGematriya(t));
   const day = num(tokens[0]!);

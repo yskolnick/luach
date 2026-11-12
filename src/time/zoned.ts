@@ -5,9 +5,9 @@
  * @packageDocumentation
  */
 
-import { HebrewDate } from '../calendar/hebrew-date.js';
-import { assertCivil, civilToDays, dayOfWeekOfDays, type CivilDate } from './civil.js';
+import { civilToDays, dayOfWeekOfDays, type CivilDate } from './civil.js';
 import { assertTimeZone, localParts, zonedMsToInstant, type TimeZone } from './zone.js';
+import { dayArg, instantArg, isHebrewDate } from '../calendar/date-input.js';
 
 /** The wall clock in a zone at an instant. */
 export interface ZonedParts extends CivilDate {
@@ -25,6 +25,7 @@ export interface ZonedParts extends CivilDate {
 
 /** The wall clock in `timeZone` at `instant`: date, time to the second, day of the week and offset. From the zone, never this machine's. */
 export function zonedParts(instant: Date, timeZone: TimeZone): ZonedParts {
+  instant = instantArg(instant, 'zonedParts');
   const ms = instant.getTime();
   if (!Number.isFinite(ms)) throw new RangeError('Invalid Date');
   assertTimeZone(timeZone);
@@ -55,8 +56,8 @@ function part(name: string, v: number | undefined, max: number): number {
  * `date.toCivil()`).
  */
 export function zonedInstant(parts: CivilDate & { readonly hour?: number; readonly minute?: number; readonly second?: number }, timeZone: TimeZone): Date {
-  if (parts instanceof HebrewDate) throw new TypeError('A HebrewDate is not a civil date: pass date.toCivil()');
-  assertCivil(parts.year, parts.month, parts.day);
+  if (isHebrewDate(parts)) throw new TypeError('zonedInstant takes a civil date, not a HebrewDate: pass date.toCivil()');
+  dayArg(parts, 'zonedInstant');
   const hour = part('hour', parts.hour, 23);
   const minute = part('minute', parts.minute, 59);
   const second = part('second', parts.second, 59);

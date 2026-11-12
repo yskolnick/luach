@@ -18,7 +18,7 @@
 
 import type { DayLocation } from './day-location.js';
 import { HebrewDate } from '../calendar/hebrew-date.js';
-import { assertCivil, civilToDays, daysToCivil, type CivilDate } from '../time/civil.js';
+import { civilToDays, daysToCivil, type CivilDate } from '../time/civil.js';
 import { civilDateAt, localParts, type TimeZone } from '../time/zone.js';
 import { he } from '../locales/he.js';
 import type { Locale } from '../locales/types.js';
@@ -27,6 +27,7 @@ import { isInIsrael } from '../places/israel.js';
 import { LEGACY_METHOD_IDS } from './legacy.js';
 import { DAYS, ZMANIM, zmanDefinition, zmanLabel, type Moment, type Slot, type ZmanId, type ZmanIdIn } from './opinions.js';
 import { roundToLocalMinute, Zman, type ExplainStep, type Explanation, type ZmanKind, type ZmanUnavailableReason } from './zman.js';
+import { dayArg, instantArg, isHebrewDate } from '../calendar/date-input.js';
 
 /**
  * A user's opinions: for each choice, the id of a zman of the right kind. Anything left out
@@ -246,13 +247,14 @@ export class Zmanim {
 
   /** The civil day `date` at the place. A Hebrew date means its daytime. */
   on(date: CivilDate | HebrewDate): ZmanimDay {
-    const c = date instanceof HebrewDate ? date.toCivil() : date;
-    if (!(date instanceof HebrewDate)) assertCivil(c.year, c.month, c.day);
+    const d = dayArg(date, 'Zmanim.on');
+    const c = isHebrewDate(d) ? d.toCivil() : d;
     return this.day(civilToDays(c.year, c.month, c.day));
   }
 
   /** The civil day at the place that contains `instant` (by the place's clock, never this machine's). */
   at(instant: Date): ZmanimDay {
+    instantArg(instant, 'Zmanim.at');
     const c = civilDateAt(instant.getTime(), this.place.timeZone);
     return this.day(civilToDays(c.year, c.month, c.day));
   }
@@ -264,6 +266,7 @@ export class Zmanim {
    * havdala, fasts) come from the day view, not from here.
    */
   next(now: Date, which?: DaySlot | Role | ZmanId | readonly (DaySlot | Role | ZmanId)[]): Zman | null {
+    instantArg(now, 'Zmanim.next');
     const ids = this.resolve(which);
     const t = now.getTime();
     const d0 = this.dayNumber(now);
@@ -283,6 +286,8 @@ export class Zmanim {
 
   /** Every time in `[from, to)`, in time order; times that do not occur are left out. Same `which` as {@link Zmanim.next}. */
   between(from: Date, to: Date, which?: DaySlot | Role | ZmanId | readonly (DaySlot | Role | ZmanId)[]): Zman[] {
+    instantArg(from, 'Zmanim.between');
+    instantArg(to, 'Zmanim.between');
     const ids = this.resolve(which);
     const a = from.getTime();
     const b = to.getTime();
@@ -314,6 +319,7 @@ export class Zmanim {
    * day (polar regions) the civil date is used.
    */
   hebrewDateAt(instant: Date): HebrewDate {
+    instantArg(instant, 'Zmanim.hebrewDateAt');
     const t = instant.getTime();
     const d = this.dayNumber(instant);
     const id = this.opinions.dayBoundary;

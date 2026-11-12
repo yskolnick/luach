@@ -13,6 +13,7 @@ import { isolate } from './rtl.js';
 import { lookup, type Locale } from '../locales/types.js';
 import { he } from '../locales/he.js';
 import { localParts, type TimeZone } from '../time/zone.js';
+import { instantArg } from '../calendar/date-input.js';
 
 /** The name of a Hebrew month in `locale` (Adar I / Adar II in leap years). */
 export function monthName(month: number, year: number, locale: Locale = he): string {
@@ -83,6 +84,7 @@ export interface TimeFormatOptions {
  * Uses the zone module (Intl, or a provider), not the device's zone.
  */
 export function formatTime(instant: Date, timeZone: TimeZone, options?: TimeFormatOptions): string {
+  instant = instantArg(instant, 'formatTime');
   const p = localParts(instant.getTime(), timeZone);
   const mm = String(p.minute).padStart(2, '0');
   const ss = options?.seconds ? `:${String(p.second).padStart(2, '0')}` : '';

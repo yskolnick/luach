@@ -29,6 +29,7 @@ import type { ZmanId } from '../zmanim/opinions.js';
 import type { DaySlot, Role, Zmanim, ZmanimDay } from '../zmanim/zmanim.js';
 import type { DayLocation } from '../zmanim/day-location.js';
 import type { Zman } from '../zmanim/zman.js';
+import { hebrewDateArg, instantArg } from '../calendar/date-input.js';
 
 /** A civil date as a day number, for comparing and counting days. */
 const dayNumber = (c: CivilDate): number => civilToDays(c.year, c.month, c.day);
@@ -53,6 +54,7 @@ export interface HebrewDateSpan {
  * question. Ask your rav.
  */
 export function hebrewDateSpanAt(instant: Date, location: DayLocation, options: ZmanimOptions = {}): HebrewDateSpan {
+  instant = instantArg(instant, 'hebrewDateSpanAt');
   const z = zmanimFor(location, options);
   const date = z.hebrewDateAt(instant);
   const p = zonedParts(instant, location.timeZone);
@@ -88,6 +90,7 @@ export interface FastAt {
  * `begins` and `ends` to tell "ahead" from "over".
  */
 export function fastAt(instant: Date, location: DayLocation, options: ZmanimOptions = {}): FastAt | null {
+  instant = instantArg(instant, 'fastAt');
   const t = instant.getTime();
   // The Hebrew dates whose daytimes are the place's civil today and civil tomorrow. The day
   // after 29 Elul 9999 is Rosh Hashana, never a fast, so it is left out rather than needed.
@@ -205,6 +208,7 @@ const MOTZAEI_SHABBOS_CUSTOM = { opinion: 'On Motzaei Shabbos after Shabbos ends
  * Motzaei Shabbos affects the count are the caller's choice. Ask your rav.
  */
 export function nightOf(date: HebrewDate, location: DayLocation, options: ZmanimOptions = {}): Night {
+  date = hebrewDateArg(date, 'nightOf');
   const z = zmanimFor(location, options);
   const eve = date.prev();
   const evening = z.on(eve);
@@ -284,6 +288,7 @@ export interface KiddushLevanaAt {
  * Throws a RangeError if the month would be Tishrei of year 10000, past the last supported date.
  */
 export function kiddushLevanaAt(instant: Date, location: DayLocation, options: ZmanimOptions = {}): KiddushLevanaAt {
+  instant = instantArg(instant, 'kiddushLevanaAt');
   const t = instant.getTime();
   const here = zmanimFor(location, options).hebrewDateAt(instant);
   let year = here.year;
@@ -352,6 +357,8 @@ export function timesBetween(
   location: DayLocation,
   options: ZmanimOptions & { readonly which?: DaySlot | Role | ZmanId | readonly (DaySlot | Role | ZmanId)[] } = {},
 ): readonly DatedZman[] {
+  from = instantArg(from, 'timesBetween');
+  to = instantArg(to, 'timesBetween');
   const { which, ...zopts } = options;
   const a = from.getTime();
   const b = to.getTime();
@@ -453,6 +460,7 @@ export interface MelachaRun {
  * after 29 Elul 9999.
  */
 export function melachaRunAt(instant: Date, location: DayLocation, options: ZmanimOptions = {}): MelachaRun {
+  instant = instantArg(instant, 'melachaRunAt');
   const tz = location.timeZone;
   const t = instant.getTime();
   const n = dayNumber(civilDateAt(t, tz));

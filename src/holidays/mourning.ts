@@ -13,6 +13,7 @@
 import { HebrewDate } from '../calendar/hebrew-date.js';
 import { Month } from '../calendar/months.js';
 import { omerDay } from './omer.js';
+import { hebrewDateArg } from '../calendar/date-input.js';
 
 const SUNDAY = 0;
 const FRIDAY = 5;
@@ -164,6 +165,7 @@ function sefirah(custom: SefirahCustom, n: number, date: HebrewDate): { haircut:
  * {@link MourningOptions}; without any custom, `restrictions` is `null`.
  */
 export function mourningPeriods(date: HebrewDate, options: MourningOptions = {}): MourningPeriods {
+  date = hebrewDateArg(date, 'mourningPeriods');
   const y = date.year;
   const e = date.epochDays;
   const t17 = new HebrewDate(y, Month.TAMMUZ, 17).epochDays;

@@ -13,6 +13,7 @@
 
 import { civilToDays } from '../time/civil.js';
 import type { HebrewDate } from '../calendar/hebrew-date.js';
+import { hebrewDateOrDaysArg } from '../calendar/date-input.js';
 
 /** A tractate with its first and last daf in a learning sequence. */
 export interface TractateSpan {
@@ -89,6 +90,7 @@ export function locate(order: readonly TractateSpan[], offset: number): { tracta
 
 /** The Daf Yomi (Bavli) for a date, or null before 11 September 1923. */
 export function dafYomi(date: HebrewDate | number): DafPortion | null {
+  date = hebrewDateOrDaysArg(date, 'dafYomi');
   const days = typeof date === 'number' ? date : date.epochDays;
   if (days < FIRST_CYCLE_START) return null;
   let cycle: number;

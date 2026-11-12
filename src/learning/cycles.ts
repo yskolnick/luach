@@ -20,6 +20,7 @@ import { gematriya } from '../text/gematriya.js';
 const g = (n: number) => gematriya(n);
 const gp = (n: number) => gematriya(n, { punctuate: false });
 import { BAVLI_AMUDIM, MISHNAH, NACH, RAMBAM, YERUSHALMI_VILNA } from './data.js';
+import { hebrewDateOrDaysArg } from '../calendar/date-input.js';
 
 /** One day's portion in a learning cycle. */
 export interface LearningPortion {
@@ -80,6 +81,7 @@ function pausesBetween(from: number, to: number): number {
  * those days and before the start.
  */
 export function yerushalmiYomi(date: HebrewDate | number): LearningPortion | null {
+  date = hebrewDateOrDaysArg(date, 'yerushalmiYomi');
   const d = toDays(date);
   if (d < YERUSHALMI_EPOCH || isYerushalmiPause(d)) return null;
   const learned = d - YERUSHALMI_EPOCH - pausesBetween(YERUSHALMI_EPOCH, d);
@@ -111,6 +113,7 @@ const AMUD_LENGTH = AMUDIM.reduce((n, t) => n + t.count, 0);
  * (February 2038) is not yet published; until it is, this returns null from that point.
  */
 export function amudYomi(date: HebrewDate | number): LearningPortion | null {
+  date = hebrewDateOrDaysArg(date, 'amudYomi');
   const d = toDays(date);
   const p = position(AMUD_EPOCH, AMUD_LENGTH, d);
   if (!p || p.cycleNumber > 1) return null;
@@ -138,6 +141,7 @@ const DAF_SHAVUA_LENGTH = BAVLI_TRACTATES.reduce((n, t) => n + t.last - t.first 
  * 2005. The start date and week boundary are back-computed (low confidence).
  */
 export function dafHaShavua(date: HebrewDate | number): LearningPortion | null {
+  date = hebrewDateOrDaysArg(date, 'dafHaShavua');
   const d = toDays(date);
   if (d < DAF_SHAVUA_EPOCH) return null;
   const week = Math.floor((d - DAF_SHAVUA_EPOCH) / 7);
@@ -164,6 +168,7 @@ const MISHNA_DAYS = MISHNAYOS.length / 2; // 2096
  * cycles are counted back from it.
  */
 export function mishnaYomis(date: HebrewDate | number): LearningPortion | null {
+  date = hebrewDateOrDaysArg(date, 'mishnaYomis');
   const d = toDays(date);
   const start = MISHNA_ANCHOR - 13 * MISHNA_DAYS;
   const p = position(start, MISHNA_DAYS, d);
@@ -240,6 +245,7 @@ const describe = (us: RambamUnit[]): [string, string] => {
 
 /** Rambam, one chapter a day (Chabad cycle from 27 Nisan 5744, 29 April 1984; 1,017 days). */
 export function rambamOneChapter(date: HebrewDate | number): LearningPortion | null {
+  date = hebrewDateOrDaysArg(date, 'rambamOneChapter');
   const p = position(RAMBAM_EPOCH, ONE_LENGTH, toDays(date));
   if (!p) return null;
   const intro = ONE_INTRO[p.index];
@@ -249,6 +255,7 @@ export function rambamOneChapter(date: HebrewDate | number): LearningPortion | n
 
 /** Rambam, three chapters a day (Chabad cycle from 27 Nisan 5744; 339 days). */
 export function rambamThreeChapters(date: HebrewDate | number): LearningPortion | null {
+  date = hebrewDateOrDaysArg(date, 'rambamThreeChapters');
   const p = position(RAMBAM_EPOCH, THREE_LENGTH, toDays(date));
   if (!p) return null;
   const intro = THREE_INTRO[p.index];
@@ -264,6 +271,7 @@ export function rambamThreeChapters(date: HebrewDate | number): LearningPortion 
  * published table that Luach does not ship.
  */
 export function seferHaMitzvosDay(date: HebrewDate | number): { cycleNumber: number; day: number } | null {
+  date = hebrewDateOrDaysArg(date, 'seferHaMitzvosDay');
   const p = position(RAMBAM_EPOCH, THREE_LENGTH, toDays(date));
   return p ? { cycleNumber: p.cycleNumber, day: p.index + 1 } : null;
 }
@@ -276,6 +284,7 @@ for (const [name, he, n] of NACH) for (let c = 1; c <= n; c++) NACH_CHAPTERS.pus
 
 /** Nach Yomi (OU): one chapter a day of Nevi'im and Kesuvim from 1 November 2007; 742 days. */
 export function nachYomi(date: HebrewDate | number): LearningPortion | null {
+  date = hebrewDateOrDaysArg(date, 'nachYomi');
   const p = position(NACH_EPOCH, NACH_CHAPTERS.length, toDays(date));
   if (!p) return null;
   const c = NACH_CHAPTERS[p.index]!;

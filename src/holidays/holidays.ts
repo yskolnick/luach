@@ -15,6 +15,7 @@ import { isLeapYear, monthLength, monthsOfYear } from '../calendar/year.js';
 import { daysToCivil } from '../time/civil.js';
 import { readingCycle } from '../parsha/parsha.js';
 import type { HolidayEvent, HolidayFlags, HolidayOptions } from './types.js';
+import { hebrewDateArg } from '../calendar/date-input.js';
 
 const NONE: HolidayFlags = {
   yomTov: false,
@@ -423,11 +424,14 @@ function cachedYear(year: number, options: HolidayOptions): HolidayEvent[] {
 
 /** The events on one day. */
 export function holidaysOn(date: HebrewDate, options: HolidayOptions = {}): HolidayEvent[] {
+  date = hebrewDateArg(date, 'holidaysOn');
   return cachedYear(date.year, options).filter((e) => e.date.epochDays === date.epochDays);
 }
 
 /** The events from `start` to `end`, inclusive. */
 export function holidaysBetween(start: HebrewDate, end: HebrewDate, options: HolidayOptions = {}): HolidayEvent[] {
+  start = hebrewDateArg(start, 'holidaysBetween');
+  end = hebrewDateArg(end, 'holidaysBetween');
   const out: HolidayEvent[] = [];
   for (let y = start.year; y <= end.year; y++) {
     for (const e of cachedYear(y, options)) {
@@ -439,6 +443,7 @@ export function holidaysBetween(start: HebrewDate, end: HebrewDate, options: Hol
 
 /** The next event with `id` on or after `from`, or `null` if none within 2 years. */
 export function nextHoliday(id: string, from: HebrewDate, options: HolidayOptions = {}): HolidayEvent | null {
+  from = hebrewDateArg(from, 'nextHoliday');
   for (let y = from.year; y <= Math.min(from.year + 2, 9999); y++) {
     for (const e of cachedYear(y, options)) if (e.id === id && e.date.epochDays >= from.epochDays) return e;
   }
@@ -447,16 +452,19 @@ export function nextHoliday(id: string, from: HebrewDate, options: HolidayOption
 
 /** True if melacha is forbidden on `date` because of Shabbos or Yom Tov (whole-day view; see zmanim for times). */
 export function isMelachaForbidden(date: HebrewDate, options: HolidayOptions = {}): boolean {
+  date = hebrewDateArg(date, 'isMelachaForbidden');
   return date.isShabbos || holidaysOn(date, options).some((e) => e.flags.melachaForbidden);
 }
 
 /** The fast on `date`, if any (respecting `options` for optional fasts). */
 export function fastOn(date: HebrewDate, options: HolidayOptions = {}): HolidayEvent | null {
+  date = hebrewDateArg(date, 'fastOn');
   return holidaysOn(date, options).find((e) => e.flags.fast !== null) ?? null;
 }
 
 /** Rosh Chodesh day 1 or 2 info for `date`, or null. */
 export function roshChodeshOn(date: HebrewDate): { month: number; day: number } | null {
+  date = hebrewDateArg(date, 'roshChodeshOn');
   const len = monthLength(date.year, date.month);
   if (date.day === 1 && date.month !== Month.TISHREI) {
     return { month: date.month, day: date.prev().monthLength === 30 ? 2 : 1 };

@@ -25,6 +25,10 @@ who don't say Selichos).
 
 Moved fasts carry `moved: true` (Tisha B'Av on Sunday, Taanis Esther on Thursday, …).
 
+Every event says when its day `begins`: `'sunset'`, the evening before, as every day of the Hebrew
+calendar begins (so Purim begins with the Megillah at night: Megillah 4a; Shulchan Aruch OC 687:1),
+or `'dawn'` for a minor fast (Shulchan Aruch OC 564:1).
+
 ## The Omer, seasons, tefillah
 
 ```ts

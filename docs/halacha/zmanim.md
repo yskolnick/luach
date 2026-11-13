@@ -12,11 +12,11 @@ attribution could not be checked against the text, the source says "not verified
 
 | Id | Name | Opinion | Source | Rounding |
 |---|---|---|---|---|
-| `sunrise` | Sunrise<br><span dir="rtl" lang="he">הנץ החמה</span> | Sunrise (netz hachama), at sea level unless the calculator's useElevation is on | Berachos 9b; Shulchan Aruch OC 58:1 | up |
+| `sunrise` | Sunrise<br><span dir="rtl" lang="he">הנץ החמה</span> | Sunrise (netz hachama) | Berachos 9b; Shulchan Aruch OC 58:1 | up |
 | `sunrise-sea-level` | Sunrise (sea level)<br><span dir="rtl" lang="he">הנץ החמה (גובה פני הים)</span> | Sunrise at sea level (upper limb at the horizon, standard refraction) | NOAA Solar Calculator; sea-level practice: R. Isser Zalman Meltzer, cited in Peninei Halakha, Tefilla 11:6 n. 7 | up |
 | `sunrise-elevation` | Sunrise (elevation)<br><span dir="rtl" lang="he">הנץ החמה (לפי גובה)</span> | Sunrise adjusted for the observer's elevation (lower horizon, earlier) | Zmanim KeHilchasam (R. Bursztyn), ch. 2 §§7, 9: elevation for sunrise and sunset only (not verified: the book was not read) | up |
 | `sunrise-visible` | Sunrise (visible)<br><span dir="rtl" lang="he">הנץ החמה (הנראה)</span> | Visible sunrise over the actual terrain (netz hanireh) | Divrei Yosef; Maharil Diskin (cited in Peninei Halakha, Tefilla 11). Needs terrain data: not computed | up |
-| `sunset` | Sunset<br><span dir="rtl" lang="he">שקיעה</span> | Sunset (shkiah), at sea level unless the calculator's useElevation is on | Shabbos 34b–35a; Shulchan Aruch OC 261:2 | down |
+| `sunset` | Sunset<br><span dir="rtl" lang="he">שקיעה</span> | Sunset (shkiah) | Shabbos 34b–35a; Shulchan Aruch OC 261:2 | down |
 | `sunset-sea-level` | Sunset (sea level)<br><span dir="rtl" lang="he">שקיעה (גובה פני הים)</span> | Sunset at sea level | NOAA Solar Calculator | down |
 | `sunset-elevation` | Sunset (elevation)<br><span dir="rtl" lang="he">שקיעה (לפי גובה)</span> | Sunset adjusted for the observer's elevation (later) | Zmanim KeHilchasam (R. Bursztyn), ch. 2 §§7, 9 (not verified: the book was not read) | down |
 | `chatzos` | Chatzos<br><span dir="rtl" lang="he">חצות</span> | Midday: the sun on the meridian (astronomical transit) | Magen Avraham OC 233:4 | down |

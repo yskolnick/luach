@@ -24,7 +24,7 @@ import type { Zman } from '../zmanim/zman.js';
 import { instantArg } from '../calendar/date-input.js';
 
 /** `$id` of the JSON Schema for {@link NowInfo}. */
-export const NOW_INFO_SCHEMA_ID = 'https://raw.githubusercontent.com/yskolnick/luach/main/schema/now.schema.json';
+export const NOW_INFO_SCHEMA_ID = 'https://raw.githubusercontent.com/yskolnick/luach/v0.4.0/schema/now.schema.json';
 
 /** Options for {@link nowInfo}: the opinions and settings of the zmanim and the holiday options, and the names' language. */
 export interface NowInfoOptions extends ZmanimOptions {
@@ -72,7 +72,7 @@ export interface NowInfo {
   readonly location: LocationJson;
   readonly israel: boolean;
   /** The wall clock at the place. */
-  readonly clock: { readonly date: string; readonly time: string; readonly dayOfWeek: number; readonly timeZone: string; readonly offsetMinutes: number };
+  readonly clock: { readonly date: string; readonly time: string; readonly weekday: number; readonly timeZone: string; readonly offsetMinutes: number };
   /** The Hebrew date now (by the `dayBoundary` opinion), with the boundary times that began it and end it. */
   readonly hebrewDate: HebrewDateJson & { readonly begins: ZmanJson; readonly ends: ZmanJson };
   /**
@@ -103,6 +103,8 @@ export interface NowInfo {
     readonly ends: ZmanJson;
     readonly eve: { readonly date: string; readonly hebrewDate: HebrewDateJson; readonly events: readonly EventJson[] };
     readonly days: readonly { readonly date: string; readonly hebrewDate: HebrewDateJson; readonly shabbos: boolean; readonly events: readonly EventJson[]; readonly candles: ZmanJson }[];
+    /** What the run holds: `'shabbos'`, `'yom-tov'`, `'yom-kippur'`, in that order (`MelachaRun.kinds`). */
+    readonly kinds: readonly ('shabbos' | 'yom-tov' | 'yom-kippur')[];
   };
   /** The fast of today or tomorrow at the place, or `null`. */
   readonly fast: { readonly event: EventJson; readonly hebrewDate: HebrewDateJson; readonly inProgress: boolean | null; readonly begins: ZmanJson; readonly ends: ZmanJson } | null;
@@ -218,7 +220,7 @@ export function nowInfo(instant: Date, location: DayLocation, options: NowInfoOp
     clock: {
       date: formatIsoDate(p),
       time: `${two(p.hour)}:${two(p.minute)}:${two(p.second)}`,
-      dayOfWeek: p.dayOfWeek,
+      weekday: p.dayOfWeek,
       timeZone: zoneName(tz),
       offsetMinutes: p.offsetMinutes,
     },
@@ -249,6 +251,7 @@ export function nowInfo(instant: Date, location: DayLocation, options: NowInfoOp
         events: d.events.map((e) => eventJson(e, locale)),
         candles: d.candles.toJSON(),
       })),
+      kinds: run.kinds,
     },
     fast: fast
       ? { event: eventJson(fast.fast, locale), hebrewDate: hd(fast.date), inProgress: fast.inProgress, begins: fast.begins.toJSON(), ends: fast.ends.toJSON() }

@@ -22,9 +22,12 @@ export function monthName(month: number, year: number, locale: Locale = he): str
   return lookup(locale, `month.${month}`);
 }
 
-/** The name of a weekday (0 = Sunday … 6 = Shabbos) in `locale`. */
-export function weekdayName(dayOfWeek: number, locale: Locale = he): string {
-  return lookup(locale, `weekday.${dayOfWeek}`);
+/**
+ * The name of a weekday (0 = Sunday … 6 = Shabbos) in `locale`. `form: 'short'` gives the short
+ * name (`weekday.N.short`: "Fri", "יום ו׳"); the default is the full name (`weekday.N`).
+ */
+export function weekdayName(dayOfWeek: number, locale: Locale = he, options: { form?: 'long' | 'short' } = {}): string {
+  return lookup(locale, options.form === 'short' ? `weekday.${dayOfWeek}.short` : `weekday.${dayOfWeek}`);
 }
 
 /** Options for {@link formatHebrewDate}. */

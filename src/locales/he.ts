@@ -28,5 +28,12 @@ export const he: Locale = {
     'weekday.4': 'יום חמישי',
     'weekday.5': 'יום שישי',
     'weekday.6': 'שבת',
+    'weekday.0.short': 'יום א׳',
+    'weekday.1.short': 'יום ב׳',
+    'weekday.2.short': 'יום ג׳',
+    'weekday.3.short': 'יום ד׳',
+    'weekday.4.short': 'יום ה׳',
+    'weekday.5.short': 'יום ו׳',
+    'weekday.6.short': 'שבת',
   },
 };

@@ -1,6 +1,6 @@
 {
   "name": "luach",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "VERY BETA and constantly changing. Built mostly by AI; check before relying on it. Hebrew calendar, holidays, parsha, learning cycles and zmanim. Clean-room, zero dependencies, Apache-2.0.",
   "keywords": [
     "hebrew calendar",
@@ -97,7 +97,7 @@
     "CHANGELOG.md"
   ],
   "engines": {
-    "node": ">=18"
+    "node": "^20.19.0 || >=22.12.0"
   },
   "scripts": {
     "build": "tsup && node scripts/strip-data-maps.mjs",

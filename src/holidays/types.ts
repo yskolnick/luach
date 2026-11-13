@@ -39,6 +39,13 @@ export interface HolidayEvent {
   /** The day. */
   readonly date: HebrewDate;
   readonly flags: HolidayFlags;
+  /**
+   * When the event's day begins: `'sunset'`, the evening before, as every day of the Hebrew
+   * calendar does (so Purim begins with the Megillah at night: Megillah 4a; Shulchan Aruch OC
+   * 687:1); or `'dawn'` for a minor fast, which begins at dawn (Shulchan Aruch OC 564:1). The
+   * times themselves are in `fastTimes`, the day view and the at-instant functions.
+   */
+  readonly begins: 'sunset' | 'dawn';
   /** For multi-day events: which day (Chanukah day 1–8, Chol Hamoed day, Rosh Chodesh day 1–2, Omer day…). */
   readonly day?: number;
   /** Chanukah: candles lit on the evening that ends this day (0 after the last night). */

@@ -18,7 +18,9 @@ you say otherwise. The ones that take a place (`dayInfo`, `toICalendar`, `fastTi
 Every event has the same flags, so you can filter: `yomTov`, `melachaForbidden`,
 `cholHamoed`, `fast` (`'major' | 'minor' | null`), `roshChodesh`, `modernIsraeli`, `minor`,
 `specialShabbos`, `erev`, `isruChag`, `optional`. Optional events are off by default:
-`behab`, `yomKippurKatan`, `modernIsraeli`, `shovavim`. When Erev Rosh Chodesh is Friday,
+`behab`, `yomKippurKatan`, `modernIsraeli`, `shovavim`, `yizkor` (Yom Kippur, and in the
+diaspora the last day of Pesach, the second day of Shavuos and Shemini Atzeres: Mishna Berura
+494:17, 668:15). When Erev Rosh Chodesh is Friday,
 Yom Kippur Katan is on Thursday by default (Mishna Berura 417:4, for those who say Selichos);
 `yomKippurKatanOnFriday: 'friday'` keeps it on Friday (Magen Avraham 417:3; MB 417:4 for those
 who don't say Selichos).

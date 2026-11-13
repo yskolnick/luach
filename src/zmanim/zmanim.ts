@@ -85,6 +85,12 @@ export interface ZmanimSettings {
   readonly highLatitudeFallback?: 'none' | 'nearestDay' | 'halfNight';
   /** Solar algorithm. Default `'noaa'`; `'usno'` for cross-checking. */
   readonly algorithm?: 'noaa' | 'usno';
+  /**
+   * `'safe'` (default): `Zman.time` is rounded to the minute on the safe side (earliest times up,
+   * deadlines down), and `localTime()` and the JSON's `local` give `HH:MM`. `'none'`: `time` is the
+   * exact time (`exact`), `rounded` is null, and `localTime()` and `local` give `HH:MM:SS`.
+   */
+  readonly round?: 'safe' | 'none';
 }
 
 /** One problem found in stored opinions. */
@@ -187,6 +193,7 @@ export class Zmanim {
     // The place's documented custom sets the candle-lighting minutes unless the caller did.
     const custom = settings.candleLightingMinutes === undefined ? (place as DayLocation).candleLighting : undefined;
     const effective: ZmanimSettings = custom ? { ...settings, candleLightingMinutes: custom.minutes } : settings;
+    if (settings.round !== undefined && settings.round !== 'safe' && settings.round !== 'none') throw new RangeError(`round must be "safe" or "none", not ${JSON.stringify(settings.round) ?? String(settings.round)}`);
     // Checks the place and the settings once, so that queries never throw.
     new DayCalculator(place, { year: 2000, month: 1, day: 1 }, effective);
     this.place = place;
@@ -427,28 +434,51 @@ export class ZmanimDay {
     return this.build(id, from, opinion, source);
   }
 
-  private build(id: string, from: ZmanId, opinion: string, source: string): Zman {
+  private readonly engines = new Map<string, DayCalculator>();
+
+  /** The calculator with another high-latitude rule, for `Zman.fallbacks`. */
+  private engineWith(mode: 'halfNight' | 'nearestDay'): DayCalculator {
+    let e = this.engines.get(mode);
+    if (!e) {
+      e = new DayCalculator(this.owner.place, this.date, { ...this.owner.settings, rounding: false, highLatitudeFallback: mode });
+      this.engines.set(mode, e);
+    }
+    return e;
+  }
+
+  private build(id: string, from: ZmanId, opinion: string, source: string, engine: DayCalculator = this.engine): Zman {
     const def = zmanDefinition(id);
     if (!def) throw new RangeError(`Unknown zman "${id}"`);
-    const { raw, steps } = this.engine.traced(from);
+    const { raw, steps } = engine.traced(from);
+    // Where the sun never gets low enough for this time, give what each high-latitude rule would
+    // give, so a caller who chooses one need not compute it (they are not used unless chosen).
+    // A time made from one that does not occur (a proportional hour from a missing dawn) gets them
+    // too, where a rule gives it a time. Each is exactly what that `highLatitudeFallback` gives.
+    let fallbacks: { halfNight: Zman; nearestDay: Zman } | undefined;
+    if (engine === this.engine && 'reason' in raw && (raw.reason === 'sun-always-above' || raw.reason === 'depends-on-missing-zman')) {
+      const halfNight = this.build(id, from, opinion, source, this.engineWith('halfNight'));
+      const nearestDay = this.build(id, from, opinion, source, this.engineWith('nearestDay'));
+      if (halfNight.exact !== null || nearestDay.exact !== null) fallbacks = { halfNight, nearestDay };
+    }
     const tz = this.owner.place.timeZone;
     const kind = kindOf(id);
     const exact = 'time' in raw ? (kind === 'earliest' ? Math.ceil(raw.time) : Math.floor(raw.time)) : null;
     const direction = kind === 'earliest' ? 'up' : 'down';
     return new Zman({
       id,
-      time: exact === null ? null : new Date(roundToLocalMinute(exact, direction, tz)),
+      time: exact === null ? null : new Date(this.owner.settings.round === 'none' ? exact : roundToLocalMinute(exact, direction, tz)),
       // To the millisecond on the safe side, so rounding it gives the same minute as rounding
       // the exact instant would (never less strict).
       exact: exact === null ? null : new Date(exact),
       opinion,
       source,
-      rounded: direction,
+      rounded: this.owner.settings.round === 'none' ? null : direction,
       timeZone: tz,
       kind,
       slot: def.slot,
       ...('reason' in raw ? { reason: raw.reason } : {}),
       ...(raw.fallback ? { fallback: raw.fallback } : {}),
+      ...(fallbacks ? { fallbacks } : {}),
       explain: () => explanation(steps, tz, opinion, source, 'reason' in raw ? raw.reason : undefined, exact, kind),
     });
   }

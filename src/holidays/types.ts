@@ -89,6 +89,13 @@ export interface HolidayOptions {
   yomKippurKatanCheshvan?: boolean;
   /** Include the Shabbosos of Shovavim. Default `false`. */
   shovavim?: boolean;
+  /**
+   * Include Yizkor (hazkaras neshamos), on the days the sources name: Yom Kippur (Shulchan Aruch OC
+   * 621:6), and in the diaspora the last day of Pesach, the second day of Shavuos and Shemini
+   * Atzeres, "wherever Kol HaBechor is read" (Mishna Berura 494:17, 668:15; Sha'arei Ephraim 10:31).
+   * In Israel only Yom Kippur for now: no text was found for the festival days there. Default `false`.
+   */
+  yizkor?: boolean;
   /** Include Shabbos Mevorchim. Default `true`. */
   shabbosMevorchim?: boolean;
 }

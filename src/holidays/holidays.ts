@@ -53,6 +53,28 @@ class Builder {
 }
 
 /**
+ * The display rank of an event within its day, lower first: the one to name the day by comes
+ * first. Yom Tov and Yom Kippur (melacha forbidden), Chol Hamoed, a fast, Rosh Chodesh, a minor
+ * holiday or a day of the State, a special Shabbos, an eve, Isru Chag, then the rest (optional
+ * days such as Yizkor). Where a source orders two that meet, this follows it: Rosh Chodesh before
+ * Chanukah, the more frequent first (Zevachim 89a; Shulchan Aruch OC 684:3, its reading first).
+ * The rest is Luach's own display order and rules on nothing. Events of one rank keep their order.
+ * @internal
+ */
+export function eventRank(e: HolidayEvent): number {
+  const f = e.flags;
+  if (f.melachaForbidden || f.yomTov) return 0;
+  if (f.cholHamoed) return 1;
+  if (f.fast !== null) return 2;
+  if (f.roshChodesh) return 3;
+  if ((f.minor || f.modernIsraeli) && !f.optional) return 4;
+  if (f.specialShabbos) return 5;
+  if (f.erev) return 6;
+  if (f.isruChag) return 7;
+  return 8;
+}
+
+/**
  * The Yom Tov or Chol Hamoed event id for `date`, or null, computed directly from the date
  * (without building the year's event list). Used where a full holiday list would be circular.
  */
@@ -209,7 +231,8 @@ export function holidaysForYear(year: number, options: HolidayOptions = {}): Hol
   // ---- Sivan ----
   for (let i = 3; i <= 5; i++) b.add('shloshes-yemei-hagbala', d(Month.SIVAN, i), { minor: true }, { day: i - 2 });
   b.add('erev-shavuos', d(Month.SIVAN, 5), { erev: true });
-  b.add('shavuos', d(Month.SIVAN, 6), YOM_TOV, { day: 1 });
+  // In Israel Shavuos is one day, so it has no day number and is named "Shavuos".
+  b.add('shavuos', d(Month.SIVAN, 6), YOM_TOV, israel ? undefined : { day: 1 });
   if (israel) {
     b.add('isru-chag', d(Month.SIVAN, 7), { isruChag: true });
   } else {
@@ -295,11 +318,24 @@ export function holidaysForYear(year: number, options: HolidayOptions = {}): Hol
     }
   }
 
+  // ---- Yizkor: Yom Kippur (SA OC 621:6); in the diaspora also where Kol HaBechor is read: the last
+  // day of Pesach, the second day of Shavuos, Shemini Atzeres (MB 494:17, 668:15; Sha'arei Ephraim
+  // 10:31). In Israel the festival days have no text found yet, so they are left out. ----
+  if (options.yizkor) {
+    const flags = { minor: true, optional: true };
+    b.add('yizkor', d(Month.TISHREI, 10), flags);
+    if (!israel) {
+      b.add('yizkor', d(Month.TISHREI, 22), flags);
+      b.add('yizkor', d(Month.NISAN, 22), flags);
+      b.add('yizkor', d(Month.SIVAN, 7), flags);
+    }
+  }
+
   // ---- Modern Israeli days (Knesset laws) ----
   if (options.modernIsraeli) addModernIsraeli(b);
   if (options.israeliCommemorations) addCommemorations(b);
 
-  return b.events.sort((x, y) => x.date.epochDays - y.date.epochDays);
+  return b.events.sort((x, y) => x.date.epochDays - y.date.epochDays || eventRank(x) - eventRank(y));
 }
 
 function addShabbosCholHamoed(b: Builder, month: number, from: number, to: number): void {
@@ -413,7 +449,7 @@ function addCommemorations(b: Builder): void {
 const cache = new Map<string, HolidayEvent[]>();
 
 function cachedYear(year: number, options: HolidayOptions): HolidayEvent[] {
-  const key = `${year}|${options.israel ? 1 : 0}${options.modernIsraeli ? 1 : 0}${options.behab ? 1 : 0}${options.yomKippurKatan ? 1 : 0}${options.yomKippurKatanOnFriday === 'friday' ? 1 : 0}${options.yomKippurKatanCheshvan ? 1 : 0}${options.shabbosMevorchim === false ? 0 : 1}${options.shovavim ? 1 : 0}${options.israeliCommemorations ? 1 : 0}`;
+  const key = `${year}|${options.israel ? 1 : 0}${options.modernIsraeli ? 1 : 0}${options.behab ? 1 : 0}${options.yomKippurKatan ? 1 : 0}${options.yomKippurKatanOnFriday === 'friday' ? 1 : 0}${options.yomKippurKatanCheshvan ? 1 : 0}${options.shabbosMevorchim === false ? 0 : 1}${options.shovavim ? 1 : 0}${options.israeliCommemorations ? 1 : 0}${options.yizkor ? 1 : 0}`;
   let v = cache.get(key);
   if (!v) {
     v = holidaysForYear(year, options);

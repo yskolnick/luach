@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/yskolnick/luach/v0.4.0/schema/now.schema.json",
+  "$id": "https://raw.githubusercontent.com/yskolnick/luach/v0.5.0/schema/now.schema.json",
   "title": "Luach now",
   "description": "Everything true at one instant at one place, as returned by nowInfo() in the luach package. Instants are ISO 8601 UTC; civil dates are YYYY-MM-DD on the place's clock. Zmans, events and Hebrew dates have one shape each (see $defs). Every zman names its opinion and source; defaults are not rulings. Ask your rav. Fields may be added in later versions; a reader should ignore fields it does not know.",
   "type": "object",
@@ -110,6 +110,22 @@
         "slot": {
           "type": "string",
           "description": "The kind of time: alos, shema, tzeis, candleLighting, havdala, fast and so on."
+        },
+        "fallbacks": {
+          "type": "object",
+          "description": "Where time is null because the sun does not get low enough (reason sun-always-above), what each high-latitude rule gives: halfNight (solar midnight) and nearestDay. Neither is used unless chosen; which applies is a question for a rav.",
+          "required": [
+            "halfNight",
+            "nearestDay"
+          ],
+          "properties": {
+            "halfNight": {
+              "$ref": "#/$defs/zman"
+            },
+            "nearestDay": {
+              "$ref": "#/$defs/zman"
+            }
+          }
         }
       }
     },
@@ -282,6 +298,7 @@
         "alos",
         "sunrise",
         "omer",
+        "omerFrom",
         "chanukahLights",
         "chanukahLighting"
       ],
@@ -314,6 +331,17 @@
           "minimum": 1,
           "maximum": 49,
           "description": "The Omer day counted on this night, or null."
+        },
+        "omerFrom": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/zman"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The earliest time to count the Omer this night: by default the later of nightfall and the end of Shabbos or Yom Tov; null without a count."
         },
         "chanukahLights": {
           "type": [
@@ -438,7 +466,7 @@
   "properties": {
     "$schema": {
       "type": "string",
-      "const": "https://raw.githubusercontent.com/yskolnick/luach/v0.4.0/schema/now.schema.json",
+      "const": "https://raw.githubusercontent.com/yskolnick/luach/v0.5.0/schema/now.schema.json",
       "description": "The $id of this schema."
     },
     "instant": {
@@ -559,7 +587,7 @@
       "description": "The Hebrew date now, by the dayBoundary opinion (a default of sunset, not a ruling), and the times that began and end it. Between sunset and nightfall the halachic date is in doubt."
     },
     "day": {
-      "$ref": "https://raw.githubusercontent.com/yskolnick/luach/v0.4.0/schema/day.schema.json",
+      "$ref": "https://raw.githubusercontent.com/yskolnick/luach/v0.5.0/schema/day.schema.json",
       "description": "The whole day view (schema/day.schema.json) of the place's civil day, clock.date: today's zmanim, tonight's candle lighting and havdala, today's fast, as a luach page shows them for today. It is not the Hebrew date now, which changes at sunset: for that use hebrewDate, night and nextNight. After local midnight it is the new civil day, which may not hold the havdala of a run that ended after midnight or the end of a fast: use melacha.ends and fast.ends, which are always those of the run and the fast in the document. Its candleLighting, havdala and shabbosEnds are that day's evening; melacha.begins and melacha.ends are those of the run, which may be days apart. Its omer is the count of the civil day's date. When opinions are given, its zmanim lists the user's own time for each part of the day (Zmanim.order); otherwise a common set."
     },
     "settings": {
@@ -836,7 +864,8 @@
         "month",
         "molad",
         "earliest",
-        "latest"
+        "latest",
+        "previous"
       ],
       "properties": {
         "year": {
@@ -879,6 +908,48 @@
             },
             "fifteenDays": {
               "$ref": "#/$defs/kiddushLevanaTime"
+            }
+          }
+        },
+        "previous": {
+          "description": "The month before month, and when its window closed (the later of its latest times).",
+          "type": [
+            "object",
+            "null"
+          ],
+          "required": [
+            "year",
+            "month",
+            "latest",
+            "closed"
+          ],
+          "properties": {
+            "year": {
+              "type": "integer"
+            },
+            "month": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 13
+            },
+            "latest": {
+              "type": "object",
+              "required": [
+                "halfMonth",
+                "fifteenDays"
+              ],
+              "properties": {
+                "halfMonth": {
+                  "$ref": "#/$defs/kiddushLevanaTime"
+                },
+                "fifteenDays": {
+                  "$ref": "#/$defs/kiddushLevanaTime"
+                }
+              }
+            },
+            "closed": {
+              "type": "string",
+              "format": "date-time"
             }
           }
         }

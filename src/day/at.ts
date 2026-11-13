@@ -158,6 +158,16 @@ export interface Night {
   /** The Omer day counted on this night (`omerDay(date)`), or null. */
   readonly omer: number | null;
   /**
+   * The earliest time to count the Omer this night, or null when there is no count. By default
+   * (`omerFrom: 'holy-day-ends'`) the later of `tzeis` and the end of Shabbos or Yom Tov this
+   * evening (`ends`, or the second-night candles when Yom Tov follows Shabbos or Yom Tov): one who
+   * keeps Shabbos until a later nightfall does not count before it (Kaf HaChaim OC 489:44 reports
+   * those who wait for Rabbeinu Tam). With `omerFrom: 'tzeis'`, `tzeis` alone (Shulchan Aruch OC
+   * 489:2; Mishna Berura 489:14; Kaf HaChaim OC 489:44: most count at nightfall). The count itself
+   * on Motzaei Shabbos comes before havdala (Shulchan Aruch OC 489:9). A default, not a ruling.
+   */
+  readonly omerFrom: Zman | null;
+  /**
    * The Chanukah lights lit on this evening (1-8), or null. Note: the events of `date` give the
    * lights of the *next* evening (`candlesTonight`); on the night of 25 Kislev this is 1 and the
    * event of 25 Kislev says 2.
@@ -242,6 +252,7 @@ export function nightOf(date: HebrewDate, location: DayLocation, options: Zmanim
     shabbos: date.isShabbos,
     events: Object.freeze(events),
     omer: omerDay(date),
+    omerFrom: omerFromOf(omerDay(date), evening.slot('tzeis'), ends ?? (e.candles?.id === 'candle-lighting-second-night' ? e.candles : null), options.omerFrom),
     // After the eighth day the event says 0: no more lights, which is no lights here.
     chanukahLights: lights ? lights : null,
     candles: e.candles,
@@ -250,6 +261,36 @@ export function nightOf(date: HebrewDate, location: DayLocation, options: Zmanim
     havdala: e.havdala,
     chanukahLighting: lights ? chanukahLightingOf(lights, eve, evening, e.candles, ends, morning.slot('alos'), options.chanukahLighting) : null,
   });
+}
+
+/** The earliest time to count the Omer on one night (see `Night.omerFrom`). */
+function omerFromOf(omer: number | null, tzeis: Zman, ends: Zman | null, rule: 'tzeis' | 'holy-day-ends' | undefined): Zman | null {
+  if (omer === null) return null;
+  if (rule === 'tzeis' || ends === null) return tzeis;
+  // The later of the two; where either does not occur, the one that does not (its null says why).
+  if (tzeis.exact === null) return tzeis;
+  if (ends.exact === null) return ends;
+  return ends.exact.getTime() > tzeis.exact.getTime() ? ends : tzeis;
+}
+
+/**
+ * The night in progress at `instant`: the one whose span, from its evening's sunset to its morning's
+ * dawn (the `alos` opinion; sunrise where there is no dawn), contains the instant, as {@link nightOf}
+ * gives it; null by day, from dawn to sunset, and where the night's sunset, or both its dawn and
+ * sunrise, do not occur. Cheaper than {@link nowInfo}, for asking often.
+ */
+export function nightAt(instant: Date, location: DayLocation, options: ZmanimOptions = {}): Night | null {
+  instant = instantArg(instant, 'nightAt');
+  const t = instant.getTime();
+  const today = HebrewDate.fromCivil(civilDateAt(t, location.timeZone));
+  const candidates = [today, ...(today.epochDays < MAX_DAYS ? [today.next()] : [])];
+  for (const date of candidates) {
+    const n = nightOf(date, location, options);
+    const start = n.sunset.exact?.getTime();
+    const end = (n.alos.exact ?? n.sunrise.exact)?.getTime();
+    if (start !== undefined && end !== undefined && t >= start && t < end) return n;
+  }
+  return null;
 }
 
 /** The Chanukah lighting of one evening, from the times `nightOf` already has. Never throws: a time that does not occur is the slot's own null Zman, with its reason. */
@@ -293,6 +334,12 @@ export interface KiddushLevanaAt {
    * sunrise does not occur, its span is its two civil dates.
    */
   readonly nights: readonly Night[];
+  /**
+   * The month before `month`: its latest times by each opinion, and `closed`, the later of them,
+   * when its window closed. So once this month's window has closed and `month` is the next one, an
+   * app can still say when it closed. Null only before the first supported month.
+   */
+  readonly previous: { readonly year: number; readonly month: number; readonly latest: { readonly halfMonth: KiddushLevanaTime; readonly fifteenDays: KiddushLevanaTime }; readonly closed: Date } | null;
 }
 
 /**
@@ -346,6 +393,27 @@ export function kiddushLevanaAt(instant: Date, location: DayLocation, options: Z
     earliest: Object.freeze({ threeDays: Object.freeze(k.earliest.threeDays), sevenDays: Object.freeze(k.earliest.sevenDays) }),
     latest: Object.freeze({ halfMonth: Object.freeze(k.latest.halfMonth), fifteenDays: Object.freeze(k.latest.fifteenDays) }),
     nights: Object.freeze(nights),
+    previous: previousMonth(year, month),
+  });
+}
+
+/** The month before `year`/`month` and when its Kiddush Levana window closed. */
+function previousMonth(year: number, month: number): KiddushLevanaAt['previous'] {
+  const first = new HebrewDate(year, month, 1);
+  let prev: HebrewDate;
+  try {
+    prev = first.prev();
+  } catch (e) {
+    if (e instanceof RangeError) return null;
+    throw e;
+  }
+  const k = kiddushLevana(prev.year, prev.month);
+  const closed = Math.max(k.latest.halfMonth.time.getTime(), k.latest.fifteenDays.time.getTime());
+  return Object.freeze({
+    year: prev.year,
+    month: prev.month,
+    latest: Object.freeze({ halfMonth: Object.freeze(k.latest.halfMonth), fifteenDays: Object.freeze(k.latest.fifteenDays) }),
+    closed: new Date(closed),
   });
 }
 

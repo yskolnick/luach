@@ -160,6 +160,13 @@ custom in force) and `settings.chanukahLightingIsDefault`; the command line's `l
 during Chanukah (`--chanukah-lighting sunset|tzeis`) and marks the line "(your choice)" or
 "(Luach's default)". Ask your rav.
 
+### The night now: `nightAt`
+
+`nightAt(instant, place, options)` is the `nightOf` night whose span, from its sunset to its dawn
+(the `alos` opinion; sunrise where there is no dawn), contains the instant, or `null` between dawn
+and sunset. Each night has `omerFrom`, the earliest time to count the Omer: by default the later
+of nightfall and the end of Shabbos or Yom Tov, or nightfall alone with `omerFrom: 'tzeis'`.
+
 ## Kiddush Levana: `kiddushLevanaAt`
 
 ```ts
@@ -178,6 +185,10 @@ four times of `kiddushLevana`, and every night whose span from sunset to sunrise
 from the earliest of the earliest times to the latest of the latest. Whether Kiddush Levana is said
 on a night that is Shabbos or Yom Tov, at night only, or on Motzaei Shabbos is for your rav; each
 night says whether it is Shabbos and what its events are.
+
+`previous` is the month before `month`, with its `latest` times and `closed` (the later of them):
+once this month's window has closed and `month` has moved on to the next, it still says when the
+last one closed.
 
 ## The part of the day: `dayPartAt`
 
@@ -215,6 +226,26 @@ until its havdala (or until the date's boundary when another holy day follows); 
 start to its end (`fastTimes`); Isru Chag from the end of the Yom Tov before it; any other event
 from the boundary that begins its date to the one that ends it. `inProgress` is `null` where a
 time it needs does not occur.
+
+## Davening windows: `tefillaAt`
+
+```ts
+import { tefillaAt } from 'luach';
+
+const r = tefillaAt(new Date('2026-11-12T21:30:00Z'), newYork);   // 4:30 PM
+r.service;                       // "mincha"
+const m = r.windows.find((w) => w.id === 'mincha')!;
+m.closes.localTime();            // "16:40": sunset
+m.preferredFrom!.localTime();    // "14:36": Mincha Ketana
+m.bedieved.closes!.id;           // "tzeis-8.5": after the fact, to nightfall
+```
+
+The windows are last night's Maariv while it is still open after the fact (until dawn), today's
+Shacharis and Mincha, Neilah on Yom Kippur and tonight's Maariv. Each has `opens` and `closes` (from
+the start), `bedieved` (how far it extends after the fact), `inProgress`, `bedievedInProgress`, and
+its `opinion` and `source`; all its times are the person's own zmanim. Neilah's `opens` is `null`:
+Luach has no time for "when the sun is on the treetops". `service` is the first window in progress
+from the start, else the first in progress after the fact, else `null`.
 
 ## Shabbos and Yom Tov: `melachaRunAt`
 

@@ -55,7 +55,7 @@ export function eveningOf(h: HebrewDate, location: DayLocation, options: ZmanimO
   // The place's documented custom applies when the caller has not chosen the minutes: Zmanim
   // takes it from the location.
   if (beforeSunset) candles = day.get('candle-lighting');
-  else if (tomorrow && today) candles = as(day, 'candle-lighting-second-night', z.opinions.havdala);
+  else if (tomorrow && today) candles = as(day, 'candle-lighting-second-night', options.secondNightCandles ?? z.opinions.havdala);
   const ft = fastTimes(h, location, zopts);
   const next = h.epochDays < MAX_DAYS ? fastTimes(h.next(), location, zopts) : null;
   // Tisha B'Av postponed from Shabbos to Sunday: no havdala over a cup on Motzaei Shabbos;

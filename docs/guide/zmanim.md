@@ -50,7 +50,13 @@ keeps what is valid, reports what is not, and reads the method names of Luach 0.
 Settings that are facts about the place or the user rather than opinions go in the third
 argument: `candleLightingMinutes` (a local custom; default the place's documented custom, such
 as Jerusalem's 40 minutes on the built-in place, otherwise 18), `useElevation`,
-`ateretTorahMinutes`, `highLatitudeFallback`, `algorithm`.
+`ateretTorahMinutes`, `highLatitudeFallback`, `algorithm`, `round` (`'none'` for exact times
+with seconds).
+
+To store or send these, with the customs the at-instant functions take (`chanukahLighting`,
+`secondNightCandles`, `omerFrom`), use `settingsToJSON(settings)` and read them back with
+`parseSettings(json)`, which, like `parseOpinions`, never throws: it keeps what is valid and
+reports each problem.
 
 ## Next, and a range
 
@@ -93,6 +99,12 @@ are off by default and marked in `fallback` when used. They apply only when the 
 get low enough (`"sun-always-above"`, summer nights). In polar night, when the sun never rises
 high enough (`"sun-always-below"`), there is no dawn or nightfall to stand in for, so the time
 stays `null` with that reason even with a fallback on.
+
+Without turning a fallback on, such a time carries `fallbacks`: `{ halfNight, nearestDay }`, each
+the `Zman` that rule gives (exactly what setting it would give), so you can show one rule's time
+for one use, the end of a fast, say, without computing anything. Which rule applies to which use is
+a question for a rav; the [halachic choices](../halacha/choices.md#far-north-which-rule-for-which-use)
+page lists what the sources say for each.
 
 ## Elevation
 

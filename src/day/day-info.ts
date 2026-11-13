@@ -17,7 +17,7 @@ import { wordName } from '../locales/terms.js';
 import type { Locale } from '../locales/types.js';
 import { holidaysOn } from '../holidays/holidays.js';
 import type { HolidayOptions } from '../holidays/types.js';
-import { omerDay, omerSefirah, omerText, omerTextEnglish } from '../holidays/omer.js';
+import { omerDay, omerSefirah, omerText, omerTextEnglish, type OmerNusach } from '../holidays/omer.js';
 import { tefillahOn, type TefillahDay, type TefillahOptions } from '../holidays/tefillah.js';
 import { parshaFor, parshaName, type ParshaId } from '../parsha/parsha.js';
 import { haftaraFor, type HaftaraMinhag } from '../parsha/haftara.js';
@@ -32,7 +32,7 @@ import type { DaySlot, Opinions, ZmanimSettings } from '../zmanim/zmanim.js';
 import { hebrewOfDayArg } from '../calendar/date-input.js';
 
 /** `$id` of the JSON Schema for {@link DayInfo}. */
-export const DAY_INFO_SCHEMA_ID = 'https://raw.githubusercontent.com/yskolnick/luach/v0.4.0/schema/day.schema.json';
+export const DAY_INFO_SCHEMA_ID = 'https://raw.githubusercontent.com/yskolnick/luach/v0.5.0/schema/day.schema.json';
 
 export type { DayLocation };
 
@@ -51,6 +51,10 @@ export interface DayInfoOptions extends ZmanimSettings {
   locale?: Locale;
   /** Haftara minhag. Default Ashkenaz. */
   minhag?: HaftaraMinhag;
+  /** When candles are lit on a second night of Yom Tov (a nightfall zman); default the `havdala` opinion. As in `ZmanimOptions`. */
+  secondNightCandles?: ZmanId;
+  /** The wording of `omer.text`, as `omerText`: `'ashkenaz'` (default, "…לעומר"), `'sefard'` ("…בעומר") or `'edot-hamizrach'`. */
+  omerNusach?: OmerNusach;
   /** Holiday options (optional days). */
   holidays?: Omit<HolidayOptions, 'israel'>;
   /** Tefillah customs. */
@@ -129,6 +133,14 @@ export interface DayInfo {
    */
   readonly followedBy: readonly ('shabbos' | 'yom-tov' | 'yom-kippur')[];
   /**
+   * An eruv tavshilin is made today: the day is not itself Shabbos or Yom Tov, and the Yom Tov that
+   * begins tonight runs into a Friday (Shulchan Aruch OC 527:1: Yom Tov on Erev Shabbos), whether
+   * the Friday is its first or second day (Mishna Berura 527:1: it is made on the eve of the first
+   * day). So Shavuos on Friday and Shabbos in the diaspora has one, made on Thursday. By the day's
+   * Israel or diaspora setting.
+   */
+  readonly eruvTavshilin: boolean;
+  /**
    * The eve of Shabbos and/or of a Yom Tov, as a fact about this civil day: the day is not itself
    * Shabbos or a Yom Tov on which melacha is forbidden (Yom Kippur counts), and the next day is
    * Shabbos (`erev-shabbos`) and/or such a Yom Tov for the day's Israel or diaspora setting
@@ -172,7 +184,7 @@ export interface DayInfo {
 
 const DAY_SLOTS: readonly string[] = ['alos', 'misheyakir', 'sunrise', 'shema', 'tefilla', 'chatzos', 'minchaGedola', 'minchaKetana', 'plag', 'sunset', 'tzeis'];
 
-const HOLIDAY_KEYS = ['modernIsraeli', 'israeliCommemorations', 'behab', 'yomKippurKatan', 'yomKippurKatanOnFriday', 'yomKippurKatanCheshvan', 'shovavim', 'shabbosMevorchim'] as const;
+const HOLIDAY_KEYS = ['modernIsraeli', 'israeliCommemorations', 'behab', 'yomKippurKatan', 'yomKippurKatanOnFriday', 'yomKippurKatanCheshvan', 'shovavim', 'shabbosMevorchim', 'yizkor'] as const;
 
 /**
  * Everything about `date`: a civil date, or a Hebrew date's daytime. A plain
@@ -208,17 +220,30 @@ export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = 
     if (nev.some((e) => e.id === 'yom-kippur')) followedBy.push('yom-kippur');
     else if (nev.some((e) => e.flags.melachaForbidden)) followedBy.push('yom-tov');
   }
+  // The Yom Tov days (not Yom Kippur, on which nothing is cooked) that follow this day, and whether
+  // one is a Friday. After 29 Elul 9999 comes Rosh Hashana 10000, two days, on the next weekdays.
+  let eruvTavshilin = false;
+  if (!h.isShabbos && !events.some((e) => e.flags.melachaForbidden)) {
+    if (h.epochDays >= MAX_DAYS) eruvTavshilin = h.dayOfWeek === 3 || h.dayOfWeek === 4;
+    else {
+      const yomTov = (d: HebrewDate) => holidaysOn(d, hopts).some((e) => e.flags.melachaForbidden && e.id !== 'yom-kippur');
+      for (let d = h.next(); yomTov(d); d = d.next()) {
+        if (d.dayOfWeek === 5) { eruvTavshilin = true; break; }
+        if (d.epochDays >= MAX_DAYS) break;
+      }
+    }
+  }
+  // The eve of Shabbos or Yom Tov is what follows a day that is not itself holy. The eve of Yom
+  // Kippur is named as itself, with the name of the day's own event, and is not also the eve of a
+  // Yom Tov.
   const erev: { id: 'erev-shabbos' | 'erev-yom-tov' | 'erev-yom-kippur'; name: string }[] = [];
   if (!h.isShabbos && !events.some((e) => e.flags.melachaForbidden)) {
-    // After 29 Elul 9999 (the last supported day) comes Rosh Hashana 10000, always Yom Tov.
-    const last = h.epochDays >= MAX_DAYS;
-    const next = last ? null : h.next();
-    if (next?.isShabbos) erev.push({ id: 'erev-shabbos', name: wordName('erev-shabbos', locale) });
-    // The eve of Yom Kippur is named as itself, with the name of the day's own event, and is not
-    // also the eve of a Yom Tov.
-    const yk = events.find((e) => e.id === 'erev-yom-kippur');
-    if (yk) erev.push({ id: 'erev-yom-kippur', name: holidayName(yk, locale) });
-    else if (last || holidaysOn(next!, hopts).some((e) => e.flags.melachaForbidden)) erev.push({ id: 'erev-yom-tov', name: wordName('erev-yom-tov', locale) });
+    // A day followed by Yom Kippur is 9 Tishrei, which always has its erev-yom-kippur event.
+    for (const f of followedBy) {
+      erev.push(f === 'yom-kippur'
+        ? { id: 'erev-yom-kippur', name: holidayName(events.find((e) => e.id === 'erev-yom-kippur')!, locale) }
+        : { id: `erev-${f}`, name: wordName(`erev-${f}`, locale) });
+    }
   }
   const style = locale.base === 'he' ? 'he' : locale.base === 'sephardi' ? 'sephardi' : 'ashkenazi';
 
@@ -257,6 +282,7 @@ export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = 
     melachaForbidden: h.isShabbos || events.some((e) => e.flags.melachaForbidden),
     fastKind: events.find((e) => e.flags.fast !== null)?.flags.fast ?? null,
     followedBy,
+    eruvTavshilin,
     erev,
     parsha: reading
       ? {
@@ -267,7 +293,7 @@ export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = 
         }
       : null,
     haftara: haft ? { key: haft.key, reference: haft.reference } : null,
-    omer: om ? { day: om, text: omerText(om), textEnglish: omerTextEnglish(om), sefirah: omerSefirah(om, style) } : null,
+    omer: om ? { day: om, text: omerText(om, options.omerNusach ?? 'ashkenaz'), textEnglish: omerTextEnglish(om), sefirah: omerSefirah(om, style) } : null,
     tefillah: tefillahOn(h, { ...options.tefillah, israel }),
     learning: options.learning ? options.learning(h, locale) : null,
     learningDetail: options.learning?.detail ? options.learning.detail(h, locale) : null,

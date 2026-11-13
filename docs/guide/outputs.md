@@ -15,7 +15,7 @@
 `dayInfo(date, options)` returns a plain JSON object with everything about the day: Hebrew
 date, events, parsha and haftara, Omer, tefillah changes, learning (when you pass it, see below),
 and (with a `location`) zmanim, candle lighting, havdala and fast times. Its shape is described by a
-[JSON Schema](https://raw.githubusercontent.com/yskolnick/luach/v0.4.0/schema/day.schema.json),
+[JSON Schema](https://raw.githubusercontent.com/yskolnick/luach/v0.5.0/schema/day.schema.json),
 which ships in the package as `luach/schema/day.schema.json`; each object's `$schema` is that
 URL (`DAY_INFO_SCHEMA_ID`).
 
@@ -91,9 +91,9 @@ The instant is a `Date`; over HTTP or on the command line it is an ISO 8601 stri
 offset (`Z` or `+hh:mm`), because a string without one would be read in the server's or the
 computer's zone. `options` are the zmanim options (`opinions`, `candleLightingMinutes`, `israel`, the holiday
 options, …) and `locale` for the names; the default locale is Hebrew, as in `dayInfo`. The shape is
-described by a [JSON Schema](https://raw.githubusercontent.com/yskolnick/luach/v0.4.0/schema/now.schema.json),
+described by a [JSON Schema](https://raw.githubusercontent.com/yskolnick/luach/v0.5.0/schema/now.schema.json),
 which ships as `luach/schema/now.schema.json`; the `day` part is the
-[day schema](https://raw.githubusercontent.com/yskolnick/luach/v0.4.0/schema/day.schema.json), which a
+[day schema](https://raw.githubusercontent.com/yskolnick/luach/v0.5.0/schema/day.schema.json), which a
 validator needs alongside it. Every zman, event and Hebrew date in the document has one shape, and
 every zman names its opinion and source.
 

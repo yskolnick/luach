@@ -47,7 +47,8 @@ HebrewDate.fromGregorian(2026, 10, 21, { afterSunset: true }); // 11 Cheshvan
 ### Zmanim
 
 ```ts
-import { Zmanim, getPlace } from 'luach';
+import { Zmanim } from 'luach';
+import { getPlace } from 'luach/places';
 
 // A place and the opinions its user follows. Anything left out uses a documented default.
 const zmanim = new Zmanim(getPlace('jerusalem')!, { shema: 'sof-zman-shema-mga-72' });
@@ -78,12 +79,81 @@ day *at the place*, never on the device's clock. `time` is rounded on the safe s
 displayed by cutting off the seconds; `exact` holds the exact instant. When the sun never reaches
 an angle, the time is `null` with a reason rather than a guessed time.
 
+### At this instant
+
+```ts
+import { fastAt, hebrewDateSpanAt } from 'luach';
+import { getPlace } from 'luach/places';
+
+const place = getPlace('new-york')!;
+const now = new Date('2027-08-11T19:00:00Z');   // the afternoon before Tisha B'Av
+
+hebrewDateSpanAt(now, place).date.toString();   // "5787-5-8": 8 Av; `.ends` is the sunset it changes at
+fastAt(now, place)!.begins.localTime();         // "19:59": the fast begins at tonight's sunset
+```
+
+The Hebrew date and where it changes, whether a fast is on, the night of a date with its Omer
+count, Chanukah lights and candles, the month's Kiddush Levana, and every time in a range are one
+call each; see [At this instant](docs/guide/at-this-instant.md).
+
+### Everything now, as one document
+
+```ts
+import { nowInfo, en } from 'luach';
+import { getPlace } from 'luach/places';
+
+const now = nowInfo(new Date('2026-10-23T15:00:00Z'), getPlace('jerusalem')!, { locale: en });
+now.clock.time;              // "18:00:00": the wall clock in Jerusalem
+now.hebrewDate.formatted;    // "13 Heshvan 5787": already Shabbos, though the clock says Friday
+now.melacha.inProgress;      // true
+now.melacha.begins.local;    // "17:18": the candles
+now.melacha.ends.local;      // "18:35": havdala
+now.validUntil;              // "2026-10-23T15:35:05.220Z": ask again then
+```
+
+`nowInfo` gives the Hebrew date, whether melacha is forbidden and until when, the fast, the night,
+what comes next, the day's zmanim and the opinions in force, all for one instant, as plain JSON
+with a schema (`luach/schema/now.schema.json`). On the command line it is `npx luach now --city
+jerusalem` (add `--json` for the document). `examples/server` serves it at `/now`, and
+`examples/home-assistant` reads that into Home Assistant sensors. See
+[Outputs](docs/guide/outputs.md).
+
 ### Right-to-left text
 
 A Hebrew date placed inside left-to-right text can appear scrambled: the Unicode bidi
 algorithm reorders spaces, digits and punctuation around Hebrew letters. Pass
 `{ isolate: true }` to wrap Hebrew output in invisible Unicode isolates (U+2067 … U+2069)
 that keep it together. It is opt-in because the isolates are real characters in the string.
+
+### Names
+
+Every name Luach prints comes from a name set: `he`, `ashkenazi`, `sephardi`, `en`, `chabad`,
+`israeli` and `yi`. Pass one as `locale`. `termName` gives the everyday words (Shabbos, Mincha,
+Erev Yom Tov), and any name can be changed:
+
+```ts
+import { termName, extendLocale, nameEntries, parseNames, ashkenazi, sephardi, he } from 'luach';
+
+termName('shabbos', ashkenazi); // "Shabbos"
+termName('shabbos', sephardi);  // "Shabbat"
+termName('shabbos', he);        // "שבת"
+
+const mine = extendLocale(ashkenazi, { 'term.shabbos': 'Shabbes' });
+termName('shabbos', mine);                                       // "Shabbes"
+nameEntries(mine).filter((r) => r.changed).map((r) => r.key);    // ["term.shabbos"]
+parseNames({ 'term.shabbos': 'Shabbes', bogus: 'x' }).ok;        // false: keeps the valid name, lists the rest
+```
+
+`nameEntries` lists every name for a settings screen, `parseNames` reads back what a person
+saved, and the command line takes the same JSON as `--names`. See [Names](docs/guide/names.md).
+
+### Imports
+
+The main `luach` import holds no big table. The city table is `luach/places` (`builtInPlaces`,
+`getPlace`, `searchPlaces`, `nearestPlace`), every city of 15,000+ people is `luach/places-full`,
+and the learning cycles are `luach/learning`. The day view includes the learning only when you
+pass it: `dayInfo(date, { location, learning: dayLearning })`, with `dayLearning` from
+`luach/learning`.
 
 ## How Luach differs
 
@@ -96,7 +166,7 @@ that keep it together. It is opt-in because the isolates are real characters in 
 ## Documentation
 
 The [`docs/guide/`](docs/guide/) folder holds the guides (dates, holidays, parsha, learning,
-zmanim, places, outputs, right-to-left text, React Native), and
+zmanim, at this instant, places, outputs, names, right-to-left text, React Native), and
 [`docs/halacha/zmanim.md`](docs/halacha/zmanim.md) lists every zman with its source. Runnable
 examples are in [`examples/`](examples/).
 

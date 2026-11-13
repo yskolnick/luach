@@ -3,6 +3,7 @@
  * The `luach` command line.
  *
  *   luach today --city lakewood
+ *   luach now --city jerusalem
  *   luach zmanim 2027-03-14 --lat 40.08 --lon -74.21 --tz America/New_York
  *   luach holidays 5787 --israel
  *   luach convert 2026-10-21        luach convert "14 Adar II 5787"
@@ -17,21 +18,31 @@
 import { HebrewDate } from '../calendar/hebrew-date.js';
 import { parseIsoDate, formatIsoDate, type CivilDate } from '../time/civil.js';
 import { civilDateAt } from '../time/zone.js';
-import { formatHebrewDate } from '../text/format.js';
+import { formatHebrewDate, weekdayName } from '../text/format.js';
 import { parseHebrewDate } from '../text/parse.js';
 import { he } from '../locales/he.js';
 import { ashkenazi } from '../locales/ashkenazi.js';
 import { sephardi } from '../locales/sephardi.js';
 import { en } from '../locales/en.js';
-import type { Locale } from '../locales/types.js';
+import { chabad } from '../locales/chabad.js';
+import { israeli } from '../locales/israeli.js';
+import { yi } from '../locales/yi.js';
+import { extendLocale, type Locale } from '../locales/types.js';
+import { parseNames } from '../locales/entries.js';
 import { holidaysForYear } from '../holidays/holidays.js';
 import { holidayName } from '../holidays/names.js';
 import { dayInfo, type DayLocation } from '../day/day-info.js';
-import { toICalendar, type IcalLearning } from '../output/ical.js';
+import { nowInfo, type NowInfo } from '../day/now.js';
+import { zonedParts } from '../time/zoned.js';
+import { toICalendar } from '../output/ical.js';
+import type { IcalLearningName } from '../learning/index.js';
+// The learning cycles are loaded (by mainAsync) only for the commands that show them.
+let learningModule: typeof import('../learning/index.js') | undefined;
 import { getPlace, searchPlaces, isInIsrael, foldName, distanceKm, type Place } from '../places/places.js';
-import { Zmanim, type ZmanimSettings } from '../zmanim/zmanim.js';
+import { Zmanim, type Opinions, type ZmanimSettings } from '../zmanim/zmanim.js';
 import type { ZmanId } from '../zmanim/opinions.js';
 import { ZMANIM, zmanLabel } from '../zmanim/opinions.js';
+import { termName } from '../locales/terms.js';
 import type { Zman } from '../zmanim/zman.js';
 
 declare const process: {
@@ -42,14 +53,16 @@ declare const process: {
 };
 
 /** Kept equal to package.json's version by scripts/release.mjs. */
-export const VERSION = '0.2.0';
-const LOCALES: Record<string, Locale> = { he, ashkenazi, sephardi, en };
+export const VERSION = '0.3.0';
+const LOCALES: Record<string, Locale> = { he, ashkenazi, sephardi, en, chabad, israeli, yi };
 
 const HELP = `luach ${VERSION}: Hebrew calendar, holidays, parsha, learning and zmanim
 
 Usage:
   luach today [place] [options]           everything about today
   luach date <YYYY-MM-DD> [place]         everything about a date
+  luach now [place] [--at <instant>]      what is true at this moment: the Hebrew date, whether
+                                          melacha is forbidden and until when, fast, tonight, what is next
   luach zmanim [YYYY-MM-DD] <place> [--all]
   luach holidays [<Hebrew year>] [--israel]
   luach convert <YYYY-MM-DD | "14 Adar 5787">
@@ -58,10 +71,23 @@ Usage:
 
 Place:   --city <name or id>  |  --lat <deg> --lon <deg> --tz <IANA zone>
          --city searches the built-in places, then every city of 15,000+ people.
+         --city with --lat and --lon: that city (with its own candle-lighting custom, if it has one)
+         at that position; the time zone is the city's unless --tz is given.
          --elevation <m> (or --elevation=<m>): elevation-adjusted sunrise and sunset at
-         that height (today, date, zmanim); bare --elevation with --city uses the
+         that height (today, date, now, zmanim); bare --elevation with --city uses the
          place's elevation. Default: sea level, as most luchos.
-Options: --locale he|ashkenazi|sephardi|en   --israel | --diaspora   --json   --help   --version
+Options: --locale he|ashkenazi|sephardi|en|chabad|israeli|yi   --israel | --diaspora   --json   --help   --version
+         --names '<json>'               change names within the --locale, e.g. '{"term.shabbos":"Shabbes","month.10":"Tevet"}'
+                                        (keys: month.N, weekday.N, holiday.<id>, zman.<id>, parsha.<id>, term.<word>)
+         --at <ISO 8601 instant, e.g. 2026-10-23T15:00:00Z> (now only; default: this moment)
+Choices (today, date, now, zmanim, ics):
+         --opinions '<json>'            e.g. '{"tzeis":"tzeis-rabbeinu-tam","havdala":"tzeis-72"}'
+         --candle-minutes <0-180>       minutes before sunset (default 18, or a city's own custom)
+         --high-latitude none|nearestDay|halfNight
+                                        what to do where the sun does not reach an angle (default none: no time)
+         --chanukah-lighting sunset|tzeis
+                                        (now only) the custom for the earliest time to light the Chanukah
+                                        lights on a weekday evening (default tzeis; both are shown)
          Any option may also be written --name=value.
 
 Ask your rav. This library calculates; it does not rule.
@@ -92,6 +118,38 @@ function parseArgs(argv: string[]): { positional: string[]; flags: Record<string
 }
 
 const NUMBER = /^-?\d+(\.\d+)?$/;
+
+/** The names' language from --locale; an unknown one is a usage error. */
+function localeFlag(flags: Record<string, string | true>): Locale {
+  const name = str(flags, 'locale') ?? 'ashkenazi';
+  const found = Object.prototype.hasOwnProperty.call(LOCALES, name) ? LOCALES[name] : undefined;
+  if (!found) throw new CliProblem(`--locale takes he, ashkenazi, sephardi, en, chabad, israeli or yi, not "${name}"`);
+  const text = flags.names;
+  if (text === undefined) return found;
+  const example = '\'{"term.shabbos":"Shabbes"}\'';
+  if (typeof text !== 'string') throw new CliProblem(`--names takes a JSON object, e.g. ${example}`);
+  let json: unknown;
+  try {
+    json = JSON.parse(text);
+  } catch {
+    throw new CliProblem(`--names is not valid JSON; give an object, e.g. ${example}`);
+  }
+  const parsed = parseNames(json);
+  if (!parsed.ok) throw new CliProblem(`--names: ${parsed.problems.map((p) => (p.key ? `${p.key}: ` : '') + p.problem).join('\nluach: --names: ')}`);
+  return extendLocale(found, { ...parsed.value });
+}
+
+/** An instant with an explicit offset: `Z` or `±hh:mm`. Without one it would be read in this computer's zone. */
+function instantFlag(text: string | undefined): Date {
+  if (text === undefined) return new Date();
+  const ok = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:\d{2})$/.test(text);
+  const instant = ok ? new Date(text) : null;
+  if (!instant || Number.isNaN(instant.getTime())) throw new CliProblem(`--at takes an ISO 8601 instant with an explicit offset (Z or +hh:mm), e.g. 2026-10-23T15:00:00Z; "${text}" is not one`);
+  return instant;
+}
+
+/** Whether the person gave opinions: then a day lists their own time for each part of the day. */
+const hasOpinions = (o: Opinions | undefined): o is Opinions => o !== undefined && Object.keys(o).length > 0;
 
 function str(flags: Record<string, string | true>, k: string): string | undefined {
   const v = flags[k];
@@ -140,6 +198,18 @@ function place(flags: Record<string, string | true>): DayLocation | undefined {
   if (city) {
     const p = findCity(city);
     if (!p) throw new Error(`No place matches "${city}". Try: luach cities ${city}`);
+    const lat = str(flags, 'lat');
+    const lon = str(flags, 'lon');
+    // A city with a position (a GPS fix in a chosen city): the city, with its custom, at the given
+    // position; the zone is the city's unless --tz is given.
+    if (lat !== undefined || lon !== undefined) {
+      if (lat === undefined || lon === undefined) throw new Error('Give both --lat and --lon');
+      const latitude = Number(lat);
+      const longitude = Number(lon);
+      if (!NUMBER.test(lat) || !NUMBER.test(lon) || !Number.isFinite(latitude) || !Number.isFinite(longitude)) throw new Error('--lat and --lon must be numbers');
+      const tz = str(flags, 'tz');
+      return { ...p, latitude, longitude, ...(tz ? { timeZone: tz } : {}), ...(typeof elev === 'number' ? { elevation: elev } : {}) };
+    }
     return typeof elev === 'number' ? { ...p, elevation: elev } : p;
   }
   const lat = str(flags, 'lat');
@@ -157,9 +227,53 @@ function place(flags: Record<string, string | true>): DayLocation | undefined {
   return { latitude, longitude, elevation: elev ?? 0, timeZone, israel: isInIsrael(latitude, longitude) };
 }
 
-/** Zmanim options from the flags: --elevation turns on elevation-adjusted sunrise and sunset. */
-function zmanimOptions(flags: Record<string, string | true>): ZmanimSettings {
-  return elevationFlag(flags) !== undefined ? { useElevation: true } : {};
+function icalLearningOrProblem(names: IcalLearningName[]): ReturnType<typeof import('../learning/index.js').icalLearning> {
+  try {
+    if (!learningModule) throw new Error('the learning cycles are not loaded: run through mainAsync');
+    return learningModule.icalLearning(names);
+  } catch (e) {
+    throw new CliProblem(`--learning: ${(e as Error).message}`);
+  }
+}
+
+/** A problem with what the user typed: printed to stderr by `main`, exit code 1. */
+class CliProblem extends Error {}
+
+/** The user's choices from the flags: elevation, opinions, candle-lighting minutes and the high-latitude rule. */
+function zmanimOptions(flags: Record<string, string | true>): ZmanimSettings & { opinions?: Opinions } {
+  const out: { -readonly [K in keyof ZmanimSettings]: ZmanimSettings[K] } & { opinions?: Opinions } = {};
+  if (elevationFlag(flags) !== undefined) out.useElevation = true;
+  const minutes = flags['candle-minutes'];
+  if (minutes !== undefined) {
+    if (typeof minutes !== 'string' || !NUMBER.test(minutes) || Number(minutes) < 0 || Number(minutes) > 180) throw new CliProblem('--candle-minutes takes a number of minutes from 0 to 180');
+    out.candleLightingMinutes = Number(minutes);
+  }
+  const fallback = flags['high-latitude'];
+  if (fallback !== undefined) {
+    if (fallback !== 'none' && fallback !== 'nearestDay' && fallback !== 'halfNight') throw new CliProblem('--high-latitude takes none, nearestDay or halfNight');
+    out.highLatitudeFallback = fallback;
+  }
+  const text = flags.opinions;
+  if (text !== undefined) {
+    if (typeof text !== 'string') throw new CliProblem('--opinions takes a JSON object, e.g. \'{"tzeis":"tzeis-rabbeinu-tam"}\'');
+    let json: unknown;
+    try {
+      json = JSON.parse(text);
+    } catch {
+      throw new CliProblem('--opinions is not valid JSON; give an object, e.g. \'{"tzeis":"tzeis-rabbeinu-tam"}\'');
+    }
+    const parsed = Zmanim.parseOpinions(json);
+    if (!parsed.ok) throw new CliProblem(`--opinions: ${parsed.problems.map((p) => (p.key ? `${p.key}: ` : '') + p.problem).join('\nluach: --opinions: ')}`);
+    out.opinions = parsed.value;
+  }
+  return out;
+}
+
+/** The note on the 18-minute default for a location in Israel without its own custom, or null. */
+function israelNote(loc: DayLocation | undefined, flags: Record<string, string | true>): string | null {
+  if (!loc) return null;
+  const { opinions, ...settings } = zmanimOptions(flags);
+  return new Zmanim(loc, opinions ?? {}, settings).candleNote;
 }
 
 function elevationNote(loc: DayLocation, flags: Record<string, string | true>): string {
@@ -178,57 +292,153 @@ function todayIn(loc: DayLocation | undefined): CivilDate {
   return civilDateAt(Date.now(), loc?.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone);
 }
 
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+/** A time's wall clock, with its date beside it when it falls on another civil day in the place's zone than `shown` (YYYY-MM-DD). */
+function dated(z: { time: string | null; local: string | null; timeZone: string }, shown: string): string {
+  if (z.time === null || z.local === null) return '—';
+  const p = zonedParts(new Date(z.time), z.timeZone);
+  const date = formatIsoDate(p);
+  return date === shown ? z.local : `${z.local} (${p.day} ${MONTHS[p.month - 1]})`;
+}
+
 function printDay(date: CivilDate, flags: Record<string, string | true>): void {
   const loc = place(flags);
-  const locale = LOCALES[str(flags, 'locale') ?? 'ashkenazi'] ?? ashkenazi;
+  const locale = localeFlag(flags);
   const israel = israelFlag(flags);
-  const info = dayInfo(date, { ...zmanimOptions(flags), ...(loc ? { location: loc } : {}), ...(israel !== undefined ? { israel } : {}), locale });
+  const chosen = zmanimOptions(flags);
+  // With --opinions, the day's times each by the user's opinion; otherwise the usual set.
+  const info = dayInfo(date, { ...(learningModule ? { learning: learningModule.dayLearning } : {}), ...chosen, ...(hasOpinions(chosen.opinions) ? { zmanim: Zmanim.order } : {}), ...(loc ? { location: loc } : {}), ...(israel !== undefined ? { israel } : {}), locale });
   if (flags.json) return line(JSON.stringify(info, null, 2));
   line(`${info.gregorian}  ${info.weekdayName}, ${info.hebrew.formatted}${loc && 'name' in loc && loc.name ? `  (${loc.name})` : ''}`);
+  // An eve that is also one of the day's events (the eve of Yom Kippur) is printed with the events.
+  const eves = info.erev.filter((e) => !info.events.some((ev) => ev.id === e.id));
+  if (eves.length) line(`  ${eves.map((e) => e.name).join(', ')}`);
   for (const e of info.events) line(`  • ${e.name}`);
-  if (info.parsha?.name) line(`  Parsha (${info.parsha.date}): ${info.parsha.name}`);
-  if (info.omer) line(`  Omer: ${info.omer.textEnglish}`);
-  for (const [k, v] of Object.entries(info.learning)) if (v) line(`  ${k}: ${v}`);
+  if (info.parsha?.name) line(`  ${termName('parsha', locale)} (${info.parsha.date}): ${info.parsha.name}`);
+  if (info.omer) line(`  ${termName('omer', locale)}: ${info.omer.textEnglish}`);
+  for (const [k, v] of Object.entries(info.learning ?? {})) if (v) line(`  ${k}: ${v}`);
   if (info.zmanim.length) {
     line('  Zmanim:');
     const note = loc ? elevationNote(loc, flags) : '';
     if (note) line(`    (${note})`);
-    for (const z of info.zmanim) line(`    ${(z.local ?? '—').padEnd(6)} ${zmanLabel(z.id, locale)}`);
+    for (const z of info.zmanim) line(`    ${dated(z, info.gregorian).padEnd(6)} ${zmanLabel(z.id, locale)}`);
   }
   if (info.candleLighting) {
     const c = info.candleLighting;
-    const custom = c.id === 'candle-lighting' && loc?.candleLighting;
-    const note = custom ? `  (${c.opinion}; ${custom.source})` : c.id === 'candle-lighting' ? '  (18 minutes before sunset, the common default)' : '';
-    line(`  Candle lighting: ${c.local}${note}`);
+    const chosen = zmanimOptions(flags).candleLightingMinutes;
+    const custom = c.id === 'candle-lighting' && chosen === undefined && loc?.candleLighting;
+    const note = custom
+      ? `  (${c.opinion}; ${custom.source})`
+      : c.id !== 'candle-lighting'
+        ? ''
+        : chosen !== undefined
+          ? `  (${chosen} minutes before sunset, as you chose)`
+          : israelNote(loc, flags)
+            ? `  (18 minutes before sunset: Luach's default; ${israelNote(loc, flags)!.slice(1)}`
+            : "  (18 minutes before sunset: Luach's default)";
+    line(`  ${termName('candle-lighting', locale)}: ${dated(c, info.gregorian)}${note}`);
   }
-  if (info.havdala) line(`  ${info.havdala.id === 'havdala-after-fast' ? 'Havdala (after the fast)' : 'Havdala'}: ${info.havdala.local}`);
-  if (info.shabbosEnds) line(`  Shabbos ends (no havdala; say Baruch HaMavdil before melacha): ${info.shabbosEnds.local}`);
-  if (info.fast) line(`  Fast: ${info.fast.begins.local} – ${info.fast.ends.local}`);
-  if (info.fastBeginsTonight) line(`  Fast begins: ${info.fastBeginsTonight.begins.local}`);
+  if (info.havdala) line(`  ${termName('havdala', locale)}${info.havdala.id === 'havdala-after-fast' ? ' (after the fast)' : ''}: ${dated(info.havdala, info.gregorian)}`);
+  if (info.shabbosEnds) line(`  ${termName('shabbos', locale)} ends (no havdala; say Baruch HaMavdil before melacha): ${dated(info.shabbosEnds, info.gregorian)}`);
+  if (info.fast) line(`  Fast: ${dated(info.fast.begins, info.gregorian)} – ${dated(info.fast.ends, info.gregorian)}`);
+  if (info.fastBeginsTonight) line(`  Fast begins: ${dated(info.fastBeginsTonight.begins, info.gregorian)}`);
+  line('  Ask your rav. Each time follows a named opinion; see --json for sources.');
+}
+
+/** A zman's time for a person: the place's date and the displayed minute, or why there is none. */
+function when(z: NowInfo['melacha']['begins'], now: NowInfo): string {
+  if (z.time === null || z.local === null) return 'no time at this place';
+  // The date of the displayed minute (`time`), as the wall clock `local` shows it.
+  const p = zonedParts(new Date(z.time), now.clock.timeZone);
+  const date = `${p.year}-${String(p.month).padStart(2, '0')}-${String(p.day).padStart(2, '0')}`;
+  return date === now.clock.date ? `${z.local} today` : `${date} ${z.local}`;
+}
+
+function printNow(flags: Record<string, string | true>): void {
+  const loc = place(flags);
+  if (!loc) throw new Error('now needs a place: --city or --lat/--lon');
+  const locale = localeFlag(flags);
+  const israel = israelFlag(flags);
+  const instant = instantFlag(str(flags, 'at'));
+  const lighting = flags['chanukah-lighting'];
+  if (lighting !== undefined && lighting !== 'sunset' && lighting !== 'tzeis') throw new CliProblem('--chanukah-lighting takes sunset or tzeis');
+  const info = nowInfo(instant, loc, { ...(learningModule ? { learning: learningModule.dayLearning } : {}), ...zmanimOptions(flags), ...(lighting ? { chanukahLighting: lighting } : {}), ...(israel !== undefined ? { israel } : {}), locale });
+  if (flags.json) return line(JSON.stringify(info, null, 2));
+  const c = info.clock;
+  line(`${c.date} ${c.time}  ${weekdayName(c.dayOfWeek, locale)}${loc.name ? `  (${loc.name}, ${c.timeZone})` : `  (${c.timeZone})`}`);
+  const note = elevationNote(loc, flags);
+  if (note) line(`  ${note}`);
+  const h = info.hebrewDate;
+  line(`Hebrew date: ${h.formatted}`);
+  line(`  began ${when(h.begins, info)}; changes ${when(h.ends, info)}`);
+  const m = info.melacha;
+  const names = m.days.map((d) => [d.shabbos ? termName('shabbos', locale) : '', ...d.events.filter((e) => e.flags.melachaForbidden).map((e) => e.name)].filter(Boolean).join(' / ')).join(', ');
+  line(`Melacha (${names}): ${m.inProgress === null ? 'not known: Luach has no time at this place to decide by' : m.inProgress ? 'forbidden now' : 'not forbidden now'}`);
+  const candleNote = m.begins.id === 'candle-lighting' && info.settings.candleLightingNote ? `  (18 minutes before sunset: Luach's default; ${info.settings.candleLightingNote.slice(1)}` : '';
+  line(`  ${m.inProgress ? 'began with' : 'begins with'} ${zmanLabel(m.begins.id, locale)}: ${when(m.begins, info)}${candleNote}`);
+  line(`  ends with ${zmanLabel(m.ends.id, locale)}: ${when(m.ends, info)}`);
+  if (info.fast) {
+    const f = info.fast;
+    line(`Fast (${f.event.name}): ${f.inProgress === null ? 'not known: Luach has no time at this place to decide by' : f.inProgress ? 'on now' : 'not on now'}`);
+    line(`  begins: ${when(f.begins, info)}; ends: ${when(f.ends, info)}`);
+  }
+  // Both nights, with their times: when a night ends (dawn or sunrise) is the reader's choice, not Luach's.
+  for (const [label, n] of [['The night of the Hebrew date now', info.night], ['The next night', info.nextNight]] as const) {
+    if (!n.omer && !n.chanukahLights) continue;
+    line(`${label} (${n.hebrewDate.formatted}): sunset ${when(n.sunset, info)}, nightfall ${when(n.tzeis, info)}, dawn ${when(n.alos, info)}, sunrise ${when(n.sunrise, info)}`);
+    if (n.omer) line(`  ${termName('omer', locale)}: day ${n.omer}`);
+    if (n.chanukahLights) line(`  Chanukah: ${n.chanukahLights} ${n.chanukahLights === 1 ? 'light' : 'lights'}`);
+    const l = n.chanukahLighting;
+    if (l) {
+      // Each custom is listed, and the one in force is marked: your choice, or Luach's default.
+      if (l.evening === 'weekday') for (const c of l.customs) line(`    earliest ${when(c.earliest, info)}: ${c.opinion.split(':')[0]}${l.custom === c.id ? (l.isDefault ? " (Luach's default)" : ' (your choice)') : ''}`);
+      else if (l.evening === 'erev-shabbos') line(`    earliest ${when(l.earliest!, info)}: from plag hamincha by your plag opinion (the Mishna Berura counts plag from nightfall), before the Shabbos candles (${when(l.before!, info)})`);
+      else line(`    earliest ${when(l.earliest!, info)}: after Shabbos ends (the lights or havdala first: a custom Luach does not choose)`);
+      line(`    may be lit until dawn (${when(l.until, info)}); the proper time is about half an hour from the earliest`);
+    }
+  }
+  if (info.upcoming.length) {
+    line('Next:');
+    for (const u of info.upcoming.slice(0, 6)) line(`  ${when(u.zman, info).padEnd(18)} ${zmanLabel(u.zman.id, locale)}`);
+  }
   line('  Ask your rav. Each time follows a named opinion; see --json for sources.');
 }
 
 function printZmanim(date: CivilDate, flags: Record<string, string | true>): void {
   const loc = place(flags);
   if (!loc) throw new Error('zmanim needs a place: --city or --lat/--lon');
-  const locale = LOCALES[str(flags, 'locale') ?? 'ashkenazi'] ?? ashkenazi;
-  const day = new Zmanim(loc, {}, { ...zmanimOptions(flags), ...(loc.candleLighting ? { candleLightingMinutes: loc.candleLighting.minutes } : {}) }).on(date);
+  const locale = localeFlag(flags);
+  const { opinions, ...settings } = zmanimOptions(flags);
+  // A city's own candle-lighting custom applies unless --candle-minutes is given.
+  const day = new Zmanim(loc, opinions ?? {}, settings).on(date);
   const all = (Object.keys(ZMANIM) as ZmanId[]).filter((id) => 'at' in ZMANIM[id]);
   const shown: readonly ZmanId[] = flags.all ? all : ['alos-72', 'alos-16.1', 'misheyakir-11', 'sunrise', 'sof-zman-shema-mga-72', 'sof-zman-shema-gra', 'sof-zman-tefilla-gra', 'chatzos', 'mincha-gedola-greater', 'mincha-ketana-gra', 'plag-hamincha-gra', 'sunset', 'tzeis-8.5', 'tzeis-72'];
-  const out: ReturnType<Zman['toJSON']>[] = shown.map((id) => day.get(id).toJSON());
+  // With --opinions, the day's times each by the user's opinion; otherwise the usual set.
+  const out: ReturnType<Zman['toJSON']>[] = hasOpinions(opinions) && !flags.all ? day.slots().map((z) => z.toJSON()) : shown.map((id) => day.get(id).toJSON());
   if (flags.json) return line(JSON.stringify(out, null, 2));
   line(`Zmanim for ${formatIsoDate(date)} (${typeof loc.timeZone === 'string' ? loc.timeZone : loc.timeZone.name})`);
   const note = elevationNote(loc, flags);
   if (note) line(`  ${note}`);
   for (const r of out) {
-    const custom = r.id === 'candle-lighting' && loc.candleLighting ? `  (${loc.candleLighting.minutes} minutes, ${loc.candleLighting.custom}: ${loc.candleLighting.source})` : '';
-    line(`  ${(r.local ?? '—').padEnd(6)} ${zmanLabel(r.id, locale)}${r.reason ? `  [${r.reason}]` : ''}${custom}`);
+    const custom = r.id === 'candle-lighting' && loc.candleLighting && zmanimOptions(flags).candleLightingMinutes === undefined ? `  (${loc.candleLighting.minutes} minutes, ${loc.candleLighting.custom}: ${loc.candleLighting.source})` : '';
+    line(`  ${dated(r, formatIsoDate(date)).padEnd(6)} ${zmanLabel(r.id, locale)}${r.reason ? `  [${r.reason}]` : ''}${custom}`);
   }
   line('Ask your rav. Sources: luach zmanim --json, or the ZMANIM table in the docs.');
   void ZMANIM;
 }
 
 export function main(argv: string[]): number {
+  try {
+    return run(argv);
+  } catch (e) {
+    if (!(e instanceof CliProblem)) throw e;
+    process.stderr.write(`luach: ${e.message}\n`);
+    return 1;
+  }
+}
+
+function run(argv: string[]): number {
   const { positional, flags } = parseArgs(argv);
   const [cmd, ...rest] = positional;
   if (flags.version) return line(VERSION), 0;
@@ -241,12 +451,15 @@ export function main(argv: string[]): number {
     case 'date':
       printDay(parseIsoDate(rest[0] ?? ''), flags);
       return 0;
+    case 'now':
+      printNow(flags);
+      return 0;
     case 'zmanim':
       printZmanim(rest[0] ? parseIsoDate(rest[0]) : todayIn(place(flags)), flags);
       return 0;
     case 'holidays': {
       const year = rest[0] ? Number(rest[0]) : HebrewDate.today().year;
-      const locale = LOCALES[str(flags, 'locale') ?? 'ashkenazi'] ?? ashkenazi;
+      const locale = localeFlag(flags);
       const events = holidaysForYear(year, { israel: israelFlag(flags) ?? false });
       if (flags.json) return line(JSON.stringify(events, null, 2)), 0;
       for (const e of events) line(`${formatIsoDate(e.date.toCivil())}  ${formatHebrewDate(e.date, { locale, form: 'short' }).padEnd(16)} ${holidayName(e, locale)}`);
@@ -266,10 +479,10 @@ export function main(argv: string[]): number {
     case 'ics': {
       if (flags.elevation !== undefined) throw new Error('--elevation is not supported by ics yet');
       const loc = place(flags);
-      const learning = (str(flags, 'learning') ?? '').split(',').filter(Boolean) as IcalLearning[];
-      const locale = LOCALES[str(flags, 'locale') ?? 'ashkenazi'] ?? ashkenazi;
+      const learning = (str(flags, 'learning') ?? '').split(',').filter(Boolean) as IcalLearningName[];
+      const locale = localeFlag(flags);
       const israel = israelFlag(flags);
-      process.stdout.write(toICalendar(parseIsoDate(rest[0] ?? ''), parseIsoDate(rest[1] ?? ''), { ...(loc ? { location: loc } : {}), ...(israel !== undefined ? { israel } : {}), learning, locale }));
+      process.stdout.write(toICalendar(parseIsoDate(rest[0] ?? ''), parseIsoDate(rest[1] ?? ''), { ...zmanimOptions(flags), ...(loc ? { location: loc } : {}), ...(israel !== undefined ? { israel } : {}), ...(learning.length ? { learning: icalLearningOrProblem(learning) } : {}), locale }));
       return 0;
     }
     case 'cities': {
@@ -295,6 +508,7 @@ export async function mainAsync(argv: string[]): Promise<number> {
   const { positional, flags } = parseArgs(argv);
   const city = str(flags, 'city') ?? (positional[0] === 'cities' ? positional.slice(1).join(' ') : undefined);
   if (city && !fullTable && !builtInCity(city)) fullTable = (await import('../places/full.js')).fullPlaces();
+  if (!learningModule && ['today', 'date', 'now', 'ics'].includes(positional[0] ?? '')) learningModule = await import('../learning/index.js');
   return main(argv);
 }
 

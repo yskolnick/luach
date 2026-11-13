@@ -77,6 +77,16 @@ export class Zman {
   readonly reason?: ZmanUnavailableReason;
   /** Set when a high-latitude fallback produced the time (off by default). Describes the fallback. */
   readonly fallback?: string;
+  /**
+   * Where `time` is null because the sun does not get low enough (`reason: 'sun-always-above'`,
+   * far north in summer, or `'depends-on-missing-zman'` for a time made from such a one), what
+   * each high-latitude rule gives, exactly as setting `highLatitudeFallback` would: `halfNight` (solar midnight, the
+   * sun's lowest point) and `nearestDay` (the same offset from solar noon as on the nearest day
+   * the sun reaches the angle), each marked in its own `fallback`. Neither is used unless the
+   * caller chooses it; which applies is a question for a rav (see the halachic choices page).
+   * Absent otherwise, and where no rule gives a time (polar night).
+   */
+  readonly fallbacks?: { readonly halfNight: Zman; readonly nearestDay: Zman };
   /** The zone used for `toJSON`'s local time. */
   readonly timeZone: TimeZone;
   /** An earliest time or a deadline (see {@link ZmanKind}); its rounding follows from it. */
@@ -94,6 +104,7 @@ export class Zman {
     timeZone: TimeZone;
     reason?: ZmanUnavailableReason;
     fallback?: string;
+    fallbacks?: { readonly halfNight: Zman; readonly nearestDay: Zman };
     kind: ZmanKind;
     slot: string;
     explain?: () => Explanation;
@@ -107,6 +118,7 @@ export class Zman {
     this.timeZone = init.timeZone;
     if (init.reason) this.reason = init.reason;
     if (init.fallback) this.fallback = init.fallback;
+    if (init.fallbacks) this.fallbacks = Object.freeze({ ...init.fallbacks });
     this.kind = init.kind;
     this.slot = init.slot;
     if (init.explain) EXPLAIN.set(this, init.explain);
@@ -137,14 +149,16 @@ export class Zman {
 
   /**
    * Local wall-clock time, or null: `HH:MM`, already rounded on the safe side. With
-   * `{ exact: true }`, the exact time as `HH:MM:SS`.
+   * `{ exact: true }`, or when the time is not rounded (`round: 'none'`), the exact time as `HH:MM:SS`.
    */
   localTime(options?: { exact?: boolean }): string | null {
-    const at = options?.exact ? this.exact : this.time;
+    // Not rounded (`round: 'none'`): the exact time, with its seconds.
+    const exact = options?.exact ?? (this.rounded === null && this.time !== null);
+    const at = exact ? this.exact : this.time;
     if (!at) return null;
     const p = localParts(at.getTime(), this.timeZone);
     const hm = `${String(p.hour).padStart(2, '0')}:${String(p.minute).padStart(2, '0')}`;
-    return options?.exact ? `${hm}:${String(p.second).padStart(2, '0')}` : hm;
+    return exact ? `${hm}:${String(p.second).padStart(2, '0')}` : hm;
   }
 
   /** Plain data for logging and APIs. */
@@ -162,6 +176,7 @@ export class Zman {
     slot: string;
     reason?: ZmanUnavailableReason;
     fallback?: string;
+    fallbacks?: { halfNight: ReturnType<Zman['toJSON']>; nearestDay: ReturnType<Zman['toJSON']> };
   } {
     return {
       id: this.id,
@@ -177,6 +192,7 @@ export class Zman {
       slot: this.slot,
       ...(this.reason ? { reason: this.reason } : {}),
       ...(this.fallback ? { fallback: this.fallback } : {}),
+      ...(this.fallbacks ? { fallbacks: { halfNight: this.fallbacks.halfNight.toJSON(), nearestDay: this.fallbacks.nearestDay.toJSON() } } : {}),
     };
   }
 }

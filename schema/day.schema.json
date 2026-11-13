@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/yskolnick/luach/v0.4.0/schema/day.schema.json",
+  "$id": "https://raw.githubusercontent.com/yskolnick/luach/v0.5.0/schema/day.schema.json",
   "title": "Luach day",
   "description": "Everything about one day, as returned by dayInfo() in the luach package. Times are ISO 8601 UTC instants with a local HH:MM in the location's zone. Every zman names its opinion and source; defaults are not rulings. Fields may be added in later versions; a reader should ignore fields it does not know.",
   "type": "object",
@@ -17,6 +17,7 @@
     "melachaForbidden",
     "fastKind",
     "followedBy",
+    "eruvTavshilin",
     "erev",
     "parsha",
     "haftara",
@@ -120,6 +121,22 @@
         "slot": {
           "type": "string",
           "description": "The kind of time: alos, shema, tzeis, candleLighting, havdala, fast and so on."
+        },
+        "fallbacks": {
+          "type": "object",
+          "description": "Where time is null because the sun does not get low enough (reason sun-always-above), what each high-latitude rule gives: halfNight (solar midnight) and nearestDay. Neither is used unless chosen; which applies is a question for a rav.",
+          "required": [
+            "halfNight",
+            "nearestDay"
+          ],
+          "properties": {
+            "halfNight": {
+              "$ref": "#/$defs/zman"
+            },
+            "nearestDay": {
+              "$ref": "#/$defs/zman"
+            }
+          }
         }
       }
     },
@@ -225,7 +242,7 @@
   "properties": {
     "$schema": {
       "type": "string",
-      "const": "https://raw.githubusercontent.com/yskolnick/luach/v0.4.0/schema/day.schema.json",
+      "const": "https://raw.githubusercontent.com/yskolnick/luach/v0.5.0/schema/day.schema.json",
       "description": "The $id of this schema."
     },
     "date": {
@@ -359,6 +376,10 @@
           "yom-kippur"
         ]
       }
+    },
+    "eruvTavshilin": {
+      "type": "boolean",
+      "description": "An eruv tavshilin is made today: the day is not itself Shabbos or Yom Tov, and the Yom Tov that begins tonight runs into a Friday, its first or second day (Shulchan Aruch OC 527:1; Mishna Berura 527:1). By the day's Israel or diaspora setting."
     },
     "erev": {
       "description": "The eve of Shabbos and/or of a Yom Tov, as a fact about this civil day: the day is not itself Shabbos or a Yom Tov on which melacha is forbidden (Yom Kippur counts), and the next day is Shabbos (erev-shabbos) and/or such a Yom Tov for the day's Israel or diaspora setting (erev-yom-tov). Both can apply, erev-shabbos first. Usually empty. A day that is itself Shabbos or Yom Tov is always empty, even when another holy day follows: that case is left out. The eve of Yom Kippur has erev-yom-kippur only, never erev-yom-tov (the sources name that day \"Erev Yom Kippur\"), named as the day's own event is; erev-shabbos still comes first when Yom Kippur falls on Shabbos. It says nothing about candle lighting (see candleLighting); name is the everyday word in the locale asked for.",

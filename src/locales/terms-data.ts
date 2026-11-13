@@ -23,7 +23,7 @@ export const TERMS: Readonly<Record<string, Readonly<Record<string, string>>>> =
     'erev-shabbos': 'ערב שבת',
     'erev-yom-tov': 'ערב יום טוב',
     'motzaei-yom-tov': 'מוצאי יום טוב',
-    // The words of the day, as Yosef gave them (2026-11-13): everyday Hebrew.
+    // The words of the day: everyday Hebrew, chosen for Luach.
     'today': 'היום',
     'tonight': 'הלילה',
     'tomorrow': 'מחר',

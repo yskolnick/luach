@@ -13,8 +13,8 @@ export function DayScreen({ place }: { place: GeoLocation }) {
   // The civil day at the place, not on the phone's clock.
   const info = useMemo(() => dayInfo(new Zmanim(place).at(new Date()).date, { location: place, locale: ashkenazi }), [place]);
   return (
-    <View accessible accessibilityLabel={`${info.weekdayName}, ${info.hebrew.formatted}`}>
-      <Text style={{ fontSize: 22 }}>{info.hebrew.formatted}</Text>
+    <View accessible accessibilityLabel={`${info.weekdayName}, ${info.hebrewDate.formatted}`}>
+      <Text style={{ fontSize: 22 }}>{info.hebrewDate.formatted}</Text>
       <FlatList
         data={info.zmanim}
         keyExtractor={(z) => z.id}

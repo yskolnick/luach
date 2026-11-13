@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/yskolnick/luach/main/schema/now.schema.json",
+  "$id": "https://raw.githubusercontent.com/yskolnick/luach/v0.4.0/schema/now.schema.json",
   "title": "Luach now",
-  "description": "Everything true at one instant at one place, as returned by nowInfo() in the luach package. Instants are ISO 8601 UTC; civil dates are YYYY-MM-DD on the place's clock. Zmans, events and Hebrew dates have one shape each (see $defs). Every zman names its opinion and source; defaults are not rulings. Ask your rav.",
+  "description": "Everything true at one instant at one place, as returned by nowInfo() in the luach package. Instants are ISO 8601 UTC; civil dates are YYYY-MM-DD on the place's clock. Zmans, events and Hebrew dates have one shape each (see $defs). Every zman names its opinion and source; defaults are not rulings. Ask your rav. Fields may be added in later versions; a reader should ignore fields it does not know.",
   "type": "object",
   "required": [
     "$schema",
@@ -22,7 +22,6 @@
     "nextZman",
     "kiddushLevana"
   ],
-  "additionalProperties": false,
   "$defs": {
     "zman": {
       "type": "object",
@@ -30,9 +29,7 @@
         "id",
         "time",
         "local",
-        "timeZone",
-        "opinion",
-        "source",
+        "offset",
         "rounded"
       ],
       "properties": {
@@ -62,14 +59,25 @@
           ],
           "description": "The wall-clock time only (HH:MM) at the location, with no date: a time can fall on a different civil day from the one asked about. Compare time (the instant), not local."
         },
+        "offset": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[+-][0-9]{2}:[0-9]{2}$",
+          "description": "The location's offset from UTC at this time (ISO 8601, e.g. -05:00), so local and offset give the full local time; null with no time."
+        },
         "timeZone": {
-          "type": "string"
+          "type": "string",
+          "description": "Left out in a compact document (see sources)."
         },
         "opinion": {
-          "type": "string"
+          "type": "string",
+          "description": "Left out in a compact document (see sources)."
         },
         "source": {
-          "type": "string"
+          "type": "string",
+          "description": "Left out in a compact document (see sources)."
         },
         "rounded": {
           "enum": [
@@ -103,8 +111,7 @@
           "type": "string",
           "description": "The kind of time: alos, shema, tzeis, candleLighting, havdala, fast and so on."
         }
-      },
-      "additionalProperties": false
+      }
     },
     "flags": {
       "type": "object",
@@ -159,17 +166,16 @@
             null
           ]
         }
-      },
-      "additionalProperties": false
+      }
     },
     "event": {
       "type": "object",
       "required": [
         "id",
         "name",
-        "flags"
+        "flags",
+        "begins"
       ],
-      "additionalProperties": false,
       "properties": {
         "id": {
           "type": "string"
@@ -179,6 +185,13 @@
         },
         "flags": {
           "$ref": "#/$defs/flags"
+        },
+        "begins": {
+          "enum": [
+            "sunset",
+            "dawn"
+          ],
+          "description": "When the event's day begins: sunset (the evening before), or dawn for a minor fast."
         },
         "day": {
           "type": "integer"
@@ -190,6 +203,16 @@
         },
         "moved": {
           "type": "boolean"
+        },
+        "month": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 13,
+          "description": "Rosh Chodesh, Shabbos Mevorchim, Yom Kippur Katan: the month concerned (1 = Nisan)."
+        },
+        "monthYear": {
+          "type": "integer",
+          "description": "The Hebrew year of month."
         }
       },
       "description": "A holiday or other event: a language-free id, its name in the requested locale, and its flags."
@@ -203,7 +226,6 @@
         "monthName",
         "formatted"
       ],
-      "additionalProperties": false,
       "properties": {
         "year": {
           "type": "integer",
@@ -237,7 +259,6 @@
         "opinion",
         "source"
       ],
-      "additionalProperties": false,
       "properties": {
         "time": {
           "type": "string",
@@ -264,7 +285,6 @@
         "chanukahLights",
         "chanukahLighting"
       ],
-      "additionalProperties": false,
       "properties": {
         "hebrewDate": {
           "$ref": "#/$defs/hebrewDate",
@@ -318,7 +338,6 @@
                 "before",
                 "until"
               ],
-              "additionalProperties": false,
               "properties": {
                 "lights": {
                   "type": "integer",
@@ -355,7 +374,6 @@
                       "opinion",
                       "source"
                     ],
-                    "additionalProperties": false,
                     "properties": {
                       "id": {
                         "enum": [
@@ -420,7 +438,7 @@
   "properties": {
     "$schema": {
       "type": "string",
-      "const": "https://raw.githubusercontent.com/yskolnick/luach/main/schema/now.schema.json",
+      "const": "https://raw.githubusercontent.com/yskolnick/luach/v0.4.0/schema/now.schema.json",
       "description": "The $id of this schema."
     },
     "instant": {
@@ -436,7 +454,6 @@
         "elevation",
         "timeZone"
       ],
-      "additionalProperties": false,
       "properties": {
         "name": {
           "type": "string"
@@ -465,11 +482,10 @@
       "required": [
         "date",
         "time",
-        "dayOfWeek",
+        "weekday",
         "timeZone",
         "offsetMinutes"
       ],
-      "additionalProperties": false,
       "properties": {
         "date": {
           "type": "string",
@@ -481,7 +497,7 @@
           "pattern": "^\\d{2}:\\d{2}:\\d{2}$",
           "description": "The wall clock time, HH:MM:SS."
         },
-        "dayOfWeek": {
+        "weekday": {
           "type": "integer",
           "minimum": 0,
           "maximum": 6,
@@ -508,7 +524,6 @@
         "begins",
         "ends"
       ],
-      "additionalProperties": false,
       "properties": {
         "year": {
           "type": "integer",
@@ -544,7 +559,7 @@
       "description": "The Hebrew date now, by the dayBoundary opinion (a default of sunset, not a ruling), and the times that began and end it. Between sunset and nightfall the halachic date is in doubt."
     },
     "day": {
-      "$ref": "https://raw.githubusercontent.com/yskolnick/luach/main/schema/day.schema.json",
+      "$ref": "https://raw.githubusercontent.com/yskolnick/luach/v0.4.0/schema/day.schema.json",
       "description": "The whole day view (schema/day.schema.json) of the place's civil day, clock.date: today's zmanim, tonight's candle lighting and havdala, today's fast, as a luach page shows them for today. It is not the Hebrew date now, which changes at sunset: for that use hebrewDate, night and nextNight. After local midnight it is the new civil day, which may not hold the havdala of a run that ended after midnight or the end of a fast: use melacha.ends and fast.ends, which are always those of the run and the fast in the document. Its candleLighting, havdala and shabbosEnds are that day's evening; melacha.begins and melacha.ends are those of the run, which may be days apart. Its omer is the count of the civil day's date. When opinions are given, its zmanim lists the user's own time for each part of the day (Zmanim.order); otherwise a common set."
     },
     "settings": {
@@ -559,7 +574,6 @@
         "chanukahLighting",
         "chanukahLightingIsDefault"
       ],
-      "additionalProperties": false,
       "properties": {
         "opinions": {
           "type": "object",
@@ -588,7 +602,6 @@
                 "custom",
                 "source"
               ],
-              "additionalProperties": false,
               "properties": {
                 "minutes": {
                   "type": "number"
@@ -643,9 +656,9 @@
         "begins",
         "ends",
         "eve",
-        "days"
+        "days",
+        "kinds"
       ],
-      "additionalProperties": false,
       "properties": {
         "inProgress": {
           "type": [
@@ -669,7 +682,6 @@
             "hebrewDate",
             "events"
           ],
-          "additionalProperties": false,
           "properties": {
             "date": {
               "type": "string",
@@ -699,7 +711,6 @@
               "events",
               "candles"
             ],
-            "additionalProperties": false,
             "properties": {
               "date": {
                 "type": "string",
@@ -725,6 +736,17 @@
             }
           },
           "description": "Each consecutive day on which melacha is forbidden."
+        },
+        "kinds": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "shabbos",
+              "yom-tov",
+              "yom-kippur"
+            ]
+          },
+          "description": "What the run holds: shabbos, yom-tov (a Yom Tov other than Yom Kippur), yom-kippur, in that order."
         }
       },
       "description": "The run of consecutive days on which melacha is forbidden (Shabbos, Yom Tov, Yom Kippur) that is in progress, or else the next to begin."
@@ -740,7 +762,6 @@
             "begins",
             "ends"
           ],
-          "additionalProperties": false,
           "properties": {
             "event": {
               "$ref": "#/$defs/event"
@@ -785,7 +806,6 @@
           "zman",
           "hebrewDate"
         ],
-        "additionalProperties": false,
         "properties": {
           "zman": {
             "$ref": "#/$defs/zman"
@@ -818,7 +838,6 @@
         "earliest",
         "latest"
       ],
-      "additionalProperties": false,
       "properties": {
         "year": {
           "type": "integer"
@@ -839,7 +858,6 @@
             "threeDays",
             "sevenDays"
           ],
-          "additionalProperties": false,
           "properties": {
             "threeDays": {
               "$ref": "#/$defs/kiddushLevanaTime"
@@ -855,7 +873,6 @@
             "halfMonth",
             "fifteenDays"
           ],
-          "additionalProperties": false,
           "properties": {
             "halfMonth": {
               "$ref": "#/$defs/kiddushLevanaTime"
@@ -867,6 +884,25 @@
         }
       },
       "description": "Kiddush Levana for the month whose latest time has not passed: every opinion, none chosen. Whether it is said on a night that is Shabbos or Yom Tov is not modelled. Ask your rav."
+    },
+    "sources": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "opinion",
+          "source"
+        ],
+        "properties": {
+          "opinion": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Only in a compact document (compactJson): each time's opinion and source by zman id, stated once. Its times then leave out opinion, source and timeZone (the location's)."
     }
   }
 }

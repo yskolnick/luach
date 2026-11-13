@@ -71,10 +71,12 @@ f.begins.localTime();       // "19:59": tonight's sunset
 
 The fast of the place's civil today or tomorrow: the one in progress, else the next to begin, else
 today's that has ended; `null` when neither day is a fast day. A fast of the day before is also
-found while it is still on, where its end falls after local midnight (far north in summer).
-`inProgress` is true from `begins` to
-`ends`, false before and after, and `null` where a time it needs does not occur (a fast that begins
-at a dawn that never comes). The times are those of `fastTimes`, by the `fastBegins` and
+found while it may still be on, where its end falls after local midnight or does not occur (far
+north in summer). `inProgress` is true from `begins` to `ends`, false before and after, and `null`
+where a time it needs does not occur (a fast that begins at a dawn that never comes). Where the end
+does not occur (no nightfall), the fast is on from `begins` until the fast day's sunset, and `null`
+from then until the end of the next civil day, as `melachaRunAt` does: Luach gives no time at which
+it ends there. The times are those of `fastTimes`, by the `fastBegins` and
 `fastEnds` opinions.
 
 ## One night: `nightOf`
@@ -177,6 +179,43 @@ from the earliest of the earliest times to the latest of the latest. Whether Kid
 on a night that is Shabbos or Yom Tov, at night only, or on Motzaei Shabbos is for your rav; each
 night says whether it is Shabbos and what its events are.
 
+## The part of the day: `dayPartAt`
+
+```ts
+import { dayPartAt } from 'luach';
+
+const p = dayPartAt(new Date('2026-11-12T22:00:00Z'), newYork);   // 5:00 PM
+p.part;                 // "bein-hashmashos": after sunset (16:40), before nightfall (17:24)
+p.tzeis.id;             // "tzeis-8.5": the person's tzeis opinion
+```
+
+`part` is `'before-sunrise'` (midnight to sunrise), `'day'`, `'bein-hashmashos'` (sunset to
+nightfall) or `'night'` (nightfall to midnight), by the person's `sunrise`, `sunset` and `tzeis`
+opinions: where night begins is their `tzeis` (default `tzeis-8.5`, a default, not a ruling).
+`sunrise`, `sunset` and `tzeis` are the times compared with, and `date` the civil date they belong
+to: the day before, while that day's sunset or nightfall, falling after local midnight far north,
+has not come. `part` is `null` where a time it needs does not occur: no sunrise or sunset (polar
+day or night), or no nightfall, from sunset until the next sunrise.
+
+## The events in force: `eventsAt`
+
+```ts
+import { eventsAt } from 'luach';
+
+const r = eventsAt(new Date('2026-09-21T23:10:00Z'), newYork);   // 7:10 PM after Yom Kippur
+r.date.toString();      // "5787-7-11": the Hebrew date has changed at sunset
+r.events[0].event.id;   // "yom-kippur": its fast ends at 19:28
+r.events[0].inProgress; // true
+```
+
+The events of the Hebrew date now (`date`, by the `dayBoundary` opinion), always, each with
+`from`, `until` and `inProgress`; before them the events of the date before that are still in force,
+and after them those of the next date already in force. A Yom Tov is in force from its candles
+until its havdala (or until the date's boundary when another holy day follows); a fast from its
+start to its end (`fastTimes`); Isru Chag from the end of the Yom Tov before it; any other event
+from the boundary that begins its date to the one that ends it. `inProgress` is `null` where a
+time it needs does not occur.
+
 ## Shabbos and Yom Tov: `melachaRunAt`
 
 ```ts
@@ -193,7 +232,8 @@ const edge = run.inProgress === null ? null : run.inProgress ? run.ends : run.be
 
 The run of consecutive days on which melacha is forbidden (Shabbos, Yom Tov, Yom Kippur) that is in
 progress, or else the next to begin. It gives the eve and its events, each day with its events and
-the candles that begin it, `begins` (the first candles) and `ends` (the `havdala` opinion, or
+the candles that begin it, `kinds` (what the run holds: `'shabbos'`, `'yom-tov'`, `'yom-kippur'`,
+in that order), `begins` (the first candles) and `ends` (the `havdala` opinion, or
 `shabbos-ends-no-havdala` before Tisha B'Av postponed to Sunday). Candle lighting follows the
 place's custom or `candleLightingMinutes`, as the day view does.
 

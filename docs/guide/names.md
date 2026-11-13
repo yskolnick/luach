@@ -55,6 +55,8 @@ defaults to `he`, as the other name functions do.
 | `erev-shabbos` | The eve of Shabbos |
 | `erev-yom-tov` | The eve of a Yom Tov |
 | `motzaei-yom-tov` | The night after a Yom Tov |
+| `today`, `tonight`, `tomorrow`, `tomorrow-night` | Today, tonight, tomorrow, tomorrow night |
+| `night`, `evening`, `afternoon` | Night, evening, afternoon |
 
 `termName('havdala', locale)` and `termName('candle-lighting', locale)` also work, but they are not
 separate words: each has one name, the zman's. They give the name of `zman.havdala` and
@@ -76,7 +78,7 @@ functions do.
 ### Which set has which word
 
 In `he` (and so `yi`), יום טוב, מוסף, ספירת העומר, מנורה, פרשה and עומר are plain Hebrew chosen for Luach, no
-written source yet.
+written source yet; so are the words of the day (היום, הלילה, מחר …) and the short weekdays.
 
 A dagger (†) marks a word the set does not name itself and shows from another set, as described
 above. `chabad`, `israeli` and `yi` show exactly what their base set shows.
@@ -98,6 +100,17 @@ above. `chabad`, `israeli` and `yi` show exactly what their base set shows.
 | `erev-shabbos` | ערב שבת | Erev Shabbos | Erev Shabbat | Erev Shabbat † |
 | `erev-yom-tov` | ערב יום טוב | Erev Yom Tov | Erev Yom Tov | Erev Yom Tov † |
 | `motzaei-yom-tov` | מוצאי יום טוב | Motzei Yom Tov | Motzei Yom Tov † | Motzei Yom Tov † |
+| `today` | היום | Today | Today † | Today † |
+| `tonight` | הלילה | Tonight | Tonight † | Tonight † |
+| `tomorrow` | מחר | Tomorrow | Tomorrow † | Tomorrow † |
+| `tomorrow-night` | מחר בלילה | Tomorrow night | Tomorrow night † | Tomorrow night † |
+| `night` | לילה | Night | Night † | Night † |
+| `evening` | ערב | Evening | Evening † | Evening † |
+| `afternoon` | אחר הצהריים | Afternoon | Afternoon † | Afternoon † |
+
+`weekdayName(day, locale, { form: 'short' })` gives the short weekday: יום א׳ … יום ו׳, שבת in
+`he` (and `yi`); Sun … Fri, then Shabbos (`ashkenazi`, `chabad`), Shabbat (`sephardi`, `israeli`)
+or Sat (`en`). The keys are `weekday.N.short`.
 
 The eve of Shabbos and the eve of a Yom Tov appear in the day view as `erev` (see
 [Outputs](./outputs.md)), named from these words, so changing `term.erev-shabbos` or
@@ -161,11 +174,11 @@ them:
 | Group | Keys | Count |
 |---|---|---|
 | `month` | `month.1` to `month.12` (Nisan first, as Luach numbers months), then `month.12.leap` (Adar I) and `month.13.leap` (Adar II) | 14 |
-| `weekday` | `weekday.0` (Sunday) to `weekday.6` (Shabbos) | 7 |
+| `weekday` | `weekday.0` (Sunday) to `weekday.6` (Shabbos), then the short names `weekday.0.short` to `weekday.6.short` | 14 |
 | `holiday` | `holiday.<id>`, or `holiday.<id>.<day>` for one day of a holiday | 80 |
 | `zman` | `zman.<id>`, one for each zman in the catalogue | 96 |
 | `parsha` | `parsha.<id>` in reading order, then `parsha.join`, the separator of a double reading | 55 |
-| `term` | `term.<key>`, the everyday words above | 15 |
+| `term` | `term.<key>`, the everyday words above | 22 |
 
 In a leap year `month.12.leap` and `month.13.leap` name the two Adars; in other years `month.12`
 names Adar. A holiday name may hold `{n}` (the day's number) and `{month}`; keep them in the

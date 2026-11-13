@@ -18,7 +18,13 @@ export interface EventJson {
   readonly id: string;
   readonly name: string;
   readonly flags: HolidayFlags;
+  /** When the event's day begins: `'sunset'` (the evening before), or `'dawn'` for a minor fast. */
+  readonly begins: 'sunset' | 'dawn';
   readonly day?: number;
+  /** Rosh Chodesh, Shabbos Mevorchim, Yom Kippur Katan: the month concerned (Month number). */
+  readonly month?: number;
+  /** The Hebrew year of `month`. */
+  readonly monthYear?: number;
   readonly candlesTonight?: number;
   readonly moved?: boolean;
 }
@@ -47,7 +53,9 @@ export function eventJson(e: HolidayEvent, locale: Locale): EventJson {
     id: e.id,
     name: holidayName(e, locale),
     flags: e.flags,
+    begins: e.begins,
     ...(e.day !== undefined ? { day: e.day } : {}),
+    ...(e.month !== undefined ? { month: e.month, monthYear: e.monthYear } : {}),
     ...(e.candlesTonight !== undefined ? { candlesTonight: e.candlesTonight } : {}),
     ...(e.moved ? { moved: true } : {}),
   };

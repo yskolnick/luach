@@ -5,7 +5,64 @@ All notable changes for users of the `luach` package. This project follows
 
 ## Unreleased
 
+## 0.4.0 — 2026-11-13
+
+### Breaking
+- Node 20.19 or later (or 22.12 or later) is required; Node 18 is no longer supported. The
+  CommonJS `luach/places-full` now loads the same city table file as the ES module build instead
+  of carrying its own copy, which needs `require` of an ES module. The package is 1.6 MB packed
+  (was 2.5 MB) and 5.4 MB unpacked (was 7.9 MB).
+- The day and now documents use one name for one thing. In `dayInfo` (and `nowInfo.day`),
+  `gregorian` is now `date` and `hebrew` is now `hebrewDate`, as the now document already names
+  them; `nowInfo.clock.dayOfWeek` is now `clock.weekday`, as in `dayInfo`. Both schemas are
+  updated.
+
+### Added
+- `dayPartAt(instant, location, options)`: whether it is before sunrise, day, between sunset and
+  nightfall (`'bein-hashmashos'`) or night, by the person's `sunrise`, `sunset` and `tzeis`
+  opinions, with the times compared and their civil date; `part` is `null` where the sun gives no
+  time.
+- `eventsAt(instant, location, options)`: the events in force at an instant, each with `from`,
+  `until` and `inProgress`: the Hebrew date's events, plus a Yom Tov or fast still running past the
+  date's boundary (Yom Kippur until its fast ends) and a Yom Tov already begun at its candles; Isru
+  Chag from the end of the Yom Tov.
+- `MelachaRun.kinds` (and `nowInfo.melacha.kinds`): what a run of holy days holds, `'shabbos'`,
+  `'yom-tov'`, `'yom-kippur'` in that order, so an app can say "Shabbos and Yom Tov end tomorrow
+  night".
+- The words of the day in every name set, as `termName` keys: `today`, `tonight`, `tomorrow`,
+  `tomorrow-night`, `night`, `evening`, `afternoon` (Hebrew: היום, הלילה, מחר, מחר בלילה, לילה, ערב,
+  אחר הצהריים). `weekdayName(day, locale, { form: 'short' })` gives the short weekday ("Fri",
+  "יום ו׳"), from the new keys `weekday.N.short`; `nameEntries` lists them.
+- `dayInfo` (and `nowInfo.day`) has `shabbos`, `yomTov`, `melachaForbidden` (Shabbos, Yom Tov or
+  Yom Kippur) and `fastKind` (`'major' | 'minor' | null`), so a reader need not scan the events'
+  flags, and `followedBy` on every day: what the next day is (`'shabbos'`, then `'yom-kippur'` or
+  `'yom-tov'`), also on a day that is itself holy (Shavuos on a Friday in the diaspora:
+  `['shabbos', 'yom-tov']`), where `erev` is empty.
+- Every event (`HolidayEvent` and the JSON's events) has `begins`: `'sunset'`, the evening before,
+  or `'dawn'` for a minor fast. Purim begins at night, with the Megillah (Megillah 4a; Shulchan
+  Aruch OC 687:1).
+- The JSON's events carry `month` and `monthYear` for Rosh Chodesh, Shabbos Mevorchim and Yom
+  Kippur Katan, as `HolidayEvent` already did.
+- Each time in the JSON has `offset`, its UTC offset at that time (`"-05:00"`), so `local` and
+  `offset` give the full local time; `null` when there is no time.
+- Sunrise and sunset say where they are seen from: their `opinion` ends "at sea level" or "at the
+  place's elevation of N m" (it said "at sea level unless the calculator's useElevation is on").
+- From this release the schemas' `$id`, the documents' `$schema` and the now schema's reference to
+  the day schema name the release's tag (`…/luach/v<version>/schema/…`) instead of `main`, so a
+  document says which version of the schema describes it.
+- `compactJson(doc)`: a day or now document (or `{ days: [...] }`) with each opinion and source
+  stated once in `sources` and each time's `timeZone` left out; about a fifth smaller for
+  `nowInfo`, two fifths for a month of days. The full documents are unchanged.
+- `learningDetail` in the day JSON (with `learning: dayLearning`) and `dayLearningDetail` in
+  `luach/learning`: each cycle's portion as data (cycle, number, day, length; tractate and daf for
+  daf yomi) beside its text.
+
 ### Fixed
+- `fastAt` (and `nowInfo`'s fast) says a fast is in progress from its start until the fast day's
+  sunset where its end has no time (no nightfall far north). Until now `inProgress` was `null` from
+  the moment the fast began: Tromsø, Tisha B'Av 5787, at 20:30Z on 11 August. After the sunset it
+  is `null` until the end of the next civil day, as `melachaRunAt` keeps a run; until now the fast
+  was not found at all after local midnight.
 - A `HebrewDate` made by one copy of the library is read as the same Hebrew date by another.
   An app that loads `luach` through both `import` and `require` has two copies. Until now,
   `dayInfo` and the other functions that take a civil or a Hebrew date read the other copy's
@@ -27,6 +84,10 @@ All notable changes for users of the `luach` package. This project follows
 - `parseHebrewDate("3 Kislev")` says that the year is missing.
 
 ### Changed
+- The package ships no source maps: 1.2 MB packed (3.9 MB unpacked). An error inside Luach
+  points to the built file in `dist/`.
+- The published schemas allow fields they do not list (no `additionalProperties: false`), so a
+  document from a later version, which may add fields, still validates against an earlier schema.
 - The command line checks its options. An unknown option (with the nearest name suggested), an
   option the command does not use, an option with a missing value, an option given twice, an
   argument too many or too few, and a year such as `luach holidays 2026` that looks like a civil

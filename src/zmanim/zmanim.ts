@@ -407,9 +407,14 @@ export class ZmanimDay {
     const custom = id === 'candle-lighting' ? this.owner.candleCustom : undefined;
     z = custom
       ? this.build(id, id, `Candle lighting ${custom.minutes} minutes before sunset, ${custom.custom}`, `${custom.source}; Shulchan Aruch OC 261:2 (tosefes Shabbos)`)
-      : this.build(id, id, id === 'candle-lighting' && this.owner.candleNote ? `${def.opinion} ${this.owner.candleNote}` : def.opinion, def.source);
+      : this.build(id, id, id === 'candle-lighting' && this.owner.candleNote ? `${def.opinion} ${this.owner.candleNote}` : id === 'sunrise' || id === 'sunset' ? `${def.opinion}, ${this.heightText()}` : def.opinion, def.source);
     this.cache.set(id, z);
     return z;
+  }
+
+  /** Where sunrise and sunset are seen from: sea level, or the place's elevation. */
+  private heightText(): string {
+    return this.owner.settings.useElevation ? `at the place's elevation of ${this.owner.place.elevation ?? 0} m` : 'at sea level';
   }
 
   /**

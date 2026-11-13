@@ -1,6 +1,6 @@
 // Bundle size budget. Fails if the minified+gzipped ESM entry grows past the budget.
 // The full city dataset, the city table and the learning cycles are separate entries with their own budgets.
-import { existsSync } from 'node:fs';
+import { existsSync, statSync } from 'node:fs';
 import { gzipSync } from 'node:zlib';
 import { build } from 'esbuild';
 
@@ -45,4 +45,10 @@ for (const { entry, gzipKb, external = [] } of BUDGETS) {
     failed = true;
   } else console.log(line);
 }
+// The CommonJS city entry requires the ESM city table instead of carrying a second copy.
+const cjsFull = statSync('dist/places-full.cjs').size / 1024;
+if (cjsFull > 100) {
+  console.error(`OVER BUDGET dist/places-full.cjs: ${cjsFull.toFixed(0)} KB (budget 100 KB): the city table is bundled twice`);
+  failed = true;
+} else console.log(`dist/places-full.cjs: ${cjsFull.toFixed(1)} KB (budget 100 KB; the city table is shared)`);
 process.exit(failed ? 1 : 0);

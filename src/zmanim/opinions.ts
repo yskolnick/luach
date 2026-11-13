@@ -88,11 +88,11 @@ export const DAYS: Readonly<Record<string, DayDefinition>> = /*#__PURE__*/ deepF
 /** All zmanim by id. */
 export const ZMANIM = /*#__PURE__*/ deepFreeze({
   // ---- Sun ----
-  'sunrise': { slot: 'sunrise', opinion: 'Sunrise (netz hachama), at sea level unless the calculator\'s useElevation is on', source: 'Berachos 9b; Shulchan Aruch OC 58:1', round: up, at: R },
+  'sunrise': { slot: 'sunrise', opinion: 'Sunrise (netz hachama)', source: 'Berachos 9b; Shulchan Aruch OC 58:1', round: up, at: R },
   'sunrise-sea-level': { slot: 'sunrise', opinion: 'Sunrise at sea level (upper limb at the horizon, standard refraction)', source: 'NOAA Solar Calculator; sea-level practice: R. Isser Zalman Meltzer, cited in Peninei Halakha, Tefilla 11:6 n. 7', round: up, at: { sun: 'rise-sea-level' } },
   'sunrise-elevation': { slot: 'sunrise', opinion: 'Sunrise adjusted for the observer\'s elevation (lower horizon, earlier)', source: 'Zmanim KeHilchasam (R. Bursztyn), ch. 2 §§7, 9: elevation for sunrise and sunset only (not verified: the book was not read)', round: up, at: { sun: 'rise-elevation' } },
   'sunrise-visible': { slot: 'sunrise', opinion: 'Visible sunrise over the actual terrain (netz hanireh)', source: 'Divrei Yosef; Maharil Diskin (cited in Peninei Halakha, Tefilla 11). Needs terrain data: not computed', round: up, at: { none: 'requires-terrain-data' } },
-  'sunset': { slot: 'sunset', opinion: 'Sunset (shkiah), at sea level unless the calculator\'s useElevation is on', source: 'Shabbos 34b–35a; Shulchan Aruch OC 261:2', round: down, at: S },
+  'sunset': { slot: 'sunset', opinion: 'Sunset (shkiah)', source: 'Shabbos 34b–35a; Shulchan Aruch OC 261:2', round: down, at: S },
   'sunset-sea-level': { slot: 'sunset', opinion: 'Sunset at sea level', source: 'NOAA Solar Calculator', round: down, at: { sun: 'set-sea-level' } },
   'sunset-elevation': { slot: 'sunset', opinion: 'Sunset adjusted for the observer\'s elevation (later)', source: 'Zmanim KeHilchasam (R. Bursztyn), ch. 2 §§7, 9 (not verified: the book was not read)', round: down, at: { sun: 'set-elevation' } },
   'chatzos': { slot: 'chatzos', opinion: 'Midday: the sun on the meridian (astronomical transit)', source: 'Magen Avraham OC 233:4', round: down, at: { sun: 'noon' } },

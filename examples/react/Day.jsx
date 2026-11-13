@@ -7,7 +7,7 @@ export function Day({ date, place }) {
   return (
     <section>
       <h2>
-        {info.weekdayName}, {info.hebrew.formatted}
+        {info.weekdayName}, {info.hebrewDate.formatted}
       </h2>
       <ul>
         {info.events.map((e) => (

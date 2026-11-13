@@ -32,7 +32,7 @@ import type { DaySlot, Opinions, ZmanimSettings } from '../zmanim/zmanim.js';
 import { hebrewOfDayArg } from '../calendar/date-input.js';
 
 /** `$id` of the JSON Schema for {@link DayInfo}. */
-export const DAY_INFO_SCHEMA_ID = 'https://raw.githubusercontent.com/yskolnick/luach/main/schema/day.schema.json';
+export const DAY_INFO_SCHEMA_ID = 'https://raw.githubusercontent.com/yskolnick/luach/v0.4.0/schema/day.schema.json';
 
 export type { DayLocation };
 
@@ -69,8 +69,31 @@ export interface DayInfoOptions extends ZmanimSettings {
   learning?: DayLearningSource;
 }
 
-/** The plug-in that fills a day's `learning`: `dayLearning` from `luach/learning`. */
-export type DayLearningSource = (date: HebrewDate, locale: Locale) => DayLearning;
+/**
+ * The plug-in that fills a day's `learning`: `dayLearning` from `luach/learning`. Its `detail`,
+ * when present, fills `learningDetail`.
+ */
+export type DayLearningSource = ((date: HebrewDate, locale: Locale) => DayLearning) & {
+  readonly detail?: (date: HebrewDate, locale: Locale) => DayLearningDetail;
+};
+
+/**
+ * One cycle's portion as data: the text shown in `learning`, the cycle, its number, the day within
+ * it and its length; for daf yomi also the tractate and the daf.
+ */
+export interface LearningDetail {
+  readonly text: string;
+  readonly cycle: string;
+  readonly cycleNumber: number;
+  readonly day: number;
+  readonly length: number;
+  readonly tractate?: string;
+  readonly tractateHe?: string;
+  readonly daf?: number;
+}
+
+/** A day's learning as data, cycle by cycle (the same keys as {@link DayLearning}). */
+export type DayLearningDetail = Readonly<Record<string, LearningDetail | null>>;
 
 /** A day's learning, cycle by cycle: the name of the portion, or null when the cycle is not running that day. */
 export type DayLearning = Readonly<Record<string, string | null>>;
@@ -84,12 +107,27 @@ export const DEFAULT_DAY_ZMANIM = /*#__PURE__*/ deepFreeze([
 /** The JSON for one day. */
 export interface DayInfo {
   readonly $schema: string;
-  readonly gregorian: string;
+  readonly date: string;
   readonly weekday: number;
   readonly weekdayName: string;
-  readonly hebrew: HebrewDateJson;
+  readonly hebrewDate: HebrewDateJson;
   readonly israel: boolean;
   readonly events: readonly EventJson[];
+  /** The day is Shabbos. */
+  readonly shabbos: boolean;
+  /** One of the day's events is a Yom Tov where it is kept (Israel or the diaspora, as `israel`); Yom Kippur counts. */
+  readonly yomTov: boolean;
+  /** Melacha is forbidden on this day: Shabbos, Yom Tov or Yom Kippur. */
+  readonly melachaForbidden: boolean;
+  /** The day's fast: `'major'` (Yom Kippur, Tisha B'Av: from sunset), `'minor'` (from dawn), or null. */
+  readonly fastKind: 'major' | 'minor' | null;
+  /**
+   * What the next day is, on every day, including a day that is itself Shabbos or Yom Tov:
+   * `'shabbos'`, then `'yom-kippur'` or `'yom-tov'` (a Yom Tov on which melacha is forbidden, for
+   * the day's Israel or diaspora setting). Usually empty. On a day that is not itself holy it says
+   * what `erev` says; unlike `erev`, a Yom Tov followed by Shabbos (Shavuos on Friday) says so.
+   */
+  readonly followedBy: readonly ('shabbos' | 'yom-tov' | 'yom-kippur')[];
   /**
    * The eve of Shabbos and/or of a Yom Tov, as a fact about this civil day: the day is not itself
    * Shabbos or a Yom Tov on which melacha is forbidden (Yom Kippur counts), and the next day is
@@ -111,6 +149,8 @@ export interface DayInfo {
   readonly tefillah: TefillahDay;
   /** The learning of the day when `learning: dayLearning` was passed; otherwise null. */
   readonly learning: DayLearning | null;
+  /** The same learning as data (cycle, day, tractate and daf) when the plug-in gives it; otherwise null. */
+  readonly learningDetail: DayLearningDetail | null;
   readonly location: LocationJson | null;
   readonly zmanim: readonly ReturnType<Zman['toJSON']>[];
   readonly candleLighting: ReturnType<Zman['toJSON']> | null;
@@ -155,6 +195,19 @@ export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = 
   const reading = parshaFor(h, { israel });
   const haft = haftaraFor(h, { israel, minhag: options.minhag ?? 'ashkenaz' });
   const om = omerDay(h);
+  // What the next day is. After 29 Elul 9999 (the last supported day) comes Rosh Hashana 10000,
+  // always Yom Tov, on the weekday after this one.
+  const followedBy: ('shabbos' | 'yom-tov' | 'yom-kippur')[] = [];
+  if (h.epochDays >= MAX_DAYS) {
+    if (h.dayOfWeek === 5) followedBy.push('shabbos');
+    followedBy.push('yom-tov');
+  } else {
+    const n = h.next();
+    const nev = holidaysOn(n, hopts);
+    if (n.isShabbos) followedBy.push('shabbos');
+    if (nev.some((e) => e.id === 'yom-kippur')) followedBy.push('yom-kippur');
+    else if (nev.some((e) => e.flags.melachaForbidden)) followedBy.push('yom-tov');
+  }
   const erev: { id: 'erev-shabbos' | 'erev-yom-tov' | 'erev-yom-kippur'; name: string }[] = [];
   if (!h.isShabbos && !events.some((e) => e.flags.melachaForbidden)) {
     // After 29 Elul 9999 (the last supported day) comes Rosh Hashana 10000, always Yom Tov.
@@ -193,12 +246,17 @@ export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = 
 
   return {
     $schema: DAY_INFO_SCHEMA_ID,
-    gregorian: formatIsoDate(civil),
+    date: formatIsoDate(civil),
     weekday: h.dayOfWeek,
     weekdayName: weekdayName(h.dayOfWeek, locale),
-    hebrew: hebrewDateJson(h, locale),
+    hebrewDate: hebrewDateJson(h, locale),
     israel,
     events: events.map((e) => eventJson(e, locale)),
+    shabbos: h.isShabbos,
+    yomTov: events.some((e) => e.flags.yomTov),
+    melachaForbidden: h.isShabbos || events.some((e) => e.flags.melachaForbidden),
+    fastKind: events.find((e) => e.flags.fast !== null)?.flags.fast ?? null,
+    followedBy,
     erev,
     parsha: reading
       ? {
@@ -212,6 +270,7 @@ export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = 
     omer: om ? { day: om, text: omerText(om), textEnglish: omerTextEnglish(om), sefirah: omerSefirah(om, style) } : null,
     tefillah: tefillahOn(h, { ...options.tefillah, israel }),
     learning: options.learning ? options.learning(h, locale) : null,
+    learningDetail: options.learning?.detail ? options.learning.detail(h, locale) : null,
     location: options.location ? locationJson(options.location) : null,
     zmanim,
     candleLighting,

@@ -153,6 +153,7 @@ export class Zman {
     time: string | null;
     exact: string | null;
     local: string | null;
+    offset: string | null;
     timeZone: string;
     opinion: string;
     source: string;
@@ -167,6 +168,7 @@ export class Zman {
       time: this.time ? this.time.toISOString() : null,
       exact: this.exact ? this.exact.toISOString() : null,
       local: this.localTime(),
+      offset: this.time ? offsetText(offsetMinutes(this.timeZone, this.time.getTime())) : null,
       timeZone: zoneName(this.timeZone),
       opinion: this.opinion,
       source: this.source,
@@ -177,6 +179,12 @@ export class Zman {
       ...(this.fallback ? { fallback: this.fallback } : {}),
     };
   }
+}
+
+/** An offset from UTC as ISO 8601 text: `-05:00`, `+02:00`. */
+export function offsetText(minutes: number): string {
+  const m = Math.abs(minutes);
+  return `${minutes < 0 ? '-' : '+'}${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
 }
 
 /** Rounds an instant to the minute in `direction`. Whole minutes are left as they are. */

@@ -1,5 +1,6 @@
 /**
- * The everyday words: Shabbos, Havdala, candle lighting, the services, the Omer.
+ * The everyday words: Shabbos, Havdala, candle lighting, the services, the Omer, and the words
+ * of the day (today, tonight, tomorrow …).
  *
  * @packageDocumentation
  */
@@ -27,7 +28,14 @@ export type TermKey =
   | 'omer'
   | 'erev-shabbos'
   | 'erev-yom-tov'
-  | 'motzaei-yom-tov';
+  | 'motzaei-yom-tov'
+  | 'today'
+  | 'tonight'
+  | 'tomorrow'
+  | 'tomorrow-night'
+  | 'night'
+  | 'evening'
+  | 'afternoon';
 
 /**
  * The everyday word `key` in `locale` (default `he`).

@@ -37,6 +37,7 @@ const termKeys = (): string[] => Object.keys({
   'shabbos': 0, 'motzaei-shabbos': 0, 'yom-tov': 0, 'shacharis': 0,
   'mincha': 0, 'maariv': 0, 'musaf': 0, 'sefiras-haomer': 0, 'menorah': 0,
   'parshas': 0, 'parsha': 0, 'omer': 0, 'erev-shabbos': 0, 'erev-yom-tov': 0, 'motzaei-yom-tov': 0,
+  'today': 0, 'tonight': 0, 'tomorrow': 0, 'tomorrow-night': 0, 'night': 0, 'evening': 0, 'afternoon': 0,
 } satisfies Record<Exclude<TermKey, 'havdala' | 'candle-lighting'>, 0>);
 
 /** The keys that were once a `term.*` name: one name each, now the zman's. */
@@ -50,6 +51,7 @@ function keys(): readonly (readonly [string, NameEntry['group']])[] {
   for (let m = 1; m <= 12; m++) out.push([`month.${m}`, 'month']);
   out.push(['month.12.leap', 'month'], ['month.13.leap', 'month']);
   for (let d = 0; d <= 6; d++) out.push([`weekday.${d}`, 'weekday']);
+  for (let d = 0; d <= 6; d++) out.push([`weekday.${d}.short`, 'weekday']);
   for (const k of Object.keys(HOLIDAY_NAMES.he!)) out.push([`holiday.${k}`, 'holiday']);
   for (const k of Object.keys(ZMANIM)) out.push([`zman.${k}`, 'zman']);
   for (const k of Object.keys(PARSHA_NAMES.he!)) out.push([`parsha.${k}`, 'parsha']);

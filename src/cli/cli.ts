@@ -53,7 +53,7 @@ declare const process: {
 };
 
 /** Kept equal to package.json's version by scripts/release.mjs. */
-export const VERSION = '0.4.0';
+export const VERSION = '0.5.0';
 const LOCALES: Record<string, Locale> = { he, ashkenazi, sephardi, en, chabad, israeli, yi };
 
 const HELP = `luach ${VERSION}: Hebrew calendar, holidays, parsha, learning and zmanim

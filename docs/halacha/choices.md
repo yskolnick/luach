@@ -384,7 +384,8 @@ in the code is on [Sources](../sources.md).
 
 - **Status:** Default.
 - **What it does:** the count's wording defaults to Nusach Ashkenaz; Sefard and Edot
-  HaMizrach are options.
+  HaMizrach are options, in `omerText` and in the day record (`omerNusach` in `dayInfo` and
+  `nowInfo`).
 - **Why:** a default had to be chosen.
 - **Sources:** the count itself: Vayikra 23:15–16; Menachos 65b–66a (*verified*). *No source
   recorded* for the wording of any nusach.
@@ -424,21 +425,35 @@ in the code is on [Sources](../sources.md).
 ### Sea-level sunrise and sunset by default {#sea-level-sunrise-and-sunset-by-default}
 
 - **Status:** Default.
-- **What it does:** sunrise and sunset are at sea level unless `useElevation` is on.
-  Zmanim defined by degrees are always at sea level.
+- **What it does:** sunrise and sunset are at sea level unless `useElevation` is on. With it on,
+  sunrise and sunset are those seen from the place's height (the horizon dips), and so is every
+  time counted from them: the fixed minutes before and after (dawn 72 minutes, nightfall 72
+  minutes, candle lighting), and the seasonal hours of the Gra's and the Magen Avraham's day from
+  sunrise to sunset or 72 minutes around them (Shema, tefilla, Mincha, plag). A time set by the
+  sun's angle below the horizon (dawn at 16.1°, nightfall at 8.5°, havdala, the second-night
+  candles), a day whose ends are set by angles (the Magen Avraham's from 16.1°, the Baal HaTanya's),
+  and chatzos are never moved by height. `sunrise-sea-level`, `sunrise-elevation` and the sunset
+  pair give each one explicitly.
 - **Why:** most luchos are calculated at sea level; a depression angle measures how bright
   the sky is, which does not depend on the visible horizon.
-- **Sources:** R. Isser Zalman Meltzer, cited in Peninei Halakha, Tefilla 11:6 n. 7
-  (*secondary*); Zmanim KeHilchasam, ch. 2 §§7, 9 (*secondary*, through a blog).
+- **Sources:** what the texts call sunrise and sunset is what is seen: sunrise is "when the sun
+  begins to shine on the mountaintops" (Mishna Berura 58:7, 89:1); sunset "when the sun is no
+  longer seen on the earth" (Shulchan Aruch OC 261:2), and Mincha should be finished "while the sun
+  is not yet hidden from our eyes" (Mishna Berura 233:14). None of the texts opened speaks of the
+  place's height, or of sea level against the visible horizon. R. Isser Zalman Meltzer, cited in
+  Peninei Halakha, Tefilla 11:6 n. 7 (*secondary*); Zmanim KeHilchasam, ch. 2 §§7, 9
+  (*secondary*, through a blog).
 - **Confidence:** Medium.
 - **Open:** Peninei Halakha reports that the Shulchan Aruch HaRav uses a sunrise for about
-  800 m everywhere, citing Igros Moshe OC 1:97 (*not verified*).
+  800 m everywhere, citing Igros Moshe OC 1:97 (*not verified*). Which sunset candle lighting
+  counts from when elevation is on (it follows the elevated sunset now) is a question for a rav.
 
 ### Rounding {#rounding}
 
 - **Status:** Default.
 - **What it does:** times are rounded to the minute: earliest times up, deadlines down. The
   exact time is always there as well (`exact`), and `explain()` says which way a time was rounded.
+  `round: 'none'` gives the exact time in `time` and `local` (with seconds) instead.
 - **Why:** a rounded time should never be less stringent than the exact one.
 - **Sources:** *no source recorded* (a safety convention).
 - **Confidence:** High that it is the safer direction.
@@ -490,6 +505,115 @@ in the code is on [Sources](../sources.md).
 - **Sources:** Shulchan Aruch OC 261:2 (bein hashmashos from sunset until the night); the opinions' own sources in [Zmanim and sources](./zmanim.md).
 - **Confidence:** High for following the opinion; the opinion itself is the person's.
 - **Open:** nothing new.
+
+### Second-night candles {#second-night-candles}
+
+- **Status:** Default, with an option.
+- **What it does:** on a second night of Yom Tov, or for Yom Tov after Shabbos, the candles are lit
+  from an existing flame after the first day has ended (`candle-lighting-second-night`). By default
+  that is the person's `havdala` opinion (8.5° unless they chose another); `secondNightCandles`
+  (a nightfall zman id) sets it apart from havdala, so someone whose Shabbos ends by Rabbeinu Tam can
+  light the second-night candles at another nightfall if their rav says so. Havdala is unchanged.
+- **Why:** the two are the same question only if the end of the first day is the person's end of
+  Shabbos; the sources opened do not say so.
+- **Sources:** Shulchan Aruch OC 503:1 (no preparing from one day of Yom Tov for the next); Mishna
+  Berura 514:35 (setting up candles for the night is forbidden, also from the first day to the
+  second). No text was found that ties the second night's candles to the person's own end of
+  Shabbos. Kaf HaChaim OC 514:82, citing the Shelah, speaks of women lighting "in the evening" for
+  the second night.
+- **Confidence:** Low for the default: it was a convenience.
+- **Open:** which nightfall; whether lighting near dark is meant. Ask your rav.
+
+### Eruv tavshilin {#eruv-tavshilin}
+
+- **Status:** Rule from the sources.
+- **What it does:** `dayInfo(...).eruvTavshilin` is true on a day that is not itself Shabbos or Yom
+  Tov when the Yom Tov that begins that night runs into a Friday: Yom Tov on Friday (Shavuos in
+  Israel, 10 June 2027), the first days of Pesach on Thursday and Friday, Rosh Hashana on Thursday
+  and Friday, and Shavuos on Friday and Shabbos in the diaspora (made on Thursday).
+- **Why:** cooking on Yom Tov for Shabbos needs an eruv when Yom Tov is on Erev Shabbos, and it is
+  made on the eve of the first day.
+- **Sources:** Shulchan Aruch OC 527:1; Mishna Berura 527:1 ("there is no difference between the
+  first day of Yom Tov and the second day of the diaspora: if the second day falls on Friday, it is
+  also forbidden to cook for Shabbos without an eruv, which is made on the eve of the first day").
+  No text names Shavuos on Friday and Shabbos separately; its Friday is the first day, which 527:1
+  covers.
+- **Confidence:** High.
+- **Open:** nothing.
+
+### When the Omer may be counted {#when-the-omer-may-be-counted}
+
+- **Status:** Default, with an option.
+- **What it does:** `Night.omerFrom` (in `nightOf`, `nightAt` and `nowInfo`'s nights) is the
+  earliest time to count. By default (`omerFrom: 'holy-day-ends'`) it is the later of the person's
+  `tzeis` and the end of Shabbos or Yom Tov that evening (their `havdala`, or the second-night
+  candles when Yom Tov follows): New York, Motzaei Shabbos 24 April 2027, 8:29 PM by 8.5°, but
+  8:57 PM for someone who keeps Shabbos until Rabbeinu Tam. `omerFrom: 'tzeis'` gives nightfall
+  alone.
+- **Why:** someone who holds that Shabbos lasts until a later nightfall holds that it is still day
+  until then.
+- **Sources:** Shulchan Aruch OC 489:2 and Mishna Berura 489:14 (count at nightfall; bein hashmashos
+  only after the fact); Kaf HaChaim OC 489:44 (some wait an hour and a quarter after sunset, by
+  Rabbeinu Tam; most count when the stars are seen, and one should not protest); Shulchan Aruch OC
+  489:9 (on Motzaei Shabbos the count comes before havdala); Mishna Berura 489:18 (after nightfall
+  one may count before Maariv). No text was found that ties the count to the person's own end of
+  Shabbos.
+- **Confidence:** Medium.
+- **Open:** the default. Ask your rav.
+
+### Davening windows {#davening-windows}
+
+- **Status:** Rule from the sources, by the person's opinions.
+- **What it does:** `tefillaAt` gives, at an instant, each service's window from the person's
+  zmanim: Shacharis from sunrise to the end of the fourth hour (`tefilla`), after the fact from dawn
+  (`alos`) and until midday; Mincha from Mincha Gedola, its main time from Mincha Ketana, to sunset,
+  after the fact to nightfall; Maariv from nightfall (`tzeis`) to midnight (`chatzosHalayla`), after
+  the fact from plag hamincha and until dawn; and on Yom Kippur Neilah, to sunset, after the fact
+  into the night, with no time for its start.
+- **Why:** each window is the sources' own, made of the person's zmanim.
+- **Sources:** Shulchan Aruch OC 89:1 with the Rema; Mishna Berura 89:2 (dawn counts only once the
+  east has lit up, which Luach gives as the person's `alos`); Shulchan Aruch OC 233:1 with the Rema;
+  Mishna Berura 233:1 and 233:14 (after sunset only after the fact, and in truth until about a
+  quarter of an hour before nightfall: Luach gives nightfall and says so); Shulchan Aruch OC 235:1,
+  235:3; Mishna Berura 235:34; Shulchan Aruch OC 623:2; Mishna Berura 623:2.
+- **Confidence:** Medium: the rules are read; the after-the-fact ends are given at the zman the
+  source names, not earlier.
+- **Open:** midnight is twelve hours after midday (Mishna Berura 1:9; Shulchan Aruch HaRav 1:8;
+  Kaf HaChaim 1:7), which is Luach's `chatzos-halayla`. No source was found for "halfway from
+  sunset to sunrise", so it is not offered; a third view (Yad Ephraim OC 1) counts six hours from
+  the start of the night.
+
+### Yizkor {#yizkor}
+
+- **Status:** Off by default (`yizkor: true` to include).
+- **What it does:** an optional event `yizkor` on Yom Kippur, and in the diaspora on the last day
+  of Pesach (22 Nisan), the second day of Shavuos (7 Sivan) and Shemini Atzeres (22 Tishrei). In
+  Israel only Yom Kippur, for now.
+- **Why:** these are the days the sources name; the reason they give is the reading of "Kol
+  HaBechor", which in Israel is not read on those festival days, and no text was found that says
+  what Israel does.
+- **Sources:** Shulchan Aruch OC 621:6 (Yom Kippur); Mishna Berura 494:17 ("and souls are
+  remembered and Av HaRachamim is said on the second day, and wherever Kol HaBechor is read") and
+  668:15 (Shemini Atzeres); Sha'arei Ephraim 10:31 (Yom Kippur, the last day of Pesach, the second
+  day of Shavuos and Shemini Atzeres, the days Kol HaBechor is read).
+- **Confidence:** High for the diaspora; Israel is open.
+- **Open:** the festival days in Israel; the custom of some not to say it when Yom Tov is on
+  Shabbos (Sha'arei Ephraim 10:31); Sephardi customs (no text found).
+
+### The order of a day's events {#the-order-of-a-days-events}
+
+- **Status:** Display order.
+- **What it does:** the events of a day come in a documented order, the first the one to name the
+  day by: Yom Tov and Yom Kippur, Chol Hamoed, a fast, Rosh Chodesh, a minor holiday or a day of
+  the State, a special Shabbos, an eve, Isru Chag, then the rest (optional days such as Yizkor).
+  Events of one rank keep their order. New York, 10 December 2026: Rosh Chodesh Teves, then
+  Chanukah day 6.
+- **Why:** an app needs one name for a day; where a source orders two events that meet, the order
+  follows it, and the rest is Luach's own display order. It rules on nothing.
+- **Sources:** the more frequent comes first (Zevachim 89a, the mishna); on Rosh Chodesh Teves the
+  reading of Rosh Chodesh comes before that of Chanukah (Shulchan Aruch OC 684:3).
+- **Confidence:** High where a source orders the two; the rest is a convenience.
+- **Open:** nothing.
 
 ### The date line {#the-date-line}
 
@@ -602,7 +726,43 @@ in the code is on [Sources](../sources.md).
   as an explicit option (*secondary*). The opinions of Igros Moshe, the Minchas Yitzchak and
   the London Beth Din on high latitudes are *not verified* and are not cited.
 - **Confidence:** High that null is the safe default.
-- **Open:** neither fallback cites a source.
+- **Open:** `nearestDay` cites no source; `halfNight` now does (see [The far north: which rule for which use](#far-north-which-rule-for-which-use)).
+
+### The far north: which rule for which use {#far-north-which-rule-for-which-use}
+
+- **Status:** Default (`highLatitudeFallback: 'none'`); the rules are options.
+- **What it does:** where the sun never gets low enough for an angle (far north in summer), the
+  time is `null` with `reason: 'sun-always-above'`, and `Zman.fallbacks` gives what each rule would
+  give: `halfNight`, solar midnight (the sun's lowest point), and `nearestDay`, the same offset from
+  solar noon as on the nearest day the sun reaches the angle. Neither is used unless chosen, by
+  reading it or by setting `highLatitudeFallback`. In polar night there are none.
+- **Each use, and what the sources say:**
+  - *A minor fast begins* (no dawn): from midnight. The Siddur of the Alter Rebbe (Seder Sefiras
+    HaOmer) writes that from 18 Iyar to 17 Tammuz "in these northern lands" dawn is at midnight,
+    "so once midnight of the night of 17 Tammuz has come it is forbidden to eat"; the Biur HaGra
+    (OC 261:2) that in northern lands in summer dawn begins at midnight. `fallbacks.halfNight`.
+  - *A fast ends* (no nightfall): no source found that sets it. By analogy only, the end of Shabbos
+    at chatzos below. The Tiferes Yisrael (Boaz, Berachos 1:3) names the fast among the questions
+    of such places and leaves it open.
+  - *The Omer, with a bracha until*: midnight (the Siddur, as above). `fallbacks.halfNight` of dawn.
+  - *The Omer, from when* (no nightfall): no source found.
+  - *Maariv*: from plag hamincha (R' Dovid Heber, "Halachos in Arctic & Polar Regions",
+    Kashrus Kurrents; B'Mareh HaBazak V:1 for the polar summer). Plag occurs; no fallback is needed.
+  - *The night Shema*: repeated just before chatzos (R' Heber). `fallbacks.halfNight`.
+  - *The end of Shabbos and Yom Tov*: chatzos (R' Heber, who calls that moment both nightfall and
+    dawn; B'Mareh HaBazak V:1 for the polar summer; Chevel Nachalaso 6:23 reports this custom in
+    Scandinavia). B'Mareh HaBazak V:36 reports another practice, an angle of 8.1°, which Luach does
+    not offer.
+  - `nearestDay`: no source found in any text opened.
+- **Why:** Luach rules on nothing: the default stays "no time", and the rules are given with their
+  sources so the person and their rav can choose.
+- **Sources:** as listed above; Shulchan Aruch OC 562:1, 564:1, 489:1 and 235:1 for the ordinary
+  rules, each tied to an angle.
+- **Confidence:** Medium: the texts are read; which applies where is for a rav.
+- **Open:** a default for each use; whether the Siddur's "these northern
+  lands" reaches every latitude; Luach's solar midnight is the midpoint of two solar transits, which
+  the sources call chatzos halayla, not halfway from sunset to sunrise; when the Omer may be counted
+  where there is no nightfall.
 
 ### No fallback in polar night {#no-fallback-in-polar-night}
 

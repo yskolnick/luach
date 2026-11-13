@@ -22,9 +22,10 @@ import { Zmanim } from '../zmanim/zmanim.js';
 import { eventJson, hebrewDateJson, locationJson, type EventJson, type HebrewDateJson, type LocationJson } from './json.js';
 import type { Zman } from '../zmanim/zman.js';
 import { instantArg } from '../calendar/date-input.js';
+import type { OmerNusach } from '../holidays/omer.js';
 
 /** `$id` of the JSON Schema for {@link NowInfo}. */
-export const NOW_INFO_SCHEMA_ID = 'https://raw.githubusercontent.com/yskolnick/luach/v0.4.0/schema/now.schema.json';
+export const NOW_INFO_SCHEMA_ID = 'https://raw.githubusercontent.com/yskolnick/luach/v0.5.0/schema/now.schema.json';
 
 /** Options for {@link nowInfo}: the opinions and settings of the zmanim and the holiday options, and the names' language. */
 export interface NowInfoOptions extends ZmanimOptions {
@@ -32,6 +33,8 @@ export interface NowInfoOptions extends ZmanimOptions {
   readonly locale?: Locale;
   /** The learning of the day: pass `dayLearning` from `luach/learning`, as for {@link dayInfo}. Default none (`day.learning` is null). */
   readonly learning?: DayLearningSource;
+  /** The wording of `day.omer.text`, as for {@link dayInfo}. Default `'ashkenaz'`. */
+  readonly omerNusach?: OmerNusach;
 }
 
 type ZmanJson = ReturnType<Zman['toJSON']>;
@@ -43,6 +46,8 @@ export interface NightJson {
   readonly alos: ZmanJson;
   readonly sunrise: ZmanJson;
   readonly omer: number | null;
+  /** The earliest time to count the Omer this night (`Night.omerFrom`), or null without a count. */
+  readonly omerFrom: ZmanJson | null;
   readonly chanukahLights: number | null;
   /** When to light the Chanukah lights this evening, by custom; null outside Chanukah. */
   readonly chanukahLighting: ChanukahLightingJson | null;
@@ -125,6 +130,8 @@ export interface NowInfo {
     readonly molad: string;
     readonly earliest: { readonly threeDays: TimeJson; readonly sevenDays: TimeJson };
     readonly latest: { readonly halfMonth: TimeJson; readonly fifteenDays: TimeJson };
+    /** The month before, and when its window closed (`KiddushLevanaAt.previous`). */
+    readonly previous: { readonly year: number; readonly month: number; readonly latest: { readonly halfMonth: TimeJson; readonly fifteenDays: TimeJson }; readonly closed: string } | null;
   };
 }
 
@@ -164,7 +171,7 @@ const timeJson = (t: KiddushLevanaTime): TimeJson => ({ time: t.time.toISOString
  */
 export function nowInfo(instant: Date, location: DayLocation, options: NowInfoOptions = {}): NowInfo {
   instant = instantArg(instant, 'nowInfo');
-  const { locale: given, learning, ...zopts } = options;
+  const { locale: given, learning, omerNusach, ...zopts } = options;
   const locale = given ?? he;
   const tz = location.timeZone;
   const israel = israelFor(options.israel, location);
@@ -178,7 +185,7 @@ export function nowInfo(instant: Date, location: DayLocation, options: NowInfoOp
   const fast = fastAt(instant, location, zopts);
   const night = nightOf(span.date, location, zopts);
   const nextNight = nightOf(span.date.next(), location, zopts);
-  const nightJson = (n: Night): NightJson => ({ hebrewDate: hd(n.date), sunset: n.sunset.toJSON(), tzeis: n.tzeis.toJSON(), alos: n.alos.toJSON(), sunrise: n.sunrise.toJSON(), omer: n.omer, chanukahLights: n.chanukahLights, chanukahLighting: lightingJson(n.chanukahLighting) });
+  const nightJson = (n: Night): NightJson => ({ hebrewDate: hd(n.date), sunset: n.sunset.toJSON(), tzeis: n.tzeis.toJSON(), alos: n.alos.toJSON(), sunrise: n.sunrise.toJSON(), omer: n.omer, omerFrom: n.omerFrom?.toJSON() ?? null, chanukahLights: n.chanukahLights, chanukahLighting: lightingJson(n.chanukahLighting) });
   const end = zonedInstant(daysToCivil(today + 8), tz);
   // After the instant (a time at the instant itself has happened: the states already count it).
   const upcoming = timesBetween(new Date(instant.getTime() + 1), end, location, { ...zopts, which: [] });
@@ -227,7 +234,7 @@ export function nowInfo(instant: Date, location: DayLocation, options: NowInfoOp
     hebrewDate: { ...hd(span.date), begins: span.begins.toJSON(), ends: span.ends.toJSON() },
     // With opinions given the day lists the user's own times (each slot by their opinion),
     // as `luach date --opinions` and the example server's /day do; otherwise the usual set.
-    day: dayInfo(p, { ...zopts, location, israel, locale, ...(learning ? { learning } : {}), ...(zopts.opinions && Object.keys(zopts.opinions).length ? { zmanim: Zmanim.order } : {}) }),
+    day: dayInfo(p, { ...zopts, location, israel, locale, ...(learning ? { learning } : {}), ...(omerNusach ? { omerNusach } : {}), ...(zopts.opinions && Object.keys(zopts.opinions).length ? { zmanim: Zmanim.order } : {}) }),
     settings: {
       opinions: { ...z.opinions } as Record<string, string>,
       candleLightingMinutes: z.settings.candleLightingMinutes ?? 18,
@@ -266,6 +273,14 @@ export function nowInfo(instant: Date, location: DayLocation, options: NowInfoOp
       molad: levana.molad.toISOString(),
       earliest: { threeDays: timeJson(levana.earliest.threeDays), sevenDays: timeJson(levana.earliest.sevenDays) },
       latest: { halfMonth: timeJson(levana.latest.halfMonth), fifteenDays: timeJson(levana.latest.fifteenDays) },
+      previous: levana.previous
+        ? {
+            year: levana.previous.year,
+            month: levana.previous.month,
+            latest: { halfMonth: timeJson(levana.previous.latest.halfMonth), fifteenDays: timeJson(levana.previous.latest.fifteenDays) },
+            closed: levana.previous.closed.toISOString(),
+          }
+        : null,
     },
   };
 }

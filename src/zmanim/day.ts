@@ -13,7 +13,7 @@ import { israelFor } from '../places/israel.js';
 import type { HolidayEvent, HolidayOptions } from '../holidays/types.js';
 import type { GeoLocation } from './calendar.js';
 import type { DayLocation } from './day-location.js';
-import { zmanDefinition } from './opinions.js';
+import { zmanDefinition, type ZmanId } from './opinions.js';
 import type { Zman } from './zman.js';
 import { Zmanim, type Opinions, type ZmanimSettings } from './zmanim.js';
 import { hebrewDateArg, instantArg } from '../calendar/date-input.js';
@@ -33,6 +33,27 @@ export interface ZmanimOptions extends HolidayOptions, ZmanimSettings {
    * default, not a ruling: the result says `isDefault` and `customs` lists both.
    */
   readonly chanukahLighting?: ChanukahCustom;
+  /**
+   * When the candles are lit from an existing flame on a second night of Yom Tov, or for Yom Tov
+   * after Shabbos (`candle-lighting-second-night`): a nightfall zman (`'tzeis-8.5'`, ...). Left out,
+   * it is the `havdala` opinion, as before (a default, not a ruling). The rule is only that they are
+   * not lit before the first day has ended (Shulchan Aruch OC 503:1, no preparing from one day for
+   * the next); which nightfall is the person's question for their rav. Havdala itself still
+   * follows `havdala`.
+   */
+  readonly secondNightCandles?: ZmanId;
+  /**
+   * The earliest time to count the Omer (`Night.omerFrom`): `'holy-day-ends'` (default: the later of
+   * nightfall and the end of Shabbos or Yom Tov) or `'tzeis'` (nightfall alone). A default, not a ruling.
+   */
+  readonly omerFrom?: 'tzeis' | 'holy-day-ends';
+}
+
+/** Throws a RangeError for a `secondNightCandles` that is not a nightfall zman. */
+function checkSecondNightCandles(v: unknown): void {
+  if (v === undefined) return;
+  const def = typeof v === 'string' ? zmanDefinition(v) : undefined;
+  if (!def || def.slot !== 'tzeis') throw new RangeError(`secondNightCandles must be a nightfall (tzeis) zman id, not ${JSON.stringify(v) ?? String(v)}`);
 }
 
 /** A custom for the earliest time to light the Chanukah lights on a weekday evening. */
@@ -49,12 +70,15 @@ function checkChanukahLighting(v: unknown): void {
  */
 export function zmanimFor(location: GeoLocation, o: ZmanimOptions): Zmanim {
   checkChanukahLighting(o.chanukahLighting);
+  checkSecondNightCandles(o.secondNightCandles);
+  if (o.omerFrom !== undefined && o.omerFrom !== 'tzeis' && o.omerFrom !== 'holy-day-ends') throw new RangeError(`omerFrom must be "tzeis" or "holy-day-ends", not ${JSON.stringify(o.omerFrom) ?? String(o.omerFrom)}`);
   const settings: { -readonly [K in keyof ZmanimSettings]: ZmanimSettings[K] } = {};
   if (o.useElevation !== undefined) settings.useElevation = o.useElevation;
   if (o.candleLightingMinutes !== undefined) settings.candleLightingMinutes = o.candleLightingMinutes;
   if (o.ateretTorahMinutes !== undefined) settings.ateretTorahMinutes = o.ateretTorahMinutes;
   if (o.highLatitudeFallback !== undefined) settings.highLatitudeFallback = o.highLatitudeFallback;
   if (o.algorithm !== undefined) settings.algorithm = o.algorithm;
+  if (o.round !== undefined) settings.round = o.round;
   return new Zmanim(location, o.opinions ?? {}, settings);
 }
 

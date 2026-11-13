@@ -5,6 +5,65 @@ All notable changes for users of the `luach` package. This project follows
 
 ## Unreleased
 
+## 0.5.0 — 2026-11-13
+
+### Changed
+- The events of a day come in a documented order, the first the one to name the day by: Yom Tov
+  and Yom Kippur, Chol Hamoed, a fast, Rosh Chodesh, a minor holiday, a special Shabbos, an eve,
+  Isru Chag, then the rest. Where a source orders two that meet it follows it: Rosh Chodesh Teves
+  before Chanukah (Shulchan Aruch OC 684:3). In `holidaysOn`, `holidaysForYear`, the day and now
+  documents and the calendar file; only the order within a day changes.
+- In Israel, Shavuos is named "Shavuos" (שבועות, "Shavuot"), not "Shavuos I": it is one day there,
+  so its event has no `day`. A new name key, `holiday.shavuos`. In the diaspora the two days keep
+  their numbers. No other festival day in Israel had a number it did not need (Rosh Hashana,
+  Sukkos and Pesach number days of a festival of several days).
+
+### Added
+- `parseSettings(json)` and `settingsToJSON(settings)`: read and write the settings that are not
+  opinions (`useElevation`, `candleLightingMinutes`, `ateretTorahMinutes`, `highLatitudeFallback`,
+  `algorithm`, `round`) and the customs `chanukahLighting`, `secondNightCandles` and `omerFrom`.
+  `parseSettings` never throws: `{ ok, value, problems }`, as `parseOpinions`.
+- `round: 'none'` (in `ZmanimSettings` and every function that takes them): times are not rounded;
+  `time` is the exact time, `rounded` is null, and `localTime()` and the JSON's `local` give
+  `HH:MM:SS`. The default, `'safe'`, is unchanged.
+- The halachic choices page says exactly what `useElevation` changes: sunrise and sunset and every
+  time counted from them (fixed minutes, candle lighting, the seasonal hours of a day from sunrise
+  to sunset), never a time set by the sun's angle, a day set by angles, or chatzos; a test now
+  holds every zman to that rule. Nothing changes.
+- `yizkor: true` in the holiday options: an optional `yizkor` event on Yom Kippur, and in the
+  diaspora on the last day of Pesach, the second day of Shavuos and Shemini Atzeres (Mishna Berura
+  494:17, 668:15). In Israel only Yom Kippur for now; the festival days there are an open question.
+- `tefillaAt(instant, location, options)`: the davening windows at an instant, Shacharis, Mincha,
+  Maariv and on Yom Kippur Neilah, each with `opens`, `closes`, how far it extends after the fact
+  (`bedieved`), `inProgress`, its rule and its sources, and `service`, the one to daven now (New
+  York, Thu 12 Nov 2026, 4:30 PM: Mincha until sunset at 4:40, Mincha Ketana from 2:36).
+- `Night.omerFrom` (in `nightOf`, the new `nightAt` and `nowInfo`'s nights): the earliest time to
+  count the Omer, by default the later of nightfall and the end of Shabbos or Yom Tov
+  (`omerFrom: 'tzeis'` for nightfall alone), with its sources on the halachic choices page.
+- `nightAt(instant, location, options)`: the night in progress, from its sunset to its dawn (also
+  after midnight), or `null` by day; cheaper than `nowInfo` for asking often.
+- `secondNightCandles` (a nightfall zman id) in the options of `dayInfo`, `nowInfo`,
+  `melachaRunAt` and the other functions that give candles: the time of the candles on a second
+  night of Yom Tov, apart from havdala. Left out, it is the `havdala` opinion, as before: New York,
+  Sat 12 Sep 2026 with Rabbeinu Tam's havdala still gives 8:23 PM, and 7:52 PM with
+  `secondNightCandles: 'tzeis-8.5'`.
+- `dayInfo(...).eruvTavshilin`: an eruv tavshilin is made today (Shulchan Aruch OC 527:1; Mishna
+  Berura 527:1), by the Israel or diaspora setting; also before Shavuos on Friday and Shabbos in
+  the diaspora, whose Friday is Yom Tov.
+- `kiddushLevanaAt(...).previous` (and `nowInfo.kiddushLevana.previous`): the month before, with
+  its latest times by each opinion and `closed`, the later of them, so an app can say when the
+  window that just closed closed (New York, Tue 27 Oct 2026: Cheshvan's closed Mon 26 Oct at 3:22
+  AM by the fifteen days, Sun 25 Oct at 9:44 PM by half a month).
+- `omerNusach` in `dayInfo` and `nowInfo`: `day.omer.text` in the chosen wording (`'ashkenaz'`,
+  the default, `'sefard'` or `'edot-hamizrach'`), as `omerText` gives it.
+- `Zman.fallbacks` (and `fallbacks` in the JSON): where a time does not occur because the sun does
+  not get low enough (far north in summer), what each high-latitude rule would give, `halfNight`
+  (solar midnight) and `nearestDay`, each marked in its own `fallback`. Nothing changes unless a
+  caller reads one; the default is still no time. Tromsø, the evening of 24 May 2027: nightfall
+  `null`, `fallbacks.halfNight` 00:42, `fallbacks.nearestDay` 00:12. The halachic choices page now
+  lists, for a fast's start and end, the Omer, Maariv and Shema and the end of Shabbos, which rule
+  the sources give, with the sources.
+
 ## 0.4.0 — 2026-11-13
 
 ### Breaking

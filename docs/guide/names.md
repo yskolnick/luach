@@ -175,7 +175,7 @@ them:
 |---|---|---|
 | `month` | `month.1` to `month.12` (Nisan first, as Luach numbers months), then `month.12.leap` (Adar I) and `month.13.leap` (Adar II) | 14 |
 | `weekday` | `weekday.0` (Sunday) to `weekday.6` (Shabbos), then the short names `weekday.0.short` to `weekday.6.short` | 14 |
-| `holiday` | `holiday.<id>`, or `holiday.<id>.<day>` for one day of a holiday | 80 |
+| `holiday` | `holiday.<id>`, or `holiday.<id>.<day>` for one day of a holiday | 82 |
 | `zman` | `zman.<id>`, one for each zman in the catalogue | 96 |
 | `parsha` | `parsha.<id>` in reading order, then `parsha.join`, the separator of a double reading | 55 |
 | `term` | `term.<key>`, the everyday words above | 22 |

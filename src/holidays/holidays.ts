@@ -38,13 +38,14 @@ const THURSDAY = 4;
 const SUNDAY = 0;
 const MONDAY = 1;
 
-type Extra = Omit<HolidayEvent, 'id' | 'date' | 'flags'>;
+type Extra = Omit<HolidayEvent, 'id' | 'date' | 'flags' | 'begins'>;
 
 class Builder {
   readonly events: HolidayEvent[] = [];
   constructor(readonly year: number) {}
   add(id: string, date: HebrewDate, flags: Partial<HolidayFlags>, extra?: Extra): void {
-    this.events.push({ id, date, flags: { ...NONE, ...flags }, ...extra });
+    const all = { ...NONE, ...flags };
+    this.events.push({ id, date, flags: all, begins: all.fast === 'minor' ? 'dawn' : 'sunset', ...extra });
   }
   d(month: number, day: number): HebrewDate {
     return new HebrewDate(this.year, month, day);

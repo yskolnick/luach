@@ -53,7 +53,7 @@ declare const process: {
 };
 
 /** Kept equal to package.json's version by scripts/release.mjs. */
-export const VERSION = '0.3.1';
+export const VERSION = '0.4.0';
 const LOCALES: Record<string, Locale> = { he, ashkenazi, sephardi, en, chabad, israeli, yi };
 
 const HELP = `luach ${VERSION}: Hebrew calendar, holidays, parsha, learning and zmanim
@@ -433,7 +433,7 @@ function printDay(date: CivilDate, flags: Record<string, string | true>): void {
   // With --opinions, the day's times each by the user's opinion; otherwise the usual set.
   const info = dayInfo(date, { ...(learningModule ? { learning: learningModule.dayLearning } : {}), ...chosen, ...(hasOpinions(chosen.opinions) ? { zmanim: Zmanim.order } : {}), ...(loc ? { location: loc } : {}), ...(israel !== undefined ? { israel } : {}), locale });
   if (flags.json) return line(JSON.stringify(info, null, 2));
-  line(`${info.gregorian}  ${info.weekdayName}, ${info.hebrew.formatted}${loc && 'name' in loc && loc.name ? `  (${loc.name})` : ''}`);
+  line(`${info.date}  ${info.weekdayName}, ${info.hebrewDate.formatted}${loc && 'name' in loc && loc.name ? `  (${loc.name})` : ''}`);
   // An eve that is also one of the day's events (the eve of Yom Kippur) is printed with the events.
   const eves = info.erev.filter((e) => !info.events.some((ev) => ev.id === e.id));
   if (eves.length) line(`  ${eves.map((e) => e.name).join(', ')}`);
@@ -445,7 +445,7 @@ function printDay(date: CivilDate, flags: Record<string, string | true>): void {
     line('  Zmanim:');
     const note = loc ? elevationNote(loc, flags) : '';
     if (note) line(`    (${note})`);
-    for (const z of info.zmanim) line(`    ${dated(z, info.gregorian).padEnd(6)} ${zmanLabel(z.id, locale)}`);
+    for (const z of info.zmanim) line(`    ${dated(z, info.date).padEnd(6)} ${zmanLabel(z.id, locale)}`);
   }
   if (info.candleLighting) {
     const c = info.candleLighting;
@@ -460,12 +460,12 @@ function printDay(date: CivilDate, flags: Record<string, string | true>): void {
           : israelNote(loc, flags)
             ? `  (18 minutes before sunset: Luach's default; ${israelNote(loc, flags)!.slice(1)}`
             : "  (18 minutes before sunset: Luach's default)";
-    line(`  ${termName('candle-lighting', locale)}: ${dated(c, info.gregorian)}${note}`);
+    line(`  ${termName('candle-lighting', locale)}: ${dated(c, info.date)}${note}`);
   }
-  if (info.havdala) line(`  ${termName('havdala', locale)}${info.havdala.id === 'havdala-after-fast' ? ' (after the fast)' : ''}: ${dated(info.havdala, info.gregorian)}`);
-  if (info.shabbosEnds) line(`  ${termName('shabbos', locale)} ends (no havdala; say Baruch HaMavdil before melacha): ${dated(info.shabbosEnds, info.gregorian)}`);
-  if (info.fast) line(`  Fast: ${dated(info.fast.begins, info.gregorian)} – ${dated(info.fast.ends, info.gregorian)}`);
-  if (info.fastBeginsTonight) line(`  Fast begins: ${dated(info.fastBeginsTonight.begins, info.gregorian)}`);
+  if (info.havdala) line(`  ${termName('havdala', locale)}${info.havdala.id === 'havdala-after-fast' ? ' (after the fast)' : ''}: ${dated(info.havdala, info.date)}`);
+  if (info.shabbosEnds) line(`  ${termName('shabbos', locale)} ends (no havdala; say Baruch HaMavdil before melacha): ${dated(info.shabbosEnds, info.date)}`);
+  if (info.fast) line(`  Fast: ${dated(info.fast.begins, info.date)} – ${dated(info.fast.ends, info.date)}`);
+  if (info.fastBeginsTonight) line(`  Fast begins: ${dated(info.fastBeginsTonight.begins, info.date)}`);
   line('  Ask your rav. Each time follows a named opinion; see --json for sources.');
 }
 
@@ -489,7 +489,7 @@ function printNow(flags: Record<string, string | true>): void {
   const info = nowInfo(instant, loc, { ...(learningModule ? { learning: learningModule.dayLearning } : {}), ...zmanimOptions(flags), ...(lighting ? { chanukahLighting: lighting } : {}), ...(israel !== undefined ? { israel } : {}), locale });
   if (flags.json) return line(JSON.stringify(info, null, 2));
   const c = info.clock;
-  line(`${c.date} ${c.time}  ${weekdayName(c.dayOfWeek, locale)}${loc.name ? `  (${loc.name}, ${c.timeZone})` : `  (${c.timeZone})`}`);
+  line(`${c.date} ${c.time}  ${weekdayName(c.weekday, locale)}${loc.name ? `  (${loc.name}, ${c.timeZone})` : `  (${c.timeZone})`}`);
   const note = elevationNote(loc, flags);
   if (note) line(`  ${note}`);
   const h = info.hebrewDate;

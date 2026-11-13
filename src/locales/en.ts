@@ -28,5 +28,12 @@ export const en: Locale = {
     'weekday.4': 'Thursday',
     'weekday.5': 'Friday',
     'weekday.6': 'Saturday',
+    'weekday.0.short': 'Sun',
+    'weekday.1.short': 'Mon',
+    'weekday.2.short': 'Tue',
+    'weekday.3.short': 'Wed',
+    'weekday.4.short': 'Thu',
+    'weekday.5.short': 'Fri',
+    'weekday.6.short': 'Sat',
   },
 };

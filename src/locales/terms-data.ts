@@ -23,6 +23,14 @@ export const TERMS: Readonly<Record<string, Readonly<Record<string, string>>>> =
     'erev-shabbos': 'ערב שבת',
     'erev-yom-tov': 'ערב יום טוב',
     'motzaei-yom-tov': 'מוצאי יום טוב',
+    // The words of the day, as Yosef gave them (2026-11-13): everyday Hebrew.
+    'today': 'היום',
+    'tonight': 'הלילה',
+    'tomorrow': 'מחר',
+    'tomorrow-night': 'מחר בלילה',
+    'night': 'לילה',
+    'evening': 'ערב',
+    'afternoon': 'אחר הצהריים',
   },
   ashkenazi: {
     'shabbos': 'Shabbos',
@@ -40,6 +48,13 @@ export const TERMS: Readonly<Record<string, Readonly<Record<string, string>>>> =
     'erev-shabbos': 'Erev Shabbos',
     'erev-yom-tov': 'Erev Yom Tov',
     'motzaei-yom-tov': 'Motzei Yom Tov',
+    'today': 'Today',
+    'tonight': 'Tonight',
+    'tomorrow': 'Tomorrow',
+    'tomorrow-night': 'Tomorrow night',
+    'night': 'Night',
+    'evening': 'Evening',
+    'afternoon': 'Afternoon',
   },
   sephardi: {
     'shabbos': 'Shabbat',

@@ -470,12 +470,26 @@ in the code is on [Sources](../sources.md).
   until the end of its civil day, or until its sunset where that falls after midnight. That end
   is not a time from any source, and it can be earlier than any high-latitude rule Luach offers.
   `melachaRunAt` and `fastAt` give `inProgress: null` there instead, and `nowInfo` passes that on.
+  A fast whose end does not occur is still in progress, certainly, from its start until the fast
+  day's sunset; only after that is it `null`.
   Setting `highLatitudeFallback` gives that rule's time, marked in `Zman.fallback`.
 - **Why:** Luach has no time to give there; a function that must answer yes or no answers by the
   civil day, and the functions that can say "unknown" say it.
 - **Sources:** *no source recorded*.
 - **Confidence:** Low.
 - **Open:** what the answer should be there. Ask your rav.
+
+### Where night begins at an instant {#where-night-begins-at-an-instant}
+
+- **Status:** Default.
+- **What it does:** `dayPartAt` calls the time from sunset to the person's `tzeis` opinion
+  bein hashmashos, and night from their `tzeis`; `eventsAt` keeps a Yom Tov in force until the
+  person's havdala, a fast until their `fastEnds`, and starts Isru Chag at that havdala. The default
+  `tzeis` is `tzeis-8.5`, as everywhere in Luach.
+- **Why:** the library rules on nothing; the boundary is the opinion the person chose.
+- **Sources:** Shulchan Aruch OC 261:2 (bein hashmashos from sunset until the night); the opinions' own sources in [Zmanim and sources](./zmanim.md).
+- **Confidence:** High for following the opinion; the opinion itself is the person's.
+- **Open:** nothing new.
 
 ### The date line {#the-date-line}
 

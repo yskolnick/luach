@@ -78,7 +78,12 @@ export interface FastAt {
   readonly begins: Zman;
   /** As {@link fastTimes}: the `fastEnds` opinion. */
   readonly ends: Zman;
-  /** From `begins` until `ends` (exact times): true; before or after: false; null where the answer needs a time that does not occur. */
+  /**
+   * From `begins` until `ends` (exact times): true; before or after: false; null where the answer
+   * needs a time that does not occur. Where `ends` does not occur (no nightfall far north), true
+   * from `begins` until the fast day's sunset, then null until the end of the civil day after the
+   * fast day, as {@link melachaRunAt} keeps a run; Luach gives no time at which such a fast ends.
+   */
   readonly inProgress: boolean | null;
 }
 
@@ -86,7 +91,7 @@ export interface FastAt {
  * The fast of the place's today or tomorrow, by its clock: the one in progress at `instant` (or
  * whose state is unknown), else the next to begin, else today's that has ended. `null` when
  * neither day is a fast day. A fast of the day before whose end falls after local midnight
- * (far north in summer) is also found while it is still in progress. Compare `instant` with
+ * (far north in summer), or whose end does not occur, is also found while it may still be on. Compare `instant` with
  * `begins` and `ends` to tell "ahead" from "over".
  */
 export function fastAt(instant: Date, location: DayLocation, options: ZmanimOptions = {}): FastAt | null {
@@ -97,22 +102,32 @@ export function fastAt(instant: Date, location: DayLocation, options: ZmanimOpti
   const p = zonedParts(instant, location.timeZone);
   const today = HebrewDate.fromCivil(p);
   const dates = [today, ...(today.epochDays < MAX_DAYS ? [today.next()] : [])];
-  const state = (begins: Zman, ends: Zman): boolean | null => {
+  const z = zmanimFor(location, options);
+  // Where the fast's end does not occur (no nightfall far north), the fast is still certainly on
+  // from its start until the fast day's sunset; after that Luach has no time, so the state is
+  // unknown until the end of the civil day after the fast day, as melachaRunAt keeps a run.
+  const state = (date: HebrewDate, begins: Zman, ends: Zman): boolean | null => {
     // Exact times, as the other states compare: the displayed minute is rounded on the safe side.
     if (begins.exact !== null && t < begins.exact.getTime()) return false;
-    if (ends.exact !== null && t >= ends.exact.getTime()) return false;
-    return begins.exact !== null && ends.exact !== null ? true : null;
+    if (ends.exact !== null) {
+      if (t >= ends.exact.getTime()) return false;
+      return begins.exact !== null ? true : null;
+    }
+    if (zonedInstant(daysToCivil(dayNumber(date.toCivil()) + 2), location.timeZone).getTime() <= t) return false;
+    if (begins.exact === null) return null;
+    const sunset = lastDaySunset(z, date);
+    return sunset !== null && t < sunset.getTime() ? true : null;
   };
   const found: FastAt[] = [];
   for (const date of dates) {
     const f = fastTimes(date, location, options);
-    if (f) found.push(Object.freeze({ fast: f.fast, date, begins: f.begins, ends: f.ends, inProgress: state(f.begins, f.ends) }));
+    if (f) found.push(Object.freeze({ fast: f.fast, date, begins: f.begins, ends: f.ends, inProgress: state(date, f.begins, f.ends) }));
   }
-  // Yesterday's fast, only where its end occurs and has not yet come: it ends after local
-  // midnight here (far north in summer), so it is still on, or its start is unknown.
+  // Yesterday's fast, where it may still be on: its end falls after local midnight here (far north
+  // in summer), or its end does not occur, or its start is unknown.
   const yesterday = fastTimes(today.prev(), location, options);
-  if (yesterday && yesterday.ends.exact !== null && state(yesterday.begins, yesterday.ends) !== false) {
-    found.unshift(Object.freeze({ fast: yesterday.fast, date: today.prev(), begins: yesterday.begins, ends: yesterday.ends, inProgress: state(yesterday.begins, yesterday.ends) }));
+  if (yesterday && state(today.prev(), yesterday.begins, yesterday.ends) !== false) {
+    found.unshift(Object.freeze({ fast: yesterday.fast, date: today.prev(), begins: yesterday.begins, ends: yesterday.ends, inProgress: state(today.prev(), yesterday.begins, yesterday.ends) }));
   }
   const notBegun = found.filter((f) => f.begins.exact !== null && f.begins.exact.getTime() > t);
   return (
@@ -444,6 +459,12 @@ export interface MelachaRun {
   /** The day before the first day, and its events (Erev Pesach, ...). */
   readonly eve: { readonly date: HebrewDate; readonly events: readonly HolidayEvent[] };
   readonly days: readonly MelachaRunDay[];
+  /**
+   * What the run holds, in this order: `'shabbos'` if a day is Shabbos, `'yom-tov'` if a day is a
+   * Yom Tov other than Yom Kippur, `'yom-kippur'` if a day is Yom Kippur. So an app can say
+   * "Shabbos and Yom Tov end tomorrow night".
+   */
+  readonly kinds: readonly ('shabbos' | 'yom-tov' | 'yom-kippur')[];
   /** `days[0].candles`. */
   readonly begins: Zman;
   /** The end, on the evening of the last day: the `havdala` opinion (`havdala`, or `shabbos-ends-no-havdala` before Tisha B'Av postponed). `time` is null where it does not occur. */
@@ -526,14 +547,148 @@ export function melachaRunAt(instant: Date, location: DayLocation, options: Zman
       : E !== null ? (n < last ? true : n === last ? null : false)
       : n < last ? true : n > last + 1 ? false : null;
     const inProgress = started === false || notEnded === false ? false : started === true && notEnded === true ? true : null;
+    const kinds: ('shabbos' | 'yom-tov' | 'yom-kippur')[] = [];
+    if (days.some((d) => d.shabbos)) kinds.push('shabbos');
+    if (days.some((d) => d.events.some((e) => e.flags.melachaForbidden && e.id !== 'yom-kippur'))) kinds.push('yom-tov');
+    if (days.some((d) => d.events.some((e) => e.id === 'yom-kippur'))) kinds.push('yom-kippur');
     return Object.freeze({
       inProgress,
       eve: Object.freeze({ date: eve, events: Object.freeze(holidaysOn(eve, hopts)) }),
       days: Object.freeze(days),
+      kinds: Object.freeze(kinds),
       begins,
       ends,
     });
   }
   // Shabbos comes every seven days, so a run always begins within the search.
   throw new Error('No Shabbos or Yom Tov found within nine days: this is a bug in Luach');
+}
+
+/** The part of the day at an instant (see {@link dayPartAt}). */
+export interface DayPartAt {
+  /**
+   * `'before-sunrise'` (from midnight to sunrise), `'day'` (sunrise to sunset), `'bein-hashmashos'`
+   * (sunset to nightfall) or `'night'` (nightfall to midnight); null where a time it needs does not
+   * occur (no sunset or sunrise; no nightfall, after sunset and until the next sunrise).
+   */
+  readonly part: 'before-sunrise' | 'day' | 'bein-hashmashos' | 'night' | null;
+  /** The `sunrise` opinion on `date`. */
+  readonly sunrise: Zman;
+  /** The `sunset` opinion on `date`. */
+  readonly sunset: Zman;
+  /** The `tzeis` opinion on the evening of `date`: where night begins, by the person's opinion. */
+  readonly tzeis: Zman;
+  /**
+   * The civil date whose times these are: the place's civil date at the instant, or the day before
+   * while that day's sunset or nightfall, falling after local midnight (far north), has not come.
+   */
+  readonly date: CivilDate;
+}
+
+/**
+ * Whether `instant` is before sunrise, during the day, between sunset and nightfall, or at night,
+ * at the place, by the person's `sunrise`, `sunset` and `tzeis` opinions (night begins at their
+ * `tzeis`: a default, `tzeis-8.5`, not a ruling). States change at the exact times, as the other
+ * at-instant functions do. Ask your rav.
+ */
+export function dayPartAt(instant: Date, location: DayLocation, options: ZmanimOptions = {}): DayPartAt {
+  instant = instantArg(instant, 'dayPartAt');
+  const t = instant.getTime();
+  const z = zmanimFor(location, options);
+  const civil = civilDateAt(t, location.timeZone);
+  const today = HebrewDate.fromCivil(civil);
+  const times = (h: HebrewDate) => {
+    const d = z.on(h);
+    return { sunrise: d.slot('sunrise'), sunset: d.slot('sunset'), tzeis: d.slot('tzeis') };
+  };
+  const result = (part: DayPartAt['part'], h: HebrewDate, x: ReturnType<typeof times>, c: CivilDate): DayPartAt =>
+    Object.freeze({ part, ...x, date: Object.freeze({ year: c.year, month: c.month, day: c.day }) });
+  const at = (z: Zman) => z.exact?.getTime() ?? null;
+  // The evening before, where its sunset or nightfall falls after local midnight.
+  const yesterday = today.prev();
+  const y = times(yesterday);
+  const yS = at(y.sunset);
+  const yN = at(y.tzeis);
+  const yCivil = yesterday.toCivil();
+  if (yS !== null && t < yS) return result('day', yesterday, y, yCivil);
+  if (yN !== null && t < yN) return result('bein-hashmashos', yesterday, y, yCivil);
+  const x = times(today);
+  const [r, s, n] = [at(x.sunrise), at(x.sunset), at(x.tzeis)];
+  if (r !== null && t < r) return result(yS !== null && yN === null ? null : 'before-sunrise', today, x, civil);
+  if (s !== null && t >= s) return result(n === null ? null : t < n ? 'bein-hashmashos' : 'night', today, x, civil);
+  return result(r !== null && s !== null ? 'day' : null, today, x, civil);
+}
+
+/** One event and when it is in force (see {@link eventsAt}). */
+export interface EventAt {
+  readonly event: HolidayEvent;
+  /** When it comes into force: for Yom Tov its candles; for a fast its start; for Isru Chag the end of the Yom Tov before; else the `dayBoundary` that begins its date. */
+  readonly from: Zman;
+  /** When it ends: for Yom Tov the end of the day's holiness (havdala), or the `dayBoundary` when another holy day follows; for a fast its end; else the `dayBoundary` that ends its date. */
+  readonly until: Zman;
+  /** From `from` until `until` (exact times): true; before or after: false; null where a time it needs does not occur. */
+  readonly inProgress: boolean | null;
+}
+
+/** The events in force at an instant (see {@link eventsAt}). */
+export interface EventsAt {
+  /** The Hebrew date at the instant, by the `dayBoundary` opinion: {@link hebrewDateAt}. */
+  readonly date: HebrewDate;
+  /**
+   * The events of `date`, always, each with its state; before them those of the date before that are
+   * still in force (a Yom Tov until its havdala, a fast until its end), and after them those of the
+   * next date already in force (a Yom Tov from its candles).
+   */
+  readonly events: readonly EventAt[];
+}
+
+/**
+ * The events in force at `instant`: the events of the Hebrew date now, plus any whose observance is
+ * still running past the date's boundary (Yom Kippur until its fast ends, a Yom Tov until its
+ * havdala) or has already begun before it (a Yom Tov from its candles). Isru Chag comes into force
+ * only when the Yom Tov before it ends. Each event says from when until when, by the person's
+ * opinions, and whether it is in force at the instant (`inProgress`). Israel or the diaspora as in
+ * {@link isMelachaForbiddenAt}.
+ */
+export function eventsAt(instant: Date, location: DayLocation, options: ZmanimOptions = {}): EventsAt {
+  instant = instantArg(instant, 'eventsAt');
+  const t = instant.getTime();
+  const hopts = { ...options, israel: israelFor(options.israel, location) };
+  const z = zmanimFor(location, options);
+  const date = z.hebrewDateAt(instant);
+  const boundary = (h: HebrewDate) => z.on(h).slot('dayBoundary');
+  const state = (from: Zman, until: Zman): boolean | null => {
+    if (from.exact !== null && t < from.exact.getTime()) return false;
+    if (until.exact !== null && t >= until.exact.getTime()) return false;
+    return from.exact !== null && until.exact !== null ? true : null;
+  };
+  const of = (h: HebrewDate): EventAt[] => {
+    const out: EventAt[] = [];
+    let fast: ReturnType<typeof fastTimes> | undefined;
+    let evening: ReturnType<typeof eveningOf> | undefined;
+    for (const event of holidaysOn(h, hopts)) {
+      let from: Zman;
+      let until: Zman;
+      if (event.flags.fast !== null) {
+        fast ??= fastTimes(h, location, options);
+        from = fast!.begins;
+        until = fast!.ends;
+      } else if (event.flags.melachaForbidden) {
+        from = eveningOf(h.prev(), location, options).candles ?? boundary(h.prev());
+        evening ??= eveningOf(h, location, options);
+        until = evening.havdala ?? evening.shabbosEnds ?? boundary(h);
+      } else if (event.flags.isruChag) {
+        from = eveningOf(h.prev(), location, options).havdala ?? boundary(h.prev());
+        until = boundary(h);
+      } else {
+        from = boundary(h.prev());
+        until = boundary(h);
+      }
+      out.push(Object.freeze({ event, from, until, inProgress: state(from, until) }));
+    }
+    return out;
+  };
+  const before = of(date.prev()).filter((e) => e.inProgress !== false);
+  const after = date.epochDays < MAX_DAYS ? of(date.next()).filter((e) => e.inProgress === true) : [];
+  return Object.freeze({ date, events: Object.freeze([...before, ...of(date), ...after]) });
 }

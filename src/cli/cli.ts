@@ -38,7 +38,8 @@ import { toICalendar } from '../output/ical.js';
 import type { IcalLearningName } from '../learning/index.js';
 // The learning cycles are loaded (by mainAsync) only for the commands that show them.
 let learningModule: typeof import('../learning/index.js') | undefined;
-import { getPlace, searchPlaces, isInIsrael, foldName, distanceKm, type Place } from '../places/places.js';
+import { isInIsrael } from '../places/israel.js';
+import type { Place } from '../places/places.js';
 import { Zmanim, type Opinions, type ZmanimSettings } from '../zmanim/zmanim.js';
 import type { ZmanId } from '../zmanim/opinions.js';
 import { ZMANIM, zmanLabel } from '../zmanim/opinions.js';
@@ -53,7 +54,7 @@ declare const process: {
 };
 
 /** Kept equal to package.json's version by scripts/release.mjs. */
-export const VERSION = '0.5.0';
+export const VERSION = '0.5.5';
 const LOCALES: Record<string, Locale> = { he, ashkenazi, sephardi, en, chabad, israeli, yi };
 
 const HELP = `luach ${VERSION}: Hebrew calendar, holidays, parsha, learning and zmanim
@@ -255,17 +256,35 @@ function str(flags: Record<string, string | true>, k: string): string | undefine
   return typeof v === 'string' ? v : undefined;
 }
 
-// The full city table is large; it is loaded (by mainAsync) only when the built-in table
-// has no exact or prefix match.
+// The built-in city table is loaded (by mainAsync) only when a place is named, and the full city
+// table only when the built-in one has no exact or prefix match, so a run that names no place
+// parses neither.
+let places: typeof import('../places/places.js') | undefined;
 let fullTable: readonly Place[] | undefined;
+
+/** The built-in city table, which {@link mainAsync} (or {@link loadPlaces}) loads. */
+function table(): typeof import('../places/places.js') {
+  if (!places) throw new Error('The city table is not loaded: run the command through mainAsync');
+  return places;
+}
+
+/**
+ * Loads the built-in city table, as {@link mainAsync} does when a place is named; for callers of
+ * the synchronous {@link main} (the tests).
+ */
+export async function loadPlaces(): Promise<void> {
+  places ??= await import('../places/places.js');
+}
 
 /** True if one of the place's names is the query, or starts with it. */
 function strongMatch(p: Place, query: string): boolean {
+  const { foldName } = table();
   const q = foldName(query);
   return [p.name, p.nameHe, ...p.aliases, p.id].some((n) => n && foldName(n).startsWith(q));
 }
 
 function builtInCity(city: string): Place | undefined {
+  const { getPlace, searchPlaces } = table();
   const p = getPlace(city) ?? searchPlaces(city)[0];
   return p && (p.id === city || strongMatch(p, city)) ? p : undefined;
 }
@@ -278,6 +297,7 @@ function builtInCity(city: string): Place | undefined {
 function findCity(city: string): Place | undefined {
   const strong = builtInCity(city);
   if (strong) return strong;
+  const { searchPlaces, foldName } = table();
   const full = fullTable ? searchPlaces(city, { places: fullTable })[0] : undefined;
   if (full && strongMatch(full, city)) {
     // Several places share the name: say which one is used, and how to choose another.
@@ -415,9 +435,8 @@ const LEARNING_LABELS: Readonly<Record<string, readonly [en: string, he: string]
   yerushalmiYomi: ['Yerushalmi Yomi', 'ירושלמי יומי'],
   amudYomi: ['Amud Yomi', 'עמוד יומי'],
   mishnaYomis: ['Mishna Yomis', 'משניות יומיות'],
-  rambamOneChapter: ['Rambam, one chapter', 'רמב״ם פרק אחד'],
-  rambamThreeChapters: ['Rambam, three chapters', 'רמב״ם שלושה פרקים'],
   nachYomi: ['Nach Yomi', 'נ״ך יומי'],
+  dafHaShavua: ['Daf HaShavua', 'דף השבוע'],
 };
 
 function learningLabel(key: string, locale: Locale): string {
@@ -498,8 +517,10 @@ function printNow(flags: Record<string, string | true>): void {
   const m = info.melacha;
   const names = m.days.map((d) => [d.shabbos ? termName('shabbos', locale) : '', ...d.events.filter((e) => e.flags.melachaForbidden).map((e) => e.name)].filter(Boolean).join(' / ')).join(', ');
   line(`Melacha (${names}): ${m.inProgress === null ? 'not known: Luach has no time at this place to decide by' : m.inProgress ? 'forbidden now' : 'not forbidden now'}`);
-  const candleNote = m.begins.id === 'candle-lighting' && info.settings.candleLightingNote ? `  (18 minutes before sunset: Luach's default; ${info.settings.candleLightingNote.slice(1)}` : '';
-  line(`  ${m.inProgress ? 'began with' : 'begins with'} ${zmanLabel(m.begins.id, locale)}: ${when(m.begins, info)}${candleNote}`);
+  line(`  ${m.inProgress ? 'began with' : 'begins with'} ${zmanLabel(m.begins.id, locale)}: ${when(m.begins, info)}`);
+  // Candle lighting is shown, not what forbids melacha; its note says which minutes it counts.
+  const lit = m.days[0]?.candles;
+  if (lit?.id === 'candle-lighting' && info.settings.candleLightingNote) line(`  ${zmanLabel(lit.id, locale)}: ${when(lit, info)}  (18 minutes before sunset: Luach's default; ${info.settings.candleLightingNote.slice(1)}`);
   line(`  ends with ${zmanLabel(m.ends.id, locale)}: ${when(m.ends, info)}`);
   if (info.fast) {
     const f = info.fast;
@@ -536,6 +557,7 @@ const REASONS: Readonly<Record<ZmanUnavailableReason, string>> = {
   'no-sunset': 'the sun does not set today',
   'depends-on-missing-zman': 'a time it is counted from does not occur today',
   'not-applicable-today': 'not on this day',
+  'date-skipped-in-zone': 'this date did not happen in this time zone',
   'requires-terrain-data': 'it needs terrain data',
 };
 
@@ -629,6 +651,7 @@ function run(argv: string[]): number {
     }
     case 'cities': {
       const q = rest.join(' ');
+      const { searchPlaces, distanceKm } = table();
       const found = searchPlaces(q, { limit: 20 });
       // With the full table loaded, add its cities that are not built-in places already.
       if (fullTable) for (const f of searchPlaces(q, { places: fullTable, limit: 20 })) if (found.length < 20 && !found.some((p) => distanceKm(p.latitude, p.longitude, f.latitude, f.longitude) < 10)) found.push(f);
@@ -642,13 +665,14 @@ function run(argv: string[]): number {
 }
 
 /**
- * {@link main}, after loading the full city table when `--city` (or `cities`) has no exact
- * or prefix match among the built-in places. The table is a separate module, imported only
- * then, so ordinary runs do not parse it.
+ * {@link main}, after loading the built-in city table when `--city` (or `cities`) names a place,
+ * and the full city table when that has no exact or prefix match among the built-in places. Each
+ * is a separate module, imported only then, so a run that names no place parses neither.
  */
 export async function mainAsync(argv: string[]): Promise<number> {
   const { positional, flags } = parseArgs(argv);
   const city = str(flags, 'city') ?? (positional[0] === 'cities' ? positional.slice(1).join(' ') : undefined);
+  if (city !== undefined) await loadPlaces();
   if (city && !fullTable && !builtInCity(city)) fullTable = (await import('../places/full.js')).fullPlaces();
   if (!learningModule && ['today', 'date', 'now', 'ics'].includes(positional[0] ?? '')) learningModule = await import('../learning/index.js');
   return main(argv);

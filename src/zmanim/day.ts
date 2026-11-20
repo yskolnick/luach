@@ -6,16 +6,17 @@
  * @packageDocumentation
  */
 
+import { checkOptions, ZMANIM_OPTION_KEYS } from '../util/options.js';
 import { HebrewDate } from '../calendar/hebrew-date.js';
 import { MAX_DAYS } from '../calendar/year.js';
-import { holidaysOn } from '../holidays/holidays.js';
+import { holidaysOnUnchecked as holidaysOn, isHolyDay } from '../holidays/holidays.js';
 import { israelFor } from '../places/israel.js';
 import type { HolidayEvent, HolidayOptions } from '../holidays/types.js';
-import type { GeoLocation } from './calendar.js';
+import { checkLocation, type GeoLocation } from './calendar.js';
 import type { DayLocation } from './day-location.js';
 import { zmanDefinition, type ZmanId } from './opinions.js';
 import type { Zman } from './zman.js';
-import { Zmanim, type Opinions, type ZmanimSettings } from './zmanim.js';
+import { Zmanim, beginningsText, type Opinions, type ZmanimSettings } from './zmanim.js';
 import { hebrewDateArg, instantArg } from '../calendar/date-input.js';
 
 /**
@@ -59,21 +60,15 @@ function checkSecondNightCandles(v: unknown): void {
 /** A custom for the earliest time to light the Chanukah lights on a weekday evening. */
 export type ChanukahCustom = 'sunset' | 'tzeis';
 
-/** Throws a RangeError for a `chanukahLighting` that is neither `'sunset'` nor `'tzeis'`. */
-function checkChanukahLighting(v: unknown): void {
-  if (v !== undefined && v !== 'sunset' && v !== 'tzeis') throw new RangeError(`chanukahLighting must be "sunset" or "tzeis", not ${JSON.stringify(v) ?? String(v)}`);
-}
-
 /**
  * The {@link Zmanim} these options describe. Internal: shared with the day view and iCal.
  * @internal
  */
 export function zmanimFor(location: GeoLocation, o: ZmanimOptions): Zmanim {
-  checkChanukahLighting(o.chanukahLighting);
   checkSecondNightCandles(o.secondNightCandles);
-  if (o.omerFrom !== undefined && o.omerFrom !== 'tzeis' && o.omerFrom !== 'holy-day-ends') throw new RangeError(`omerFrom must be "tzeis" or "holy-day-ends", not ${JSON.stringify(o.omerFrom) ?? String(o.omerFrom)}`);
   const settings: { -readonly [K in keyof ZmanimSettings]: ZmanimSettings[K] } = {};
   if (o.useElevation !== undefined) settings.useElevation = o.useElevation;
+  if (o.beginningsSunset !== undefined) settings.beginningsSunset = o.beginningsSunset;
   if (o.candleLightingMinutes !== undefined) settings.candleLightingMinutes = o.candleLightingMinutes;
   if (o.ateretTorahMinutes !== undefined) settings.ateretTorahMinutes = o.ateretTorahMinutes;
   if (o.highLatitudeFallback !== undefined) settings.highLatitudeFallback = o.highLatitudeFallback;
@@ -89,6 +84,8 @@ export function zmanimFor(location: GeoLocation, o: ZmanimOptions): Zmanim {
  * the question. If the boundary does not occur that day (polar regions), the civil date is used.
  */
 export function hebrewDateAt(instant: Date, location: GeoLocation, options: ZmanimOptions = {}): HebrewDate {
+  checkOptions('hebrewDateAt', options, ZMANIM_OPTION_KEYS);
+  checkLocation(location);
   instant = instantArg(instant, 'hebrewDateAt');
   return zmanimFor(location, options).hebrewDateAt(instant);
 }
@@ -96,19 +93,38 @@ export function hebrewDateAt(instant: Date, location: GeoLocation, options: Zman
 /**
  * Start and end of the fast on `date`, or null if `date` is not a fast day: the minor fasts
  * begin at the `fastBegins` opinion (default alos 72), Yom Kippur and Tisha B'Av at the
- * previous sunset; every fast ends at the `fastEnds` opinion (default 7.083°). Israel or the
+ * previous sunset; every fast ends at the `fastEnds` opinion (default 7.083°). `beginsEvening` is
+ * true for a fast that begins the evening before (Yom Kippur, Tisha B'Av), false for a minor fast.
+ * Israel or the
  * diaspora: `options.israel` if given, otherwise from the location.
  */
-export function fastTimes(date: HebrewDate, location: GeoLocation, options: ZmanimOptions = {}): { fast: HolidayEvent; begins: Zman; ends: Zman } | null {
+export function fastTimes(date: HebrewDate, location: GeoLocation, options: ZmanimOptions = {}): { fast: HolidayEvent; begins: Zman; ends: Zman; beginsEvening: boolean } | null {
+  checkLocation(location);
+  checkOptions('fastTimes', options, ZMANIM_OPTION_KEYS);
   date = hebrewDateArg(date, 'fastTimes');
+  return fastTimesWith(date, location, options, undefined);
+}
+
+/**
+ * {@link fastTimes} with the `Zmanim` the caller already built from `location` and `options`
+ * (one per day view, so the day, the evening and the fasts share it). The arguments are
+ * already checked.
+ *
+ * @internal
+ */
+export function fastTimesWith(date: HebrewDate, location: GeoLocation, options: ZmanimOptions, shared: Zmanim | undefined): { fast: HolidayEvent; begins: Zman; ends: Zman; beginsEvening: boolean } | null {
   const fast = holidaysOn(date, { ...options, israel: israelFor(options.israel, location) }).find((e) => e.flags.fast !== null);
   if (!fast) return null;
-  const z = zmanimFor(location, options);
+  const z = shared ?? zmanimFor(location, options);
   const day = z.on(date);
   let begins: Zman;
   if (fast.flags.fast === 'major') {
     const def = zmanDefinition('fast-begins-sunset')!;
-    begins = z.on(date.prev()).labelled('fast-begins-sunset', 'sunset', def.opinion, def.source);
+    // The sunset the beginnings count from: at sea level unless elevation is on and chosen for them.
+    const eve = z.on(date.prev());
+    const elevation = z.settings.useElevation === true && z.settings.beginningsSunset === 'elevation';
+    const opinion = z.settings.useElevation ? `${def.opinion}; ${beginningsText(z)}` : def.opinion;
+    begins = eve.labelled('fast-begins-sunset', elevation ? 'sunset' : 'sunset-sea-level', opinion, def.source);
   } else {
     // The fast's start is a deadline for eating, so it is rounded down.
     const a = day.get(z.opinions.fastBegins);
@@ -118,29 +134,51 @@ export function fastTimes(date: HebrewDate, location: GeoLocation, options: Zman
   const e = day.get(z.opinions.fastEnds);
   const def = zmanDefinition('fast-ends')!;
   const ends = day.labelled('fast-ends', z.opinions.fastEnds, `${def.opinion} (${e.opinion})`, `${def.source}; ${e.source}`);
-  return { fast, begins, ends };
+  return { fast, begins, ends, beginsEvening: fast.flags.fast === 'major' };
 }
 
 /**
- * True if melacha is forbidden at `instant` because of Shabbos or Yom Tov: from candle
- * lighting to the `havdala` opinion (default 8.5°). Motzaei Shabbos after havdala time is not
+ * Shkiah, when melacha becomes forbidden on the evening that begins a Shabbos or Yom Tov: the
+ * sunset that candle lighting is counted from (`set-beginnings`: at sea level unless `useElevation`
+ * and `beginningsSunset: 'elevation'`), as the catalogue's `sunset` entry. Where the sun does not
+ * set, the Zman says so, as every time does.
+ *
+ * @internal
+ */
+export function shkiahOf(z: Zmanim, eve: HebrewDate): Zman {
+  const day = z.on(eve);
+  if (!z.settings.useElevation) return day.get('sunset');
+  const def = zmanDefinition('sunset')!;
+  const elevation = z.settings.beginningsSunset === 'elevation';
+  return day.labelled('sunset', elevation ? 'sunset' : 'sunset-sea-level', `${def.opinion}; ${beginningsText(z)}`, def.source);
+}
+
+/**
+ * True if melacha is forbidden at `instant` because of Shabbos or Yom Tov: from shkiah (sunset)
+ * to the `havdala` opinion (default 8.5°). Candle lighting is the custom's time to light, not the
+ * time melacha becomes forbidden; tosefes Shabbos, and accepting Shabbos by lighting or in shul,
+ * are personal and not known to Luach. Motzaei Shabbos after havdala time is not
  * forbidden. Yom Kippur counts as Yom Tov. Israel or the diaspora (the second day of Yom Tov):
  * `options.israel` if given, otherwise from the location.
  *
  * Where the havdala time does not occur (far north in summer, with the default
  * `highLatitudeFallback: 'none'`), Luach has no time at which Shabbos or Yom Tov ends. The
- * function then answers by the civil day, which is not a time from any source: from candle
- * lighting (where that occurs) the evening before a holy day is forbidden, and the end of a
- * holy day is taken as the end of the civil day. Where candle lighting or sunset does not
+ * function then answers by the civil day, which is not a time from any source: from shkiah
+ * (where that occurs) the evening before a holy day is forbidden, and the end of a
+ * holy day is taken as the end of the civil day. Where sunset does not
  * occur either, the whole answer is by the civil day. Setting `highLatitudeFallback` gives that
  * rule's time instead.
  *
- * Candle lighting is `options.candleLightingMinutes` before sunset if given; otherwise the
- * place's documented custom (`location.candleLighting`, as on a built-in `Place`), exactly as
- * the day view chooses; otherwise 18 minutes. The custom is the place's, the 18 minutes is a
- * default, not a ruling. Ask your rav.
+ * Shkiah is the sunset that candle lighting is counted from (sea level unless `useElevation` and
+ * `beginningsSunset: 'elevation'`). That melacha is forbidden from shkiah is Luach's default, not a
+ * ruling (the Gra, the Rambam, the Tur and Mishna Berura 261:23). Candle lighting
+ * (`options.candleLightingMinutes` before sunset if given; otherwise the place's documented custom,
+ * `location.candleLighting`, as on a built-in `Place`; otherwise 18 minutes) is the custom's time to
+ * light and does not change this answer. Ask your rav.
  */
 export function isMelachaForbiddenAt(instant: Date, location: DayLocation, options: ZmanimOptions = {}): boolean {
+  checkOptions('isMelachaForbiddenAt', options, ZMANIM_OPTION_KEYS);
+  checkLocation(location);
   instant = instantArg(instant, 'isMelachaForbiddenAt');
   // Zmanim takes the place's documented custom when the caller has not chosen the minutes.
   const z = zmanimFor(location, options);
@@ -148,13 +186,13 @@ export function isMelachaForbiddenAt(instant: Date, location: DayLocation, optio
   const civil = todayZ.date;
   const today = HebrewDate.fromCivil(civil);
   const hopts = { ...options, israel: israelFor(options.israel, location) };
-  const holy = (d: HebrewDate) => d.isShabbos || holidaysOn(d, hopts).some((e) => e.flags.melachaForbidden);
+  const holy = (d: HebrewDate) => isHolyDay(d, hopts);
   // After 29 Elul 9999 (the last supported day) comes Rosh Hashana 10000, always Yom Tov.
   const holyTomorrow = () => today.epochDays === MAX_DAYS || holy(today.next());
   const t = instant.getTime();
   const bounds = (d: HebrewDate) => {
     const day = z.on(d);
-    return { start: day.get('candle-lighting').exact ?? null, end: day.get(z.opinions.havdala).exact ?? null, sunset: day.get('sunset').exact ?? null };
+    return { start: shkiahOf(z, d).exact ?? null, end: day.get(z.opinions.havdala).exact ?? null, sunset: day.get('sunset').exact ?? null };
   };
   // At high latitudes the previous evening's candle lighting, sunset or havdala time can fall
   // after midnight, on this civil date: until then the previous day is still in effect.
@@ -164,8 +202,9 @@ export function isMelachaForbiddenAt(instant: Date, location: DayLocation, optio
   // No havdala time, but the sun has not yet set on the previous day.
   if (y.end === null && y.sunset !== null && t < y.sunset.getTime()) return holy(today.prev()) || holy(today);
   const b = bounds(today);
-  if (b.sunset === null || b.start === null) {
-    // Polar day or night: fall back to the civil day.
+  if (b.start === null) {
+    // No shkiah on the eve (polar day or night): fall back to the civil day. This depends on the
+    // shkiah alone, as melachaRunAt does, not on the elevation sunset.
     return holy(today);
   }
   if (t < b.start.getTime()) return holy(today);

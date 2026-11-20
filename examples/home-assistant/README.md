@@ -15,15 +15,19 @@ asks it over HTTP:
    reach (`node examples/server/server.mjs`; `PORT` sets the port, default 8080). The server
    imports the built library from `dist/`, so run `npm run build` in a checkout first. Luach makes
    no network calls of its own; the server only answers yours.
+
+   The example server is not hardened for the open internet: it has no rate limiting and is a
+   single process. Keep it on your home network, or behind a reverse proxy with limits.
 2. Put [`configuration.yaml`](configuration.yaml) in your Home Assistant configuration. It uses
    Home Assistant's generic `rest` integration with one resource, so one request a minute
    (`scan_interval: 60`) feeds every sensor, all from the same instant.
 3. Change `YOUR-SERVER:8080` and the place. The place is `city=…` (a built-in place) or
    `lat=…&lon=…&tz=…` (the time zone is required). An unknown city is an error. Optional `opinions=` is a JSON object in the query, for example
    `opinions={"tzeis":"tzeis-rabbeinu-tam"}` (URL-encoded), `candleMinutes=`, `highLatitude=` and
-   `locale=`; `at=` is an ISO instant with an explicit offset (`Z` or `+hh:mm`), for trying a date; `elevation=` (metres) turns on the elevation-adjusted sunrise and sunset.
+   `locale=`, `chanukahLighting=`, `names=` and `learning=`; `at=` is an ISO instant with an explicit offset (`Z` or `+hh:mm`), for trying a date; `elevation=` (metres) turns on the elevation-adjusted sunrise and sunset.
 
-Try the address in a browser or with `curl` before you restart Home Assistant. The document is
+The server answers `400` for a parameter it does not know, and says which, so a misspelling
+is never silently ignored. Try the address in a browser or with `curl` before you restart Home Assistant. The document is
 described by [`schema/now.schema.json`](../../schema/now.schema.json).
 
 ## The sensors
@@ -32,7 +36,7 @@ described by [`schema/now.schema.json`](../../schema/now.schema.json).
 |---|---|---|
 | Luach melacha in effect (binary) | `melacha.inProgress` | on, off, or unavailable |
 | Luach fast in progress (binary) | `fast.inProgress` | on, off, or unavailable |
-| Luach candle lighting (timestamp) | `melacha.begins.time` | the candle lighting of the Shabbos or Yom Tov run that is on, or else the next |
+| Luach candle lighting (timestamp) | `melacha.days[0].candles.time` | the candle lighting of the Shabbos or Yom Tov run that is on, or else the next |
 | Luach havdala (timestamp) | `melacha.ends.time` | the end of that run |
 | Luach Hebrew date | `hebrewDate.formatted` | text, in Hebrew (add `&locale=en` to the address for English) |
 | Luach Omer tonight | `night.omer`, `nextNight.omer` | the day being counted: the night in progress until its morning (alos in the file; change it to suit), then the coming night's; or `none` |

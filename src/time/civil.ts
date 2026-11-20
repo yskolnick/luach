@@ -46,12 +46,12 @@ export function daysToCivil(days: number): CivilDate {
 }
 
 /** True if the proleptic Gregorian year has 366 days. */
-export function isGregorianLeapYear(year: number): boolean {
+function isGregorianLeapYear(year: number): boolean {
   return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
 }
 
 /** Days in a Gregorian month (month 1–12). */
-export function gregorianMonthLength(year: number, month: number): number {
+function gregorianMonthLength(year: number, month: number): number {
   if (month === 2) return isGregorianLeapYear(year) ? 29 : 28;
   return month === 4 || month === 6 || month === 9 || month === 11 ? 30 : 31;
 }

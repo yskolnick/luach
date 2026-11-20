@@ -11,6 +11,7 @@
 
 import { assertCivil, type CivilDate } from '../time/civil.js';
 import { HebrewDate } from './hebrew-date.js';
+import { MAX_DAYS, MIN_DAYS } from './year.js';
 
 function describe(x: unknown): string {
   if (x === null) return 'null';
@@ -96,6 +97,9 @@ export function instantArg(x: unknown, fn: string): Date {
     const hint = typeof x === 'number' ? ': pass new Date(ms)' : typeof x === 'string' ? ': pass new Date(string) with an explicit offset, e.g. 2026-10-23T15:00:00Z' : '';
     throw new TypeError(`${fn} takes a Date, not ${describe(x)}${hint}`);
   }
-  if (Number.isNaN(x.getTime())) throw new RangeError(`${fn}: invalid Date`);
+  const t = x.getTime();
+  if (Number.isNaN(t)) throw new RangeError(`${fn}: invalid Date`);
+  // Within two days of the supported Hebrew years, so that the calendar's own error still names a day just outside.
+  if (t < (MIN_DAYS - 2) * 86_400_000 || t > (MAX_DAYS + 3) * 86_400_000) throw new RangeError(`${fn}: Date outside the supported years -3760 to 6239`);
   return x;
 }

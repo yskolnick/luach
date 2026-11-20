@@ -7,5 +7,6 @@ import type { GeoLocation } from './calendar.js';
  */
 export type DayLocation = GeoLocation & {
   readonly israel?: boolean;
+  readonly walledCity?: { readonly custom: string; readonly source: string };
   readonly candleLighting?: { readonly minutes: number; readonly custom: string; readonly source: string };
 };

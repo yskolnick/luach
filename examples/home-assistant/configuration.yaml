@@ -26,9 +26,9 @@ rest:
     sensor:
       # The candle lighting of the Shabbos or Yom Tov run that is on, or else of the next one.
       - name: "Luach candle lighting"
-        value_template: "{{ value_json.melacha.begins.time }}"
+        value_template: "{{ value_json.melacha.days[0].candles.time }}"
         device_class: timestamp
-        availability: "{{ value_json.melacha.begins.time is not none }}"
+        availability: "{{ value_json.melacha.days[0].candles.time is not none }}"
 
       # Havdala, or the end of Shabbos or Yom Tov, of that run.
       - name: "Luach havdala"

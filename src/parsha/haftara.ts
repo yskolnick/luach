@@ -37,7 +37,7 @@
 
 import { HebrewDate } from '../calendar/hebrew-date.js';
 import { Month } from '../calendar/months.js';
-import { festivalOn, holidaysOn, roshChodeshOn } from '../holidays/holidays.js';
+import { festivalOn, holidaysOnUnchecked as holidaysOn, roshChodeshOn } from '../holidays/holidays.js';
 import { parshaFor } from './parsha.js';
 import { PARSHA_HAFTAROS, SPECIAL_HAFTAROS, type HaftaraRow } from './haftaros-data.js';
 import { hebrewDateArg } from '../calendar/date-input.js';
@@ -145,7 +145,7 @@ export function haftaraFor(date: HebrewDate, options: HaftaraOptions = {}): Haft
   if (has('shabbos-shekalim')) return special(rcToday ? 'shekalim-rosh-chodesh' : rcTomorrow ? 'shekalim-machar-chodesh' : 'shekalim', minhag);
   if (has('shabbos-zachor')) return special('zachor', minhag);
   if (has('shabbos-parah')) return special('parah', minhag);
-  if (has('shabbos-hachodesh')) return special(rcToday ? 'hachodesh-rosh-chodesh' : 'hachodesh', minhag);
+  if (has('shabbos-hachodesh')) return special(rcToday ? 'hachodesh-rosh-chodesh' : rcTomorrow ? 'hachodesh-machar-chodesh' : 'hachodesh', minhag);
 
   const chanukah = events.find((e) => e.id === 'chanukah');
   if (chanukah) {

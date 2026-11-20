@@ -16,12 +16,13 @@ import { he } from '../locales/he.js';
 
 /**
  * When a zman falls, as data: a few operations on the sun, read by the calculator. Nothing here
- * is code. `rise` and `set` follow the calculator's `useElevation`; angles are always at sea
- * level; `noon` is the sun's transit and `midnight` the halfway point to the next one. A
+ * is code. `rise` and `set` follow the calculator's `useElevation`; `set-beginnings`, the sunset
+ * candle lighting counts from, is at sea level unless `useElevation` and `beginningsSunset:
+ * 'elevation'` are both set; angles are always at sea level; `noon` is the sun's transit and `midnight` the halfway point to the next one. A
  * `Moment` says how a time is computed; the entry's opinion and source say why.
  */
 export type Moment =
-  | { readonly sun: 'rise' | 'set' | 'rise-sea-level' | 'set-sea-level' | 'rise-elevation' | 'set-elevation' | 'noon' | 'midnight' }
+  | { readonly sun: 'rise' | 'set' | 'rise-sea-level' | 'set-sea-level' | 'rise-elevation' | 'set-elevation' | 'set-beginnings' | 'noon' | 'midnight' }
   | { readonly angle: number; readonly rising: boolean }
   | { readonly offset: number | { readonly option: 'candleLightingMinutes' | 'ateretTorahMinutes'; readonly sign: 1 | -1 }; readonly from: Moment }
   | { readonly hours: number; readonly of: 'gra'; readonly from: Moment }
@@ -30,7 +31,7 @@ export type Moment =
   | { readonly none: 'requires-terrain-data' };
 
 /** A halachic day: the span whose twelfth is a seasonal hour (shaah zmanis) for one opinion. */
-export interface DayDefinition {
+interface DayDefinition {
   readonly start: Moment;
   readonly end: Moment;
   /** Whose day, in words. */
@@ -81,7 +82,7 @@ export const DAYS: Readonly<Record<string, DayDefinition>> = /*#__PURE__*/ deepF
   'mga-96-zmaniyos': { start: { hours: -1.6, of: 'gra', from: R }, end: { hours: 1.6, of: 'gra', from: S }, opinion: 'Magen Avraham: alos to tzeis at 96 proportional minutes', source: 'Magen Avraham OC 58:1' },
   'mga-120': { start: { offset: -120, from: R }, end: { offset: 120, from: S }, opinion: 'Magen Avraham: a twelfth of alos 120 to tzeis 120 (a stringency)', source: 'Magen Avraham OC 58:1' },
   'mga-16.1': { start: { angle: 16.1, rising: true }, end: { angle: 16.1, rising: false }, opinion: 'Magen Avraham: alos to tzeis at 16.1°', source: 'Magen Avraham OC 58:1' },
-  'baal-hatanya': { start: { angle: 1.583, rising: true }, end: { angle: 1.583, rising: false }, opinion: 'Baal HaTanya: netz amiti to shkia amitis', source: 'Shulchan Aruch HaRav OC 58:3' },
+  'baal-hatanya': { start: { angle: 1.583, rising: true }, end: { angle: 1.583, rising: false }, opinion: 'Baal HaTanya: netz amiti to shkia amitis', source: 'Shulchan Aruch HaRav OC 443:4 (the day from netz to shkiah, said there of chametz); 1.583° as calculated in Chabad practice (not checked against the text). OC 58:3 counts the hours of Shema from alos' },
   'ateret-torah': { start: { hours: -1.2, of: 'gra', from: R }, end: { offset: { option: 'ateretTorahMinutes', sign: 1 }, from: S }, opinion: 'Ateret Torah: alos 72 proportional minutes to tzeis 40 minutes', source: 'Ateret Torah luach' },
 });
 
@@ -90,11 +91,11 @@ export const ZMANIM = /*#__PURE__*/ deepFreeze({
   // ---- Sun ----
   'sunrise': { slot: 'sunrise', opinion: 'Sunrise (netz hachama)', source: 'Berachos 9b; Shulchan Aruch OC 58:1', round: up, at: R },
   'sunrise-sea-level': { slot: 'sunrise', opinion: 'Sunrise at sea level (upper limb at the horizon, standard refraction)', source: 'NOAA Solar Calculator; sea-level practice: R. Isser Zalman Meltzer, cited in Peninei Halakha, Tefilla 11:6 n. 7', round: up, at: { sun: 'rise-sea-level' } },
-  'sunrise-elevation': { slot: 'sunrise', opinion: 'Sunrise adjusted for the observer\'s elevation (lower horizon, earlier)', source: 'Zmanim KeHilchasam (R. Bursztyn), ch. 2 §§7, 9: elevation for sunrise and sunset only (not verified: the book was not read)', round: up, at: { sun: 'rise-elevation' } },
+  'sunrise-elevation': { slot: 'sunrise', opinion: 'Sunrise adjusted for the observer\'s elevation (lower horizon, earlier)', source: 'Zmanim KeHilchasam (R. Bursztyn), ch. 2 §§7, 9: elevation for sunrise and sunset only (not checked against the text)', round: up, at: { sun: 'rise-elevation' } },
   'sunrise-visible': { slot: 'sunrise', opinion: 'Visible sunrise over the actual terrain (netz hanireh)', source: 'Divrei Yosef; Maharil Diskin (cited in Peninei Halakha, Tefilla 11). Needs terrain data: not computed', round: up, at: { none: 'requires-terrain-data' } },
   'sunset': { slot: 'sunset', opinion: 'Sunset (shkiah)', source: 'Shabbos 34b–35a; Shulchan Aruch OC 261:2', round: down, at: S },
   'sunset-sea-level': { slot: 'sunset', opinion: 'Sunset at sea level', source: 'NOAA Solar Calculator', round: down, at: { sun: 'set-sea-level' } },
-  'sunset-elevation': { slot: 'sunset', opinion: 'Sunset adjusted for the observer\'s elevation (later)', source: 'Zmanim KeHilchasam (R. Bursztyn), ch. 2 §§7, 9 (not verified: the book was not read)', round: down, at: { sun: 'set-elevation' } },
+  'sunset-elevation': { slot: 'sunset', opinion: 'Sunset adjusted for the observer\'s elevation (later)', source: 'Zmanim KeHilchasam (R. Bursztyn), ch. 2 §§7, 9 (not checked against the text)', round: down, at: { sun: 'set-elevation' } },
   'chatzos': { slot: 'chatzos', opinion: 'Midday: the sun on the meridian (astronomical transit)', source: 'Magen Avraham OC 233:4', round: down, at: { sun: 'noon' } },
   'chatzos-midpoint': { slot: 'chatzos', opinion: 'Midday as the midpoint of sunrise and sunset: the end of the sixth of twelve equal seasonal hours', source: 'Mishna Berura 233:4 (the hours of the day are seasonal: the day is divided into twelve equal parts)', round: down, at: { hour: 6, of: 'gra' } },
   'chatzos-halayla': { slot: 'chatzosHalayla', opinion: 'Midnight: halfway between one transit and the next', source: 'Berachos 3b; Mishna Berura 1:9 (midnight is twelve hours after midday)', round: down, at: { sun: 'midnight' } },
@@ -115,10 +116,10 @@ export const ZMANIM = /*#__PURE__*/ deepFreeze({
   'alos-baal-hatanya': { slot: 'alos', opinion: 'Dawn of the Baal HaTanya, 16.9° below the horizon', source: 'Shulchan Aruch HaRav OC 89:1; 16.9° as calculated in Chabad practice', round: up, at: { angle: 16.9, rising: true } },
 
   // ---- Misheyakir ----
-  'misheyakir-10.2': { slot: 'misheyakir', opinion: 'Misheyakir at 10.2°', source: 'Berachos 9b; Shulchan Aruch OC 18:3; 10.2° as published in a luach that names no source; attributed elsewhere to Kovetz Otzros Yerushalayim (not verified)', round: up, at: { angle: 10.2, rising: true } },
+  'misheyakir-10.2': { slot: 'misheyakir', opinion: 'Misheyakir at 10.2°', source: 'Berachos 9b; Shulchan Aruch OC 18:3; 10.2° as published in a luach that names no source; attributed elsewhere to Kovetz Otzros Yerushalayim (not checked against the text)', round: up, at: { angle: 10.2, rising: true } },
   'misheyakir-11': { slot: 'misheyakir', opinion: 'Misheyakir at 11°', source: 'Berachos 9b; Shulchan Aruch OC 18:3; Peninei Halakha, Tefilla 11', round: up, at: { angle: 11, rising: true } },
-  'misheyakir-11.5': { slot: 'misheyakir', opinion: 'Misheyakir at 11.5° (custom of Eretz Yisrael)', source: 'Berachos 9b; Shulchan Aruch OC 18:3; 11.5° as the custom of Eretz Yisrael per a published luach (secondary; not verified)', round: up, at: { angle: 11.5, rising: true } },
-  'misheyakir-12.85': { slot: 'misheyakir', opinion: 'Misheyakir at 12.85°', source: 'Berachos 9b; Shulchan Aruch OC 18:3; 12.85° attributed to Birur Halacha (R. Zilber) OC 18 (not verified)', round: up, at: { angle: 12.85, rising: true } },
+  'misheyakir-11.5': { slot: 'misheyakir', opinion: 'Misheyakir at 11.5° (custom of Eretz Yisrael)', source: 'Berachos 9b; Shulchan Aruch OC 18:3; 11.5° as the custom of Eretz Yisrael per a published luach (secondary; not checked against the text)', round: up, at: { angle: 11.5, rising: true } },
+  'misheyakir-12.85': { slot: 'misheyakir', opinion: 'Misheyakir at 12.85°', source: 'Berachos 9b; Shulchan Aruch OC 18:3; 12.85° attributed to Birur Halacha (R. Zilber) OC 18 (not checked against the text)', round: up, at: { angle: 12.85, rising: true } },
 
   // ---- Shema and Tefilla ----
   'sof-zman-shema-gra': { slot: 'shema', opinion: 'Latest Shema, Gra: 3 seasonal hours of a sunrise-to-sunset day', source: 'Shulchan Aruch OC 58:1; Mishna Berura 58:4', round: down, at: { hour: 3, of: 'gra' } },
@@ -131,7 +132,7 @@ export const ZMANIM = /*#__PURE__*/ deepFreeze({
   'sof-zman-shema-mga-120': { slot: 'shema', opinion: 'Latest Shema, Magen Avraham with 120 fixed minutes (a stringency)', source: 'Magen Avraham OC 58:1; Mishna Berura 58:4; Magen Avraham 89:2 (5 mil reckoned as two hours, as a stringency)', round: down, at: { hour: 3, of: 'mga-120' } },
   'sof-zman-shema-mga-16.1': { slot: 'shema', opinion: 'Latest Shema, Magen Avraham, day from alos to tzeis at 16.1°', source: 'Magen Avraham OC 58:1; Mishna Berura 58:4; 16.1° = Jerusalem equinox equivalent of 72 minutes (Peninei Halakha, Tefilla 11:2 n. 1)', round: down, at: { hour: 3, of: 'mga-16.1' } },
   'sof-zman-shema-baal-hatanya': { slot: 'shema', opinion: 'Latest Shema, Baal HaTanya: 3 seasonal hours of a day from netz amiti to shkia amitis (sun 1.583° below the horizon)', source: 'Shulchan Aruch HaRav OC 443:4; 1.583° as calculated in Chabad practice', round: down, at: { hour: 3, of: 'baal-hatanya' } },
-  'sof-zman-shema-ateret-torah': { slot: 'shema', opinion: 'Latest Shema, Ateret Torah: day from alos (72 proportional minutes) to tzeis (40 minutes after sunset)', source: 'Ateret Torah practice (Chacham Yosef Harari-Raful); not verified against a printed source', round: down, at: { hour: 3, of: 'ateret-torah' } },
+  'sof-zman-shema-ateret-torah': { slot: 'shema', opinion: 'Latest Shema, Ateret Torah: day from alos (72 proportional minutes) to tzeis (40 minutes after sunset)', source: 'Ateret Torah practice (Chacham Yosef Harari-Raful); not checked against the text', round: down, at: { hour: 3, of: 'ateret-torah' } },
   'sof-zman-tefilla-gra': { slot: 'tefilla', opinion: 'Latest Shacharis, Gra: 4 seasonal hours of a sunrise-to-sunset day', source: 'Shulchan Aruch OC 89:1; Mishna Berura 58:4', round: down, at: { hour: 4, of: 'gra' } },
   'sof-zman-tefilla-mga-72': { slot: 'tefilla', opinion: 'Latest Shacharis, Magen Avraham, 72 fixed minutes', source: 'Shulchan Aruch OC 89:1 (until the end of the fourth hour); the day from alos to tzeis: Magen Avraham OC 58:1, Mishna Berura 58:4', round: down, at: { hour: 4, of: 'mga-72' } },
   'sof-zman-tefilla-mga-90': { slot: 'tefilla', opinion: 'Latest Shacharis, Magen Avraham, 90 fixed minutes', source: 'Shulchan Aruch OC 89:1 (until the end of the fourth hour); the day from alos to tzeis: Magen Avraham OC 58:1, Mishna Berura 58:4', round: down, at: { hour: 4, of: 'mga-90' } },
@@ -142,10 +143,10 @@ export const ZMANIM = /*#__PURE__*/ deepFreeze({
   'sof-zman-tefilla-mga-120': { slot: 'tefilla', opinion: 'Latest Shacharis, Magen Avraham, 120 fixed minutes (a stringency)', source: 'Shulchan Aruch OC 89:1 (until the end of the fourth hour); the day from alos to tzeis: Magen Avraham OC 58:1, Mishna Berura 58:4', round: down, at: { hour: 4, of: 'mga-120' } },
   'sof-zman-tefilla-mga-16.1': { slot: 'tefilla', opinion: 'Latest Shacharis, Magen Avraham, 16.1°', source: 'Shulchan Aruch OC 89:1 (until the end of the fourth hour); the day from alos to tzeis: Magen Avraham OC 58:1, Mishna Berura 58:4', round: down, at: { hour: 4, of: 'mga-16.1' } },
   'sof-zman-tefilla-baal-hatanya': { slot: 'tefilla', opinion: 'Latest Shacharis, Baal HaTanya', source: 'Shulchan Aruch OC 89:1 (four hours); the day from netz to shkiah: Shulchan Aruch HaRav OC 443:4. (Shulchan Aruch HaRav OC 89:1 counts from alos instead.)', round: down, at: { hour: 4, of: 'baal-hatanya' } },
-  'sof-zman-tefilla-ateret-torah': { slot: 'tefilla', opinion: 'Latest Shacharis, Ateret Torah', source: 'Ateret Torah practice (Chacham Yosef Harari-Raful); not verified against a printed source', round: down, at: { hour: 4, of: 'ateret-torah' } },
+  'sof-zman-tefilla-ateret-torah': { slot: 'tefilla', opinion: 'Latest Shacharis, Ateret Torah', source: 'Ateret Torah practice (Chacham Yosef Harari-Raful); not checked against the text', round: down, at: { hour: 4, of: 'ateret-torah' } },
 
   // ---- Mincha ----
-  'mincha-gedola-30': { slot: 'minchaGedola', opinion: 'Mincha Gedola: 30 fixed minutes after chatzos', source: 'Shulchan Aruch OC 233:1 (six and a half seasonal hours), which Mishna Berura 233:1 glosses as half an hour after chatzos; fixed clock minutes are a common practice (not verified as a ruling)', round: up, at: { offset: 30, from: { sun: 'noon' } } },
+  'mincha-gedola-30': { slot: 'minchaGedola', opinion: 'Mincha Gedola: 30 fixed minutes after chatzos', source: 'Shulchan Aruch OC 233:1 (six and a half seasonal hours), which Mishna Berura 233:1 glosses as half an hour after chatzos; fixed clock minutes are a common practice (not checked against the text as a ruling)', round: up, at: { offset: 30, from: { sun: 'noon' } } },
   'mincha-gedola-gra': { slot: 'minchaGedola', opinion: 'Mincha Gedola, Gra: 6.5 seasonal hours after sunrise', source: 'Shulchan Aruch OC 233:1; Mishna Berura 233:1–4', round: up, at: { hour: 6.5, of: 'gra' } },
   'mincha-gedola-greater': { slot: 'minchaGedola', opinion: 'Mincha Gedola: the later of 30 minutes after chatzos and 6.5 seasonal hours (Chabad practice)', source: 'Shulchan Aruch OC 233:1; Chabad practice', round: up, at: { later: [{ offset: 30, from: { sun: 'noon' } }, { hour: 6.5, of: 'gra' }] } },
   'mincha-gedola-mga-72': { slot: 'minchaGedola', opinion: 'Mincha Gedola, Magen Avraham (72 fixed minutes)', source: 'Shulchan Aruch OC 233:1; Magen Avraham 233:3', round: up, at: { hour: 6.5, of: 'mga-72' } },
@@ -175,12 +176,12 @@ export const ZMANIM = /*#__PURE__*/ deepFreeze({
   'bein-hashmashos-yereim-13.5': { slot: 'beinHashmashos', opinion: 'Start of bein hashmashos, Yereim: ¾ mil of 18 minutes (13.5 minutes) before sunset', source: 'Sefer Yereim 274; Biur Halacha 261:2; mil of 18 minutes: Shulchan Aruch OC 459:2', round: down, at: { offset: -13.5, from: S } },
 
   // ---- Tzeis ----
-  'tzeis-8.5': { slot: 'tzeis', opinion: 'Nightfall at 8.5° (three small stars)', source: 'Shulchan Aruch OC 293:2 (three small stars); 8.5° as calculated in Chabad practice; attribution to R. Tukaczinsky not verified', round: up, at: { angle: 8.5, rising: false } },
-  'tzeis-7.083': { slot: 'tzeis', opinion: 'Nightfall at 7.083° (three medium stars, about 29 minutes after sunset in Jerusalem at the equinox)', source: 'Shulchan Aruch OC 562:1 (three medium stars); 7.083° attributed to Dr. Baruch Cohn (not verified: no primary source read)', round: up, at: { angle: 7.083, rising: false } },
-  'tzeis-6.45': { slot: 'tzeis', opinion: 'Nightfall at 6.45° (three medium stars; custom in Israel)', source: 'Shulchan Aruch OC 562:1 (three medium stars); 6.45° as the custom of Eretz Yisrael per a published luach (secondary; not verified)', round: up, at: { angle: 6.45, rising: false } },
-  'tzeis-42': { slot: 'tzeis', opinion: 'Nightfall 42 fixed minutes after sunset (a custom in the United States)', source: 'Custom; ¾ mil reckoning of the Geonim adapted to latitude (not verified against a printed source)', round: up, at: { offset: 42, from: S } },
-  'tzeis-50': { slot: 'tzeis', opinion: 'Nightfall 50 fixed minutes after sunset', source: 'Igros Moshe OC 4:62 (not verified: cited from secondary sources; given for New York)', round: up, at: { offset: 50, from: S } },
-  'tzeis-60': { slot: 'tzeis', opinion: 'Nightfall 60 fixed minutes after sunset', source: 'Custom (not verified against a printed source)', round: up, at: { offset: 60, from: S } },
+  'tzeis-8.5': { slot: 'tzeis', opinion: 'Nightfall at 8.5° (three small stars)', source: 'Shulchan Aruch OC 293:2 (three small stars); 8.5° as calculated in Chabad practice; attribution to R. Tukaczinsky not checked against the text', round: up, at: { angle: 8.5, rising: false } },
+  'tzeis-7.083': { slot: 'tzeis', opinion: 'Nightfall at 7.083° (three medium stars, about 29 minutes after sunset in Jerusalem at the equinox)', source: 'Shulchan Aruch OC 562:1 (three medium stars); 7.083° attributed to Dr. Baruch Cohn (not checked against the text)', round: up, at: { angle: 7.083, rising: false } },
+  'tzeis-6.45': { slot: 'tzeis', opinion: 'Nightfall at 6.45° (three medium stars; custom in Israel)', source: 'Shulchan Aruch OC 562:1 (three medium stars); 6.45° as the custom of Eretz Yisrael per a published luach (secondary; not checked against the text)', round: up, at: { angle: 6.45, rising: false } },
+  'tzeis-42': { slot: 'tzeis', opinion: 'Nightfall 42 fixed minutes after sunset (a custom in the United States)', source: 'Custom; ¾ mil reckoning of the Geonim adapted to latitude (not checked against the text)', round: up, at: { offset: 42, from: S } },
+  'tzeis-50': { slot: 'tzeis', opinion: 'Nightfall 50 fixed minutes after sunset', source: 'Igros Moshe OC 4:62 (cited from secondary sources, not checked against the text; given for New York)', round: up, at: { offset: 50, from: S } },
+  'tzeis-60': { slot: 'tzeis', opinion: 'Nightfall 60 fixed minutes after sunset', source: 'Custom (not checked against the text)', round: up, at: { offset: 60, from: S } },
   'tzeis-72': { slot: 'tzeis', opinion: 'Nightfall 72 fixed minutes after sunset (4 mil of 18 minutes)', source: 'Pesachim 94a; Tosafos Shabbos 35a; Shulchan Aruch OC 261:2', round: up, at: { offset: 72, from: S } },
   'tzeis-72-zmaniyos': { slot: 'tzeis', opinion: 'Nightfall 72 proportional minutes (1.2 seasonal hours of the Gra day) after sunset', source: 'Rambam, Peirush HaMishnayos Berachos 1:1 (an hour and a fifth of seasonal hours); Pesachim 94a; Shulchan Aruch OC 261:2', round: up, at: { hours: 1.2, of: 'gra', from: S } },
   'tzeis-90': { slot: 'tzeis', opinion: 'Nightfall 90 fixed minutes after sunset (4 mil of 22.5 minutes)', source: 'Pesachim 94a; Biur Halacha 459:2', round: up, at: { offset: 90, from: S } },
@@ -190,11 +191,11 @@ export const ZMANIM = /*#__PURE__*/ deepFreeze({
   'tzeis-96-zmaniyos': { slot: 'tzeis', opinion: 'Nightfall 96 proportional minutes (1.6 seasonal hours) after sunset', source: 'Pesachim 94a; Magen Avraham 89:2', round: up, at: { hours: 1.6, of: 'gra', from: S } },
   'tzeis-120-zmaniyos': { slot: 'tzeis', opinion: 'Nightfall 120 proportional minutes (2 seasonal hours) after sunset (a stringency)', source: 'Pesachim 93b (Ulla: 5 mil, refuted on 94a); Magen Avraham 89:2 (5 mil reckoned as two hours)', round: up, at: { hours: 2, of: 'gra', from: S } },
   'tzeis-rabbeinu-tam': { slot: 'tzeis', opinion: 'Nightfall of Rabbeinu Tam: 72 fixed minutes after sunset', source: 'Tosafos Shabbos 35a, Pesachim 94a; Shulchan Aruch OC 261:2', round: up, at: { offset: 72, from: S } },
-  'tzeis-baal-hatanya': { slot: 'tzeis', opinion: 'Nightfall of the Baal HaTanya, 6° below the horizon', source: 'Chabad practice; no primary source for 6° was found (not verified)', round: up, at: { angle: 6, rising: false } },
-  'tzeis-ateret-torah': { slot: 'tzeis', opinion: 'Nightfall, Ateret Torah: a fixed number of minutes after sunset (default 40)', source: 'Ateret Torah practice (Chacham Yosef Harari-Raful); not verified against a printed source', round: up, at: { offset: { option: 'ateretTorahMinutes', sign: 1 }, from: S } },
+  'tzeis-baal-hatanya': { slot: 'tzeis', opinion: 'Nightfall of the Baal HaTanya, 6° below the horizon', source: 'Chabad practice; no primary source for 6° was found (not checked against the text)', round: up, at: { angle: 6, rising: false } },
+  'tzeis-ateret-torah': { slot: 'tzeis', opinion: 'Nightfall, Ateret Torah: a fixed number of minutes after sunset (default 40)', source: 'Ateret Torah practice (Chacham Yosef Harari-Raful); not checked against the text', round: up, at: { offset: { option: 'ateretTorahMinutes', sign: 1 }, from: S } },
 
   // ---- Shabbos, Yom Tov, Pesach, fasts ----
-  'candle-lighting': { slot: 'candleLighting', opinion: 'Candle lighting a fixed number of minutes before sunset, by local custom (18 common; Jerusalem 40)', source: 'Shulchan Aruch OC 261:2 (tosefes Shabbos); the minutes are local custom: Kaf HaChaim 261:23 (a third of an hour); Igros Moshe OC 2:6 and Yabia Omer 5:21 as cited by the OU (not verified)', round: down, at: { offset: { option: 'candleLightingMinutes', sign: -1 }, from: S } },
+  'candle-lighting': { slot: 'candleLighting', opinion: 'Candle lighting a fixed number of minutes before sunset, by local custom (18 common; Jerusalem 40)', source: 'Shulchan Aruch OC 261:2 (tosefes Shabbos); the minutes are local custom: Kaf HaChaim 261:23 (a third of an hour); Igros Moshe OC 2:6 and Yabia Omer 5:21 as cited by the OU (not checked against the text)', round: down, at: { offset: { option: 'candleLightingMinutes', sign: -1 }, from: { sun: 'set-beginnings' } } },
   'havdala': { slot: 'havdala', opinion: 'End of Shabbos or Yom Tov: three small stars (by degrees) or a fixed number of minutes', source: 'Shulchan Aruch OC 293:2', round: up, at: { angle: 8.5, rising: false } },
   'shabbos-ends-no-havdala': { slot: 'havdala', opinion: 'Shabbos ends (three small stars) before Tisha B\'Av postponed to Sunday: no havdala over a cup tonight; say "Baruch HaMavdil bein kodesh lechol" before melacha', source: 'Shulchan Aruch OC 556:1; Mishnah Berurah 556:2; Shulchan Aruch OC 299:10; Shulchan Aruch OC 293:2', round: up },
   'havdala-after-fast': { slot: 'havdala', opinion: 'Havdala over a cup, without candle or spices, when Tisha B\'Av postponed from Shabbos ends', source: 'Shulchan Aruch OC 556:1', round: up },
@@ -209,7 +210,7 @@ export const ZMANIM = /*#__PURE__*/ deepFreeze({
   'sof-zman-achilas-chametz-mga-120': { slot: 'chametzEat', opinion: 'Latest time to eat chametz, Magen Avraham (120 minutes; a stringency)', source: 'Pesachim 11b; Shulchan Aruch OC 443:1; Magen Avraham OC 58:1; Mishna Berura 58:4; Magen Avraham 89:2 (5 mil reckoned as two hours, as a stringency)', round: down, at: { hour: 4, of: 'mga-120' }, onlyOn: 'erev-pesach' },
   'sof-zman-achilas-chametz-mga-16.1': { slot: 'chametzEat', opinion: 'Latest time to eat chametz, Magen Avraham (16.1°)', source: 'Pesachim 11b; Shulchan Aruch OC 443:1; Magen Avraham OC 58:1; Mishna Berura 58:4; 16.1° = Jerusalem equinox equivalent of 72 minutes (Peninei Halakha, Tefilla 11:2 n. 1)', round: down, at: { hour: 4, of: 'mga-16.1' }, onlyOn: 'erev-pesach' },
   'sof-zman-achilas-chametz-baal-hatanya': { slot: 'chametzEat', opinion: 'Latest time to eat chametz, Baal HaTanya', source: 'Pesachim 11b; Shulchan Aruch OC 443:1; Shulchan Aruch HaRav OC 443:4; 1.583° as calculated in Chabad practice', round: down, at: { hour: 4, of: 'baal-hatanya' }, onlyOn: 'erev-pesach' },
-  'sof-zman-achilas-chametz-ateret-torah': { slot: 'chametzEat', opinion: 'Latest time to eat chametz, Ateret Torah', source: 'Pesachim 11b; Shulchan Aruch OC 443:1; Ateret Torah practice (Chacham Yosef Harari-Raful); not verified against a printed source', round: down, at: { hour: 4, of: 'ateret-torah' }, onlyOn: 'erev-pesach' },
+  'sof-zman-achilas-chametz-ateret-torah': { slot: 'chametzEat', opinion: 'Latest time to eat chametz, Ateret Torah', source: 'Pesachim 11b; Shulchan Aruch OC 443:1; Ateret Torah practice (Chacham Yosef Harari-Raful); not checked against the text', round: down, at: { hour: 4, of: 'ateret-torah' }, onlyOn: 'erev-pesach' },
   'sof-zman-biur-chametz-gra': { slot: 'chametzBurn', opinion: 'Latest time to burn chametz on Erev Pesach, Gra: 5 seasonal hours', source: 'Pesachim 11b; Shulchan Aruch OC 443:1', round: down, at: { hour: 5, of: 'gra' }, onlyOn: 'erev-pesach' },
   'sof-zman-biur-chametz-mga-72': { slot: 'chametzBurn', opinion: 'Latest time to burn chametz, Magen Avraham (72 minutes)', source: 'Pesachim 11b; Shulchan Aruch OC 443:1 with Rema', round: down, at: { hour: 5, of: 'mga-72' }, onlyOn: 'erev-pesach' },
   'sof-zman-biur-chametz-mga-90': { slot: 'chametzBurn', opinion: 'Latest time to burn chametz, Magen Avraham (90 minutes)', source: 'Pesachim 11b; Shulchan Aruch OC 443:1; Magen Avraham OC 58:1; Mishna Berura 58:4; Biur Halacha 459:2', round: down, at: { hour: 5, of: 'mga-90' }, onlyOn: 'erev-pesach' },
@@ -220,7 +221,7 @@ export const ZMANIM = /*#__PURE__*/ deepFreeze({
   'sof-zman-biur-chametz-mga-120': { slot: 'chametzBurn', opinion: 'Latest time to burn chametz, Magen Avraham (120 minutes; a stringency)', source: 'Pesachim 11b; Shulchan Aruch OC 443:1; Magen Avraham OC 58:1; Mishna Berura 58:4; Magen Avraham 89:2 (5 mil reckoned as two hours, as a stringency)', round: down, at: { hour: 5, of: 'mga-120' }, onlyOn: 'erev-pesach' },
   'sof-zman-biur-chametz-mga-16.1': { slot: 'chametzBurn', opinion: 'Latest time to burn chametz, Magen Avraham (16.1°)', source: 'Pesachim 11b; Shulchan Aruch OC 443:1; Magen Avraham OC 58:1; Mishna Berura 58:4; 16.1° = Jerusalem equinox equivalent of 72 minutes (Peninei Halakha, Tefilla 11:2 n. 1)', round: down, at: { hour: 5, of: 'mga-16.1' }, onlyOn: 'erev-pesach' },
   'sof-zman-biur-chametz-baal-hatanya': { slot: 'chametzBurn', opinion: 'Latest time to burn chametz, Baal HaTanya', source: 'Pesachim 11b; Shulchan Aruch OC 443:1; Shulchan Aruch HaRav OC 443:4; 1.583° as calculated in Chabad practice', round: down, at: { hour: 5, of: 'baal-hatanya' }, onlyOn: 'erev-pesach' },
-  'sof-zman-biur-chametz-ateret-torah': { slot: 'chametzBurn', opinion: 'Latest time to burn chametz, Ateret Torah', source: 'Pesachim 11b; Shulchan Aruch OC 443:1; Ateret Torah practice (Chacham Yosef Harari-Raful); not verified against a printed source', round: down, at: { hour: 5, of: 'ateret-torah' }, onlyOn: 'erev-pesach' },
+  'sof-zman-biur-chametz-ateret-torah': { slot: 'chametzBurn', opinion: 'Latest time to burn chametz, Ateret Torah', source: 'Pesachim 11b; Shulchan Aruch OC 443:1; Ateret Torah practice (Chacham Yosef Harari-Raful); not checked against the text', round: down, at: { hour: 5, of: 'ateret-torah' }, onlyOn: 'erev-pesach' },
   'fast-begins': { slot: 'fast', opinion: 'A minor fast begins at dawn', source: 'Shulchan Aruch OC 564:1', round: down },
   'fast-begins-sunset': { slot: 'fast', opinion: 'Yom Kippur and Tisha B\'Av begin at sunset the evening before (from bein hashmashos)', source: 'Shulchan Aruch OC 553:2, 608:1', round: down },
   'fast-ends': { slot: 'fast', opinion: 'A fast ends at nightfall (three medium stars)', source: 'Shulchan Aruch OC 562:1', round: up },

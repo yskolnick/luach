@@ -27,7 +27,7 @@ const TENS = ['', '', 'עשרים', 'שלשים', 'ארבעים'];
 const UNITS_IN_COMPOUND = ['', 'אחד', 'שנים', 'שלשה', 'ארבעה', 'חמשה', 'ששה', 'שבעה', 'שמונה', 'תשעה'];
 
 /** Customs of wording the count. */
-export type OmerNusach = 'ashkenaz' | 'sefard' | 'edot-hamizrach';
+export type OmerNusach = 'ashkenaz' | 'sefard' | 'edot-hamizrach' | 'chabad';
 
 function daysPhrase(n: number, unitsFirst: boolean): string {
   if (n === 1) return 'יום אחד';
@@ -49,7 +49,9 @@ const AND_DAYS = ['', 'ויום אחד', 'ושני ימים', 'ושלשה ימי
  *
  * - `ashkenaz`: "היום שמונה ימים שהם שבוע אחד ויום אחד לעומר" (units before tens: "אחד ועשרים");
  * - `sefard`: the same with "בעומר";
- * - `edot-hamizrach`: tens before units ("עשרים ואחד"), and "לעומר" before "שהם".
+ * - `edot-hamizrach`: tens before units ("עשרים ואחד"), and "לעומר" before "שהם";
+ * - `chabad`: the words of `ashkenaz` exactly ("…לעומר" at the end, units before tens), as the
+ *   count in the Chabad siddur (Siddur Tehillat Hashem, as on Sefaria; checked for all 49 days).
  *
  * Wordings differ between siddurim; check the user's siddur. Default `ashkenaz`.
  */

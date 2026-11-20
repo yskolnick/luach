@@ -47,16 +47,22 @@ export function assertYear(year: number): void {
 }
 
 /** Position of the year in its 19-year cycle, 1–19. */
-export function cyclePosition(year: number): number {
+function cyclePosition(year: number): number {
   return ((year - 1) % 19) + 1;
 }
 
-/** True if the Hebrew year has 13 months. */
-export function isLeapYear(year: number): boolean {
+/** Leap-year test for any integer year, with no range check: the arithmetic behind the year-10000 boundary. */
+function leap(year: number): boolean {
   return LEAP_POSITIONS.includes(cyclePosition(year));
 }
 
-/** Number of months in the year: 12 or 13. */
+/** True if the Hebrew year has 13 months. Throws a RangeError for a year outside 1–9999. */
+export function isLeapYear(year: number): boolean {
+  assertYear(year);
+  return leap(year);
+}
+
+/** Number of months in the year: 12 or 13. Throws a RangeError for a year outside 1–9999. */
 export function monthsInYear(year: number): 12 | 13 {
   return isLeapYear(year) ? 13 : 12;
 }
@@ -71,11 +77,16 @@ export function monthsBeforeYear(year: number): number {
 }
 
 /** The molad of Tishrei of `year`, in chalakim since the start of day 0. */
-export function moladTishreiParts(year: number): number {
+function moladTishreiParts(year: number): number {
   return MOLAD_BAHARAD + monthsBeforeYear(year) * MONTH_PARTS;
 }
 
 const roshHashanaCache = new Map<number, number>();
+
+/** How many years the Rosh Hashana cache holds (for tests). Not exported from the package. */
+export function rhCacheSize(): number {
+  return roshHashanaCache.size;
+}
 
 /**
  * The day (counted from day 0 of {@link moladTishreiParts}) of Rosh Hashana of `year`,
@@ -88,6 +99,10 @@ const roshHashanaCache = new Map<number, number>();
  *    moves it to Tuesday (7:5).
  */
 function roshHashanaDay(year: number): number {
+  // 1 Tishrei of 10000 is the end of year 9999; nothing beyond it is ever needed.
+  if (!Number.isInteger(year) || year < MIN_YEAR || year > MAX_YEAR + 1) {
+    throw new RangeError(`Hebrew year ${year} is outside the supported range ${MIN_YEAR}–${MAX_YEAR}`);
+  }
   const cached = roshHashanaCache.get(year);
   if (cached !== undefined) return cached;
   const parts = moladTishreiParts(year);
@@ -96,8 +111,8 @@ function roshHashanaDay(year: number): number {
   const dow = day % 7; // 0 = Sunday
   if (
     time >= 18 * PARTS_PER_HOUR ||
-    (dow === 2 && time >= 9 * PARTS_PER_HOUR + 204 && !isLeapYear(year)) ||
-    (dow === 1 && time >= 15 * PARTS_PER_HOUR + 589 && isLeapYear(year - 1))
+    (dow === 2 && time >= 9 * PARTS_PER_HOUR + 204 && !leap(year)) ||
+    (dow === 1 && time >= 15 * PARTS_PER_HOUR + 589 && leap(year - 1))
   ) {
     day++;
   }
@@ -112,8 +127,9 @@ export function roshHashanaDays(year: number): number {
   return roshHashanaDay(year) + DAY0_EPOCH_DAYS;
 }
 
-/** Days in the Hebrew year: 353, 354, 355, 383, 384 or 385. */
+/** Days in the Hebrew year: 353, 354, 355, 383, 384 or 385. Throws a RangeError for a year outside 1–9999. */
 export function yearLength(year: number): number {
+  assertYear(year);
   return roshHashanaDay(year + 1) - roshHashanaDay(year);
 }
 
@@ -135,6 +151,7 @@ export function yearType(year: number): YearType {
 
 /** Days in a Hebrew month (29 or 30). Throws for Adar II in a common year. */
 export function monthLength(year: number, month: number): 29 | 30 {
+  assertYear(year);
   switch (month) {
     case Month.NISAN:
     case Month.SIVAN:
@@ -164,6 +181,7 @@ export function monthLength(year: number, month: number): 29 | 30 {
 
 /** The months of `year` in calendar order, starting from Tishrei. */
 export function monthsOfYear(year: number): MonthNumber[] {
+  assertYear(year);
   const m: MonthNumber[] = [7, 8, 9, 10, 11, 12];
   if (isLeapYear(year)) m.push(13);
   m.push(1, 2, 3, 4, 5, 6);

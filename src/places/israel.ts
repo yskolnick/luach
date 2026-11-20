@@ -45,7 +45,7 @@ export function isInIsrael(latitude: number, longitude: number): boolean {
 }
 
 /** A location that may say for itself whether it is in Israel (as a built-in `Place` does). */
-export interface IsraelLocation {
+interface IsraelLocation {
   readonly latitude: number;
   readonly longitude: number;
   readonly israel?: boolean;
@@ -57,7 +57,7 @@ export interface IsraelLocation {
  * location, the diaspora. Internal; not exported from the package.
  */
 export function israelFor(explicit: boolean | undefined, location: IsraelLocation | undefined): boolean {
-  if (explicit !== undefined) return explicit;
+  if (explicit !== undefined && explicit !== null) return explicit;
   if (!location) return false;
   return location.israel ?? isInIsrael(location.latitude, location.longitude);
 }

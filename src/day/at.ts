@@ -13,17 +13,20 @@
  * @packageDocumentation
  */
 
+import { checkOptions, ZMANIM_OPTION_KEYS } from '../util/options.js';
 import { zonedInstant, zonedParts } from '../time/zoned.js';
 import { civilToDays, daysToCivil, type CivilDate } from '../time/civil.js';
 import { civilDateAt } from '../time/zone.js';
 import { HebrewDate } from '../calendar/hebrew-date.js';
 import { MAX_DAYS, monthLength } from '../calendar/year.js';
-import { holidaysOn } from '../holidays/holidays.js';
+import { holidaysOnUnchecked as holidaysOn, isHolyDay, isYomTovNotKippur } from '../holidays/holidays.js';
 import { omerDay } from '../holidays/omer.js';
 import { kiddushLevana, moladInstant, type KiddushLevanaTime } from '../holidays/seasonal.js';
 import type { HolidayEvent } from '../holidays/types.js';
 import { israelFor } from '../places/israel.js';
 import { eveningOf } from './evening.js';
+import { shkiahOf } from '../zmanim/day.js';
+import { checkLocation } from '../zmanim/calendar.js';
 import { fastTimes, zmanimFor, type ChanukahCustom, type ZmanimOptions } from '../zmanim/day.js';
 import type { ZmanId } from '../zmanim/opinions.js';
 import type { DaySlot, Role, Zmanim, ZmanimDay } from '../zmanim/zmanim.js';
@@ -54,6 +57,8 @@ export interface HebrewDateSpan {
  * question. Ask your rav.
  */
 export function hebrewDateSpanAt(instant: Date, location: DayLocation, options: ZmanimOptions = {}): HebrewDateSpan {
+  checkOptions('hebrewDateSpanAt', options, ZMANIM_OPTION_KEYS);
+  checkLocation(location);
   instant = instantArg(instant, 'hebrewDateSpanAt');
   const z = zmanimFor(location, options);
   const date = z.hebrewDateAt(instant);
@@ -71,6 +76,7 @@ export function hebrewDateSpanAt(instant: Date, location: DayLocation, options: 
 
 /** A fast and where an instant stands in it (see {@link fastAt}). */
 export interface FastAt {
+  /** The fast's holiday event (its id, names and flags): `fast.flags.fast` is `'major'` for Yom Kippur and Tisha B'Av and `'minor'` for the others. */
   readonly fast: HolidayEvent;
   /** The Hebrew date of the fast. */
   readonly date: HebrewDate;
@@ -78,6 +84,8 @@ export interface FastAt {
   readonly begins: Zman;
   /** As {@link fastTimes}: the `fastEnds` opinion. */
   readonly ends: Zman;
+  /** True for a fast that begins the evening before (Yom Kippur, Tisha B'Av), false for a minor fast. */
+  readonly beginsEvening: boolean;
   /**
    * From `begins` until `ends` (exact times): true; before or after: false; null where the answer
    * needs a time that does not occur. Where `ends` does not occur (no nightfall far north), true
@@ -95,6 +103,8 @@ export interface FastAt {
  * `begins` and `ends` to tell "ahead" from "over".
  */
 export function fastAt(instant: Date, location: DayLocation, options: ZmanimOptions = {}): FastAt | null {
+  checkOptions('fastAt', options, ZMANIM_OPTION_KEYS);
+  checkLocation(location);
   instant = instantArg(instant, 'fastAt');
   const t = instant.getTime();
   // The Hebrew dates whose daytimes are the place's civil today and civil tomorrow. The day
@@ -121,13 +131,13 @@ export function fastAt(instant: Date, location: DayLocation, options: ZmanimOpti
   const found: FastAt[] = [];
   for (const date of dates) {
     const f = fastTimes(date, location, options);
-    if (f) found.push(Object.freeze({ fast: f.fast, date, begins: f.begins, ends: f.ends, inProgress: state(date, f.begins, f.ends) }));
+    if (f) found.push(Object.freeze({ fast: f.fast, date, begins: f.begins, ends: f.ends, beginsEvening: f.beginsEvening, inProgress: state(date, f.begins, f.ends) }));
   }
   // Yesterday's fast, where it may still be on: its end falls after local midnight here (far north
   // in summer), or its end does not occur, or its start is unknown.
   const yesterday = fastTimes(today.prev(), location, options);
   if (yesterday && state(today.prev(), yesterday.begins, yesterday.ends) !== false) {
-    found.unshift(Object.freeze({ fast: yesterday.fast, date: today.prev(), begins: yesterday.begins, ends: yesterday.ends, inProgress: state(today.prev(), yesterday.begins, yesterday.ends) }));
+    found.unshift(Object.freeze({ fast: yesterday.fast, date: today.prev(), begins: yesterday.begins, ends: yesterday.ends, beginsEvening: yesterday.beginsEvening, inProgress: state(today.prev(), yesterday.begins, yesterday.ends) }));
   }
   const notBegun = found.filter((f) => f.begins.exact !== null && f.begins.exact.getTime() > t);
   return (
@@ -233,6 +243,8 @@ const MOTZAEI_SHABBOS_CUSTOM = { opinion: 'On Motzaei Shabbos after Shabbos ends
  * Motzaei Shabbos affects the count are the caller's choice. Ask your rav.
  */
 export function nightOf(date: HebrewDate, location: DayLocation, options: ZmanimOptions = {}): Night {
+  checkOptions('nightOf', options, ZMANIM_OPTION_KEYS);
+  checkLocation(location);
   date = hebrewDateArg(date, 'nightOf');
   const z = zmanimFor(location, options);
   const eve = date.prev();
@@ -280,6 +292,8 @@ function omerFromOf(omer: number | null, tzeis: Zman, ends: Zman | null, rule: '
  * sunrise, do not occur. Cheaper than {@link nowInfo}, for asking often.
  */
 export function nightAt(instant: Date, location: DayLocation, options: ZmanimOptions = {}): Night | null {
+  checkOptions('nightAt', options, ZMANIM_OPTION_KEYS);
+  checkLocation(location);
   instant = instantArg(instant, 'nightAt');
   const t = instant.getTime();
   const today = HebrewDate.fromCivil(civilDateAt(t, location.timeZone));
@@ -350,6 +364,8 @@ export interface KiddushLevanaAt {
  * Throws a RangeError if the month would be Tishrei of year 10000, past the last supported date.
  */
 export function kiddushLevanaAt(instant: Date, location: DayLocation, options: ZmanimOptions = {}): KiddushLevanaAt {
+  checkOptions('kiddushLevanaAt', options, ZMANIM_OPTION_KEYS);
+  checkLocation(location);
   instant = instantArg(instant, 'kiddushLevanaAt');
   const t = instant.getTime();
   const here = zmanimFor(location, options).hebrewDateAt(instant);
@@ -440,6 +456,8 @@ export function timesBetween(
   location: DayLocation,
   options: ZmanimOptions & { readonly which?: DaySlot | Role | ZmanId | readonly (DaySlot | Role | ZmanId)[] } = {},
 ): readonly DatedZman[] {
+  checkOptions('timesBetween', options, [...ZMANIM_OPTION_KEYS, 'which']);
+  checkLocation(location);
   from = instantArg(from, 'timesBetween');
   to = instantArg(to, 'timesBetween');
   const { which, ...zopts } = options;
@@ -505,10 +523,10 @@ export interface MelachaRunDay {
   /** Every event of the day (Yom Tov, Rosh Chodesh, Chanukah, ...), by the options. */
   readonly events: readonly HolidayEvent[];
   /**
-   * The candles that begin this day, lit the evening before, as the day view gives them: before
-   * sunset (`candle-lighting`, by the caller's minutes or the place's custom), or after nightfall
+   * The custom's time to light that evening, as the day view gives it: before sunset
+   * (`candle-lighting`, by the caller's minutes or the place's custom), or after nightfall
    * from an existing flame for a Yom Tov after Shabbos or after Yom Tov
-   * (`candle-lighting-second-night`).
+   * (`candle-lighting-second-night`). They do not begin the run: it begins at `begins`.
    */
   readonly candles: Zman;
 }
@@ -533,15 +551,18 @@ export interface MelachaRun {
    * "Shabbos and Yom Tov end tomorrow night".
    */
   readonly kinds: readonly ('shabbos' | 'yom-tov' | 'yom-kippur')[];
-  /** `days[0].candles`. */
+  /** When melacha begins: the shkiah of the eve (`sunset`, the sunset candle lighting is counted from), or `days[0].candles` where those are the second-night candles lit after nightfall. Candle lighting is the custom's time to light and is on `days[0].candles`; tosefes Shabbos and accepting Shabbos by lighting or in shul are personal and not known to Luach. A default, not a ruling. A shown `time` is rounded down (a start), so it can be up to a minute before the exact instant: compare with the clock using `exact`. */
   readonly begins: Zman;
-  /** The end, on the evening of the last day: the `havdala` opinion (`havdala`, or `shabbos-ends-no-havdala` before Tisha B'Av postponed). `time` is null where it does not occur. */
+  /** The end, on the evening of the last day: the `havdala` opinion (`havdala`, or `shabbos-ends-no-havdala` before Tisha B'Av postponed). `time` is null where it does not occur. A shown `time` is rounded, so compare with the clock using `exact`. */
   readonly ends: Zman;
 }
 
 /**
  * The run of consecutive days on which melacha is forbidden that is in progress at `instant`, or
- * else the next to begin. A run whose `ends` does not occur stays the current run until the end
+ * else the next to begin. Melacha is forbidden from shkiah (`begins`), the sunset on the eve: Luach's
+ * default, not a ruling. Candle lighting is the custom's time to light (`days[].candles`) and does not
+ * change `begins`; tosefes Shabbos, and accepting Shabbos by lighting or in shul, are personal and not
+ * known to Luach. A run whose `ends` does not occur stays the current run until the end
  * of the civil day after its last day (where a havdala time at that latitude would fall), with
  * `inProgress` null after the last day's sunset; Luach gives no time at which it ends. A caller who
  * sets `highLatitudeFallback` gets that rule's time instead, marked in `Zman.fallback`. Israel or
@@ -549,6 +570,8 @@ export interface MelachaRun {
  * after 29 Elul 9999.
  */
 export function melachaRunAt(instant: Date, location: DayLocation, options: ZmanimOptions = {}): MelachaRun {
+  checkOptions('melachaRunAt', options, ZMANIM_OPTION_KEYS);
+  checkLocation(location);
   instant = instantArg(instant, 'melachaRunAt');
   const tz = location.timeZone;
   const t = instant.getTime();
@@ -557,12 +580,9 @@ export function melachaRunAt(instant: Date, location: DayLocation, options: Zman
   const hebrew = (k: number): HebrewDate => HebrewDate.fromCivil(daysToCivil(k));
   // Shabbos, or a day on which the holidays forbid melacha: the same as isMelachaForbiddenAt.
   // A day past 29 Elul 9999 cannot be built and throws a RangeError, which is the answer.
-  const holy = (k: number): boolean => {
-    const d = hebrew(k);
-    return d.isShabbos || holidaysOn(d, hopts).some((e) => e.flags.melachaForbidden);
-  };
+  const holy = (k: number): boolean => isHolyDay(hebrew(k), hopts);
   // Where to look. A run that is current at `instant` began at most on the civil day after it
-  // (its candles are lit the evening before, or after midnight at high latitudes) and ended no
+  // (its shkiah is the evening before, or after midnight at high latitudes) and ended no
   // earlier than two civil days before (a havdala time can fall after midnight): start two days
   // back, and back up while the day before is also holy so that the run is whole. Shabbos
   // comes every seven days, so a run begins within the next seven; one more is a margin.
@@ -595,12 +615,13 @@ export function melachaRunAt(instant: Date, location: DayLocation, options: Zman
       throw new Error(`No end for the evening of ${lastDay.toString()}: this is a bug in Luach`);
     }
     // The exact times, as the other states compare (the displayed minute is rounded on the safe side).
-    const begins = days[0]!.candles;
+    // Melacha is forbidden from the eve's shkiah; second-night candles, lit after nightfall, find it already in progress.
+    const begins = beginsFrom(days[0]!.candles, shkiahOf(z, eve));
     const B = begins.exact?.getTime() ?? null;
     const E = ends.exact?.getTime() ?? null;
     const S = lastDaySunset(z, lastDay)?.getTime() ?? null;
-    // The run is "current" from its candles, or from the start of the eve's civil day where they
-    // do not occur, to its end, or to the end of the civil day after its last day where that
+    // The run is "current" from its shkiah, or from the start of the eve's civil day where it does not
+    // occur, to its end, or to the end of the civil day after its last day where that
     // does not occur. The run asked for is the first whose window has not closed at `instant`.
     // Without a sunset on the last day the end of the day is in doubt: the run stays current until
     // that civil day has ended, when both the havdala time (where it occurs) and the civil day
@@ -617,7 +638,7 @@ export function melachaRunAt(instant: Date, location: DayLocation, options: Zman
     const inProgress = started === false || notEnded === false ? false : started === true && notEnded === true ? true : null;
     const kinds: ('shabbos' | 'yom-tov' | 'yom-kippur')[] = [];
     if (days.some((d) => d.shabbos)) kinds.push('shabbos');
-    if (days.some((d) => d.events.some((e) => e.flags.melachaForbidden && e.id !== 'yom-kippur'))) kinds.push('yom-tov');
+    if (days.some((d) => isYomTovNotKippur(d.events))) kinds.push('yom-tov');
     if (days.some((d) => d.events.some((e) => e.id === 'yom-kippur'))) kinds.push('yom-kippur');
     return Object.freeze({
       inProgress,
@@ -660,6 +681,8 @@ export interface DayPartAt {
  * at-instant functions do. Ask your rav.
  */
 export function dayPartAt(instant: Date, location: DayLocation, options: ZmanimOptions = {}): DayPartAt {
+  checkOptions('dayPartAt', options, ZMANIM_OPTION_KEYS);
+  checkLocation(location);
   instant = instantArg(instant, 'dayPartAt');
   const t = instant.getTime();
   const z = zmanimFor(location, options);
@@ -687,10 +710,19 @@ export function dayPartAt(instant: Date, location: DayLocation, options: ZmanimO
   return result(r !== null && s !== null ? 'day' : null, today, x, civil);
 }
 
+/**
+ * When melacha begins on an eve: its shkiah, or the eve's candles where they are the second-night
+ * candles (lit after nightfall). Where the eve has no shkiah (the sun does not set), the candles
+ * are the existing answer: they need a sunset too, so they say the same.
+ */
+function beginsFrom(candles: Zman, shkiah: Zman): Zman {
+  return candles.id === 'candle-lighting-second-night' || shkiah.exact === null ? candles : shkiah;
+}
+
 /** One event and when it is in force (see {@link eventsAt}). */
 export interface EventAt {
   readonly event: HolidayEvent;
-  /** When it comes into force: for Yom Tov its candles; for a fast its start; for Isru Chag the end of the Yom Tov before; else the `dayBoundary` that begins its date. */
+  /** When it comes into force: for Yom Tov the shkiah that begins it (or the second-night candles, lit after nightfall); for a fast its start; for Isru Chag the end of the Yom Tov before; else the `dayBoundary` that begins its date. */
   readonly from: Zman;
   /** When it ends: for Yom Tov the end of the day's holiness (havdala), or the `dayBoundary` when another holy day follows; for a fast its end; else the `dayBoundary` that ends its date. */
   readonly until: Zman;
@@ -705,7 +737,7 @@ export interface EventsAt {
   /**
    * The events of `date`, always, each with its state; before them those of the date before that are
    * still in force (a Yom Tov until its havdala, a fast until its end), and after them those of the
-   * next date already in force (a Yom Tov from its candles).
+   * next date already in force (a Yom Tov from its shkiah).
    */
   readonly events: readonly EventAt[];
 }
@@ -713,12 +745,14 @@ export interface EventsAt {
 /**
  * The events in force at `instant`: the events of the Hebrew date now, plus any whose observance is
  * still running past the date's boundary (Yom Kippur until its fast ends, a Yom Tov until its
- * havdala) or has already begun before it (a Yom Tov from its candles). Isru Chag comes into force
+ * havdala) or has already begun before it (a Yom Tov from its shkiah). Isru Chag comes into force
  * only when the Yom Tov before it ends. Each event says from when until when, by the person's
  * opinions, and whether it is in force at the instant (`inProgress`). Israel or the diaspora as in
  * {@link isMelachaForbiddenAt}.
  */
 export function eventsAt(instant: Date, location: DayLocation, options: ZmanimOptions = {}): EventsAt {
+  checkOptions('eventsAt', options, ZMANIM_OPTION_KEYS);
+  checkLocation(location);
   instant = instantArg(instant, 'eventsAt');
   const t = instant.getTime();
   const hopts = { ...options, israel: israelFor(options.israel, location) };
@@ -742,7 +776,10 @@ export function eventsAt(instant: Date, location: DayLocation, options: ZmanimOp
         from = fast!.begins;
         until = fast!.ends;
       } else if (event.flags.melachaForbidden) {
-        from = eveningOf(h.prev(), location, options).candles ?? boundary(h.prev());
+        const lit = eveningOf(h.prev(), location, options).candles;
+        // The evening between two holy days is one run: the day before ends at its `dayBoundary`
+        // and this day is in force from that same instant, not from the second-night candles.
+        from = lit === null || isHolyDay(h.prev(), hopts) ? boundary(h.prev()) : beginsFrom(lit, shkiahOf(z, h.prev()));
         evening ??= eveningOf(h, location, options);
         until = evening.havdala ?? evening.shabbosEnds ?? boundary(h);
       } else if (event.flags.isruChag) {

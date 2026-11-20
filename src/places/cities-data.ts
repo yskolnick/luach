@@ -56,6 +56,8 @@ export const CITY_ROWS: readonly CityRow[] = [
   ["akko", "Akko (Acre)", "עכו", 32.9281, 35.0765, 8, "Asia/Jerusalem", "IL", ["Acco", "Acre", "Ako"], 295721],
   ["nahariya", "Nahariya", "נהריה", 33.0089, 35.0981, 15, "Asia/Jerusalem", "IL", ["Naharia", "Nahariyya"], 294117],
   ["immanuel", "Immanuel", "עמנואל", 32.1608, 35.1361, 404, "Asia/Jerusalem", "PS", ["'Immanu'el", "Emanuel", "Emmanuel", "Imanuel", "‘Immanu‘el"], 283610],
+  ["beitar-illit", "Beitar Illit", "ביתר עילית", 31.7, 35.1167, 675, "Asia/Jerusalem", "PS", ["Beitar Ilit", "Betar Illit"], 284375],
+  ["meron", "Meron", "מירון", 32.9864, 35.4399, 653, "Asia/Jerusalem", "IL", ["Miron"], 294258],
   ["brooklyn", "Brooklyn", "ברוקלין", 40.6501, -73.9496, 15, "America/New_York", "US", ["Crown Heights", "Flatbush", "Williamsburg"], 5110302],
   ["borough-park", "Borough Park", "בורו פארק", 40.634, -73.9968, 20, "America/New_York", "US", ["Boro Park", "Boropark"], 5109790],
   ["queens", "Queens", "קווינס", 40.6815, -73.8365, 12, "America/New_York", "US", ["Forest Hills", "Kew Gardens Hills"], 5133273],

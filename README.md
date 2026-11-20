@@ -110,7 +110,7 @@ const now = nowInfo(new Date('2026-10-23T15:00:00Z'), getPlace('jerusalem')!, { 
 now.clock.time;              // "18:00:00": the wall clock in Jerusalem
 now.hebrewDate.formatted;    // "13 Heshvan 5787": already Shabbos, though the clock says Friday
 now.melacha.inProgress;      // true
-now.melacha.begins.local;    // "17:18": the candles
+now.melacha.begins.local;    // "17:58": shkiah, when melacha is forbidden
 now.melacha.ends.local;      // "18:35": havdala
 now.validUntil;              // "2026-10-23T15:35:05.220Z": ask again then
 ```
@@ -155,7 +155,8 @@ saved, and the command line takes the same JSON as `--names`. See [Names](docs/g
 
 The main `luach` import holds no big table. The city table is `luach/places` (`builtInPlaces`,
 `getPlace`, `searchPlaces`, `nearestPlace`), every city of 15,000+ people is `luach/places-full`,
-and the learning cycles are `luach/learning`. The day view includes the learning only when you
+the learning cycles are `luach/learning`, and the dailies (Tehillim by the
+week, Shnayim Mikra) are `luach/dailies`. The day view includes the learning only when you
 pass it: `dayInfo(date, { location, learning: dayLearning })`, with `dayLearning` from
 `luach/learning`.
 
@@ -170,7 +171,8 @@ pass it: `dayInfo(date, { location, learning: dayLearning })`, with `dayLearning
 ## Documentation
 
 The [`docs/guide/`](docs/guide/) folder holds the guides (dates, holidays, parsha, learning,
-zmanim, at this instant, places, outputs, names, right-to-left text, React Native), and
+zmanim, at this instant, places, outputs, names, right-to-left text, React Native, migrating
+from 0.2), and
 [`docs/halacha/zmanim.md`](docs/halacha/zmanim.md) lists every zman with its source. Runnable
 examples are in [`examples/`](examples/).
 

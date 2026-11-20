@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/yskolnick/luach/v0.5.0/schema/day.schema.json",
+  "$id": "https://raw.githubusercontent.com/yskolnick/luach/v0.5.5/schema/day.schema.json",
   "title": "Luach day",
   "description": "Everything about one day, as returned by dayInfo() in the luach package. Times are ISO 8601 UTC instants with a local HH:MM in the location's zone. Every zman names its opinion and source; defaults are not rulings. Fields may be added in later versions; a reader should ignore fields it does not know.",
   "type": "object",
@@ -22,7 +22,7 @@
     "parsha",
     "haftara",
     "omer",
-    "tefillah",
+    "tefilla",
     "learning",
     "learningDetail",
     "location",
@@ -46,6 +46,10 @@
       "properties": {
         "id": {
           "type": "string"
+        },
+        "name": {
+          "type": "string",
+          "description": "The zman's name in the caller's locale. Not on the fallback times inside a zman."
         },
         "time": {
           "type": [
@@ -75,8 +79,8 @@
             "string",
             "null"
           ],
-          "pattern": "^[+-][0-9]{2}:[0-9]{2}$",
-          "description": "The location's offset from UTC at this time (ISO 8601, e.g. -05:00), so local and offset give the full local time; null with no time."
+          "pattern": "^[+-][0-9]{2}:[0-9]{2}(:[0-9]{2})?$",
+          "description": "The location's offset from UTC at this time (ISO 8601, e.g. -05:00; with :SS, as +02:20:54, only for the local mean time of old dates), so local and offset give the full local time; null with no time."
         },
         "timeZone": {
           "type": "string",
@@ -105,11 +109,17 @@
             "no-sunset",
             "depends-on-missing-zman",
             "not-applicable-today",
+            "date-skipped-in-zone",
             "requires-terrain-data"
           ]
         },
         "fallback": {
           "type": "string"
+        },
+        "date": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+          "description": "Only with fallback: the civil date at the location of this time, which a fallback can place on another day than the one asked about (local has no date)."
         },
         "kind": {
           "enum": [
@@ -135,6 +145,36 @@
             },
             "nearestDay": {
               "$ref": "#/$defs/zman"
+            }
+          }
+        },
+        "countedFrom": {
+          "type": "object",
+          "description": "For a time a fixed number of minutes from sunrise or sunset: which sunrise or sunset (id, e.g. sunset-sea-level for candle lighting with elevation on), the minutes (negative: before it) and its time. Show this one beside the time, not the day's own sunset.",
+          "required": [
+            "id",
+            "minutes",
+            "time",
+            "local"
+          ],
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "minutes": {
+              "type": "number"
+            },
+            "time": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "local": {
+              "type": [
+                "string",
+                "null"
+              ]
             }
           }
         }
@@ -242,7 +282,7 @@
   "properties": {
     "$schema": {
       "type": "string",
-      "const": "https://raw.githubusercontent.com/yskolnick/luach/v0.5.0/schema/day.schema.json",
+      "const": "https://raw.githubusercontent.com/yskolnick/luach/v0.5.5/schema/day.schema.json",
       "description": "The $id of this schema."
     },
     "date": {
@@ -487,7 +527,7 @@
         }
       }
     },
-    "tefillah": {
+    "tefilla": {
       "type": "object",
       "required": [
         "tachanun",
@@ -527,9 +567,8 @@
             "yerushalmiYomi",
             "amudYomi",
             "mishnaYomis",
-            "rambamOneChapter",
-            "rambamThreeChapters",
-            "nachYomi"
+            "nachYomi",
+            "dafHaShavua"
           ],
           "properties": {
             "dafYomi": {
@@ -556,19 +595,13 @@
                 "null"
               ]
             },
-            "rambamOneChapter": {
-              "type": [
-                "string",
-                "null"
-              ]
-            },
-            "rambamThreeChapters": {
-              "type": [
-                "string",
-                "null"
-              ]
-            },
             "nachYomi": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "dafHaShavua": {
               "type": [
                 "string",
                 "null"
@@ -580,7 +613,7 @@
           "type": "null"
         }
       ],
-      "description": "The daily learning (daf yomi, Yerushalmi, amud yomi, mishna yomis, Rambam, Nach yomi), or null. It is included only when the caller passes the learning plug-in: dayInfo(date, { learning: dayLearning }), with dayLearning from 'luach/learning'."
+      "description": "The daily learning (daf yomi, Yerushalmi, amud yomi, mishna yomis, Nach yomi, and the week's daf hashavua), or null. It is included only when the caller passes the learning plug-in: dayInfo(date, { learning: dayLearning }), with dayLearning from 'luach/learning'."
     },
     "learningDetail": {
       "anyOf": [
@@ -591,9 +624,8 @@
             "yerushalmiYomi",
             "amudYomi",
             "mishnaYomis",
-            "rambamOneChapter",
-            "rambamThreeChapters",
-            "nachYomi"
+            "nachYomi",
+            "dafHaShavua"
           ],
           "properties": {
             "dafYomi": {
@@ -608,13 +640,10 @@
             "mishnaYomis": {
               "$ref": "#/$defs/learningPortion"
             },
-            "rambamOneChapter": {
-              "$ref": "#/$defs/learningPortion"
-            },
-            "rambamThreeChapters": {
-              "$ref": "#/$defs/learningPortion"
-            },
             "nachYomi": {
+              "$ref": "#/$defs/learningPortion"
+            },
+            "dafHaShavua": {
               "$ref": "#/$defs/learningPortion"
             }
           }
@@ -703,12 +732,17 @@
       ],
       "required": [
         "id",
+        "beginsEvening",
         "begins",
         "ends"
       ],
       "properties": {
         "id": {
           "type": "string"
+        },
+        "beginsEvening": {
+          "type": "boolean",
+          "description": "True for a fast that begins the evening before, at sunset (Yom Kippur, Tisha B'Av); false for a minor fast, which begins at dawn."
         },
         "begins": {
           "$ref": "#/$defs/zman"

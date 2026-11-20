@@ -23,20 +23,26 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           ref: ${{ inputs.ref }}
       - name: The version is on npm
-        run: '[ "$(npm view "luach@${{ inputs.version }}" version)" = "${{ inputs.version }}" ]'
+        env:
+          VERSION: ${{ inputs.version }}
+        run: '[ "$(npm view "luach@$VERSION" version)" = "$VERSION" ]'
       - name: Release notes from CHANGELOG.md
+        env:
+          VERSION: ${{ inputs.version }}
         run: |
-          awk -v v="## ${{ inputs.version }} " 'index($0, v) == 1 { f = 1; next } /^## / { if (f) exit } f' CHANGELOG.md > notes.md
+          case "$VERSION" in *[!0-9A-Za-z.+-]*|'') echo "not a version: $VERSION"; exit 1;; esac
+          awk -v v="## $VERSION " 'index($0, v) == 1 { f = 1; next } /^## / { if (f) exit } f' CHANGELOG.md > notes.md
           [ -s notes.md ]
       - name: Tag and release
         env:
           GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version }}
         run: |
-          gh release create "v${{ inputs.version }}" \
+          gh release create "v$VERSION" \
             --target "$(git rev-parse HEAD)" \
-            --title "${{ inputs.version }}" \
+            --title "$VERSION" \
             --notes-file notes.md

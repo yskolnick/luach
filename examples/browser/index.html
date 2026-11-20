@@ -29,7 +29,11 @@
         const list = document.getElementById('zmanim');
         list.replaceChildren(...day.slots().map((zman) => {
           const li = document.createElement('li');
-          li.innerHTML = `<span>${zmanLabel(zman.id, ashkenazi)}</span><b>${zman.localTime() ?? '—'}</b>`;
+          const label = document.createElement('span');
+          label.textContent = zmanLabel(zman.id, ashkenazi);
+          const time = document.createElement('b');
+          time.textContent = zman.localTime() ?? '—';
+          li.append(label, time);
           li.title = zman.explain().text + ' ' + zman.source;
           return li;
         }));

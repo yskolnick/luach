@@ -17,3 +17,7 @@ Haftaros are references only (no text), for Ashkenaz, Sephardi, Chabad and Teima
 (`null` where no reliable source was found). Special haftaros (the four parshiyos, Rosh
 Chodesh, Machar Chodesh, Chanukah, the three and the seven) follow the order of
 precedence documented on `haftaraFor`.
+
+The `reference` is in English book names (`Isaiah 40:27-41:16`) whatever the `locale` of `dayInfo`:
+Luach has no table of the books' names in Hebrew or in the other locales, so the day view's
+`haftara.reference` is not localized. Use `key` for your own table.

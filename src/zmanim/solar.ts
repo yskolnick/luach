@@ -18,12 +18,12 @@ const cos = (d: number) => Math.cos(d * RAD);
 const tan = (d: number) => Math.tan(d * RAD);
 
 /** Julian centuries since J2000.0 for an instant. */
-export function julianCentury(ms: number): number {
+function julianCentury(ms: number): number {
   return (ms / MS_PER_DAY + 2440587.5 - 2451545.0) / 36525;
 }
 
 /** The sun's declination (degrees) and the equation of time (minutes) at an instant. */
-export function solarPosition(ms: number): { declination: number; equationOfTime: number } {
+function solarPosition(ms: number): { declination: number; equationOfTime: number } {
   const T = julianCentury(ms);
   const L0 = (((280.46646 + T * (36000.76983 + T * 0.0003032)) % 360) + 360) % 360;
   const M = 357.52911 + T * (35999.05029 - 0.0001537 * T);
@@ -112,7 +112,7 @@ export function solarAltitude(ms: number, latitude: number, longitude: number): 
 export const SUNRISE_ZENITH = 90 + 50 / 60;
 
 /** Mean radius of the earth in metres, used for the horizon dip from elevation (*as built*). */
-export const EARTH_RADIUS_M = 6_371_000;
+const EARTH_RADIUS_M = 6_371_000;
 
 /** How far the visible horizon dips below the geometric horizon for an observer `elevation` metres up (degrees). */
 export function horizonDip(elevation: number): number {

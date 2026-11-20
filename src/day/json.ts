@@ -21,6 +21,8 @@ export interface EventJson {
   /** When the event's day begins: `'sunset'` (the evening before), or `'dawn'` for a minor fast. */
   readonly begins: 'sunset' | 'dawn';
   readonly day?: number;
+  /** Purim Meshulash: the parts of the day, by id. */
+  readonly parts?: readonly string[];
   /** Rosh Chodesh, Shabbos Mevorchim, Yom Kippur Katan: the month concerned (Month number). */
   readonly month?: number;
   /** The Hebrew year of `month`. */
@@ -56,6 +58,7 @@ export function eventJson(e: HolidayEvent, locale: Locale): EventJson {
     begins: e.begins,
     ...(e.day !== undefined ? { day: e.day } : {}),
     ...(e.month !== undefined ? { month: e.month, monthYear: e.monthYear } : {}),
+    ...(e.parts ? { parts: e.parts } : {}),
     ...(e.candlesTonight !== undefined ? { candlesTonight: e.candlesTonight } : {}),
     ...(e.moved ? { moved: true } : {}),
   };

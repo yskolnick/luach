@@ -15,14 +15,32 @@
 // highLatitude=none|nearestDay|halfNight and locale=he|ashkenazi|sephardi|en|chabad|israeli|yi, and
 // names=<JSON object> to change names within the locale, e.g. names={"term.shabbos":"Shabbes"}. An unknown city, or
 // lat and lon without tz, is a 400 (Luach never guesses a time zone).
+// A parameter the endpoint does not read (a misspelt candleMinuts, say) is a 400 that names it.
+// This is an example, not a hardened service: it has no rate limiting and is one process, so keep
+// it on a home network or behind a reverse proxy with limits. See README.md.
 // /calendar.ics serves at most 400 days with a place and 5 years without; a longer range
 // gets a 400 Bad Request that says so.
 // Luach makes no network calls; this server only answers yours.
 import { createServer } from 'node:http';
-import { handle } from './handler.mjs';
+import { handle, errorResponse } from './handler.mjs';
 
-createServer((req, res) => {
-  const { status, type, body } = handle(req.url ?? '/');
-  res.writeHead(status, { 'content-type': type });
-  res.end(body);
-}).listen(Number(process.env.PORT ?? 8080));
+// No exception can leave this callback: a bad request is answered and the server keeps serving.
+const server = createServer((req, res) => {
+  let out;
+  try {
+    out = handle(req.url ?? '/');
+  } catch (e) {
+    out = errorResponse(e);
+  }
+  try {
+    res.writeHead(out.status, { ...out.headers, 'content-type': out.type });
+    res.end(out.body);
+  } catch {
+    res.destroy();
+  }
+});
+server.on('clientError', (_e, socket) => {
+  if (socket.writable) socket.end('HTTP/1.1 400 Bad Request\r\nConnection: close\r\n\r\n');
+  else socket.destroy();
+});
+server.listen(Number(process.env.PORT ?? 8080));

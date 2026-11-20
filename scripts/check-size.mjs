@@ -9,17 +9,18 @@ const BUDGETS = [
   { entry: 'dist/places/full.js', gzipKb: 1200 },
   { entry: 'dist/places/index.js', gzipKb: 12 },
   { entry: 'dist/learning/index.js', gzipKb: 12 },
+  { entry: 'dist/dailies/index.js', gzipKb: 10 },
   // The CLI loads the full city table and the learning cycles only when needed (dynamic imports), so they are left out.
   // 62: the option table and the checks on every date argument (about 2 KB) are worth their size.
-  { entry: 'dist/cli/cli.js', gzipKb: 62, external: ['../places/full.js', '../learning/index.js'] },
+  { entry: 'dist/cli/cli.js', gzipKb: 64, external: ['../places/places.js', '../places/full.js', '../learning/index.js'] },
 ];
 
 // Tree-shaking budgets: what an app pays for importing only part of Luach.
 const PARTIAL = [
   { name: 'HebrewDate + formatHebrewDate', code: "import { HebrewDate, formatHebrewDate } from './dist/index.js'; console.log(formatHebrewDate(HebrewDate.today()));", gzipKb: 8 },
   { name: 'Zmanim', code: "import { Zmanim } from './dist/index.js'; console.log(new Zmanim({ latitude: 0, longitude: 0, timeZone: 'UTC' }).on({ year: 2027, month: 1, day: 1 }).slot('sunrise'));", gzipKb: 20 },
-  { name: 'melachaRunAt', code: "import { melachaRunAt } from './dist/index.js'; console.log(melachaRunAt(new Date(0), { latitude: 0, longitude: 0, timeZone: 'UTC' }));", gzipKb: 23 },
-  { name: 'nowInfo', code: "import { nowInfo } from './dist/index.js'; console.log(nowInfo(new Date(0), { latitude: 0, longitude: 0, timeZone: 'UTC' }));", gzipKb: 39 },
+  { name: 'melachaRunAt', code: "import { melachaRunAt } from './dist/index.js'; console.log(melachaRunAt(new Date(0), { latitude: 0, longitude: 0, timeZone: 'UTC' }));", gzipKb: 25 },
+  { name: 'nowInfo', code: "import { nowInfo } from './dist/index.js'; console.log(nowInfo(new Date(0), { latitude: 0, longitude: 0, timeZone: 'UTC' }));", gzipKb: 45 },
   { name: 'holidaysForYear', code: "import { holidaysForYear } from './dist/index.js'; console.log(holidaysForYear(5787));", gzipKb: 25 },
 ];
 

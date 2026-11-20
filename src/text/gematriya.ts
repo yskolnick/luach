@@ -13,9 +13,9 @@
  */
 
 /** U+05F3 HEBREW PUNCTUATION GERESH. */
-export const GERESH = '׳';
+const GERESH = '׳';
 /** U+05F4 HEBREW PUNCTUATION GERSHAYIM. */
-export const GERSHAYIM = '״';
+const GERSHAYIM = '״';
 
 const UNITS = ['', 'א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט'];
 const TENS = ['', 'י', 'כ', 'ל', 'מ', 'נ', 'ס', 'ע', 'פ', 'צ'];

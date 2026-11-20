@@ -6,13 +6,15 @@
  * @packageDocumentation
  */
 
+import { checkOptions, ZMANIM_OPTION_KEYS } from '../util/options.js';
 import { HebrewDate } from '../calendar/hebrew-date.js';
 import { MAX_DAYS } from '../calendar/year.js';
 import { instantArg } from '../calendar/date-input.js';
 import { civilDateAt } from '../time/zone.js';
-import { holidaysOn } from '../holidays/holidays.js';
+import { holidaysOnUnchecked as holidaysOn } from '../holidays/holidays.js';
 import { israelFor } from '../places/israel.js';
 import { zmanimFor, type ZmanimOptions } from '../zmanim/day.js';
+import { checkLocation } from '../zmanim/calendar.js';
 import type { DayLocation } from '../zmanim/day-location.js';
 import type { Zman } from '../zmanim/zman.js';
 
@@ -72,6 +74,8 @@ const NEILAH = {
  * other at-instant functions do. Ask your rav.
  */
 export function tefillaAt(instant: Date, location: DayLocation, options: ZmanimOptions = {}): TefillaAt {
+  checkOptions('tefillaAt', options, ZMANIM_OPTION_KEYS);
+  checkLocation(location);
   instant = instantArg(instant, 'tefillaAt');
   const t = instant.getTime();
   const z = zmanimFor(location, options);

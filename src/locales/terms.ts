@@ -1,13 +1,14 @@
 /**
- * The everyday words: Shabbos, Havdala, candle lighting, the services, the Omer, and the words
- * of the day (today, tonight, tomorrow …).
+ * The everyday words: Shabbos, Havdala, candle lighting, the services, the Omer, the words of
+ * the day (today, tonight, tomorrow …), and the festivals as a whole (Rosh Hashana, Sukkos, Pesach,
+ * Shavuos, Chanukah), without the day numbers the holiday names carry.
  *
  * @packageDocumentation
  */
 
 import { he } from './he.js';
-import { lookupIn, type Locale } from './types.js';
-import { TERMS, TERM_FALLBACK } from './terms-data.js';
+import { lookupIn, STYLE_FALLBACK, type Locale } from './types.js';
+import { TERMS } from './terms-data.js';
 import { NAMES as ZMAN_NAMES } from '../zmanim/labels-data.js';
 
 /** The everyday words Luach has names for; the name is `term.<key>` in a locale's `names`. */
@@ -35,7 +36,12 @@ export type TermKey =
   | 'tomorrow-night'
   | 'night'
   | 'evening'
-  | 'afternoon';
+  | 'afternoon'
+  | 'rosh-hashana'
+  | 'sukkos'
+  | 'pesach'
+  | 'shavuos'
+  | 'chanukah';
 
 /**
  * The everyday word `key` in `locale` (default `he`).
@@ -66,7 +72,7 @@ export function wordName(key: Exclude<TermKey, 'havdala' | 'candle-lighting'>, l
     if (v !== undefined) return v;
   }
   for (let l: Locale | undefined = locale; l; l = l.fallback) {
-    for (let b: string | undefined = l.base; b; b = TERM_FALLBACK[b]) {
+    for (let b: string | undefined = l.base; b; b = STYLE_FALLBACK[b]) {
       const v = TERMS[b]?.[key];
       if (v !== undefined) return v;
     }

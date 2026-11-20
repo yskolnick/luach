@@ -6,6 +6,7 @@
  * @packageDocumentation
  */
 
+import { checkOptions, DAY_ENUMS, dayInfoKeys, HOLIDAY_KEYS as HOLIDAY_OPTION_KEYS, tefillaKeys } from '../util/options.js';
 import { deepFreeze } from '../util/freeze.js';
 import { israelFor } from '../places/israel.js';
 import { HebrewDate } from '../calendar/hebrew-date.js';
@@ -15,28 +16,34 @@ import { weekdayName } from '../text/format.js';
 import { he } from '../locales/he.js';
 import { wordName } from '../locales/terms.js';
 import type { Locale } from '../locales/types.js';
-import { holidaysOn } from '../holidays/holidays.js';
+import { forbidsMelacha, holidaysOnUnchecked as holidaysOn, isHolyDay, isYomTovNotKippur } from '../holidays/holidays.js';
 import type { HolidayOptions } from '../holidays/types.js';
 import { omerDay, omerSefirah, omerText, omerTextEnglish, type OmerNusach } from '../holidays/omer.js';
-import { tefillahOn, type TefillahDay, type TefillahOptions } from '../holidays/tefillah.js';
+import { tefillaOn, type TefillaDay, type TefillaOptions } from '../holidays/tefilla.js';
 import { parshaFor, parshaName, type ParshaId } from '../parsha/parsha.js';
 import { haftaraFor, type HaftaraMinhag } from '../parsha/haftara.js';
+import type { LearningCycleName } from '../learning/index.js';
 import type { DayLocation } from '../zmanim/day-location.js';
 import { eveningOf } from './evening.js';
 import { holidayName } from '../holidays/names.js';
 import { eventJson, hebrewDateJson, locationJson, type EventJson, type HebrewDateJson, type LocationJson } from './json.js';
-import { fastTimes, zmanimFor } from '../zmanim/day.js';
+import { fastTimesWith, zmanimFor } from '../zmanim/day.js';
+import type { Zmanim } from '../zmanim/zmanim.js';
 import { type ZmanId } from '../zmanim/opinions.js';
 import type { Zman } from '../zmanim/zman.js';
+import { zmanName } from '../zmanim/zmanim.js';
 import type { DaySlot, Opinions, ZmanimSettings } from '../zmanim/zmanim.js';
 import { hebrewOfDayArg } from '../calendar/date-input.js';
 
 /** `$id` of the JSON Schema for {@link DayInfo}. */
-export const DAY_INFO_SCHEMA_ID = 'https://raw.githubusercontent.com/yskolnick/luach/v0.5.0/schema/day.schema.json';
+export const DAY_INFO_SCHEMA_ID = 'https://raw.githubusercontent.com/yskolnick/luach/v0.5.5/schema/day.schema.json';
 
 export type { DayLocation };
 
 /** Options for {@link dayInfo}. */
+/** A zman's JSON, with `name`: its name in the caller's locale. */
+export type ZmanJson = ReturnType<Zman['toJSON']> & { readonly name: string };
+
 export interface DayInfoOptions extends ZmanimSettings {
   /** The user's opinions: the zmanim, havdala, the fast's start and end. Anything left out uses `Zmanim.defaults`. */
   opinions?: Opinions;
@@ -55,10 +62,12 @@ export interface DayInfoOptions extends ZmanimSettings {
   secondNightCandles?: ZmanId;
   /** The wording of `omer.text`, as `omerText`: `'ashkenaz'` (default, "…לעומר"), `'sefard'` ("…בעומר") or `'edot-hamizrach'`. */
   omerNusach?: OmerNusach;
+  /** A place that keeps Purim on 15 Adar; see `HolidayOptions.walledCity`. Default: `true` for a place with `walledCity`, else `false`. */
+  walledCity?: boolean;
   /** Holiday options (optional days). */
   holidays?: Omit<HolidayOptions, 'israel'>;
   /** Tefillah customs. */
-  tefillah?: Omit<TefillahOptions, 'israel'>;
+  tefilla?: Omit<TefillaOptions, 'israel'>;
   /**
    * Which zmanim to include: slots of the day, each by the user's opinion (`'shema'`), or
    * zman ids (`'sof-zman-shema-mga-72'`). Default: a common set (see {@link DEFAULT_DAY_ZMANIM});
@@ -97,10 +106,10 @@ export interface LearningDetail {
 }
 
 /** A day's learning as data, cycle by cycle (the same keys as {@link DayLearning}). */
-export type DayLearningDetail = Readonly<Record<string, LearningDetail | null>>;
+export type DayLearningDetail = Readonly<Record<LearningCycleName, LearningDetail | null>>;
 
 /** A day's learning, cycle by cycle: the name of the portion, or null when the cycle is not running that day. */
-export type DayLearning = Readonly<Record<string, string | null>>;
+export type DayLearning = Readonly<Record<LearningCycleName, string | null>>;
 
 /** The default zmanim in a day view: a widely used set, not a ruling. */
 export const DEFAULT_DAY_ZMANIM = /*#__PURE__*/ deepFreeze([
@@ -158,33 +167,45 @@ export interface DayInfo {
   readonly parsha: { readonly date: string; readonly ids: readonly ParshaId[] | null; readonly name: string | null; readonly holiday?: string } | null;
   readonly haftara: { readonly key: string; readonly reference: string | null } | null;
   readonly omer: { readonly day: number; readonly text: string; readonly textEnglish: string; readonly sefirah: string } | null;
-  readonly tefillah: TefillahDay;
+  readonly tefilla: TefillaDay;
   /** The learning of the day when `learning: dayLearning` was passed; otherwise null. */
   readonly learning: DayLearning | null;
   /** The same learning as data (cycle, day, tractate and daf) when the plug-in gives it; otherwise null. */
   readonly learningDetail: DayLearningDetail | null;
   readonly location: LocationJson | null;
-  readonly zmanim: readonly ReturnType<Zman['toJSON']>[];
-  readonly candleLighting: ReturnType<Zman['toJSON']> | null;
+  readonly zmanim: readonly ZmanJson[];
+  readonly candleLighting: ZmanJson | null;
   /**
    * Havdala tonight. Null on the Shabbos before Tisha B'Av postponed to Sunday (see
    * `shabbosEnds`); on that Sunday it is havdala over a cup when the fast ends (SA OC 556:1).
    */
-  readonly havdala: ReturnType<Zman['toJSON']> | null;
+  readonly havdala: ZmanJson | null;
   /**
    * When Shabbos ends on a Shabbos whose havdala is deferred (Tisha B'Av postponed to Sunday):
    * melacha is permitted from then after saying "Baruch HaMavdil bein kodesh lechol"; it is
    * not havdala. Otherwise null.
    */
-  readonly shabbosEnds: ReturnType<Zman['toJSON']> | null;
-  readonly fast: { readonly id: string; readonly begins: ReturnType<Zman['toJSON']>; readonly ends: ReturnType<Zman['toJSON']> } | null;
+  readonly shabbosEnds: ZmanJson | null;
+  /**
+   * The fast of this day, or `null`. `beginsEvening` is true for a fast that begins the evening
+   * before (Yom Kippur, Tisha B'Av), false for a minor fast, which begins at dawn.
+   */
+  readonly fast: { readonly id: string; readonly beginsEvening: boolean; readonly begins: ZmanJson; readonly ends: ZmanJson } | null;
   /** A fast that begins this evening at sunset (Yom Kippur, Tisha B'Av), or null. */
-  readonly fastBeginsTonight: { readonly id: string; readonly begins: ReturnType<Zman['toJSON']> } | null;
+  readonly fastBeginsTonight: { readonly id: string; readonly begins: ZmanJson } | null;
 }
 
 const DAY_SLOTS: readonly string[] = ['alos', 'misheyakir', 'sunrise', 'shema', 'tefilla', 'chatzos', 'minchaGedola', 'minchaKetana', 'plag', 'sunset', 'tzeis'];
 
-const HOLIDAY_KEYS = ['modernIsraeli', 'israeliCommemorations', 'behab', 'yomKippurKatan', 'yomKippurKatanOnFriday', 'yomKippurKatanCheshvan', 'shovavim', 'shabbosMevorchim', 'yizkor'] as const;
+const HOLIDAY_KEYS = ['modernIsraeli', 'israeliCommemorations', 'behab', 'yomKippurKatan', 'yomKippurKatanOnFriday', 'yomKippurKatanCheshvan', 'shovavim', 'shabbosMevorchim', 'yizkor', 'walledCity'] as const;
+
+function checkDayOptions(fn: string, options: DayInfoOptions): void {
+  checkOptions(fn, options, dayInfoKeys(), DAY_ENUMS);
+  if (options && typeof options === 'object') {
+    checkOptions(`${fn} (holidays)`, options.holidays, HOLIDAY_OPTION_KEYS, DAY_ENUMS);
+    checkOptions(`${fn} (tefilla)`, options.tefilla, tefillaKeys(), DAY_ENUMS);
+  }
+}
 
 /**
  * Everything about `date`: a civil date, or a Hebrew date's daytime. A plain
@@ -193,7 +214,13 @@ const HOLIDAY_KEYS = ['modernIsraeli', 'israeliCommemorations', 'behab', 'yomKip
  * library is read as the same Hebrew date.
  */
 export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = {}): DayInfo {
-  const h = hebrewOfDayArg(date, 'dayInfo');
+  checkDayOptions('dayInfo', options);
+  return dayInfoWith(hebrewOfDayArg(date, 'dayInfo'), options, {});
+}
+
+/** {@link dayInfo} for a Hebrew date, with the `Zmanim` of a range already built (internal). */
+function dayInfoWith(h: HebrewDate, options: DayInfoOptions, shared: { z?: Zmanim }): DayInfo {
+  if ('location' in options && (options.location === undefined || options.location === null)) throw new TypeError('location is undefined (getPlace returns undefined for an unknown id)');
   const civil = h.toCivil();
   const locale = options.locale ?? he;
   const israel = israelFor(options.israel, options.location);
@@ -203,6 +230,8 @@ export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = 
   const flat: Record<string, unknown> = {};
   for (const k of HOLIDAY_KEYS) if ((options as Record<string, unknown>)[k] !== undefined) flat[k] = (options as Record<string, unknown>)[k];
   const hopts: HolidayOptions = { ...flat, ...options.holidays, israel };
+  // Purim follows the place: an explicit choice wins, else a place that keeps 15 Adar does.
+  hopts.walledCity ??= !!options.location?.walledCity;
   const events = holidaysOn(h, hopts);
   const reading = parshaFor(h, { israel });
   const haft = haftaraFor(h, { israel, minhag: options.minhag ?? 'ashkenaz' });
@@ -218,15 +247,15 @@ export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = 
     const nev = holidaysOn(n, hopts);
     if (n.isShabbos) followedBy.push('shabbos');
     if (nev.some((e) => e.id === 'yom-kippur')) followedBy.push('yom-kippur');
-    else if (nev.some((e) => e.flags.melachaForbidden)) followedBy.push('yom-tov');
+    else if (forbidsMelacha(nev)) followedBy.push('yom-tov');
   }
   // The Yom Tov days (not Yom Kippur, on which nothing is cooked) that follow this day, and whether
   // one is a Friday. After 29 Elul 9999 comes Rosh Hashana 10000, two days, on the next weekdays.
   let eruvTavshilin = false;
-  if (!h.isShabbos && !events.some((e) => e.flags.melachaForbidden)) {
+  if (!isHolyDay(h, hopts, events)) {
     if (h.epochDays >= MAX_DAYS) eruvTavshilin = h.dayOfWeek === 3 || h.dayOfWeek === 4;
     else {
-      const yomTov = (d: HebrewDate) => holidaysOn(d, hopts).some((e) => e.flags.melachaForbidden && e.id !== 'yom-kippur');
+      const yomTov = (d: HebrewDate) => isYomTovNotKippur(holidaysOn(d, hopts));
       for (let d = h.next(); yomTov(d); d = d.next()) {
         if (d.dayOfWeek === 5) { eruvTavshilin = true; break; }
         if (d.epochDays >= MAX_DAYS) break;
@@ -237,7 +266,7 @@ export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = 
   // Kippur is named as itself, with the name of the day's own event, and is not also the eve of a
   // Yom Tov.
   const erev: { id: 'erev-shabbos' | 'erev-yom-tov' | 'erev-yom-kippur'; name: string }[] = [];
-  if (!h.isShabbos && !events.some((e) => e.flags.melachaForbidden)) {
+  if (!isHolyDay(h, hopts, events)) {
     // A day followed by Yom Kippur is 9 Tishrei, which always has its erev-yom-kippur event.
     for (const f of followedBy) {
       erev.push(f === 'yom-kippur'
@@ -245,28 +274,29 @@ export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = 
         : { id: `erev-${f}`, name: wordName(`erev-${f}`, locale) });
     }
   }
+  const zj = (zm: Zman): ZmanJson => ({ ...zm.toJSON(), name: zmanName(zm.id as ZmanId, locale).full });
   const style = locale.base === 'he' ? 'he' : locale.base === 'sephardi' ? 'sephardi' : 'ashkenazi';
 
-  let zmanim: ReturnType<Zman['toJSON']>[] = [];
-  let candleLighting: ReturnType<Zman['toJSON']> | null = null;
-  let havdala: ReturnType<Zman['toJSON']> | null = null;
-  let shabbosEnds: ReturnType<Zman['toJSON']> | null = null;
+  let zmanim: ZmanJson[] = [];
+  let candleLighting: ZmanJson | null = null;
+  let havdala: ZmanJson | null = null;
+  let shabbosEnds: ZmanJson | null = null;
   let fast: DayInfo['fast'] = null;
   let fastBeginsTonight: DayInfo['fastBeginsTonight'] = null;
   if (options.location) {
     const zopts = { ...options, ...hopts };
-    const z = zmanimFor(options.location, zopts);
+    const z = (shared.z ??= zmanimFor(options.location, zopts));
     const day = z.on(h);
     const names = options.zmanim ?? DEFAULT_DAY_ZMANIM;
-    zmanim = names.map((n) => (DAY_SLOTS.includes(n) ? day.slot(n as DaySlot) : day.get(n as ZmanId)).toJSON());
-    const ft = fastTimes(h, options.location, zopts);
-    if (ft) fast = { id: ft.fast.id, begins: ft.begins.toJSON(), ends: ft.ends.toJSON() };
-    const next = h.epochDays < MAX_DAYS ? fastTimes(h.next(), options.location, zopts) : null;
-    if (next && next.fast.flags.fast === 'major') fastBeginsTonight = { id: next.fast.id, begins: next.begins.toJSON() };
-    const evening = eveningOf(h, options.location, zopts);
-    candleLighting = evening.candles?.toJSON() ?? null;
-    havdala = evening.havdala?.toJSON() ?? null;
-    shabbosEnds = evening.shabbosEnds?.toJSON() ?? null;
+    zmanim = names.map((n) => zj(DAY_SLOTS.includes(n) ? day.slot(n as DaySlot) : day.get(n as ZmanId)));
+    const ft = fastTimesWith(h, options.location, zopts, z);
+    if (ft) fast = { id: ft.fast.id, beginsEvening: ft.beginsEvening, begins: zj(ft.begins), ends: zj(ft.ends) };
+    const next = h.epochDays < MAX_DAYS ? fastTimesWith(h.next(), options.location, zopts, z) : null;
+    if (next && next.fast.flags.fast === 'major') fastBeginsTonight = { id: next.fast.id, begins: zj(next.begins) };
+    const evening = eveningOf(h, options.location, zopts, { z, fast: ft, nextFast: next });
+    candleLighting = evening.candles ? zj(evening.candles) : null;
+    havdala = evening.havdala ? zj(evening.havdala) : null;
+    shabbosEnds = evening.shabbosEnds ? zj(evening.shabbosEnds) : null;
   }
 
   return {
@@ -279,7 +309,7 @@ export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = 
     events: events.map((e) => eventJson(e, locale)),
     shabbos: h.isShabbos,
     yomTov: events.some((e) => e.flags.yomTov),
-    melachaForbidden: h.isShabbos || events.some((e) => e.flags.melachaForbidden),
+    melachaForbidden: isHolyDay(h, hopts, events),
     fastKind: events.find((e) => e.flags.fast !== null)?.flags.fast ?? null,
     followedBy,
     eruvTavshilin,
@@ -294,7 +324,7 @@ export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = 
       : null,
     haftara: haft ? { key: haft.key, reference: haft.reference } : null,
     omer: om ? { day: om, text: omerText(om, options.omerNusach ?? 'ashkenaz'), textEnglish: omerTextEnglish(om), sefirah: omerSefirah(om, style) } : null,
-    tefillah: tefillahOn(h, { ...options.tefillah, israel }),
+    tefilla: tefillaOn(h, { walledCity: hopts.walledCity, ...options.tefilla, israel }),
     learning: options.learning ? options.learning(h, locale) : null,
     learningDetail: options.learning?.detail ? options.learning.detail(h, locale) : null,
     location: options.location ? locationJson(options.location) : null,
@@ -309,10 +339,13 @@ export function dayInfo(date: CivilDate | HebrewDate, options: DayInfoOptions = 
 
 /** {@link dayInfo} for `count` consecutive days from `start`. */
 export function dayInfoRange(start: CivilDate | HebrewDate, count: number, options: DayInfoOptions = {}): DayInfo[] {
+  checkDayOptions('dayInfoRange', options);
   const h = hebrewOfDayArg(start, 'dayInfoRange');
   if (typeof count !== 'number') throw new TypeError(`dayInfoRange takes a number of days, not ${String(count)}: for the days from start to end, pass end.epochDays - start.epochDays + 1`);
   if (!Number.isInteger(count) || count < 0) throw new RangeError(`dayInfoRange takes a whole number of days, 0 or more, not ${count}`);
   const out: DayInfo[] = [];
-  for (let i = 0; i < count; i++) out.push(dayInfo(h.addDays(i), options));
+  // One Zmanim for the whole range: the location and options are the same every day.
+  const shared: { z?: Zmanim } = {};
+  for (let i = 0; i < count; i++) out.push(dayInfoWith(h.addDays(i), options, shared));
   return out;
 }

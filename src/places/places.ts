@@ -15,7 +15,7 @@
  */
 
 import { deepFreeze } from '../util/freeze.js';
-import type { GeoLocation } from '../zmanim/calendar.js';
+import { checkLocation, type GeoLocation } from '../zmanim/calendar.js';
 import { CITY_ROWS, type CityRow } from './cities-data.js';
 import { isInIsrael } from './israel.js';
 
@@ -46,7 +46,28 @@ export interface Place extends GeoLocation {
    * {@link LOCAL_CANDLE_LIGHTING}). Absent elsewhere: the caller's choice, or 18 minutes.
    */
   readonly candleLighting?: CandleLightingCustom;
+  /**
+   * Set where the place keeps Purim on 15 Adar as a city walled since Yehoshua's days (see
+   * {@link WALLED_CITIES}). Absent elsewhere.
+   */
+  readonly walledCity?: WalledCityCustom;
 }
+
+/** A place's documented Purim day: the 15th of Adar. */
+export interface WalledCityCustom {
+  /** Whose custom, e.g. "Jerusalem, a city walled since Yehoshua". */
+  readonly custom: string;
+  /** Where it is documented. */
+  readonly source: string;
+}
+
+/**
+ * Places that keep Purim on 15 Adar, by GeoNames id. Only Jerusalem: the cities whose walls in
+ * Yehoshua's days are in doubt (Teveria, Hebron, Tzfas and others) are a question for a rav.
+ */
+export const WALLED_CITIES: Readonly<Record<number, WalledCityCustom>> = /*#__PURE__*/ deepFreeze({
+  281184: { custom: 'Jerusalem, a city walled since Yehoshua', source: 'Mishna Megillah 1:1; Mishna Arachin 9:6; Shulchan Aruch OC 688:1-3' },
+});
 
 /** A place's documented candle-lighting custom. */
 export interface CandleLightingCustom {
@@ -81,7 +102,8 @@ export { ISRAEL_BOUNDARY, isInIsrael } from './israel.js';
 function fromRow(r: CityRow): Place {
   const [id, name, nameHe, latitude, longitude, elevation, timeZone, country, aliases, geonameId] = r;
   const candles = LOCAL_CANDLE_LIGHTING[geonameId];
-  return { id, name, nameHe, latitude, longitude, elevation, timeZone, country, aliases, israel: isInIsrael(latitude, longitude), ...(candles ? { candleLighting: candles } : {}) };
+  const walled = WALLED_CITIES[geonameId];
+  return { id, name, nameHe, latitude, longitude, elevation, timeZone, country, aliases, israel: isInIsrael(latitude, longitude), ...(candles ? { candleLighting: candles } : {}), ...(walled ? { walledCity: walled } : {}) };
 }
 
 let cities: Place[] | null = null;
@@ -135,10 +157,16 @@ export interface SearchOptions {
   limit?: number;
 }
 
+/** The words of a name, folded: "Kfar Meron" → ["kfar", "meron"]. */
+function words(s: string): string[] {
+  return s.split(/[\s\-–,()/]+/).map(foldName).filter(Boolean);
+}
+
 /**
- * Finds places by name: exact matches first, then prefix matches, then transliteration
- * matches (by consonant skeleton: "Bene Beraq" and "Bnei Brak" match), then substrings.
- * Hebrew queries match Hebrew names.
+ * Finds places by name: exact matches first, then a whole word of the name ("Meron" finds "Kfar
+ * Meron"), then prefix matches, then the beginning of a later word, then transliteration
+ * matches (by consonant skeleton: "Bene Beraq" and "Bnei Brak" match), then the middle of a word
+ * ("Meron" in "Cameron Park" comes last). Hebrew queries match Hebrew names.
  * Ties go to larger places. A transliteration match needs a skeleton of at least four
  * consonants, and a skeleton-prefix match must cover most of the name, so a short or loose
  * resemblance finds nothing rather than the wrong city.
@@ -149,17 +177,21 @@ export function searchPlaces(query: string, options: SearchOptions = {}): Place[
   const qs = nameSkeleton(query);
   const scored: { p: Place; score: number }[] = [];
   for (const p of options.places ?? builtInPlaces()) {
-    const names = [p.name, p.nameHe, ...p.aliases, p.id];
     let score = 0;
-    for (const n of names) {
-      if (!n) continue;
-      const f = foldName(n);
-      if (f === q) score = Math.max(score, 100);
+    for (const n of foldedNames(p)) {
+      const f = n.folded;
+      if (f === q) {
+        score = Math.max(score, 100);
+        continue;
+      }
+      const ws = f.includes(q) ? n.words() : [];
+      if (ws.includes(q)) score = Math.max(score, 90);
       else if (f.startsWith(q)) score = Math.max(score, 80);
-      else if (qs.length >= MIN_SKELETON && nameSkeleton(n) === qs) score = Math.max(score, 70);
+      else if (ws.some((w) => w.startsWith(q))) score = Math.max(score, 75);
+      else if (qs.length >= MIN_SKELETON && n.skeleton() === qs) score = Math.max(score, 70);
       else if (q.length >= 3 && f.includes(q)) score = Math.max(score, 50);
       else if (qs.length >= MIN_SKELETON + 1) {
-        const ns = nameSkeleton(n);
+        const ns = n.skeleton();
         if (ns.startsWith(qs) && qs.length >= 0.75 * ns.length) score = Math.max(score, 40);
       }
     }
@@ -169,8 +201,43 @@ export function searchPlaces(query: string, options: SearchOptions = {}): Place[
   return scored.slice(0, options.limit ?? 10).map((x) => x.p);
 }
 
+interface FoldedName {
+  readonly folded: string;
+  /** The consonant skeleton, worked out the first time it is needed. */
+  skeleton(): string;
+  /** The folded words of the name, worked out the first time they are needed. */
+  words(): string[];
+}
+
+interface FoldedPlace {
+  /** The names as the place gave them, to notice a change. */
+  readonly raw: readonly string[];
+  /** The non-empty names, folded. */
+  readonly names: readonly FoldedName[];
+}
+
+/** Each place's names, folded once. Keyed by the place so that a table the caller drops is let go. */
+const foldedPlaces = new WeakMap<Place, FoldedPlace>();
+
+function foldedNames(p: Place): readonly FoldedName[] {
+  const raw = [p.name, p.nameHe, ...p.aliases, p.id];
+  const kept = foldedPlaces.get(p);
+  // Folded again if the record's names are no longer the ones that were folded.
+  if (kept && kept.raw.length === raw.length && kept.raw.every((r, i) => r === raw[i])) return kept.names;
+  const names: FoldedName[] = [];
+  for (const r of raw) {
+    if (!r) continue;
+    let skel: string | undefined;
+    let ws: string[] | undefined;
+    names.push({ folded: foldName(r), skeleton: () => (skel ??= nameSkeleton(r)), words: () => (ws ??= words(r)) });
+  }
+  foldedPlaces.set(p, { raw, names });
+  return names;
+}
+
 /** The nearest built-in (or given) place to a point, and its distance in kilometres. */
 export function nearestPlace(latitude: number, longitude: number, places: readonly Place[] = builtInPlaces()): { place: Place; km: number } | null {
+  checkLocation({ latitude, longitude }, false);
   let best: { place: Place; km: number } | null = null;
   for (const p of places) {
     const km = distanceKm(latitude, longitude, p.latitude, p.longitude);
@@ -181,6 +248,8 @@ export function nearestPlace(latitude: number, longitude: number, places: readon
 
 /** Great-circle distance in kilometres (haversine, mean earth radius). */
 export function distanceKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  checkLocation({ latitude: lat1, longitude: lon1 }, false);
+  checkLocation({ latitude: lat2, longitude: lon2 }, false);
   const r = Math.PI / 180;
   const a = Math.sin(((lat2 - lat1) * r) / 2) ** 2 + Math.cos(lat1 * r) * Math.cos(lat2 * r) * Math.sin(((lon2 - lon1) * r) / 2) ** 2;
   return 2 * 6371 * Math.asin(Math.sqrt(a));

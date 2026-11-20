@@ -71,6 +71,8 @@ export class HebrewDate implements HebrewDateParts {
     this.year = year;
     this.month = month as MonthNumber;
     this.day = day;
+    // Immutable in fact, not only in the types: dates are shared by cached results.
+    Object.freeze(this);
   }
 
   /** The Hebrew date for a count of days since 1970-01-01. */

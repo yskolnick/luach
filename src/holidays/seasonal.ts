@@ -65,12 +65,22 @@ export function talUmatarStart(year: number, options?: { israel?: boolean }): Ta
  * - Ashkenazim outside Israel do not: Rema OC 114:3 ("ואנו בני אשכנז לא מזכירין טל לא בימות
  *   החמה ולא בימות הגשמים").
  * - In Israel it is said in every nusach (Tashbetz Katan 101).
- * - Nusach Sefard siddurim print it for the summer (not verified in a halachic code).
+ * - Nusach Sefard siddurim print it for the summer (not checked against the text in a halachic code).
+ * - `'chabad'` says it in summer as `'sefard'` does. Source: the Chabad siddur (Siddur Tehillat
+ *   Hashem, as on Sefaria), Shacharis, the Amidah: "בקיץ מוריד הטל". Shulchan Aruch HaRav OC 114
+ *   describes "these countries, where they do not mention tal in summer": a question for a rav.
+ *
+ * "Barchenu" (`barchenu`): Sephardim say ברכנו in summer and ברך עלינו in winter, as the Arizal
+ * (Kaf HaChaim OC 117:1: "והספרדים נוהגים לומר בקיץ ברכינו ובחורף ברך עלינו"); Ashkenazim say
+ * ברך עלינו all year (same place). Luach gives it for `nusach: 'edot-hamizrach'` only, and takes
+ * winter as the days that ask for rain (`talUmatar`), since the winter text holds "ותן טל ומטר".
  */
 export function amidahSeason(date: HebrewDate, options?: { israel?: boolean; nusach?: OmerNusach }): {
   mashivHaruach: boolean;
   moridHatal: boolean;
   talUmatar: boolean;
+  /** The Edot HaMizrach summer text of the blessing of the years, ברכנו (Kaf HaChaim OC 117:1). */
+  barchenu: boolean;
   changesAtMusaf: boolean;
 } {
   date = hebrewDateArg(date, 'amidahSeason');
@@ -83,7 +93,8 @@ export function amidahSeason(date: HebrewDate, options?: { israel?: boolean; nus
   const start = talUmatarStart(y, options).hebrewDate;
   const talUmatar = date.epochDays >= start.epochDays && date.epochDays < pesach.epochDays;
   const saysTal = Boolean(options?.israel) || (options?.nusach ?? 'ashkenaz') !== 'ashkenaz';
-  return { mashivHaruach: winter, moridHatal: !winter && saysTal, talUmatar, changesAtMusaf };
+  const barchenu = options?.nusach === 'edot-hamizrach' && !talUmatar;
+  return { mashivHaruach: winter, moridHatal: !winter && saysTal, talUmatar, barchenu, changesAtMusaf };
 }
 
 /** Birkas HaChama: the Wednesday dates (Gregorian) of the 28-year cycle in a range of years. */
@@ -108,7 +119,7 @@ export function isBirkasHachama(date: HebrewDate): boolean {
  * Longitude used to turn the calendar's molad (Jerusalem mean time) into a UTC instant:
  * 35.2354° E (Luach's choice). Mean time = UTC + longitude / 15 hours.
  */
-export const JERUSALEM_LONGITUDE = 35.2354;
+const JERUSALEM_LONGITUDE = 35.2354;
 
 /** The molad of `month` in `year` as an instant (UTC), reading the calendar's molad as Jerusalem mean time. */
 export function moladInstant(year: number, month: number): Date {

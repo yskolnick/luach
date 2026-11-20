@@ -34,9 +34,24 @@ A few rules hold for all of them:
 - **Facts, not rulings.** Each result gives the times and the facts and leaves the question to
   you: which opinion to follow, what is said on which night, and what an unclear moment means.
   Ask your rav.
-- **Plain, frozen data.** Results are frozen objects of `HebrewDate`, `HolidayEvent` and `Zman`.
+- **Plain, frozen data.** `HebrewDate`, `HolidayEvent`, `Zman` and the readings of `readingCycle` and `parshaFor` are frozen objects; a write to one throws a `TypeError`. A `Zman`'s `time` and `exact` give a new `Date` each time you read them, so changing one changes nothing else.
 - **The last date.** Luach's dates end at 29 Elul 9999. A function whose answer needs a later date
   throws a `RangeError`.
+
+## What `On`, `At` and `Of` mean in a name
+
+| Suffix | Takes | Examples |
+|---|---|---|
+| `…On` | a Hebrew date | `holidaysOn`, `fastOn`, `tefillaOn`, `roshChodeshOn` |
+| `…At` | an instant (a `Date`), and usually a place | `fastAt`, `eventsAt`, `tefillaAt`, `melachaRunAt` |
+| `…Of` | a date or an evening | `nightOf` |
+
+Where a name breaks it:
+- `civilDateAt` takes `epochMs` (a number) and a zone, not an instant and a place.
+- `nightOf` takes a Hebrew date and a place, and `dayLearning`, `dafYomi` and the other learning
+  functions take the date without a suffix.
+- `hebrewDateAt` and `isMelachaForbiddenAt` end in `At` and take an instant, but answer with a
+  `HebrewDate` and a boolean, not an `…At` result.
 
 ## The Hebrew date and where it changes: `hebrewDateSpanAt`
 
@@ -77,7 +92,8 @@ where a time it needs does not occur (a fast that begins at a dawn that never co
 does not occur (no nightfall), the fast is on from `begins` until the fast day's sunset, and `null`
 from then until the end of the next civil day, as `melachaRunAt` does: Luach gives no time at which
 it ends there. The times are those of `fastTimes`, by the `fastBegins` and
-`fastEnds` opinions.
+`fastEnds` opinions. `beginsEvening` is true for a fast that begins the evening before (Yom Kippur,
+Tisha B'Av) and false for a minor fast.
 
 ## One night: `nightOf`
 
@@ -221,7 +237,7 @@ r.events[0].inProgress; // true
 
 The events of the Hebrew date now (`date`, by the `dayBoundary` opinion), always, each with
 `from`, `until` and `inProgress`; before them the events of the date before that are still in force,
-and after them those of the next date already in force. A Yom Tov is in force from its candles
+and after them those of the next date already in force. A Yom Tov is in force from shkiah on its eve (or from the second-night candles)
 until its havdala (or until the date's boundary when another holy day follows); a fast from its
 start to its end (`fastTimes`); Isru Chag from the end of the Yom Tov before it; any other event
 from the boundary that begins its date to the one that ends it. `inProgress` is `null` where a
@@ -263,17 +279,25 @@ const edge = run.inProgress === null ? null : run.inProgress ? run.ends : run.be
 
 The run of consecutive days on which melacha is forbidden (Shabbos, Yom Tov, Yom Kippur) that is in
 progress, or else the next to begin. It gives the eve and its events, each day with its events and
-the candles that begin it, `kinds` (what the run holds: `'shabbos'`, `'yom-tov'`, `'yom-kippur'`,
-in that order), `begins` (the first candles) and `ends` (the `havdala` opinion, or
-`shabbos-ends-no-havdala` before Tisha B'Av postponed to Sunday). Candle lighting follows the
-place's custom or `candleLightingMinutes`, as the day view does.
+the candles (the custom's time to light that evening; they do not begin the run), `kinds` (what the run holds: `'shabbos'`, `'yom-tov'`, `'yom-kippur'`,
+in that order), `begins` (shkiah, the sunset on the eve) and `ends` (the `havdala` opinion, or
+`shabbos-ends-no-havdala` before Tisha B'Av postponed to Sunday).
+
+Melacha is forbidden from shkiah. That is Luach's default, not a ruling (the Gra, the Rambam, the
+Tur and Mishna Berura 261:23). Candle lighting, which follows the place's custom or
+`candleLightingMinutes` as the day view does, is the custom's time to light, and is on each day's
+`candles`; it does not change when melacha begins. Tosefes Shabbos, and accepting Shabbos by lighting
+or in shul, are personal and not known to Luach. Where the second-night candles begin a day (lit
+after nightfall), the run is already in progress. Yom Kippur and Tisha B'Av begin at sunset too.
 
 `inProgress` is true from `begins` to `ends`, false before and after, and `null` exactly when it
-depends on a time that does not occur: on the eve's civil date when the candles do not occur; after
+depends on a time that does not occur: on the eve's civil date when shkiah does not occur; after
 the last day's sunset when `ends` does not occur (far north in summer), through the end of the civil
 day after the last day; and on the last day's civil date when its sunset does not occur. Luach
 gives no time at which the day ends there; set `highLatitudeFallback` to get a time, marked in
 `Zman.fallback`. Wherever `inProgress` is not `null` it is what `isMelachaForbiddenAt` says.
+A shown `time` is rounded, down for a start (`begins`), so it can be up to a minute before the exact
+instant. A caller comparing with the clock should compare with `exact`, as `inProgress` does.
 Compare with `=== true`, `=== false` and `=== null`: a plain `if (run.inProgress)` treats "Luach has
 no time here" as "not Shabbos". The same holds for `fastAt`'s `inProgress`.
 

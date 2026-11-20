@@ -14,8 +14,10 @@ import { Month } from '../calendar/months.js';
 import { isLeapYear, monthLength, monthsOfYear } from '../calendar/year.js';
 import { daysToCivil } from '../time/civil.js';
 import { readingCycle } from '../parsha/parsha.js';
+import { deepFreeze } from '../util/freeze.js';
 import type { HolidayEvent, HolidayFlags, HolidayOptions } from './types.js';
 import { hebrewDateArg } from '../calendar/date-input.js';
+import { checkOptions, HOLIDAY_KEYS } from '../util/options.js';
 
 const NONE: HolidayFlags = {
   yomTov: false,
@@ -61,7 +63,7 @@ class Builder {
  * The rest is Luach's own display order and rules on nothing. Events of one rank keep their order.
  * @internal
  */
-export function eventRank(e: HolidayEvent): number {
+function eventRank(e: HolidayEvent): number {
   const f = e.flags;
   if (f.melachaForbidden || f.yomTov) return 0;
   if (f.cholHamoed) return 1;
@@ -107,6 +109,12 @@ export function purimMonth(year: number): number {
  * Erev Rosh Hashana (29 Elul) belongs to the year in which it falls.
  */
 export function holidaysForYear(year: number, options: HolidayOptions = {}): HolidayEvent[] {
+  checkOptions('holidaysForYear', options, HOLIDAY_KEYS);
+  return holidaysForYearUnchecked(year, options);
+}
+
+/** {@link holidaysForYear} without the check of the options keys, for callers that pass a larger options object (internal). @internal */
+export function holidaysForYearUnchecked(year: number, options: HolidayOptions = {}): HolidayEvent[] {
   const israel = options.israel ?? false;
   const b = new Builder(year);
   const d = (m: number, day: number) => b.d(m, day);
@@ -191,9 +199,14 @@ export function holidaysForYear(year: number, options: HolidayOptions = {}): Hol
   b.add('erev-purim', d(am, 13), { minor: true, erev: true });
   b.add('purim', d(am, 14), { minor: true });
   b.add('shushan-purim', d(am, 15), { minor: true });
-  // Purim Meshulash: when 15 Adar is Shabbos, Jerusalem spreads Shushan Purim over
-  // Friday–Sunday (SA OC 688:6). The event marks the Sunday, 16 Adar, the third day.
-  if (d(am, 15).isShabbos) b.add('purim-meshulash', d(am, 16), { minor: true });
+  // Purim Meshulash: where 15 Adar is kept (walledCity) and it is Shabbos, Shushan Purim is spread
+  // over three days (SA OC 688:6): the Megillah and matanos laevyonim on Friday, Al HaNissim and
+  // the Torah reading on Shabbos, the seudah and mishloach manos on Sunday.
+  if (options.walledCity && d(am, 15).isShabbos) {
+    b.add('purim-meshulash', d(am, 14), { minor: true }, { day: 1, parts: ['megillah', 'matanos-laevyonim'] });
+    b.add('purim-meshulash', d(am, 15), { minor: true }, { day: 2, parts: ['al-hanissim', 'torah-reading'] });
+    b.add('purim-meshulash', d(am, 16), { minor: true }, { day: 3, parts: ['seudah', 'mishloach-manos'] });
+  }
   // Shabbos Parah: the Shabbos before Shabbos HaChodesh. Shabbos HaChodesh: on or before 1 Nisan. SA OC 685:3–4, 6.
   const hachodesh = d(Month.NISAN, 1).onOrBefore(SHABBAT);
   b.add('shabbos-parah', hachodesh.addDays(-7), { specialShabbos: true });
@@ -331,11 +344,59 @@ export function holidaysForYear(year: number, options: HolidayOptions = {}): Hol
     }
   }
 
+  // ---- Chabad-Lubavitch days (optional) ----
+  if (options.chabad) addChabad(b);
+
   // ---- Modern Israeli days (Knesset laws) ----
   if (options.modernIsraeli) addModernIsraeli(b);
   if (options.israeliCommemorations) addCommemorations(b);
 
   return b.events.sort((x, y) => x.date.epochDays - y.date.epochDays || eventRank(x) - eventRank(y));
+}
+
+/**
+ * The Chabad days that Luach has read in a sefer: [month, day]. Each is marked on
+ * its Hebrew date in every year, with the sefer and entry in the comment. Not
+ * included, because no sefer was read for them: 1 Kislev, 5 Teves, 22 Shevat, 25 Adar. See
+ * docs/halacha/choices.md. HY = Hayom Yom (the entry of the date); SM = Sefer HaMinhagim (the
+ * English translation, by chapter heading).
+ */
+const CHABAD_DAYS: ReadonlyArray<readonly [month: number, day: number]> = [
+  [Month.TISHREI, 6], //   SM, "Vav Tishrei": the yahrzeit of the Rebbe's mother, Rebbetzin Chana Schneerson
+  [Month.TISHREI, 13], //  HY 13 Tishrei: the passing of the Rebbe Maharash; SM
+  [Month.CHESHVAN, 20], // HY 20 Cheshvan: the birth of the Rebbe Rashab; SM
+  [Month.KISLEV, 9], //    HY 9 Kislev: the birth and the passing of the Mitteler Rebbe; SM
+  [Month.KISLEV, 10], //   HY 10 Kislev: the Mitteler Rebbe goes out free from his arrest in Vitebsk; SM
+  [Month.KISLEV, 14], //   SM, the month of Kislev: the Rebbe's wedding to Rebbetzin Chaya Mushka
+  [Month.KISLEV, 19], //   HY 19 Kislev: the Alter Rebbe goes out free from his first arrest; SM: 19 and 20 Kislev, the Rosh HaShanah of Chassidus
+  [Month.KISLEV, 20], //   SM, the month of Kislev: "The 19th and 20th of Kislev are the Rosh HaShanah of Chassidus"
+  [Month.KISLEV, 27], //   SM, Chanukah: the third day of Chanukah, 5561, the Alter Rebbe released from his second arrest
+  [Month.TEVES, 24], //    HY 24 Teves: the passing of the Alter Rebbe; SM
+  [Month.SHEVAT, 10], //   SM, the month of Shevat: the passing of the Previous Rebbe, Rabbi Yosef Yitzchak
+  [Month.NISAN, 2], //     HY 2 Nisan: the yahrzeit of the Rebbe Rashab; SM
+  [Month.NISAN, 11], //    SM, the month of Nisan: the birthday of the Rebbe, Rabbi Menachem Mendel Schneerson
+  [Month.NISAN, 13], //    HY 13 Nisan: the yahrzeit of the Tzemach Tzedek; SM
+  [Month.IYAR, 2], //      SM, the month of Iyar: the birthday of the Rebbe Maharash (HY 2 Iyar has the same day, a different year)
+  [Month.SIVAN, 6], //     HY 6 Sivan: the passing of the Baal Shem Tov; SM, "Vav Sivan"
+  [Month.TAMMUZ, 3], //    SM, "Gimmel Tammuz": the day the Previous Rebbe was released from imprisonment, 5687
+  [Month.TAMMUZ, 12], //   HY 12 Tammuz: the Previous Rebbe's birth, and the day he was told he was free; SM
+  [Month.TAMMUZ, 13], //   HY 13 Tammuz: the Previous Rebbe goes out to freedom; SM
+  [Month.AV, 20], //       SM, "Chaf Menachem Av": the yahrzeit of Rabbi Levi Yitzchak Schneerson, the Rebbe's father
+  [Month.ELUL, 15], //     SM, the month of Elul: the founding of the Tomchei Temimim yeshivah, 5657
+  [Month.ELUL, 18], //     SM, the month of Elul: the birthdays of the Baal Shem Tov and of the Alter Rebbe
+  [Month.ELUL, 29], //     HY 29 Elul: the birth of the Tzemach Tzedek; SM, "Chaf-tes Elul"
+];
+
+/** The id of a Chabad day: `chabad-19-kislev`. */
+const CHABAD_MONTH_ID: Readonly<Record<number, string>> = {
+  [Month.NISAN]: 'nisan', [Month.IYAR]: 'iyar', [Month.SIVAN]: 'sivan', [Month.TAMMUZ]: 'tammuz', [Month.AV]: 'av', [Month.ELUL]: 'elul',
+  [Month.TISHREI]: 'tishrei', [Month.CHESHVAN]: 'cheshvan', [Month.KISLEV]: 'kislev', [Month.TEVES]: 'teves', [Month.SHEVAT]: 'shevat',
+};
+
+function addChabad(b: Builder): void {
+  for (const [month, day] of CHABAD_DAYS) {
+    b.add(`chabad-${day}-${CHABAD_MONTH_ID[month]}`, b.d(month, day), { minor: true, optional: true }, { day, month, monthYear: b.year });
+  }
 }
 
 function addShabbosCholHamoed(b: Builder, month: number, from: number, to: number): void {
@@ -448,11 +509,30 @@ function addCommemorations(b: Builder): void {
 
 const cache = new Map<string, HolidayEvent[]>();
 
+let knownIds: Set<string> | undefined;
+/** Every event id Luach can emit: the union over 40 years (every weekday pattern, leap and common), with every option on, in Israel and the diaspora. */
+function isKnownId(id: string): boolean {
+  if (!knownIds) {
+    const ids = new Set<string>();
+    const all = { modernIsraeli: true, israeliCommemorations: true, behab: true, yomKippurKatan: true, yomKippurKatanCheshvan: true, shovavim: true, yizkor: true, chabad: true };
+    for (let y = 5780; y < 5820; y++) {
+      for (const israel of [false, true]) {
+        for (const f of ['thursday', 'friday'] as const) for (const e of holidaysForYearUnchecked(y, { ...all, israel, yomKippurKatanOnFriday: f })) ids.add(e.id);
+      }
+    }
+    knownIds = ids;
+  }
+  return knownIds.has(id);
+}
+
 function cachedYear(year: number, options: HolidayOptions): HolidayEvent[] {
-  const key = `${year}|${options.israel ? 1 : 0}${options.modernIsraeli ? 1 : 0}${options.behab ? 1 : 0}${options.yomKippurKatan ? 1 : 0}${options.yomKippurKatanOnFriday === 'friday' ? 1 : 0}${options.yomKippurKatanCheshvan ? 1 : 0}${options.shabbosMevorchim === false ? 0 : 1}${options.shovavim ? 1 : 0}${options.israeliCommemorations ? 1 : 0}${options.yizkor ? 1 : 0}`;
+  const key = `${year}|${options.israel ? 1 : 0}${options.modernIsraeli ? 1 : 0}${options.behab ? 1 : 0}${options.yomKippurKatan ? 1 : 0}${options.yomKippurKatanOnFriday === 'friday' ? 1 : 0}${options.yomKippurKatanCheshvan ? 1 : 0}${options.shabbosMevorchim === false ? 0 : 1}${options.shovavim ? 1 : 0}${options.israeliCommemorations ? 1 : 0}${options.yizkor ? 1 : 0}${options.chabad ? 1 : 0}${options.walledCity ? 1 : 0}`;
   let v = cache.get(key);
   if (!v) {
-    v = holidaysForYear(year, options);
+    // The events are shared by every caller until the cache is cleared, so nobody may change
+    // them. (The list itself is never handed out: callers get a copy of the part they asked for.)
+    v = holidaysForYearUnchecked(year, options);
+    for (const e of v) deepFreeze(e);
     if (cache.size > 64) cache.clear();
     cache.set(key, v);
   }
@@ -461,12 +541,19 @@ function cachedYear(year: number, options: HolidayOptions): HolidayEvent[] {
 
 /** The events on one day. */
 export function holidaysOn(date: HebrewDate, options: HolidayOptions = {}): HolidayEvent[] {
+  checkOptions('holidaysOn', options, HOLIDAY_KEYS);
+  return holidaysOnUnchecked(date, options);
+}
+
+/** {@link holidaysOn} without the check of the options keys, for callers that pass a larger options object (internal). @internal */
+export function holidaysOnUnchecked(date: HebrewDate, options: HolidayOptions = {}): HolidayEvent[] {
   date = hebrewDateArg(date, 'holidaysOn');
   return cachedYear(date.year, options).filter((e) => e.date.epochDays === date.epochDays);
 }
 
 /** The events from `start` to `end`, inclusive. */
 export function holidaysBetween(start: HebrewDate, end: HebrewDate, options: HolidayOptions = {}): HolidayEvent[] {
+  checkOptions('holidaysBetween', options, HOLIDAY_KEYS);
   start = hebrewDateArg(start, 'holidaysBetween');
   end = hebrewDateArg(end, 'holidaysBetween');
   const out: HolidayEvent[] = [];
@@ -480,7 +567,9 @@ export function holidaysBetween(start: HebrewDate, end: HebrewDate, options: Hol
 
 /** The next event with `id` on or after `from`, or `null` if none within 2 years. */
 export function nextHoliday(id: string, from: HebrewDate, options: HolidayOptions = {}): HolidayEvent | null {
+  checkOptions('nextHoliday', options, HOLIDAY_KEYS);
   from = hebrewDateArg(from, 'nextHoliday');
+  if (!isKnownId(id)) throw new RangeError(`nextHoliday: unknown event id ${JSON.stringify(id) ?? String(id)}`);
   for (let y = from.year; y <= Math.min(from.year + 2, 9999); y++) {
     for (const e of cachedYear(y, options)) if (e.id === id && e.date.epochDays >= from.epochDays) return e;
   }
@@ -489,14 +578,46 @@ export function nextHoliday(id: string, from: HebrewDate, options: HolidayOption
 
 /** True if melacha is forbidden on `date` because of Shabbos or Yom Tov (whole-day view; see zmanim for times). */
 export function isMelachaForbidden(date: HebrewDate, options: HolidayOptions = {}): boolean {
-  date = hebrewDateArg(date, 'isMelachaForbidden');
-  return date.isShabbos || holidaysOn(date, options).some((e) => e.flags.melachaForbidden);
+  checkOptions('isMelachaForbidden', options, HOLIDAY_KEYS);
+  return isHolyDay(hebrewDateArg(date, 'isMelachaForbidden'), options);
+}
+
+/**
+ * The one rule for "is this day holy?": Shabbos, or a day with an event on which melacha is
+ * forbidden (Yom Tov, Yom Kippur). Every view of the calendar (the day, the evening, the
+ * instant, the run) uses it. Pass `events` if the caller already has `holidaysOn(date, options)`.
+ *
+ * @internal
+ */
+export function isHolyDay(date: HebrewDate, options: HolidayOptions, events: readonly HolidayEvent[] = holidaysOnUnchecked(date, options)): boolean {
+  return date.isShabbos || forbidsMelacha(events);
+}
+
+/**
+ * True if one of `events` forbids melacha (Yom Tov, Yom Kippur), whatever the weekday: a
+ * Yom Tov that falls on Shabbos has it, and Shabbos alone does not (there is no Shabbos event).
+ *
+ * @internal
+ */
+export function forbidsMelacha(events: readonly HolidayEvent[]): boolean {
+  return events.some((e) => e.flags.melachaForbidden);
+}
+
+/**
+ * True if the events hold a Yom Tov on which melacha is forbidden, other than Yom Kippur (on
+ * which nothing is cooked): the days an eruv tavshilin and "Yom Tov" in a run are about.
+ *
+ * @internal
+ */
+export function isYomTovNotKippur(events: readonly HolidayEvent[]): boolean {
+  return events.some((e) => e.flags.melachaForbidden && e.id !== 'yom-kippur');
 }
 
 /** The fast on `date`, if any (respecting `options` for optional fasts). */
 export function fastOn(date: HebrewDate, options: HolidayOptions = {}): HolidayEvent | null {
+  checkOptions('fastOn', options, HOLIDAY_KEYS);
   date = hebrewDateArg(date, 'fastOn');
-  return holidaysOn(date, options).find((e) => e.flags.fast !== null) ?? null;
+  return holidaysOnUnchecked(date, options).find((e) => e.flags.fast !== null) ?? null;
 }
 
 /** Rosh Chodesh day 1 or 2 info for `date`, or null. */

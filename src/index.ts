@@ -14,7 +14,7 @@ export { fixedOffsetZone, UTC, offsetMinutes, civilDateAt, type TimeZoneProvider
 export { zonedParts, zonedInstant, type ZonedParts } from './time/zoned.js';
 export { Month, type MonthNumber } from './calendar/months.js';
 export { MIN_YEAR, MAX_YEAR, isLeapYear, monthsInYear, yearLength, yearType, monthLength, monthsOfYear, type YearType } from './calendar/year.js';
-export { molad, moladAnnouncement, type Molad } from './calendar/molad.js';
+export { molad, moladAnnouncement, type Molad, type MoladAnnouncementOptions } from './calendar/molad.js';
 export { HebrewDate, type HebrewDateParts } from './calendar/hebrew-date.js';
 export { anniversary, barMitzvahDate, type AnniversaryOptions } from './calendar/anniversary.js';
 export { gematriya, parseGematriya, type GematriyaOptions } from './text/gematriya.js';
@@ -34,7 +34,7 @@ export { holidaysForYear, holidaysOn, holidaysBetween, nextHoliday, isMelachaFor
 export { holidayName } from './holidays/names.js';
 export { omerDay, omerText, omerTextEnglish, omerSefirah, type OmerNusach } from './holidays/omer.js';
 export { talUmatarStart, amidahSeason, birkasHachamaDates, isBirkasHachama, moladInstant, kiddushLevana, type TalUmatarStart, type KiddushLevanaTime } from './holidays/seasonal.js';
-export { tefillahOn, type TefillahOptions, type TefillahDay } from './holidays/tefillah.js';
+export { tefillaOn, tachanunOmittedAtMincha, type TefillaOptions, type TefillaDay } from './holidays/tefilla.js';
 export {
   mourningPeriods, type MourningPeriods, type MourningOptions, type MourningRestrictions, type Restriction, type Restricted,
   type PartOfDay, type SefirahCustom, type BeinHametzarimCustom, type MeatWineCustom,

@@ -19,7 +19,9 @@ Everything about a day, as JSON:
 import { dayInfo } from 'luach';
 import { getPlace } from 'luach/places';
 
-const info = dayInfo({ year: 2026, month: 10, day: 23 }, { location: getPlace('lakewood') });
+const lakewood = getPlace('lakewood');   // undefined for an id that is not known
+if (!lakewood) throw new Error('unknown place');
+const info = dayInfo({ year: 2026, month: 10, day: 23 }, { location: lakewood });
 info.candleLighting?.local;  // "17:47"
 info.parsha?.name;           // "לך לך"
 ```
@@ -33,9 +35,10 @@ info.parsha?.name;           // "לך לך"
 | You want | Use | Guide |
 |---|---|---|
 | Hebrew ↔ Gregorian, molad, yahrzeits, gematriya | `HebrewDate`, `molad`, `anniversary`, `gematriya` | [Dates](./dates.md) |
-| Holidays, fasts, Omer, Tachanun… | `holidaysForYear`, `holidaysOn`, `omerText`, `tefillahOn` | [Holidays](./holidays.md) |
+| Holidays, fasts, Omer, Tachanun… | `holidaysForYear`, `holidaysOn`, `omerText`, `tefillaOn` | [Holidays](./holidays.md) |
 | Parsha and haftara | `parshaFor`, `haftaraFor` | [Parsha](./parsha.md) |
 | Daf Yomi and other cycles (`luach/learning`) | `dafYomi`, `mishnaYomis`, … | [Learning](./learning.md) |
+| The dailies (`luach/dailies`) | `tehillimByWeek`, `shnayimMikra` | [Learning](./learning.md#dailies-by-the-hebrew-date) |
 | Zmanim, by the user's opinions | `Zmanim` | [Zmanim](./zmanim.md) |
 | Cities (`luach/places`), Israel or not | `searchPlaces`, `isInIsrael` | [Places](./places.md) |
 | JSON, iCal, the command line | `dayInfo`, `nowInfo`, `toICalendar`, `luach` | [Outputs](./outputs.md) |

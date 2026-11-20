@@ -5,6 +5,9 @@
  * @packageDocumentation
  */
 
+import { checkOptions, HOLIDAY_KEYS } from '../util/options.js';
+
+const ICAL_KEYS = ['candleLightingMinutes', 'useElevation', 'beginningsSunset', 'ateretTorahMinutes', 'highLatitudeFallback', 'algorithm', 'round', 'opinions', 'name', 'locale', 'israel', 'holidays', 'parsha', 'learning', 'location', 'candleLighting', 'zmanim', 'now'];
 import { israelFor } from '../places/israel.js';
 import { HebrewDate } from '../calendar/hebrew-date.js';
 import { daysToCivil, type CivilDate } from '../time/civil.js';
@@ -119,9 +122,12 @@ interface Item {
  * Import it into any calendar app or serve it as `text/calendar`.
  */
 export function toICalendar(start: CivilDate | HebrewDate, end: CivilDate | HebrewDate, options: ICalOptions = {}): string {
+  checkOptions('toICalendar', options, ICAL_KEYS);
+  if (typeof options.holidays === 'object' && options.holidays !== null) checkOptions('toICalendar (holidays)', options.holidays, HOLIDAY_KEYS);
   const h0 = hebrewOfDayArg(start, 'toICalendar');
   const h1 = hebrewOfDayArg(end, 'toICalendar');
   if (h1.epochDays < h0.epochDays) throw new RangeError('end is before start');
+  if (h0.toCivil().year < 1) throw new RangeError('toICalendar: dates before the year 1 CE are not supported');
   const locale = options.locale ?? he;
   const israel = israelFor(options.israel, options.location);
   if (options.learning !== undefined && typeof options.learning !== 'function') {
@@ -142,7 +148,7 @@ export function toICalendar(start: CivilDate | HebrewDate, end: CivilDate | Hebr
   const items: Item[] = [];
 
   if (options.holidays !== false) {
-    const hopts = { ...(typeof options.holidays === 'object' ? options.holidays : {}), israel };
+    const hopts = { walledCity: !!options.location?.walledCity, ...(typeof options.holidays === 'object' ? options.holidays : {}), israel };
     for (const e of holidaysBetween(h0, h1, hopts)) {
       const cats = Object.entries(e.flags).filter(([, v]) => v).map(([k, v]) => (k === 'fast' ? `fast-${v}` : k));
       items.push({ uid: `${e.date.toString()}-${e.id}${e.day ?? ''}`, summary: holidayName(e, locale), categories: ['holiday', ...cats].join(','), allDay: e.date.toCivil() });

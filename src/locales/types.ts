@@ -55,7 +55,8 @@ export function lookup(locale: Locale, key: string): string {
 
 /**
  * Looks up `key` (e.g. "holiday.pesach") in the locale chain, then in a module's name table
- * (`table[base][subkey]`), then returns the key itself.
+ * (`table[base][subkey]`, then the tables of the styles it falls back to, as {@link STYLE_FALLBACK}),
+ * then returns the key itself.
  */
 export function lookupIn(locale: Locale, key: string, table: Readonly<Record<string, Readonly<Record<string, string>>>>): string {
   for (let l: Locale | undefined = locale; l; l = l.fallback) {
@@ -64,11 +65,20 @@ export function lookupIn(locale: Locale, key: string, table: Readonly<Record<str
   }
   const sub = key.slice(key.indexOf('.') + 1);
   for (let l: Locale | undefined = locale; l; l = l.fallback) {
-    const v = l.base ? table[l.base]?.[sub] : undefined;
-    if (v !== undefined) return v;
+    for (let b: string | undefined = l.base; b; b = STYLE_FALLBACK[b]) {
+      const v = table[b]?.[sub];
+      if (v !== undefined) return v;
+    }
   }
   return key;
 }
+
+/**
+ * Which built-in style's table to try next for a name a style's own table does not have: the
+ * Sephardi and English tables hold only the names that differ from the style they fall back to.
+ * @internal
+ */
+export const STYLE_FALLBACK: Readonly<Record<string, string>> = { he: 'ashkenazi', sephardi: 'ashkenazi', en: 'sephardi' };
 
 /** A new locale: `base` with some names replaced or added. */
 export function extendLocale(base: Locale, names: Record<string, string>, id?: string): Locale {

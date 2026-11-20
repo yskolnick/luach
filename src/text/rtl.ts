@@ -17,9 +17,9 @@
 /** U+2067 RIGHT-TO-LEFT ISOLATE. */
 export const RLI = '⁧';
 /** U+2066 LEFT-TO-RIGHT ISOLATE. */
-export const LRI = '⁦';
+const LRI = '⁦';
 /** U+2068 FIRST STRONG ISOLATE. */
-export const FSI = '⁨';
+const FSI = '⁨';
 /** U+2069 POP DIRECTIONAL ISOLATE. */
 export const PDI = '⁩';
 

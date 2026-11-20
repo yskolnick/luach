@@ -26,7 +26,7 @@ export interface GeoLocation {
   readonly latitude: number;
   /** Degrees east (negative west). */
   readonly longitude: number;
-  /** Metres above sea level. Used only for elevation-adjusted sunrise/sunset. Default 0. */
+  /** Metres above sea level, from -500 to 10,000; a negative elevation is read as sea level. Used only for elevation-adjusted sunrise/sunset. Default 0. */
   readonly elevation?: number;
   /** IANA zone name (e.g. "Asia/Jerusalem") or a provider. */
   readonly timeZone: TimeZone;
@@ -35,7 +35,7 @@ export interface GeoLocation {
 }
 
 /** Options for the calculator. Internal. */
-export interface CalculatorOptions {
+interface CalculatorOptions {
   /** Round to the minute (earliest times up, deadlines down). Default `true`. */
   rounding?: boolean;
   /**
@@ -44,6 +44,12 @@ export interface CalculatorOptions {
    * computed at sea level. See the docs, "Elevation".
    */
   useElevation?: boolean;
+  /**
+   * The sunset candle lighting and the start of Yom Kippur and Tisha B'Av count from when
+   * `useElevation` is on: `'sea-level'` (default) or `'elevation'`. Without `useElevation` both are
+   * the sea-level sunset.
+   */
+  beginningsSunset?: 'sea-level' | 'elevation';
   /** Minutes before sunset for `candleLighting()`. Default 18. Must be finite, 0–180. */
   candleLightingMinutes?: number;
   /** Minutes after sunset for Ateret Torah's tzeis. Default 40. Must be finite, more than 0 and at most 180. */
@@ -103,6 +109,51 @@ export interface ShaahZmanis {
   readonly source: string;
 }
 
+/** The highest elevation a location may have, in metres above sea level. */
+const MAX_ELEVATION_M = 10_000;
+/** The lowest elevation a location may have: below it (Dead Sea shore, about -430 m) is a mistake. */
+const MIN_ELEVATION_M = -500;
+
+/**
+ * Throws unless `location` is an object with a finite `latitude` from -90 to 90, a finite
+ * `longitude` from -180 to 180, an `elevation` (if any) that is a finite number of at most 10,000
+ * metres, not below -500 m, and, where `needsZone` (the default), a `timeZone` that is a zone name or a provider. A
+ * wrong type is a TypeError; a number out of range is a RangeError; both name the field and the
+ * value as received. The one check every entry that reads a location goes through (a missing or
+ * non-numeric coordinate must never be read as zero). A negative elevation down to -500 m is accepted and read as
+ * sea level. Internal.
+ */
+export function checkLocation(location: unknown, needsZone = true): void {
+  if (location === null || typeof location !== 'object') throw new TypeError(`location must be an object, not ${describeValue(location)}`);
+  const l = location as Record<string, unknown>;
+  const limits: Record<string, number> = { latitude: 90, longitude: 180, elevation: MAX_ELEVATION_M };
+  for (const field of ['latitude', 'longitude', 'elevation']) {
+    const v = l[field];
+    if (field === 'elevation' && v === undefined) continue;
+    if (typeof v !== 'number') throw new TypeError(`location.${field} must be a finite number, not ${describeValue(v)}`);
+    // A number that is NaN or infinite keeps the RangeError it always had.
+    if (!Number.isFinite(v)) throw new RangeError(`location.${field} must be a finite number, not ${describeValue(v)}`);
+    const max = limits[field]!;
+    if (field === 'elevation' ? v > max || v < MIN_ELEVATION_M : Math.abs(v) > max) {
+      throw new RangeError(field === 'elevation' ? `location.elevation must be from ${MIN_ELEVATION_M} to ${max} metres, not ${describeValue(v)}` : `location.${field} must be from -${max} to ${max}, not ${describeValue(v)}`);
+    }
+  }
+  if (needsZone) {
+    const z = l.timeZone;
+    const provider = z !== null && typeof z === 'object' && typeof (z as { offsetMinutes?: unknown }).offsetMinutes === 'function';
+    if (typeof z !== 'string' && !provider) throw new TypeError(`A time zone is required: location.timeZone must be an IANA zone name such as "America/New_York" (a string), not ${describeValue(z)}`);
+  }
+}
+
+function describeValue(v: unknown): string {
+  if (typeof v === 'number') return String(v);
+  try {
+    return JSON.stringify(v) ?? String(v);
+  } catch {
+    return String(v);
+  }
+}
+
 /** The sun and the catalogue's interpreter for one civil day at one place. Internal. */
 export class DayCalculator {
   readonly location: GeoLocation;
@@ -112,12 +163,7 @@ export class DayCalculator {
   private readonly cache = new Map<string, Raw>();
 
   constructor(location: GeoLocation, date: CivilDate | HebrewDate, options: CalculatorOptions = {}) {
-    if (!(Math.abs(location.latitude) <= 90) || !(Math.abs(location.longitude) <= 180)) {
-      throw new RangeError(`Invalid coordinates ${location.latitude}, ${location.longitude}`);
-    }
-    if (location.elevation !== undefined && !Number.isFinite(location.elevation)) {
-      throw new RangeError(`Invalid elevation ${location.elevation}: metres above sea level must be a finite number`);
-    }
+    checkLocation(location);
     assertTimeZone(location.timeZone);
     const day = dayArg(date, 'DayCalculator');
     this.location = location;
@@ -125,6 +171,7 @@ export class DayCalculator {
     this.options = {
       rounding: options.rounding ?? true,
       useElevation: options.useElevation ?? false,
+      beginningsSunset: options.beginningsSunset ?? 'sea-level', // checked by checkOptions in every public entry
       candleLightingMinutes: checkMinutes('candleLightingMinutes', options.candleLightingMinutes ?? 18, true),
       ateretTorahMinutes: checkMinutes('ateretTorahMinutes', options.ateretTorahMinutes ?? 40, false),
       highLatitudeFallback: options.highLatitudeFallback ?? 'none',
@@ -235,6 +282,12 @@ export class DayCalculator {
         case 'set-sea-level': r = this.riseSet(false, false); break;
         case 'rise-elevation': r = this.riseSet(true, true); break;
         case 'set-elevation': r = this.riseSet(false, true); break;
+        case 'set-beginnings': {
+          const elevation = this.options.useElevation && this.options.beginningsSunset === 'elevation';
+          r = this.riseSet(false, elevation);
+          extra = { elevation };
+          break;
+        }
         case 'noon': r = { time: this.transitMs }; break;
         case 'midnight': r = { time: this.solarMidnight(false) }; break;
       }

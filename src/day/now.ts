@@ -7,6 +7,7 @@
  * @packageDocumentation
  */
 
+import { checkOptions, DAY_ENUMS, nowInfoKeys } from '../util/options.js';
 import { civilToDays, daysToCivil, formatIsoDate } from '../time/civil.js';
 import { zoneName } from '../time/zone.js';
 import { zonedInstant, zonedParts } from '../time/zoned.js';
@@ -15,6 +16,7 @@ import { he } from '../locales/he.js';
 import type { Locale } from '../locales/types.js';
 import type { DayLocation } from '../zmanim/day-location.js';
 import { zmanimFor, type ZmanimOptions } from '../zmanim/day.js';
+import { checkLocation } from '../zmanim/calendar.js';
 import type { KiddushLevanaTime } from '../holidays/seasonal.js';
 import { dayInfo, type DayInfo, type DayLearningSource } from './day-info.js';
 import { fastAt, hebrewDateSpanAt, kiddushLevanaAt, lastDaySunset, melachaRunAt, nightOf, timesBetween, type ChanukahLighting, type Night } from './at.js';
@@ -25,7 +27,7 @@ import { instantArg } from '../calendar/date-input.js';
 import type { OmerNusach } from '../holidays/omer.js';
 
 /** `$id` of the JSON Schema for {@link NowInfo}. */
-export const NOW_INFO_SCHEMA_ID = 'https://raw.githubusercontent.com/yskolnick/luach/v0.5.0/schema/now.schema.json';
+export const NOW_INFO_SCHEMA_ID = 'https://raw.githubusercontent.com/yskolnick/luach/v0.5.5/schema/now.schema.json';
 
 /** Options for {@link nowInfo}: the opinions and settings of the zmanim and the holiday options, and the names' language. */
 export interface NowInfoOptions extends ZmanimOptions {
@@ -100,7 +102,12 @@ export interface NowInfo {
   };
   /** The earliest instant after `instant` at which anything in this document changes, ISO 8601 UTC. Ask again then. */
   readonly validUntil: string;
-  /** The run of days on which melacha is forbidden that is in progress, or else the next. */
+  /**
+   * The run of days on which melacha is forbidden that is in progress, or else the next. `begins` is
+   * shkiah, the sunset on the eve (a default, not a ruling); candle lighting, the custom's time to
+   * light, is on each day's `candles`. Tosefes Shabbos, and accepting Shabbos by lighting or in shul,
+   * are personal and not known to Luach.
+   */
   readonly melacha: {
     /** `true`, `false`, or `null` where Luach has no time to decide by. Never `false` for "no time". */
     readonly inProgress: boolean | null;
@@ -111,8 +118,11 @@ export interface NowInfo {
     /** What the run holds: `'shabbos'`, `'yom-tov'`, `'yom-kippur'`, in that order (`MelachaRun.kinds`). */
     readonly kinds: readonly ('shabbos' | 'yom-tov' | 'yom-kippur')[];
   };
-  /** The fast of today or tomorrow at the place, or `null`. */
-  readonly fast: { readonly event: EventJson; readonly hebrewDate: HebrewDateJson; readonly inProgress: boolean | null; readonly begins: ZmanJson; readonly ends: ZmanJson } | null;
+  /**
+   * The fast of today or tomorrow at the place, or `null`. `beginsEvening` is true for a fast that
+   * begins the evening before (Yom Kippur, Tisha B'Av), false for a minor fast, which begins at dawn.
+   */
+  readonly fast: { readonly event: EventJson; readonly hebrewDate: HebrewDateJson; readonly beginsEvening: boolean; readonly inProgress: boolean | null; readonly begins: ZmanJson; readonly ends: ZmanJson } | null;
   /**
    * The night of the Hebrew date now: in progress once the date has begun (after its boundary),
    * last night during its day. When a night ends (dawn or sunrise) is the reader's choice: the times are here to compare.
@@ -170,6 +180,8 @@ const timeJson = (t: KiddushLevanaTime): TimeJson => ({ time: t.time.toISOString
  * Ask your rav. This library calculates; it does not rule.
  */
 export function nowInfo(instant: Date, location: DayLocation, options: NowInfoOptions = {}): NowInfo {
+  checkOptions('nowInfo', options, nowInfoKeys(), DAY_ENUMS);
+  checkLocation(location);
   instant = instantArg(instant, 'nowInfo');
   const { locale: given, learning, omerNusach, ...zopts } = options;
   const locale = given ?? he;
@@ -261,7 +273,7 @@ export function nowInfo(instant: Date, location: DayLocation, options: NowInfoOp
       kinds: run.kinds,
     },
     fast: fast
-      ? { event: eventJson(fast.fast, locale), hebrewDate: hd(fast.date), inProgress: fast.inProgress, begins: fast.begins.toJSON(), ends: fast.ends.toJSON() }
+      ? { event: eventJson(fast.fast, locale), hebrewDate: hd(fast.date), beginsEvening: fast.beginsEvening, inProgress: fast.inProgress, begins: fast.begins.toJSON(), ends: fast.ends.toJSON() }
       : null,
     night: nightJson(night),
     nextNight: nightJson(nextNight),

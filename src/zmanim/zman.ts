@@ -5,6 +5,7 @@
  */
 
 import { localParts, offsetMinutes, zoneName, type TimeZone } from '../time/zone.js';
+import { formatIsoDate } from '../time/civil.js';
 
 /**
  * How a zman is rounded to the minute for display: an *earliest* time (e.g. the end of a
@@ -21,6 +22,7 @@ export type ZmanUnavailableReason =
   | 'no-sunset'
   | 'depends-on-missing-zman'
   | 'not-applicable-today'
+  | 'date-skipped-in-zone'
   | 'requires-terrain-data';
 
 /**
@@ -60,13 +62,9 @@ const EXPLAIN = new WeakMap<object, () => Explanation>();
 export class Zman {
   /** Stable id, e.g. `"sof-zman-shema-gra"`. */
   readonly id: string;
-  /**
-   * The instant, rounded to the minute on the safe side (see {@link ZmanKind}), or `null` when
-   * it does not occur (see `reason`). Never a made-up time. Safe to display by truncating.
-   */
-  readonly time: Date | null;
-  /** The exact instant, to the millisecond on the safe side, or `null`. For calculation, not display. */
-  readonly exact: Date | null;
+  // The instants as milliseconds, so that no caller can reach a Date that other callers share.
+  private readonly timeMs: number | null;
+  private readonly exactMs: number | null;
   /** Whose opinion this is, in words. */
   readonly opinion: string;
   /** Where the opinion is found. */
@@ -87,6 +85,14 @@ export class Zman {
    * Absent otherwise, and where no rule gives a time (polar night).
    */
   readonly fallbacks?: { readonly halfNight: Zman; readonly nearestDay: Zman };
+  /**
+   * For a time defined as a fixed number of minutes from sunrise or sunset: that sunrise or sunset
+   * (`zman`, e.g. `sunset-sea-level` for candle lighting) and the minutes (`-18`: 18 before it).
+   * Show `zman` beside this time, not the day's own sunset, which may be another one (with
+   * elevation on, candle lighting counts from the sea-level sunset). Absent for a time set by an
+   * angle or by seasonal hours.
+   */
+  readonly countedFrom?: { readonly minutes: number; readonly zman: Zman };
   /** The zone used for `toJSON`'s local time. */
   readonly timeZone: TimeZone;
   /** An earliest time or a deadline (see {@link ZmanKind}); its rounding follows from it. */
@@ -105,13 +111,14 @@ export class Zman {
     reason?: ZmanUnavailableReason;
     fallback?: string;
     fallbacks?: { readonly halfNight: Zman; readonly nearestDay: Zman };
+    countedFrom?: { readonly minutes: number; readonly zman: Zman };
     kind: ZmanKind;
     slot: string;
     explain?: () => Explanation;
   }) {
     this.id = init.id;
-    this.time = init.time;
-    this.exact = init.exact;
+    this.timeMs = init.time ? init.time.getTime() : null;
+    this.exactMs = init.exact ? init.exact.getTime() : null;
     this.opinion = init.opinion;
     this.source = init.source;
     this.rounded = init.rounded;
@@ -119,9 +126,26 @@ export class Zman {
     if (init.reason) this.reason = init.reason;
     if (init.fallback) this.fallback = init.fallback;
     if (init.fallbacks) this.fallbacks = Object.freeze({ ...init.fallbacks });
+    if (init.countedFrom) this.countedFrom = Object.freeze({ ...init.countedFrom });
     this.kind = init.kind;
     this.slot = init.slot;
     if (init.explain) EXPLAIN.set(this, init.explain);
+    // Cached and shared: a caller cannot change it.
+    Object.freeze(this);
+  }
+
+  /**
+   * The instant, rounded to the minute on the safe side (see {@link ZmanKind}), or `null` when
+   * it does not occur (see `reason`). Never a made-up time. Safe to display by truncating.
+   * Each read is a new `Date`: changing it changes nothing else.
+   */
+  get time(): Date | null {
+    return this.timeMs === null ? null : new Date(this.timeMs);
+  }
+
+  /** The exact instant, to the millisecond on the safe side, or `null`. For calculation, not display. A new `Date` on each read. */
+  get exact(): Date | null {
+    return this.exactMs === null ? null : new Date(this.exactMs);
   }
 
   /**
@@ -131,7 +155,7 @@ export class Zman {
   explain(): Explanation {
     const f = EXPLAIN.get(this);
     if (f) return f();
-    const text = this.time ? `${this.localTime()}.` : `No time: ${this.reason ?? 'unknown'}.`;
+    const text = this.timeMs !== null ? `${this.localTime()}.` : `No time: ${this.reason ?? 'unknown'}.`;
     return { text, steps: [], opinion: this.opinion, source: this.source };
   }
 
@@ -141,8 +165,8 @@ export class Zman {
    * `null` if there is no time.
    */
   remaining(now: Date): number | null {
-    if (!this.time) return null;
-    const ms = this.time.getTime() - now.getTime();
+    if (this.timeMs === null) return null;
+    const ms = this.timeMs - now.getTime();
     const minute = 60_000;
     return (this.kind === 'deadline' ? Math.floor(ms / minute) : Math.ceil(ms / minute)) * minute;
   }
@@ -153,10 +177,10 @@ export class Zman {
    */
   localTime(options?: { exact?: boolean }): string | null {
     // Not rounded (`round: 'none'`): the exact time, with its seconds.
-    const exact = options?.exact ?? (this.rounded === null && this.time !== null);
-    const at = exact ? this.exact : this.time;
-    if (!at) return null;
-    const p = localParts(at.getTime(), this.timeZone);
+    const exact = options?.exact ?? (this.rounded === null && this.timeMs !== null);
+    const at = exact ? this.exactMs : this.timeMs;
+    if (at === null) return null;
+    const p = localParts(at, this.timeZone);
     const hm = `${String(p.hour).padStart(2, '0')}:${String(p.minute).padStart(2, '0')}`;
     return exact ? `${hm}:${String(p.second).padStart(2, '0')}` : hm;
   }
@@ -177,13 +201,15 @@ export class Zman {
     reason?: ZmanUnavailableReason;
     fallback?: string;
     fallbacks?: { halfNight: ReturnType<Zman['toJSON']>; nearestDay: ReturnType<Zman['toJSON']> };
+    countedFrom?: { id: string; minutes: number; time: string | null; local: string | null };
+    date?: string;
   } {
     return {
       id: this.id,
-      time: this.time ? this.time.toISOString() : null,
-      exact: this.exact ? this.exact.toISOString() : null,
+      time: this.timeMs === null ? null : new Date(this.timeMs).toISOString(),
+      exact: this.exactMs === null ? null : new Date(this.exactMs).toISOString(),
       local: this.localTime(),
-      offset: this.time ? offsetText(offsetMinutes(this.timeZone, this.time.getTime())) : null,
+      offset: this.timeMs === null ? null : offsetText(offsetMinutes(this.timeZone, this.timeMs)),
       timeZone: zoneName(this.timeZone),
       opinion: this.opinion,
       source: this.source,
@@ -192,15 +218,24 @@ export class Zman {
       slot: this.slot,
       ...(this.reason ? { reason: this.reason } : {}),
       ...(this.fallback ? { fallback: this.fallback } : {}),
+      // A fallback time is of another day's sun, so `local` alone would not say which day it is on.
+      ...(this.fallback && this.timeMs !== null ? { date: formatIsoDate(localParts(this.timeMs, this.timeZone)) } : {}),
       ...(this.fallbacks ? { fallbacks: { halfNight: this.fallbacks.halfNight.toJSON(), nearestDay: this.fallbacks.nearestDay.toJSON() } } : {}),
+      ...(this.countedFrom ? { countedFrom: { id: this.countedFrom.zman.id, minutes: this.countedFrom.minutes, time: this.countedFrom.zman.time ? this.countedFrom.zman.time.toISOString() : null, local: this.countedFrom.zman.localTime() } } : {}),
     };
   }
 }
 
-/** An offset from UTC as ISO 8601 text: `-05:00`, `+02:00`. */
+/**
+ * An offset from UTC as ISO 8601 text: `-05:00`, `+02:00`; with `:SS` added only where the offset
+ * has seconds (historical local mean time, as `+02:20:54`), rounded to the second.
+ */
 export function offsetText(minutes: number): string {
-  const m = Math.abs(minutes);
-  return `${minutes < 0 ? '-' : '+'}${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+  const total = Math.round(Math.abs(minutes) * 60);
+  const two = (n: number) => String(n).padStart(2, '0');
+  const hm = `${two(Math.floor(total / 3600))}:${two(Math.floor((total % 3600) / 60))}`;
+  const ss = total % 60;
+  return `${minutes < 0 && total !== 0 ? '-' : '+'}${hm}${ss ? `:${two(ss)}` : ''}`;
 }
 
 /** Rounds an instant to the minute in `direction`. Whole minutes are left as they are. */

@@ -1,6 +1,6 @@
 {
   "name": "luach",
-  "version": "0.5.0",
+  "version": "0.5.5",
   "description": "VERY BETA and constantly changing. Built mostly by AI; check before relying on it. Hebrew calendar, holidays, parsha, learning cycles and zmanim. Clean-room, zero dependencies, Apache-2.0.",
   "keywords": [
     "hebrew calendar",
@@ -73,6 +73,16 @@
         "types": "./dist/places-full.d.cts",
         "default": "./dist/places-full.cjs"
       }
+    },
+    "./dailies": {
+      "import": {
+        "types": "./dist/dailies.d.ts",
+        "default": "./dist/dailies/index.js"
+      },
+      "require": {
+        "types": "./dist/dailies.d.cts",
+        "default": "./dist/dailies.cjs"
+      }
     }
   },
   "typesVersions": {
@@ -85,6 +95,9 @@
       ],
       "places-full": [
         "dist/places-full.d.ts"
+      ],
+      "dailies": [
+        "dist/dailies.d.ts"
       ]
     }
   },

@@ -26,7 +26,7 @@ so that people can check it. They are not a psak.
   option; open to review), *Open question* (not yet settled; the current behaviour is given),
   or *Proposed*.
 - **Sources:** a citation marked *verified* was read in the primary text (usually on Sefaria);
-  *secondary* means it was confirmed through a named secondary source; *not verified* means
+  *secondary* means it was confirmed through a named secondary source; *not checked against the text* means
   nobody has checked it in print. *No source recorded* means none is known: the choice was a
   convenience.
 - **Confidence:** *High*, *Medium* or *Low*.
@@ -158,13 +158,17 @@ in the code is on [Sources](../sources.md).
 ### Purim Meshulash on 16 Adar {#purim-meshulash-on-16-adar}
 
 - **Status:** Default.
-- **What it does:** when 15 Adar is Shabbos, the event "Purim Meshulash" is on Sunday,
-  16 Adar.
-- **Why:** Jerusalem spreads Shushan Purim over three days; the event marks the third.
-- **Sources:** SA OC 688:6: Megillah on Friday, Al HaNissim on Shabbos, the seudah on Sunday
-  (*verified*).
-- **Confidence:** High for the dates. Choosing the Sunday to carry the name is a convention.
-- **Open:** an app may want all three days listed.
+- **What it does:** where 15 Adar is kept (`walledCity`, which is on for Jerusalem in the day view) and
+  it is Shabbos, "Purim Meshulash" is three events: Friday 14 Adar (the Megillah and matanos
+  laevyonim), Shabbos 15 Adar (Al HaNissim and the Torah reading) and Sunday 16 Adar (the seudah and
+  mishloach manos). Elsewhere there is none.
+- **Why:** Jerusalem keeps Purim on the 15th, and spreads it over three days when the 15th is
+  Shabbos.
+- **Sources:** SA OC 688:6; Mishna Megillah 1:1 for a city walled since Yehoshua (*verified*).
+- **Confidence:** High for the dates.
+- **Open:** the cities whose walls in Yehoshua's days are in doubt (Teveria, Hebron, Tzfas and
+  others, which may keep both days: SA OC 688:4) and the Jerusalem neighbourhoods are not
+  included: a question for a rav.
 
 ### Leil Selichos on the Shabbos {#leil-selichos-on-the-shabbos}
 
@@ -184,10 +188,11 @@ in the code is on [Sources](../sources.md).
 - **Status:** Default.
 - **What it does:** optional. Not listed before Rosh Chodesh Tishrei, Cheshvan, Teves or
   Iyar; moved to Thursday when Erev Rosh Chodesh is Friday or Shabbos.
-- **Why:** the move follows the Mishna Berura; the exclusions follow printed siddurim and
-  luchos.
-- **Sources:** Mishna Berura 417:4; Magen Avraham 417:3 (*verified*). The month exclusions
-  are **not** in the MB or MA; they are a siddur and luach custom, and lists differ.
+- **Why:** the move follows the Mishna Berura; each excluded month has its own source, listed in
+  [Yom Kippur Katan: which months](#yom-kippur-katan-which-months).
+- **Sources:** Mishna Berura 417:4; Magen Avraham 417:3 (*verified*). Each excluded month has its
+  source (Shulchan Aruch OC 581:2 and 670:1, Mishna Berura 429:10, 550:11 and 686:1, Kaf HaChaim
+  OC 417:16). No source read leaves out Av, Sivan, Adar I or Adar II.
 - **Confidence:** Medium.
 - **Open:** see also [Yom Kippur Katan when Erev Rosh Chodesh is Friday](#yom-kippur-katan-when-erev-rosh-chodesh-is-friday). Erev Rosh
   Chodesh on Friday is now an option (`yomKippurKatanOnFriday`), with the Magen Avraham and
@@ -200,7 +205,7 @@ in the code is on [Sources](../sources.md).
 - **Why:** the sources differ, so both are offered; the default is the behaviour before.
 - **Sources:** Magen Avraham OC 417:3 (Friday); Mishna Berura 417:4 (Thursday for those who say Selichos, Friday for those who don't) (*verified*).
 - **Confidence:** High for the sources; the default is a judgement.
-- **Open:** the month exclusions (in [Yom Kippur Katan](#yom-kippur-katan)) still have no source.
+- **Open:** the month exclusions are in [Yom Kippur Katan: which months](#yom-kippur-katan-which-months), each with its source.
 
 ### Yom Kippur Katan: which months {#yom-kippur-katan-which-months}
 
@@ -210,7 +215,9 @@ in the code is on [Sources](../sources.md).
 - **Why:** each exclusion now has its reason; Cheshvan had none, so it became an option.
 - **Sources:** SA OC 581:2 (Erev Rosh Hashana); MB 429:10 (Erev Rosh Chodesh Iyar is in
   Nisan); SA OC 670:1 and MA, MB 686:1 (Chanukah); Kaf HaChaim OC 417:16 (Cheshvan: "צריך
-  להתענות"); MB 550:11 and Aruch HaShulchan OC 417:11 (Thursday) (*verified*, Sefaria).
+  להתענות"); MB 550:11 and Aruch HaShulchan OC 417:11 (Thursday) (*verified*, Sefaria). Magen
+  Avraham, Mishna Berura, Kaf HaChaim and Aruch HaShulchan on OC 417 leave out no other month:
+  no source read leaves out Av, Sivan, Adar I or Adar II.
 - **Confidence:** Medium: the default for Cheshvan (off) has no source.
 - **Open:** whether Cheshvan should be on by default.
 
@@ -250,8 +257,7 @@ in the code is on [Sources](../sources.md).
 - **What it does:** minor fasts begin at alos 72 minutes and end at 7.083°.
 - **Why:** both are common defaults in printed luachos.
 - **Sources:** eating until alos: SA OC 564:1 (*verified*); the choice of alos is custom. End
-  at three medium stars: SA OC 562:1 (*verified*). 7.083° per Dr. Baruch Cohn (*not
-  verified*). *No source recorded* for choosing 7.083° over 6.45° (the Israeli custom).
+  at three medium stars: SA OC 562:1 (*verified*). 7.083° per Dr. Baruch Cohn (*not checked against the text*). *No source recorded* for choosing 7.083° over 6.45° (the Israeli custom).
 - **Confidence:** Low for the choice of default.
 - **Open:** whether the default should be 6.45° in Israel.
 
@@ -345,17 +351,17 @@ in the code is on [Sources](../sources.md).
 ### Tachanun after Sukkos follows the place's custom {#tachanun-after-sukkos-follows-the-place-s-custom}
 
 - **Status:** Settled.
-- **What it does:** `tefillahOn` omits Tachanun through Rosh Chodesh Cheshvan in Israel and
+- **What it does:** `tefillaOn` omits Tachanun through Rosh Chodesh Cheshvan in Israel and
   through Isru Chag outside it, unless `tishreiTachanun` is given.
 - **Why:** to match the customs. The Ashkenazi works resume after Isru Chag; the
   custom in Israel (and of the Sephardim) is the whole of Tishrei. Luach has no nusach option
-  in `tefillahOn`, so the place decides and Sephardim abroad pass the option.
+  in `tefillaOn`, so the place decides and Sephardim abroad pass the option.
 - **Sources:** SA OC 131:7; Kitzur SA 22:8; Sha'arei Teshuvah 131:19; Aruch HaShulchan OC
   131:12; Kaf HaChaim OC 131:98 (citing Chaim Sha'al on the custom in Israel) (*verified*,
   Sefaria).
 - **Confidence:** Medium: the reading of "Match the customs" is Luach's; the Israeli Ashkenazi
   custom rests on Kaf HaChaim's report.
-- **Open:** a `nusach` option for `tefillahOn`, if wanted.
+- **Open:** a `nusach` option for `tefillaOn`, if wanted.
 
 ### Tachanun on Pesach Sheni {#tachanun-on-pesach-sheni}
 
@@ -368,6 +374,16 @@ in the code is on [Sources](../sources.md).
 - **Confidence:** High.
 - **Open:** nothing.
 
+### A community's own days without Tachanun {#a-community-s-own-days-without-tachanun}
+
+- **Status:** Option, off by default.
+- **What it does:** `noTachanunDays` adds days without Tachanun at Shacharis, by month and day, for
+  a community.
+- **Why:** Chassidim omit Tachanun on the yahrzeit of the tzaddik they follow; Luach has no list of
+  those, so the caller gives the dates.
+- **Sources:** Peninei Halakha, Tefillah 21:8 (the yahrzeit of a tzaddik) (*verified*).
+- **Confidence:** High.
+- **Open:** Mincha: the days given here change Shacharis only.
 ### Mashiv haruach and morid hatal {#mashiv-haruach-and-morid-hatal}
 
 - **Status:** Default.
@@ -379,6 +395,32 @@ in the code is on [Sources](../sources.md).
   Tashbetz Katan 101 (Israel) (*verified* except the Tashbetz Katan, found in a secondary search).
 - **Confidence:** High.
 - **Open:** nothing.
+
+### Barchenu and Barech Aleinu {#barchenu-and-barech-aleinu}
+
+- **Status:** Default.
+- **What it does:** `amidahSeason(...).barchenu` is true for `nusach: 'edot-hamizrach'` on the
+  days that do not ask for rain, when the blessing of the years opens "ברכנו"; otherwise "ברך
+  עלינו".
+- **Why:** Sephardim, following the Arizal, change the blessing's text with the season;
+  Ashkenazim keep "ברך עלינו" and change only the request. Luach takes winter as the days of
+  `talUmatar`, since the winter text holds "ותן טל ומטר" (Luach's reading).
+- **Sources:** Kaf HaChaim OC 117:1 ("והספרדים נוהגים לומר בקיץ ברכינו ובחורף ברך עלינו",
+  citing the Tur, the Beis Yosef and Sha'ar HaKavanos) (*verified*, Sefaria).
+- **Confidence:** High for the custom; Medium that the switch is the day of tal umatar.
+- **Open:** whether Nusach Sefard and Chabad say Barchenu (Luach says not, without a source).
+
+### Mizmor L'Sodah on Erev Pesach, Chol Hamoed Pesach and Erev Yom Kippur {#mizmor-lesodah}
+
+- **Status:** Default, with an option.
+- **What it does:** by default not said on those days; `mizmorLesodah: 'sephardi'` says it.
+  Never on Shabbos or Yom Tov.
+- **Why:** the Rema leaves it out; the Sephardi custom recorded in the Kaf HaChaim says it.
+- **Sources:** Rema OC 51:9; Kaf HaChaim OC 51:50–53 ("מנהגינו לאומרו בע"פ ובחוה"מ דפסח";
+  "הכנה"ג בהגה"ט כתב דמנהגינו לאומרו" on Erev Yom Kippur) (*verified*, Sefaria).
+- **Confidence:** High.
+- **Open:** Rosh Hashana: Kaf HaChaim OC 51:50 records that in Sefarad it was said on Rosh
+  Hashana, and that Beis El adds nothing then; Luach does not say it on Yom Tov.
 
 ### Omer count text in Nusach Ashkenaz {#omer-count-text-in-nusach-ashkenaz}
 
@@ -413,12 +455,83 @@ in the code is on [Sources](../sources.md).
   meat on 10 Av without a Three Weeks custom) are `null`.
 - **Sources:** SA and Rema OC 493:1–3; MB 493:5–7, 10–11, 14–15; Kaf HaChaim OC 493:13
   (the Arizal); SA and Rema OC 551:2–4, 9; MB 551:58–59; SA and Rema OC 558:1; MB 558:3–4
-  (*verified*, Sefaria). Kaf HaChaim OC 551:125 (from 2 Av) was found in a secondary search and
-  not re-read.
+  (*verified*, Sefaria). Kaf HaChaim OC 551:126 (meat on Rosh Chodesh Av, so from 2 Av) (*verified*,
+  Sefaria; 551:125 before it forbids Rosh Chodesh too).
 - **Confidence:** Medium: the sources are read, but the exceptions (a bris, a seudas mitzvah,
   Shabbos Chazon, mourners, children) are not modelled.
 - **Open:** more customs on request.
 
+
+## Chabad customs
+
+Luach keeps only the Chabad customs it has read in a sefer or on Sefaria, each citing it. Customs
+whose only source was a Chabad website are not offered until a sefer is read for them.
+
+Chabad learning schedules are paused until they can all be done, Tanya included.
+
+### The count and morid hatal in nusach Chabad {#the-count-and-morid-hatal-in-nusach-chabad}
+
+- **Status:** Default for `nusach: 'chabad'`.
+- **What it does:** the Omer count is worded exactly as in nusach Ashkenaz ("…לעומר" at the end,
+  units before tens); in summer morid hatal is said, as in nusach Sefard.
+- **Why:** the count in the Chabad siddur reads as the Ashkenaz wording does (e.g. day 41:
+  "היום אחד וארבעים יום שהם חמשה שבועות וששה ימים לעומר").
+- **Sources:** the Chabad siddur, Siddur Tehillat Hashem, as on Sefaria: the count of the Omer, all
+  49 days (*verified*); morid hatal in summer, "בקיץ מוריד הטל", in its Shacharis Amidah (*verified*).
+- **Confidence:** High.
+- **Open:** Shulchan Aruch HaRav OC 114 speaks of "these countries, where they do not mention tal in
+  summer" ("בִּמְדִינוֹת אֵלּוּ שֶׁאֵין נוֹהֲגִין לְהַזְכִּיר טַל בִּימוֹת הַחַמָּה"). How that sits with the siddur's
+  nusach is not settled by the text: ask a rav.
+
+### The Chabad days {#the-chabad-days}
+
+- **Status:** Default (off unless asked: `chabad: true` in the holiday options).
+- **What it does:** adds 23 optional minor days, with ids like `chabad-19-kislev`, on their Hebrew
+  dates in every year: 6, 13 Tishrei; 20 Cheshvan; 9, 10, 14, 19, 20, 27 Kislev; 24 Teves; 10 Shevat;
+  2, 11, 13 Nissan; 2 Iyar; 6 Sivan; 3, 12, 13 Tammuz; 20 Av; 15, 18, 29 Elul. The English name says
+  what the sefer says the day marks, in Luach's own words; the Hebrew name is the date. 19 and 20
+  Kislev are named as the Rosh HaShanah of Chassidus (together); 3 Tammuz is named as the Previous
+  Rebbe's release from imprisonment (5687), not as a yahrzeit.
+- **Why:** an app that follows the Chabad custom should not have to work these out itself.
+- **Sources:** Hayom Yom (the entry of the date) and Sefer HaMinhagim (Kehot's English translation):
+  6 Tishrei (SM, "Vav Tishrei"); 13 Tishrei (HY; SM); 20 Cheshvan (HY; SM); 9 Kislev (HY; SM); 10 Kislev
+  (HY; SM, "Festival of Liberation"); 14 Kislev (SM); 19 Kislev (HY); 20 Kislev (SM: "The 19th and 20th
+  of Kislev are the Rosh HaShanah of Chassidus"); 27 Kislev (SM, Chanukah: the third day of Chanukah,
+  5561); 24 Teves (HY; SM); 10 Shevat (SM); 2 Nisan (HY; SM); 11 Nisan (SM); 13 Nisan (HY; SM); 2 Iyar
+  (SM; HY has the same day); 6 Sivan (HY; SM, "Vav Sivan"); 3 Tammuz (SM, "Gimmel Tammuz"); 12 and 13
+  Tammuz (HY; SM); 20 Av (SM, "Chaf Menachem Av"); 15 Elul (SM); 18 Elul (SM); 29 Elul (HY; SM,
+  "Chaf-tes Elul") (*verified*, each opened and read).
+- **Confidence:** High for the dates; the names are Luach's words for what the sefer says.
+- **Open:** four days of the earlier list are not offered, as no sefer was read for them: 1 Kislev,
+  5 Teves, 22 Shevat, 25 Adar. The Rebbe's own yahrzeit (3 Tammuz) is later than every sefer read.
+  The sefarim differ on the year of the Maharash's birth (Hayom Yom 5593, Sefer HaMinhagim 5594), so
+  no year is stated. The Hebrew names stay the date.
+
+### Tachanun by the Chabad custom {#tachanun-by-the-chabad-custom}
+
+- **Status:** Default for `minhag: 'chabad'` (off unless asked).
+- **What it does:** no Tachanun on 10, 19 and 20 Kislev, 12 and 13 Tammuz and 7 Adar, and at the
+  Mincha before them (`tachanunOmittedAtMincha`); from erev Yom Kippur to the end of Tishrei, in Israel
+  or not, so Tachanun is said again on 2 Cheshvan. The rest (all of Nisan, Pesach Sheni, Lag BaOmer, 1 to
+  12 Sivan) is the general default. Yom HaAtzmaut and Chai Elul are not part of this custom: they are
+  as the general custom has them.
+- **Why:** the points are the ones read in the sources; none is taken from a list.
+- **Sources:** Sefer HaMinhagim (its section on Tachanun, "The Six Remembrances", and the month of
+  Adar): the five days of Kislev and Tammuz each with the preceding Mincha; 7 Adar and the preceding
+  Mincha ("the Rebbeim of Chabad never said Tachanun"); from erev Yom Kippur until the end of Tishrei,
+  and from Motzaei Yom Kippur until the end of Rosh Chodesh Cheshvan; Pesach Sheni, Lag BaOmer, through
+  12 Sivan, with Mincha of erev Pesach Sheni said; Tachanun is said on the yahrzeit of a Rebbe unless
+  there is another reason. Hayom Yom, 9 Tishrei: "עד סוף תשרי א"א תחנון"; 1 Nisan: "כל החדש א"א
+  תחנון" (*verified*). Rosh Chodesh Cheshvan is 30 Tishrei and 1 Cheshvan, so both readings resume on
+  2 Cheshvan.
+- **Confidence:** High for the days of Kislev and Tammuz and for Tishrei; Medium for 7 Adar.
+- **Open:** in a leap year the sefer says "Adar" and does not say which: Luach reads Adar II. No sefer
+  was read for Yom HaAtzmaut or Chai Elul; ask a rav.
+
+### Chabad customs not offered {#chabad-open-questions}
+
+- 1 Kislev, 5 Teves, 22 Shevat and 25 Adar, and the Rebbe's own yahrzeit on 3 Tammuz: no sefer was read.
+- Tachanun on Yom HaAtzmaut and Chai Elul as a Chabad custom: no sefer was read.
 
 ## Zmanim
 
@@ -428,12 +541,13 @@ in the code is on [Sources](../sources.md).
 - **What it does:** sunrise and sunset are at sea level unless `useElevation` is on. With it on,
   sunrise and sunset are those seen from the place's height (the horizon dips), and so is every
   time counted from them: the fixed minutes before and after (dawn 72 minutes, nightfall 72
-  minutes, candle lighting), and the seasonal hours of the Gra's and the Magen Avraham's day from
+  minutes), and the seasonal hours of the Gra's and the Magen Avraham's day from
   sunrise to sunset or 72 minutes around them (Shema, tefilla, Mincha, plag). A time set by the
   sun's angle below the horizon (dawn at 16.1°, nightfall at 8.5°, havdala, the second-night
   candles), a day whose ends are set by angles (the Magen Avraham's from 16.1°, the Baal HaTanya's),
-  and chatzos are never moved by height. `sunrise-sea-level`, `sunrise-elevation` and the sunset
-  pair give each one explicitly.
+  and chatzos are never moved by height. Candle lighting and the start of Yom Kippur and Tisha
+  B'Av stay at the sea-level sunset by default (see the next entry). `sunrise-sea-level`,
+  `sunrise-elevation` and the sunset pair give each one explicitly.
 - **Why:** most luchos are calculated at sea level; a depression angle measures how bright
   the sky is, which does not depend on the visible horizon.
 - **Sources:** what the texts call sunrise and sunset is what is seen: sunrise is "when the sun
@@ -445,8 +559,28 @@ in the code is on [Sources](../sources.md).
   (*secondary*, through a blog).
 - **Confidence:** Medium.
 - **Open:** Peninei Halakha reports that the Shulchan Aruch HaRav uses a sunrise for about
-  800 m everywhere, citing Igros Moshe OC 1:97 (*not verified*). Which sunset candle lighting
-  counts from when elevation is on (it follows the elevated sunset now) is a question for a rav.
+  800 m everywhere, citing Igros Moshe OC 1:97 (*not checked against the text*). Whether `useElevation` should
+  move the seasonal hours as well as sunrise and sunset, or sunrise and sunset only, is open; it
+  moves both today.
+
+### Candle lighting and the start of Yom Kippur and Tisha B'Av at the sea-level sunset {#beginnings-at-the-sea-level-sunset}
+
+- **Status:** Default (an option, `beginningsSunset`).
+- **What it does:** with `useElevation` on, candle lighting (Shabbos and Yom Tov, and the evening
+  before Yom Kippur) and the start of Yom Kippur and Tisha B'Av count from the sea-level sunset, not
+  the later sunset seen from the place's height. `beginningsSunset: 'elevation'` counts them from
+  the elevated sunset instead. Sunrise, sunset and every other time still follow `useElevation`;
+  without it the option changes nothing. Their `opinion` says which sunset they count from. In
+  Jerusalem (786 m) Yom Kippur 5788 begins at 18:13 by default and at 18:17 with `'elevation'`.
+- **Why:** a beginning is a time to stop by, so the earlier sunset is the cautious one; the
+  difference in high places is four to eight minutes. This is a documented default, not a ruling:
+  which sunset these beginnings count from is a question for a rav.
+- **Sources:** candle lighting comes before sunset, with tosefes Shabbos (Shulchan Aruch OC
+  261:2); Yom Kippur and Tisha B'Av begin at sunset the evening before (Shulchan Aruch OC 553:2,
+  608:1). On height, see the entry above: no text opened speaks of the place's height, for these
+  beginnings or for sunset itself.
+- **Confidence:** Low: no source for either side was found.
+- **Open:** the default, for a rav.
 
 ### Rounding {#rounding}
 
@@ -479,9 +613,9 @@ in the code is on [Sources](../sources.md).
 
 - **Status:** Default.
 - **What it does:** far north in summer the sun may not reach the `havdala` angle (with the default
-  `highLatitudeFallback: 'none'`), and in polar night or day there may be no sunset or candle
-  lighting. `isMelachaForbiddenAt`, which answers with a plain `true` or `false`, then answers by
-  the civil day: forbidden from candle lighting where that occurs, and, leaving Shabbos or Yom Tov,
+  `highLatitudeFallback: 'none'`), and in polar night or day there may be no sunset (so no candle
+  lighting). `isMelachaForbiddenAt`, which answers with a plain `true` or `false`, then answers by
+  the civil day: forbidden from shkiah where that occurs, and, leaving Shabbos or Yom Tov,
   until the end of its civil day, or until its sunset where that falls after midnight. That end
   is not a time from any source, and it can be earlier than any high-latitude rule Luach offers.
   `melachaRunAt` and `fastAt` give `inProgress: null` there instead, and `nowInfo` passes that on.
@@ -535,9 +669,11 @@ in the code is on [Sources](../sources.md).
   made on the eve of the first day.
 - **Sources:** Shulchan Aruch OC 527:1; Mishna Berura 527:1 ("there is no difference between the
   first day of Yom Tov and the second day of the diaspora: if the second day falls on Friday, it is
-  also forbidden to cook for Shabbos without an eruv, which is made on the eve of the first day").
-  No text names Shavuos on Friday and Shabbos separately; its Friday is the first day, which 527:1
-  covers.
+  also forbidden to cook for Shabbos without an eruv, which is made on the eve of the first day");
+  Kaf HaChaim 527:1 (the same). For Yom Tov on Friday and Shabbos (Shavuos in the diaspora):
+  Taz OC 527:12 (cooking on the Friday, the first day, is plainly allowed by an eruv tavshilin) and
+  Beis Yosef OC 527, quoting Hagahos Maimoniyos, which names the two days as Shabbos and Erev
+  Shabbos.
 - **Confidence:** High.
 - **Open:** nothing.
 
@@ -589,15 +725,17 @@ in the code is on [Sources](../sources.md).
 - **What it does:** an optional event `yizkor` on Yom Kippur, and in the diaspora on the last day
   of Pesach (22 Nisan), the second day of Shavuos (7 Sivan) and Shemini Atzeres (22 Tishrei). In
   Israel only Yom Kippur, for now.
-- **Why:** these are the days the sources name; the reason they give is the reading of "Kol
-  HaBechor", which in Israel is not read on those festival days, and no text was found that says
-  what Israel does.
+- **Why:** these are the days the sources name. Mishna Berura 494:17 and Sha'arei Ephraim 10:31
+  tie Yizkor on the festivals to the reading of "Kol HaBechor", which is not read in Israel on
+  those days, so Israel keeps Yom Kippur only.
 - **Sources:** Shulchan Aruch OC 621:6 (Yom Kippur); Mishna Berura 494:17 ("and souls are
   remembered and Av HaRachamim is said on the second day, and wherever Kol HaBechor is read") and
   668:15 (Shemini Atzeres); Sha'arei Ephraim 10:31 (Yom Kippur, the last day of Pesach, the second
   day of Shavuos and Shemini Atzeres, the days Kol HaBechor is read).
 - **Confidence:** High for the diaspora; Israel is open.
-- **Open:** the festival days in Israel; the custom of some not to say it when Yom Tov is on
+- **Open:** the festival days in Israel: Mishna Berura 668:15 (Shemini Atzeres) gives Yizkor with
+  no such condition, and Peninei Halakha, Festivals 2:8 lists the days without naming Israel. Ask
+  your rav. The custom of some not to say it when Yom Tov is on
   Shabbos (Sha'arei Ephraim 10:31); Sephardi customs (no text found).
 
 ### The order of a day's events {#the-order-of-a-days-events}
@@ -627,13 +765,42 @@ in the code is on [Sources](../sources.md).
 - **Confidence:** Low near the date line.
 - **Open:** a halachic date line as an option. Ask your rav.
 
+### Melacha forbidden from shkiah {#melacha-forbidden-from-shkiah}
+
+- **Status:** Default.
+- **What it does:** `isMelachaForbiddenAt`, `melachaRunAt`, `eventsAt` and `nowInfo().melacha` count
+  Shabbos and Yom Tov as forbidden from shkiah, the sunset on the eve (the sunset that candle
+  lighting is counted from: at sea level unless `useElevation` and `beginningsSunset: 'elevation'`),
+  not from candle lighting. Candle lighting is unchanged and is shown as the custom's time to light.
+  Where the candles are lit from an existing flame after nightfall (a second night of Yom Tov, or
+  Yom Tov after Shabbos), the run is already in progress. Yom Kippur and Tisha B'Av begin at
+  sunset as before. Where the sun does not set, the existing answers by the civil day and the
+  `null` results stand. There is no option for the start at candle lighting.
+- **Why:** the Rambam, the Tur, the Gra and (as the Biur Halacha reports) the Geonim begin the
+  doubtful time of bein hashmashos at shkiah, and melacha is forbidden from then (Mishna Berura
+  261:23); a flag that began later would allow what they forbid. Candle lighting is a custom of
+  some minutes before shkiah, and the minutes differ by place (18, 40, ...), so it is not the time
+  melacha becomes forbidden. This is Luach's default, not a ruling.
+- **Sources:** Shabbat 34b–35b (bein hashmashos, from shkiah on the opinion followed for Shabbos);
+  Rambam, Hilchos Shabbos 5:3–4; Tur and Shulchan Aruch OC 261:1–2; Mishna Berura 261:2, 23
+  (the Gra and many Rishonim: bein hashmashos begins at once after the sun sets, and one should
+  finish lighting before shkiah); Biur Halacha 261; Shulchan Aruch OC 263:10 with the Rema, on
+  accepting Shabbos by lighting.
+- **Confidence:** Medium: the Rambam, the Tur, the Gra and the Mishna Berura (261:23) agree on
+  shkiah; Rabbeinu Tam's view, which the Shulchan Aruch (261:2) follows, is later.
+- **Open:** Rabbeinu Tam's later start (the day lasts until his second sunset); a personal
+  acceptance of Shabbos, by lighting (the Rema, 263:10) or in shul, which makes it begin earlier for
+  that person and is not known to Luach; tosefes Shabbos, which is a mitzvah to add from the day
+  and has no fixed length. Luach rules on none of these. Ask your rav.
+
 ### Candle lighting 18 minutes; havdala at 8.5° {#candle-lighting-18-minutes-havdala-at-8-5}
 
 - **Status:** Default.
 - **What it does:** candle lighting defaults to the place's documented custom where Luach has
   one (a built-in place's `candleLighting`, such as Jerusalem's 40 minutes, with its source),
   otherwise 18 minutes before sunset; havdala and second-night candles to 8.5°. The same
-  default applies everywhere: `Zmanim`, the day view, iCal and `isMelachaForbiddenAt`.
+  default applies everywhere: `Zmanim`, the day view and iCal. (Melacha begins at shkiah, not at
+  candle lighting: see "Melacha forbidden from shkiah".)
 - **Why:** 18 minutes is the most common diaspora custom; 8.5° is a widely printed time for
   three small stars.
 - **Sources:**
@@ -652,7 +819,7 @@ in the code is on [Sources](../sources.md).
 - **Why:** the minutes are a local custom; a city whose custom is documented should not get the generic 18.
 - **Sources:** Peninei Halakha, Shabbat 3:2 (Jerusalem 40, Haifa 30) and Zemanim 13:5 n. 11 (Jerusalem) (*verified*, read on ph.yhb.org.il). Not set without a source: Zichron Yaakov 30, Petach Tikva 40, the Shomron 30.
 - **Confidence:** Medium: one published source per city.
-- **Open:** other values reported for Jerusalem (not verified); other cities need sources. Where a
+- **Open:** other values reported for Jerusalem (not checked against the text); other cities need sources. Where a
   custom ends is a question for a rav, so Luach does not infer a city from coordinates: bare
   coordinates, even inside Jerusalem, get 18 minutes with the note, unless the caller passes the
   city or the minutes.
@@ -690,8 +857,7 @@ in the code is on [Sources](../sources.md).
 - **What it does:** Plag of the Levush is the same calculation as the Gra's (1¼ seasonal
   hours before sunset, on a sunrise-to-sunset day).
 - **Why:** the Magen Avraham reports that the Levush counts the day from sunrise to sunset.
-- **Sources:** Magen Avraham 233:3 and 267:1 (*verified*). The Levush's own text was **not
-  read** (*not verified*).
+- **Sources:** Magen Avraham 233:3 and 267:1 (*verified*). The Levush's own text was *not checked against the text*.
 - **Confidence:** Medium.
 - **Open:** the source is corrected in [Plag HaMincha of the Levush: the source](#plag-hamincha-of-the-levush-the-source). The second
   check of the citation found the source is Levush OC 267 as reported in Biur Halacha 261:2, and that
@@ -704,7 +870,7 @@ in the code is on [Sources](../sources.md).
 - **What it does:** unchanged calculation (the Gra's); the citation now names where the Levush's view is reported.
 - **Why:** the earlier citation, Magen Avraham 233:3, reads the Levush differently (from tzeis).
 - **Sources:** Levush OC 267, as reported in Biur Halacha 261:2 s.v. "להקדים" (*verified*); Magen Avraham 233:3 (*verified*).
-- **Confidence:** Medium: the Levush itself was not read.
+- **Confidence:** Medium: the Levush itself was not checked against the text.
 - **Open:** reading the Levush directly; whether to offer MA's reading as an option.
 
 ### The horizon dip uses the earth's mean radius {#the-horizon-dip-uses-the-earth-s-mean-radius}
@@ -724,7 +890,7 @@ in the code is on [Sources](../sources.md).
 - **Why:** a made-up time could be used as if it were real.
 - **Sources:** the recommendation is to return null and offering the Chabad fallback only
   as an explicit option (*secondary*). The opinions of Igros Moshe, the Minchas Yitzchak and
-  the London Beth Din on high latitudes are *not verified* and are not cited.
+  the London Beth Din on high latitudes are *not checked against the text* and are not cited.
 - **Confidence:** High that null is the safe default.
 - **Open:** `nearestDay` cites no source; `halfNight` now does (see [The far north: which rule for which use](#far-north-which-rule-for-which-use)).
 
@@ -771,7 +937,10 @@ in the code is on [Sources](../sources.md).
 - **Why:** in polar night the sun never rises to the angle, so any time would be invented.
 - **Sources:** *No source recorded* for the fallbacks themselves (see [No made-up times at high latitudes](#no-made-up-times-at-high-latitudes)).
 - **Confidence:** High for the null; the fallbacks remain a judgement.
-- **Open:** nothing.
+- **Open:** where a place has a havdala time in polar night but no shkiah, melacha stays forbidden
+  until the civil day ends, the cautious side. No source read supports that. B'Mareh HaBazak V:1
+  (reporting Rav Goren and Rav Koren) gives midday (chatzos hayom) for the polar winter; Chevel
+  Nachalaso 6:23 argues against reckoning by degrees there. Ask your rav.
 
 ### Historical offsets keep their seconds {#historical-offsets-keep-their-seconds}
 
@@ -792,7 +961,11 @@ in the code is on [Sources](../sources.md).
 - **Sources:** *no source recorded* for the selection; each zman's own sources are on
   [Zmanim and sources](https://github.com/yskolnick/luach/blob/main/docs/halacha/zmanim.md).
 - **Confidence:** Low (a selection, not a source).
-- **Open:** apps should show the opinions their community follows.
+- **Open:** apps should show the opinions their community follows. In northern summers (London and
+  Antwerp from about mid-April to the end of August; Montreal mainly June and July) the default
+  alos at 72 minutes falls after misheyakir at 11°. Every source read puts alos before misheyakir
+  (Shulchan Aruch OC 58:1, 3, 4; Mishna Berura 89:2); none says which is primary when they cross.
+  Ask your rav.
 
 
 ## Readings and learning
@@ -807,7 +980,8 @@ in the code is on [Sources](../sources.md).
 - **Sources:**
   - Precedence: SA OC 425, 428, 684 and 685 with the Rema and Mishna Berura.
   - Shabbos HaGadol: customs differ; Chabad per Sefer HaMinhagim and SA HaRav 430:3; the
-    Vilna Gaon's custom (every year except when Erev Pesach is Shabbos) is not built.
+    Vilna Gaon's custom (every year except when Erev Pesach is Shabbos, Maaseh Rav 176) is the
+    option `shabbosHagadol: 'exceptErevPesach'`.
   - Kedoshim: Rema OC 428:8, ArtScroll, a published Ashkenazi luach and Chabad; Hertz, Koren and
     Sefaria swap it with Amos.
   - A value was recorded only when two sources agreed.
@@ -815,6 +989,29 @@ in the code is on [Sources](../sources.md).
   is incomplete); Low for Teimani (several values are null).
 - **Open:** *no source recorded* for choosing "every year" as the Sephardi default for
   Shabbos HaGadol.
+
+### Teimani haftaros from the Rambam's list {#teimani-haftaros-from-the-rambam-s-list}
+
+- **Status:** Sourced; some values still null.
+- **What it does:** the Teimani (Baladi) haftara of Chayei Sarah (I Kings 1:1–31), Ki Sisa
+  (I Kings 18:1–45), Masei and Matos-Masei (Isaiah 1:1–20, the second of the three of
+  affliction), Acharei Mos-Kedoshim (Kedoshim's, Ezekiel 20:1–15), Behar-Bechukosai
+  (Bechukosai's, Ezekiel 34:1–27), the second day of Shavuos (Habakkuk 2:20–3:19), and Shekalim,
+  HaChodesh and Chanukah on Shabbos Rosh Chodesh (their own haftara, with no Rosh Chodesh verses).
+  Still null: Shabbos Rosh Chodesh Av, the Rosh Chodesh Elul cases, Shekalim before Rosh Chodesh,
+  Shabbos Rosh Chodesh with Erev Rosh Chodesh, the second day of Sukkos and the Mincha of Tisha
+  B'Av.
+- **Why:** the Baladi Teimanim follow the Rambam, who lists the haftaros and gives the rules:
+  joined parshiyos read the second's haftara ("כל שבת שקורין בה שתי פרשיות מפטירין בה מענין
+  פרשה אחרונה"), and the three of affliction are Jeremiah, "חזון ישעיהו", "איכה".
+- **Sources:** Rambam, Seder HaTefillah, the order of the haftaros; Hilchos Tefillah 13:9, 13:17,
+  13:19–20; Megillah 29b; with the haftara notes of *Miqra al pi ha-Masorah* for the verse
+  ranges (*verified*). The end of Isaiah 1:20 is from *Miqra al pi ha-Masorah* alone.
+- **Confidence:** Medium: the Rambam's list is the Baladi source, but a printed Baladi Tiklal was
+  not checked against the text.
+- **Open:** the null values above; whether Shabbos Shuva adds Micah 7:18–20 (*Miqra al pi
+  ha-Masorah* says so for Teimanim; Luach has Hosea alone); the Shami customs (Malachi on
+  Shabbos HaGadol; Kedoshim to 20:20).
 
 ### Kedoshim when Acharei Mos's haftara was displaced {#kedoshim-when-acharei-mos-s-haftara-was-displaced}
 
@@ -845,15 +1042,50 @@ in the code is on [Sources](../sources.md).
 
 ### Chabad on Shabbos HaChodesh or Chanukah before Rosh Chodesh {#chabad-on-shabbos-hachodesh-or-chanukah-before-rosh-chodesh}
 
-- **Status:** Open question.
-- **What it does:** on Shabbos HaChodesh on 29 Adar and a Shabbos of Chanukah on 29 Kislev,
-  the Chabad haftara has no Machar Chodesh verses added.
-- **Why:** Chabad's addition after Shekalim is in the haftara table; for these two days Luach
-  found no source either way.
-- **Sources:** SA OC 425:2, 685:4, 684:3; Aruch HaShulchan OC 425:4–5 (the displacement
-  itself, *verified*); no Chabad source read for the added verses.
-- **Confidence:** Low.
-- **Open:** a Chabad source such as Sefer HaMinhagim for these two days.
+- **Status:** Sourced for Shabbos HaChodesh; open question for Chanukah.
+- **What it does:** on Shabbos HaChodesh on 29 Adar, the Chabad haftara is HaChodesh's followed
+  by the first and last verse of Machar Chodesh (`hachodesh-machar-chodesh`). On a Shabbos of
+  Chanukah on 29 Kislev no Machar Chodesh verses are added.
+- **Why:** Sefer HaMinhagim (Chabad) gives the rule for HaChodesh: "If this Shabbos is Rosh
+  Chodesh or erev Rosh Chodesh, the Haftorah of Parshas HaChodesh is followed by the first and
+  last verse of the Haftorah of Shabbos Rosh Chodesh or of machar chodesh." It says nothing of
+  Chanukah, so Luach adds nothing there.
+- **Sources:** Sefer HaMinhagim, "The Torah Reading on Shabbos and Festivals" (English, Kehot)
+  (*verified*); SA OC 425:2, 685:4, 684:3; Aruch HaShulchan OC 425:4–5 (the displacement itself,
+  *verified*).
+- **Confidence:** High for HaChodesh; Low for Chanukah.
+- **Open:** a Chabad source for a Shabbos of Chanukah on 29 Kislev.
+
+### Chabad on Shabbos Rosh Chodesh Av {#chabad-on-shabbos-rosh-chodesh-av}
+
+- **Status:** Sourced.
+- **What it does:** the Chabad haftara on Shabbos Rosh Chodesh Av is Shim'u (Jeremiah 2:4-28;
+  4:1-2) alone, with no verses of Isaiah 66 added.
+- **Why:** Sefer HaMinhagim lists "Shabbos Rosh Chodesh Menachem Av: shim'u", and in the laws of
+  the Three Weeks gives Jeremiah 2:4-28 and 4:1-2. Its note records that the Rebbe Rashab once
+  read Isaiah 66 and later regretted it.
+- **Sources:** Sefer HaMinhagim, "The Torah Reading on Shabbos and Festivals" and "The Three
+  Weeks" (English, Kehot) (*verified*).
+- **Confidence:** High.
+- **Open:** nothing.
+
+### Shnayim Mikra {#shnayim-mikra}
+
+- **Status:** Sourced.
+- **What it does:** `shnayimMikra` gives the parsha (or joined parshiyos) the congregation reads on
+  the coming Shabbos, its verses, and that Shabbos. In a week whose Shabbos is Yom Tov, the next
+  parsha read on Shabbos. After the year's last Shabbos parsha until Simchas Torah, Vezos
+  HaBeracha, with no Shabbos. On Shabbos itself, that Shabbos's parsha (from Mincha the next week's
+  counts too; a date has no time of day). No split by day.
+- **Why:** the Shulchan Aruch ties it to the week's parsha read with the congregation, and sets no
+  daily portion.
+- **Sources:** SA OC 285:1 ("חייב לקרות לעצמו בכל שבוע פרשת אותו שבוע"), 285:3 ("מיום ראשון ואילך
+  חשיב עם הצבור"), 285:4 (best before the Shabbos meal; until Mincha; some say until Wednesday or
+  Simchas Torah), 285:7 ("אין צריך לקרות פרשת יו"ט"); MB 285:7 and 10 (from Shabbos Mincha the next
+  week's), 285:8 (the Gra read part of it each day and finished on Friday), 285:18 (Vezos HaBeracha
+  on Hoshana Rabba) (*verified*, Sefaria).
+- **Confidence:** High.
+- **Open:** nothing.
 
 ### Pirkei Avos one chapter a week {#pirkei-avos-one-chapter-a-week}
 

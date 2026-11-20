@@ -38,6 +38,7 @@ const termKeys = (): string[] => Object.keys({
   'mincha': 0, 'maariv': 0, 'musaf': 0, 'sefiras-haomer': 0, 'menorah': 0,
   'parshas': 0, 'parsha': 0, 'omer': 0, 'erev-shabbos': 0, 'erev-yom-tov': 0, 'motzaei-yom-tov': 0,
   'today': 0, 'tonight': 0, 'tomorrow': 0, 'tomorrow-night': 0, 'night': 0, 'evening': 0, 'afternoon': 0,
+  'rosh-hashana': 0, 'sukkos': 0, 'pesach': 0, 'shavuos': 0, 'chanukah': 0,
 } satisfies Record<Exclude<TermKey, 'havdala' | 'candle-lighting'>, 0>);
 
 /** The keys that were once a `term.*` name: one name each, now the zman's. */
@@ -91,7 +92,7 @@ function placeholderProblem(key: string, name: string): string | null {
 }
 
 /** Every key Luach reads a name from, for {@link nameEntries} and {@link parseNames}. */
-export function nameKeys(): ReadonlySet<string> {
+function nameKeys(): ReadonlySet<string> {
   return new Set(keys().map(([k]) => k));
 }
 

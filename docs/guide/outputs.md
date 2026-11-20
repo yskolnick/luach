@@ -13,9 +13,9 @@
 ## One call per day
 
 `dayInfo(date, options)` returns a plain JSON object with everything about the day: Hebrew
-date, events, parsha and haftara, Omer, tefillah changes, learning (when you pass it, see below),
+date, events, parsha and haftara, Omer, tefilla changes, learning (when you pass it, see below),
 and (with a `location`) zmanim, candle lighting, havdala and fast times. Its shape is described by a
-[JSON Schema](https://raw.githubusercontent.com/yskolnick/luach/v0.5.0/schema/day.schema.json),
+[JSON Schema](https://raw.githubusercontent.com/yskolnick/luach/v0.5.5/schema/day.schema.json),
 which ships in the package as `luach/schema/day.schema.json`; each object's `$schema` is that
 URL (`DAY_INFO_SCHEMA_ID`).
 
@@ -82,7 +82,7 @@ now.clock;                       // { date: "2026-10-23", time: "18:00:00", week
 now.hebrewDate.formatted;        // "13 Heshvan 5787": the Hebrew date now, Shabbos, though the clock says Friday
 now.day.candleLighting?.local;   // "17:18": the civil day is still Friday, with tonight's candles
 now.melacha.inProgress;          // true
-now.melacha.begins.local;        // "17:18": the candles (Jerusalem's custom is 40 minutes before sunset)
+now.melacha.begins.local;        // "17:58": shkiah (candle lighting, 40 minutes before it in Jerusalem, is the 17:18 above)
 now.melacha.ends.local;          // "18:35": havdala, on Saturday evening
 now.melacha.ends.time;           // "2026-10-24T15:35:00.000Z": the minute shown, rounded on the safe side; `exact` is the instant
 ```
@@ -91,9 +91,9 @@ The instant is a `Date`; over HTTP or on the command line it is an ISO 8601 stri
 offset (`Z` or `+hh:mm`), because a string without one would be read in the server's or the
 computer's zone. `options` are the zmanim options (`opinions`, `candleLightingMinutes`, `israel`, the holiday
 options, …) and `locale` for the names; the default locale is Hebrew, as in `dayInfo`. The shape is
-described by a [JSON Schema](https://raw.githubusercontent.com/yskolnick/luach/v0.5.0/schema/now.schema.json),
+described by a [JSON Schema](https://raw.githubusercontent.com/yskolnick/luach/v0.5.5/schema/now.schema.json),
 which ships as `luach/schema/now.schema.json`; the `day` part is the
-[day schema](https://raw.githubusercontent.com/yskolnick/luach/v0.5.0/schema/day.schema.json), which a
+[day schema](https://raw.githubusercontent.com/yskolnick/luach/v0.5.5/schema/day.schema.json), which a
 validator needs alongside it. Every zman, event and Hebrew date in the document has one shape, and
 every zman names its opinion and source.
 
@@ -117,12 +117,12 @@ and custom were in force.
 | The question | The path |
 |---|---|
 | Is melacha forbidden now? `true`, `false`, or `null` | `melacha.inProgress` |
-| When do the candles and the havdala fall; when does this run begin and end | `melacha.begins`, `melacha.ends` |
+| When does this run begin (shkiah) and end (havdala) | `melacha.begins`, `melacha.ends` |
 | Which days is the run, what is each, which candles begin each | `melacha.eve`, `melacha.days[]` (`date`, `hebrewDate`, `shabbos`, `events`, `candles`) |
-| Is a fast on, or the next one today or tomorrow | `fast`: `null`, or `event`, `hebrewDate`, `inProgress`, `begins`, `ends` |
+| Is a fast on, or the next one today or tomorrow | `fast`: `null`, or `event`, `hebrewDate`, `beginsEvening`, `inProgress`, `begins`, `ends` |
 | The place's clock: date, time, day of the week, offset | `clock` |
 | The Hebrew date now, and when it began and changes | `hebrewDate`, `hebrewDate.begins`, `hebrewDate.ends` |
-| Everything about today at the place (the civil day): holidays, parsha, haftara, Omer, tefillah, learning, zmanim, tonight's candles and havdala, today's fast | `day` (the whole [day JSON](#one-call-per-day)) |
+| Everything about today at the place (the civil day): holidays, parsha, haftara, Omer, tefilla, learning, zmanim, tonight's candles and havdala, today's fast | `day` (the whole [day JSON](#one-call-per-day)) |
 | What the answers follow: the opinions in force, the candle-lighting minutes, the other settings | `settings` |
 | Until when the document is good: ask again at this instant | `validUntil` |
 | What is counted and lit: the night in progress, and the coming night | `night`, `nextNight`: `hebrewDate`, `sunset`, `tzeis`, `alos`, `sunrise`, `omer`, `chanukahLights`, `chanukahLighting` |
@@ -230,6 +230,14 @@ const ics = toICalendar({ year: 2026, month: 9, day: 1 }, { year: 2027, month: 8
 });
 ```
 
+Each event has a stable `UID`, so a calendar app that subscribes again updates the events
+instead of adding them twice. The UID of an event whose time depends on the place or the
+settings (candle lighting, havdala, and any `zmanim` you add) ends in a short tag of the place
+(to 4 decimals of latitude and longitude, and its time zone), the settings and, for the evening
+times, the havdala and fast-end opinions: `5787-7-1-candles-51341d64@luach`. Two feeds for
+different places or opinions therefore do not replace each other's events, and the same inputs
+give the same UID every time. Holidays, the parsha and learning have no tag.
+
 ## Command line
 
 ```sh
@@ -241,6 +249,9 @@ npx luach holidays 5787 --israel
 npx luach convert "14 Adar II 5787"
 npx luach ics 2026-09-01 2027-08-31 --city london > luach.ics
 ```
+
+A place may be given as an argument instead of `--city` (`npx luach now jerusalem`; quote one with
+spaces). An option a command does not take, or an extra argument, is an error rather than being ignored.
 
 ## Your own API
 

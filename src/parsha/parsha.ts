@@ -36,6 +36,7 @@ import { lookupIn, type Locale } from '../locales/types.js';
 import { NAMES } from './names-data.js';
 import { he } from '../locales/he.js';
 import { hebrewDateArg } from '../calendar/date-input.js';
+import { deepFreeze } from '../util/freeze.js';
 
 /** The 54 parshiyos in order. Index = position in the Torah. */
 export const PARSHIYOS = [
@@ -76,6 +77,12 @@ interface Deadline {
 }
 
 const cache = new Map<string, ShabbosReading[]>();
+const MAX_CACHED_CYCLES = 64;
+
+/** How many cycles are held (for tests). Not exported from the package. */
+export function readingCycleCacheSize(): number {
+  return cache.size;
+}
 
 /**
  * Every Shabbos reading of the cycle that begins after Simchas Torah of Hebrew year `year`
@@ -154,6 +161,9 @@ export function readingCycle(year: number, options?: { israel?: boolean }): Shab
     i += parsha.length;
   }
   if (i !== P('vezos-haberacha')) throw new Error(`Parsha schedule for ${year} ended at ${PARSHIYOS[i]}`);
+  if (cache.size >= MAX_CACHED_CYCLES) cache.clear();
+  // Shared by every caller until the cache is cleared, so nobody may change it.
+  deepFreeze(out);
   cache.set(key, out);
   return out;
 }
@@ -174,7 +184,7 @@ export function parshaFor(date: HebrewDate, options?: { israel?: boolean }): Sha
     if (r) return r;
   }
   // Between Rosh Hashana and Simchas Torah on a Shabbos that is Yom Tov (belongs to neither list).
-  return { date: shabbos, parsha: null, holiday: festivalOn(shabbos, options?.israel ?? false) ?? 'unknown' };
+  return deepFreeze({ date: shabbos, parsha: null, holiday: festivalOn(shabbos, options?.israel ?? false) ?? 'unknown' });
 }
 
 /**

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/yskolnick/luach/v0.5.0/schema/now.schema.json",
+  "$id": "https://raw.githubusercontent.com/yskolnick/luach/v0.5.5/schema/now.schema.json",
   "title": "Luach now",
   "description": "Everything true at one instant at one place, as returned by nowInfo() in the luach package. Instants are ISO 8601 UTC; civil dates are YYYY-MM-DD on the place's clock. Zmans, events and Hebrew dates have one shape each (see $defs). Every zman names its opinion and source; defaults are not rulings. Ask your rav. Fields may be added in later versions; a reader should ignore fields it does not know.",
   "type": "object",
@@ -36,6 +36,10 @@
         "id": {
           "type": "string"
         },
+        "name": {
+          "type": "string",
+          "description": "The zman's name in the caller's locale. Not on the fallback times inside a zman."
+        },
         "time": {
           "type": [
             "string",
@@ -64,8 +68,8 @@
             "string",
             "null"
           ],
-          "pattern": "^[+-][0-9]{2}:[0-9]{2}$",
-          "description": "The location's offset from UTC at this time (ISO 8601, e.g. -05:00), so local and offset give the full local time; null with no time."
+          "pattern": "^[+-][0-9]{2}:[0-9]{2}(:[0-9]{2})?$",
+          "description": "The location's offset from UTC at this time (ISO 8601, e.g. -05:00; with :SS, as +02:20:54, only for the local mean time of old dates), so local and offset give the full local time; null with no time."
         },
         "timeZone": {
           "type": "string",
@@ -94,11 +98,17 @@
             "no-sunset",
             "depends-on-missing-zman",
             "not-applicable-today",
+            "date-skipped-in-zone",
             "requires-terrain-data"
           ]
         },
         "fallback": {
           "type": "string"
+        },
+        "date": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+          "description": "Only with fallback: the civil date at the location of this time, which a fallback can place on another day than the one asked about (local has no date)."
         },
         "kind": {
           "enum": [
@@ -124,6 +134,36 @@
             },
             "nearestDay": {
               "$ref": "#/$defs/zman"
+            }
+          }
+        },
+        "countedFrom": {
+          "type": "object",
+          "description": "For a time a fixed number of minutes from sunrise or sunset: which sunrise or sunset (id, e.g. sunset-sea-level for candle lighting with elevation on), the minutes (negative: before it) and its time. Show this one beside the time, not the day's own sunset.",
+          "required": [
+            "id",
+            "minutes",
+            "time",
+            "local"
+          ],
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "minutes": {
+              "type": "number"
+            },
+            "time": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "local": {
+              "type": [
+                "string",
+                "null"
+              ]
             }
           }
         }
@@ -466,7 +506,7 @@
   "properties": {
     "$schema": {
       "type": "string",
-      "const": "https://raw.githubusercontent.com/yskolnick/luach/v0.5.0/schema/now.schema.json",
+      "const": "https://raw.githubusercontent.com/yskolnick/luach/v0.5.5/schema/now.schema.json",
       "description": "The $id of this schema."
     },
     "instant": {
@@ -587,7 +627,7 @@
       "description": "The Hebrew date now, by the dayBoundary opinion (a default of sunset, not a ruling), and the times that began and end it. Between sunset and nightfall the halachic date is in doubt."
     },
     "day": {
-      "$ref": "https://raw.githubusercontent.com/yskolnick/luach/v0.5.0/schema/day.schema.json",
+      "$ref": "https://raw.githubusercontent.com/yskolnick/luach/v0.5.5/schema/day.schema.json",
       "description": "The whole day view (schema/day.schema.json) of the place's civil day, clock.date: today's zmanim, tonight's candle lighting and havdala, today's fast, as a luach page shows them for today. It is not the Hebrew date now, which changes at sunset: for that use hebrewDate, night and nextNight. After local midnight it is the new civil day, which may not hold the havdala of a run that ended after midnight or the end of a fast: use melacha.ends and fast.ends, which are always those of the run and the fast in the document. Its candleLighting, havdala and shabbosEnds are that day's evening; melacha.begins and melacha.ends are those of the run, which may be days apart. Its omer is the count of the civil day's date. When opinions are given, its zmanim lists the user's own time for each part of the day (Zmanim.order); otherwise a common set."
     },
     "settings": {
@@ -786,6 +826,7 @@
           "required": [
             "event",
             "hebrewDate",
+            "beginsEvening",
             "inProgress",
             "begins",
             "ends"
@@ -796,6 +837,10 @@
             },
             "hebrewDate": {
               "$ref": "#/$defs/hebrewDate"
+            },
+            "beginsEvening": {
+              "type": "boolean",
+              "description": "True for a fast that begins the evening before, at sunset (Yom Kippur, Tisha B'Av); false for a minor fast, which begins at dawn."
             },
             "inProgress": {
               "type": [

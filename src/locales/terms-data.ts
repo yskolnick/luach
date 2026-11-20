@@ -31,6 +31,12 @@ export const TERMS: Readonly<Record<string, Readonly<Record<string, string>>>> =
     'night': 'לילה',
     'evening': 'ערב',
     'afternoon': 'אחר הצהריים',
+    // A festival as a whole, without a day number (the holiday names number each day).
+    'rosh-hashana': 'ראש השנה',
+    'sukkos': 'סוכות',
+    'pesach': 'פסח',
+    'shavuos': 'שבועות',
+    'chanukah': 'חנוכה',
   },
   ashkenazi: {
     'shabbos': 'Shabbos',
@@ -55,6 +61,11 @@ export const TERMS: Readonly<Record<string, Readonly<Record<string, string>>>> =
     'night': 'Night',
     'evening': 'Evening',
     'afternoon': 'Afternoon',
+    'rosh-hashana': 'Rosh Hashana',
+    'sukkos': 'Sukkos',
+    'pesach': 'Pesach',
+    'shavuos': 'Shavuos',
+    'chanukah': 'Chanukah',
   },
   sephardi: {
     'shabbos': 'Shabbat',
@@ -67,11 +78,19 @@ export const TERMS: Readonly<Record<string, Readonly<Record<string, string>>>> =
     'menorah': 'Menorah',
     'erev-shabbos': 'Erev Shabbat',
     'erev-yom-tov': 'Erev Yom Tov',
+    'motzaei-shabbos': 'Motzaei Shabbat',
+    'motzaei-yom-tov': 'Motzaei Yom Tov',
+    'sukkos': 'Sukkot',
+    'shavuos': 'Shavuot',
   },
   en: {
     'menorah': 'Menorah',
+    // As the English holiday names spell them.
+    'rosh-hashana': 'Rosh Hashanah',
+    'sukkos': 'Sukkot',
+    'pesach': 'Passover',
+    'shavuos': 'Shavuot',
+    'chanukah': 'Hanukkah',
   },
 };
 
-/** Which table to try next, after a style's own, for a word it has none for. */
-export const TERM_FALLBACK: Readonly<Record<string, string>> = { he: 'ashkenazi', sephardi: 'ashkenazi', en: 'sephardi' };

@@ -59,7 +59,8 @@ export type BeinHametzarimCustom = 'ashkenaz' | 'sephard';
  *
  * - `'week-only'`: the week of Tisha B'Av.
  * - `'from-rosh-chodesh'`: from Rosh Chodesh Av, Rosh Chodesh included (MB 551:58).
- * - `'from-2-av'`: from the day after Rosh Chodesh Av (Kaf HaChaim OC 551:125).
+ * - `'from-2-av'`: from the day after Rosh Chodesh Av: meat is eaten on Rosh Chodesh (Kaf HaChaim OC 551:126,
+ *   citing the Knesses HaGedolah, the Chida and Ben Ish Chai, Devarim 15).
  * - `'from-17-tammuz'`: from 17 Tammuz, weekdays only (MB 551:59).
  *
  * The end on 10 Av follows {@link MourningOptions.beinHametzarim}: until midday for
@@ -242,7 +243,7 @@ export function mourningPeriods(date: HebrewDate, options: MourningOptions = {})
     const source = {
       'week-only': 'SA OC 551:9',
       'from-rosh-chodesh': 'SA OC 551:9; MB 551:58',
-      'from-2-av': 'SA OC 551:9; Kaf HaChaim OC 551:125',
+      'from-2-av': 'SA OC 551:9; Kaf HaChaim OC 551:126',
       'from-17-tammuz': 'SA OC 551:9; MB 551:59',
     }[meatWine];
     if (e === dayAfter) {

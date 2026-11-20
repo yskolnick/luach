@@ -16,15 +16,15 @@
  * @packageDocumentation
  */
 
+import { checkOptions, SETTINGS_KEYS } from '../util/options.js';
 import type { DayLocation } from './day-location.js';
 import { HebrewDate } from '../calendar/hebrew-date.js';
 import { civilToDays, daysToCivil, type CivilDate } from '../time/civil.js';
-import { civilDateAt, localParts, type TimeZone } from '../time/zone.js';
+import { civilDateAt, localParts, zonedToInstant, type TimeZone } from '../time/zone.js';
 import { he } from '../locales/he.js';
 import type { Locale } from '../locales/types.js';
-import { DayCalculator, type GeoLocation, type ShaahZmanis, type TraceStep } from './calendar.js';
+import { checkLocation, DayCalculator, type GeoLocation, type ShaahZmanis, type TraceStep } from './calendar.js';
 import { isInIsrael } from '../places/israel.js';
-import { LEGACY_METHOD_IDS } from './legacy.js';
 import { DAYS, ZMANIM, zmanDefinition, zmanLabel, type Moment, type Slot, type ZmanId, type ZmanIdIn } from './opinions.js';
 import { roundToLocalMinute, Zman, type ExplainStep, type Explanation, type ZmanKind, type ZmanUnavailableReason } from './zman.js';
 import { dayArg, instantArg, isHebrewDate } from '../calendar/date-input.js';
@@ -57,6 +57,17 @@ export interface Opinions {
   readonly dayBoundary?: ZmanIdIn<'sunset' | 'tzeis'>;
 }
 
+/**
+ * Which sunset candle lighting and the start of Yom Kippur and Tisha B'Av count from, in words,
+ * for a calculator with elevation on.
+ * @internal
+ */
+export function beginningsText(z: Zmanim): string {
+  return z.settings.beginningsSunset === 'elevation'
+    ? `counted from the sunset at the place's elevation of ${z.place.elevation ?? 0} m`
+    : `counted from the sunset at sea level (Luach's default for these beginnings)`;
+}
+
 /** A choice a user makes: which opinion to follow for one time of the day or one boundary. */
 export type Role = keyof Opinions;
 
@@ -79,6 +90,13 @@ export interface ZmanimSettings {
   readonly candleLightingMinutes?: number;
   /** Elevation-adjusted sunrise and sunset, and the Gra day built on them. Default false (sea level). Degree-based zmanim are always at sea level. */
   readonly useElevation?: boolean;
+  /**
+   * With `useElevation`, the sunset that candle lighting and the start of Yom Kippur and Tisha B'Av
+   * count from: `'sea-level'` (default, a documented default for a rav to decide, not a ruling) or
+   * `'elevation'`. Sunrise, sunset and the other times still follow `useElevation`. Without
+   * `useElevation` it changes nothing.
+   */
+  readonly beginningsSunset?: 'sea-level' | 'elevation';
   /** Minutes after sunset for Ateret Torah's tzeis. Default 40. */
   readonly ateretTorahMinutes?: number;
   /** When the sun does not reach an angle: `'none'` (default; the time is null), `'nearestDay'` or `'halfNight'`, marked in `Zman.fallback`. */
@@ -102,8 +120,8 @@ export interface OpinionProblem {
 
 /** What {@link Zmanim.parseOpinions} found. `value` always holds the valid choices, so an app can carry on with them. */
 export type ParsedOpinions =
-  | { readonly ok: true; readonly value: Opinions; readonly upgraded: readonly { key: string; from: string; to: ZmanId }[] }
-  | { readonly ok: false; readonly value: Opinions; readonly upgraded: readonly { key: string; from: string; to: ZmanId }[]; readonly problems: readonly OpinionProblem[] };
+  | { readonly ok: true; readonly value: Opinions }
+  | { readonly ok: false; readonly value: Opinions; readonly problems: readonly OpinionProblem[] };
 
 const ROLE_SLOTS: Readonly<Record<Role, readonly Slot[]>> = Object.freeze({
   alos: ['alos'], misheyakir: ['misheyakir'], sunrise: ['sunrise'], shema: ['shema'], tefilla: ['tefilla'], chatzos: ['chatzos'],
@@ -140,10 +158,18 @@ const PART: Readonly<Record<DaySlot, DayPart>> = {
   chatzos: 'afternoon', minchaGedola: 'afternoon', minchaKetana: 'afternoon', plag: 'afternoon',
   sunset: 'evening', tzeis: 'evening',
 };
-const ALIASES: Readonly<Record<string, Role>> = { tefillah: 'tefilla', shabbosEnds: 'havdala', shkiah: 'sunset', netz: 'sunrise' };
 
 const has = (o: object, k: string) => Object.prototype.hasOwnProperty.call(o, k);
 const isRole = (k: string): k is Role => has(ROLE_SLOTS, k);
+
+/** Throws a RangeError unless `c` is a place's documented candle-lighting custom: `{ minutes, custom, source }`. */
+function assertCandleCustom(c: unknown): void {
+  const o = c as Partial<Record<'minutes' | 'custom' | 'source', unknown>> | null;
+  const shape = 'candleLighting must be { minutes, custom, source } (minutes before sunset, whose custom, where it is documented); for just the minutes use settings.candleLightingMinutes';
+  if (typeof c !== 'object' || o === null) throw new RangeError(shape);
+  if (typeof o.minutes !== 'number' || !Number.isFinite(o.minutes) || o.minutes < 0 || o.minutes > 180) throw new RangeError(`candleLighting.minutes must be a number from 0 to 180. ${shape}`);
+  if (typeof o.custom !== 'string' || o.custom === '' || typeof o.source !== 'string' || o.source === '') throw new RangeError(`candleLighting.custom and candleLighting.source must be text. ${shape}`);
+}
 
 /** The problem with `id` for `role`, or null if it fits. */
 function problemWith(role: Role, id: unknown): string | null {
@@ -159,7 +185,7 @@ function kindOf(id: string): ZmanKind {
 }
 
 /** The note on the 18-minute default in Israel. @internal */
-export const CANDLE_ISRAEL_NOTE = '(Luach has no documented custom for this place)';
+const CANDLE_ISRAEL_NOTE = '(Luach has no documented custom for this place)';
 
 /** Zmanim at one place, by one set of opinions. Immutable. */
 export class Zmanim {
@@ -185,15 +211,18 @@ export class Zmanim {
    * unknown time zone.
    */
   constructor(place: GeoLocation, opinions: Opinions = {}, settings: ZmanimSettings = {}) {
+    checkLocation(place);
+    checkOptions('new Zmanim', settings, SETTINGS_KEYS);
     for (const [k, v] of Object.entries(opinions)) {
       if (!isRole(k)) throw new RangeError(`Unknown opinion "${k}"`);
       const p = problemWith(k, v);
       if (p) throw new RangeError(`opinions.${k}: ${p}`);
     }
     // The place's documented custom sets the candle-lighting minutes unless the caller did.
-    const custom = settings.candleLightingMinutes === undefined ? (place as DayLocation).candleLighting : undefined;
+    const given = (place as DayLocation).candleLighting;
+    if (given !== undefined && given !== null) assertCandleCustom(given);
+    const custom = settings.candleLightingMinutes === undefined ? given ?? undefined : undefined;
     const effective: ZmanimSettings = custom ? { ...settings, candleLightingMinutes: custom.minutes } : settings;
-    if (settings.round !== undefined && settings.round !== 'safe' && settings.round !== 'none') throw new RangeError(`round must be "safe" or "none", not ${JSON.stringify(settings.round) ?? String(settings.round)}`);
     // Checks the place and the settings once, so that queries never throw.
     new DayCalculator(place, { year: 2000, month: 1, day: 1 }, effective);
     this.place = place;
@@ -221,35 +250,32 @@ export class Zmanim {
   }
 
   /**
-   * Reads opinions from storage or a request: plain JSON in, valid {@link Opinions} out. It reads
-   * Luach 0.1's method names (`"sofZmanShemaMga72"`), the keys `tefillah` and `shabbosEnds`, and
-   * havdala as `"degrees-8.5"` or `"minutes-72"`, and reports what it changed and what it could
-   * not use. Never throws.
+   * Reads opinions from storage or a request: plain JSON in, valid {@link Opinions} out. Each key
+   * is a role (`shema`, `havdala` …) and each value a zman id (`"sof-zman-shema-mga-72"`), as
+   * {@link Zmanim.choices} lists them; anything else is reported in `problems` and left out, so
+   * that role uses its default. Never throws.
    */
   static parseOpinions(json: unknown): ParsedOpinions {
     const value: Record<string, string> = {};
     const problems: OpinionProblem[] = [];
-    const upgraded: { key: string; from: string; to: ZmanId }[] = [];
-    if (json === null || json === undefined) return { ok: true, value, upgraded };
-    if (typeof json !== 'object' || Array.isArray(json)) {
-      return { ok: false, value, upgraded, problems: [{ key: '', value: json, problem: 'opinions must be an object' }] };
-    }
-    for (const [rawKey, v] of Object.entries(json as Record<string, unknown>)) {
-      const key = isRole(rawKey) ? rawKey : ALIASES[rawKey];
-      if (!key) { problems.push({ key: rawKey, value: v, problem: 'is not an opinion Luach knows' }); continue; }
-      let id = v;
-      if (typeof v === 'string' && !zmanDefinition(v)) {
-        const legacy = LEGACY_METHOD_IDS[v];
-        const m = /^(degrees|minutes)-(\d+(?:\.\d+)?)$/.exec(v);
-        const fromAfterSunset = m ? `tzeis-${m[2]}` : undefined;
-        id = legacy ?? (fromAfterSunset && zmanDefinition(fromAfterSunset) ? fromAfterSunset : v);
+    if (json === null || json === undefined) return { ok: true, value };
+    let pairs: [string, unknown][];
+    try {
+      if (typeof json !== 'object' || Array.isArray(json)) {
+        return { ok: false, value, problems: [{ key: '', value: json, problem: 'opinions must be an object' }] };
       }
-      const p = problemWith(key, id);
-      if (p) { problems.push({ key: rawKey, value: v, problem: p }); continue; }
-      if (id !== v || key !== rawKey) upgraded.push({ key: rawKey, from: String(v), to: id as ZmanId });
-      value[key] = id as string;
+      pairs = Object.entries(json as Record<string, unknown>);
+    } catch {
+      return { ok: false, value, problems: [{ key: '', value: undefined, problem: 'opinions could not be read' }] };
     }
-    return problems.length ? { ok: false, value: value as Opinions, upgraded, problems } : { ok: true, value: value as Opinions, upgraded };
+    for (const [key, v] of pairs) {
+      // Own properties only: a key such as "constructor" must not reach Object.prototype.
+      if (!isRole(key)) { problems.push({ key, value: v, problem: 'is not an opinion Luach knows' }); continue; }
+      const p = problemWith(key, v);
+      if (p) { problems.push({ key, value: v, problem: p }); continue; }
+      value[key] = v as string;
+    }
+    return problems.length ? { ok: false, value: value as Opinions, problems } : { ok: true, value: value as Opinions };
   }
 
   /** The civil day `date` at the place. A Hebrew date means its daytime. */
@@ -381,7 +407,13 @@ export class ZmanimDay {
     this.owner = owner;
     this.date = date;
     this.engine = new DayCalculator(owner.place, date, { ...owner.settings, rounding: false });
+    // A civil date the zone skipped (the date line moved over it) has no local day. Its local noon
+    // reads as the next day's, so the date never appears on the wall clock there.
+    const c = civilDateAt(zonedToInstant(date, 12 * 60, owner.place.timeZone), owner.place.timeZone);
+    this.skipped = c.year !== date.year || c.month !== date.month || c.day !== date.day;
   }
+
+  private readonly skipped: boolean;
 
   /** The place. */
   get place(): GeoLocation {
@@ -415,6 +447,8 @@ export class ZmanimDay {
     z = custom
       ? this.build(id, id, `Candle lighting ${custom.minutes} minutes before sunset, ${custom.custom}`, `${custom.source}; Shulchan Aruch OC 261:2 (tosefes Shabbos)`)
       : this.build(id, id, id === 'candle-lighting' && this.owner.candleNote ? `${def.opinion} ${this.owner.candleNote}` : id === 'sunrise' || id === 'sunset' ? `${def.opinion}, ${this.heightText()}` : def.opinion, def.source);
+    // With elevation on, say which sunset candle lighting counts from.
+    if (id === 'candle-lighting' && this.owner.settings.useElevation) z = this.build(id, id, `${z.opinion}; ${beginningsText(this.owner)}`, z.source);
     this.cache.set(id, z);
     return z;
   }
@@ -449,7 +483,9 @@ export class ZmanimDay {
   private build(id: string, from: ZmanId, opinion: string, source: string, engine: DayCalculator = this.engine): Zman {
     const def = zmanDefinition(id);
     if (!def) throw new RangeError(`Unknown zman "${id}"`);
-    const { raw, steps } = engine.traced(from);
+    const traced = engine.traced(from);
+    const steps = traced.steps;
+    const raw: typeof traced.raw = this.skipped ? { reason: 'date-skipped-in-zone' } : traced.raw;
     // Where the sun never gets low enough for this time, give what each high-latitude rule would
     // give, so a caller who chooses one need not compute it (they are not used unless chosen).
     // A time made from one that does not occur (a proportional hour from a missing dawn) gets them
@@ -460,6 +496,9 @@ export class ZmanimDay {
       const nearestDay = this.build(id, from, opinion, source, this.engineWith('nearestDay'));
       if (halfNight.exact !== null || nearestDay.exact !== null) fallbacks = { halfNight, nearestDay };
     }
+    const countedFrom = engine === this.engine && from === id ? countedFromOf(this, this.owner, def.at) : undefined;
+    // Candle lighting is counted from a sunset: where there is none, say why (`no-sunset`), not only that a time it depends on is missing.
+    const rootReason = 'reason' in raw ? (id === 'candle-lighting' && raw.reason === 'depends-on-missing-zman' && countedFrom?.zman.reason) || raw.reason : undefined;
     const tz = this.owner.place.timeZone;
     const kind = kindOf(id);
     const exact = 'time' in raw ? (kind === 'earliest' ? Math.ceil(raw.time) : Math.floor(raw.time)) : null;
@@ -476,10 +515,11 @@ export class ZmanimDay {
       timeZone: tz,
       kind,
       slot: def.slot,
-      ...('reason' in raw ? { reason: raw.reason } : {}),
+      ...('reason' in raw ? { reason: rootReason } : {}),
       ...(raw.fallback ? { fallback: raw.fallback } : {}),
       ...(fallbacks ? { fallbacks } : {}),
-      explain: () => explanation(steps, tz, opinion, source, 'reason' in raw ? raw.reason : undefined, exact, kind),
+      ...(countedFrom ? { countedFrom } : {}),
+      explain: () => explanation(steps, tz, opinion, source, rootReason, exact, kind),
     });
   }
 
@@ -532,6 +572,23 @@ const SUN_NAMES: Readonly<Record<string, string>> = {
   noon: 'Midday, the sun on the meridian',
   midnight: 'Midnight, halfway to the next midday',
 };
+
+/** For a time a fixed number of minutes from sunrise or sunset: that sunrise or sunset, and the minutes. */
+function countedFromOf(day: ZmanimDay, owner: Zmanim, at: Moment | undefined): { minutes: number; zman: Zman } | undefined {
+  if (!at || !('offset' in at) || !('sun' in at.from)) return undefined;
+  const settings = owner.settings;
+  const minutes = typeof at.offset === 'number'
+    ? at.offset
+    : at.offset.sign * (at.offset.option === 'candleLightingMinutes' ? settings.candleLightingMinutes ?? 18 : settings.ateretTorahMinutes ?? 40);
+  const elevation = settings.useElevation === true;
+  const SUN: Partial<Record<string, ZmanId>> = {
+    rise: 'sunrise', set: 'sunset', 'rise-sea-level': 'sunrise-sea-level', 'set-sea-level': 'sunset-sea-level',
+    'rise-elevation': 'sunrise-elevation', 'set-elevation': 'sunset-elevation',
+    'set-beginnings': elevation && settings.beginningsSunset === 'elevation' ? 'sunset-elevation' : 'sunset-sea-level',
+  };
+  const id = SUN[at.from.sun];
+  return id ? { minutes, zman: day.get(id) } : undefined;
+}
 
 function reasonText(reason: ZmanUnavailableReason | undefined, m: Moment): string {
   if ('angle' in m) {

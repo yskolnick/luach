@@ -1,6 +1,6 @@
 /**
  * Reading and writing the settings that are not opinions, for storage, share links and servers:
- * the zmanim settings (`useElevation`, `candleLightingMinutes`, `ateretTorahMinutes`,
+ * the zmanim settings (`useElevation`, `beginningsSunset`, `candleLightingMinutes`, `ateretTorahMinutes`,
  * `highLatitudeFallback`, `algorithm`, `round`) and the customs the at-instant functions take
  * (`chanukahLighting`, `secondNightCandles`, `omerFrom`). Opinions have their own reader,
  * `Zmanim.parseOpinions`.
@@ -37,6 +37,7 @@ const minutes = (min: number, inclusive: boolean) => (v: unknown): string | null
 
 const CHECKS: Readonly<Record<keyof Settings, (v: unknown) => string | null>> = {
   useElevation: (v) => (typeof v === 'boolean' ? null : 'must be true or false'),
+  beginningsSunset: oneOf('sea-level', 'elevation'),
   candleLightingMinutes: minutes(0, true),
   ateretTorahMinutes: minutes(0, false),
   highLatitudeFallback: oneOf('none', 'nearestDay', 'halfNight'),

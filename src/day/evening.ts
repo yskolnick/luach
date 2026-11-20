@@ -7,10 +7,11 @@
 
 import { HebrewDate } from '../calendar/hebrew-date.js';
 import { MAX_DAYS } from '../calendar/year.js';
-import { holidaysOn } from '../holidays/holidays.js';
+import { isHolyDay } from '../holidays/holidays.js';
 import type { HolidayOptions } from '../holidays/types.js';
 import { israelFor } from '../places/israel.js';
 import { fastTimes, zmanimFor, type ZmanimOptions } from '../zmanim/day.js';
+import type { Zmanim } from '../zmanim/zmanim.js';
 import type { DayLocation } from '../zmanim/day-location.js';
 import { zmanDefinition, type ZmanId } from '../zmanim/opinions.js';
 import type { Zman } from '../zmanim/zman.js';
@@ -22,8 +23,17 @@ function as(day: ZmanimDay, id: string, from: ZmanId): Zman {
   return day.labelled(id, from, def.opinion, `${def.source}; time: ${day.get(from).opinion}`);
 }
 
-function holy(d: HebrewDate, opts: HolidayOptions): boolean {
-  return d.isShabbos || holidaysOn(d, opts).some((e) => e.flags.melachaForbidden);
+/**
+ * What a caller that has already computed it passes in, so one day view builds one `Zmanim`
+ * and computes the fasts once: the `Zmanim` for the location and the options (holiday options
+ * included), the day's fast and the next day's (null when there is none).
+ *
+ * @internal
+ */
+interface SharedDay {
+  readonly z: Zmanim;
+  readonly fast: ReturnType<typeof fastTimes>;
+  readonly nextFast: ReturnType<typeof fastTimes>;
 }
 
 /**
@@ -36,17 +46,17 @@ function holy(d: HebrewDate, opts: HolidayOptions): boolean {
  *
  * @internal
  */
-export function eveningOf(h: HebrewDate, location: DayLocation, options: ZmanimOptions = {}): { candles: Zman | null; havdala: Zman | null; shabbosEnds: Zman | null } {
+export function eveningOf(h: HebrewDate, location: DayLocation, options: ZmanimOptions = {}, shared?: SharedDay): { candles: Zman | null; havdala: Zman | null; shabbosEnds: Zman | null } {
   const hopts: HolidayOptions = { ...options, israel: israelFor(options.israel, location) };
   const zopts = { ...options, ...hopts };
-  const z = zmanimFor(location, zopts);
+  const z = shared?.z ?? zmanimFor(location, zopts);
   const day = z.on(h);
   let candles: Zman | null = null;
   let havdala: Zman | null = null;
   let shabbosEnds: Zman | null = null;
-  const today = holy(h, hopts);
+  const today = isHolyDay(h, hopts);
   // After 29 Elul 9999 (the last supported day) comes Rosh Hashana 10000, always Yom Tov.
-  const tomorrow = h.epochDays === MAX_DAYS || holy(h.next(), hopts);
+  const tomorrow = h.epochDays === MAX_DAYS || isHolyDay(h.next(), hopts);
   // Lighting after nightfall is only for a second holy night that is Yom Tov: from Shabbos
   // into Yom Tov, or from Yom Tov into Yom Tov (SA OC 503:1). Shabbos itself begins at sunset
   // (SA OC 261:2), so on a Yom Tov that falls on Friday the candles for Shabbos are lit at
@@ -56,8 +66,8 @@ export function eveningOf(h: HebrewDate, location: DayLocation, options: ZmanimO
   // takes it from the location.
   if (beforeSunset) candles = day.get('candle-lighting');
   else if (tomorrow && today) candles = as(day, 'candle-lighting-second-night', options.secondNightCandles ?? z.opinions.havdala);
-  const ft = fastTimes(h, location, zopts);
-  const next = h.epochDays < MAX_DAYS ? fastTimes(h.next(), location, zopts) : null;
+  const ft = shared ? shared.fast : fastTimes(h, location, zopts);
+  const next = shared ? shared.nextFast : h.epochDays < MAX_DAYS ? fastTimes(h.next(), location, zopts) : null;
   // Tisha B'Av postponed from Shabbos to Sunday: no havdala over a cup on Motzaei Shabbos;
   // it is said over a cup, without candle or spices, when the fast ends (SA OC 556:1).
   // Melacha after Shabbos needs "HaMavdil bein kodesh lechol" (MB 556:2; SA OC 299:10).

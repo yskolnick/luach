@@ -48,6 +48,8 @@ export interface HolidayEvent {
   readonly begins: 'sunset' | 'dawn';
   /** For multi-day events: which day (Chanukah day 1–8, Chol Hamoed day, Rosh Chodesh day 1–2, Omer day…). */
   readonly day?: number;
+  /** Purim Meshulash: the parts of the day, by id (Shulchan Aruch OC 688:6). */
+  readonly parts?: readonly string[];
   /** Chanukah: candles lit on the evening that ends this day (0 after the last night). */
   readonly candlesTonight?: number;
   /** Rosh Chodesh, Shabbos Mevorchim, Yom Kippur Katan: the month concerned (Month number). */
@@ -96,6 +98,22 @@ export interface HolidayOptions {
    * In Israel only Yom Kippur for now: no text was found for the festival days there. Default `false`.
    */
   yizkor?: boolean;
+  /**
+   * Include the days of the Chabad-Lubavitch calendar that Luach has read in a sefer (ids
+   * `chabad-<day>-<month>`, e.g. `chabad-19-kislev`), as optional minor days on their Hebrew dates
+   * in every year. The English name says what the sefer says the day marks; the Hebrew name is the
+   * date. Each is cited in docs/halacha/choices.md. Four days are not included, as no sefer was
+   * read for them: 1 Kislev, 5 Teves, 22 Shevat and 25 Adar. Default `false`.
+   */
+  chabad?: boolean;
   /** Include Shabbos Mevorchim. Default `true`. */
   shabbosMevorchim?: boolean;
+  /**
+   * A place that keeps Purim on 15 Adar, as a city walled since Yehoshua's days (Mishna Megillah
+   * 1:1; Shulchan Aruch OC 688:1-3). Purim Meshulash, with its three days, is in the list only
+   * when this is `true`. In the day and now views the default is `true` for a built-in `Place`
+   * that has `walledCity` (Jerusalem) and `false` otherwise; an explicit value always wins. In
+   * the calendar functions, which have no place, the default is `false`.
+   */
+  walledCity?: boolean;
 }

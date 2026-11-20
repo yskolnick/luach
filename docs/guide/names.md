@@ -57,6 +57,7 @@ defaults to `he`, as the other name functions do.
 | `motzaei-yom-tov` | The night after a Yom Tov |
 | `today`, `tonight`, `tomorrow`, `tomorrow-night` | Today, tonight, tomorrow, tomorrow night |
 | `night`, `evening`, `afternoon` | Night, evening, afternoon |
+| `rosh-hashana`, `sukkos`, `pesach`, `shavuos`, `chanukah` | The festival as a whole, without a day number ("Sukkos", not "Sukkos I"; "חנוכה", not "חנוכה ג׳") |
 
 `termName('havdala', locale)` and `termName('candle-lighting', locale)` also work, but they are not
 separate words: each has one name, the zman's. They give the name of `zman.havdala` and
@@ -73,7 +74,8 @@ A word comes from the locale's own `names` first (the key is `term.<key>`, for e
 `term.shabbos`), then from its `fallback` locales, then from the table of its base set, then from
 the next set in this order: `he`, `sephardi` and `en` fall back to `ashkenazi` (`en` by way of
 `sephardi`). A word that no table has comes back as its key, `term.<key>`, as the other name
-functions do.
+functions do. Holiday, zman and parsha names are found the same way: the Sephardi and English
+tables hold only the names that differ from the set they fall back to.
 
 ### Which set has which word
 
@@ -86,7 +88,7 @@ above. `chabad`, `israeli` and `yi` show exactly what their base set shows.
 | Key | `he` | `ashkenazi` | `sephardi` | `en` |
 |---|---|---|---|---|
 | `shabbos` | שבת | Shabbos | Shabbat | Shabbat † |
-| `motzaei-shabbos` | מוצאי שבת | Motzei Shabbos | Motzei Shabbos † | Motzei Shabbos † |
+| `motzaei-shabbos` | מוצאי שבת | Motzei Shabbos | Motzaei Shabbat | Motzaei Shabbat † |
 | `yom-tov` | יום טוב | Yom Tov | Yom Tov | Yom Tov † |
 | `shacharis` | שחרית | Shacharis | Shacharis | Shacharis † |
 | `mincha` | מנחה | Mincha | Mincha | Mincha † |
@@ -99,7 +101,7 @@ above. `chabad`, `israeli` and `yi` show exactly what their base set shows.
 | `omer` | עומר | Omer | Omer † | Omer † |
 | `erev-shabbos` | ערב שבת | Erev Shabbos | Erev Shabbat | Erev Shabbat † |
 | `erev-yom-tov` | ערב יום טוב | Erev Yom Tov | Erev Yom Tov | Erev Yom Tov † |
-| `motzaei-yom-tov` | מוצאי יום טוב | Motzei Yom Tov | Motzei Yom Tov † | Motzei Yom Tov † |
+| `motzaei-yom-tov` | מוצאי יום טוב | Motzei Yom Tov | Motzaei Yom Tov | Motzaei Yom Tov † |
 | `today` | היום | Today | Today † | Today † |
 | `tonight` | הלילה | Tonight | Tonight † | Tonight † |
 | `tomorrow` | מחר | Tomorrow | Tomorrow † | Tomorrow † |
@@ -107,6 +109,11 @@ above. `chabad`, `israeli` and `yi` show exactly what their base set shows.
 | `night` | לילה | Night | Night † | Night † |
 | `evening` | ערב | Evening | Evening † | Evening † |
 | `afternoon` | אחר הצהריים | Afternoon | Afternoon † | Afternoon † |
+| `rosh-hashana` | ראש השנה | Rosh Hashana | Rosh Hashana † | Rosh Hashanah |
+| `sukkos` | סוכות | Sukkos | Sukkot | Sukkot |
+| `pesach` | פסח | Pesach | Pesach † | Passover |
+| `shavuos` | שבועות | Shavuos | Shavuot | Shavuot |
+| `chanukah` | חנוכה | Chanukah | Chanukah † | Hanukkah |
 
 `weekdayName(day, locale, { form: 'short' })` gives the short weekday: יום א׳ … יום ו׳, שבת in
 `he` (and `yi`); Sun … Fri, then Shabbos (`ashkenazi`, `chabad`), Shabbat (`sephardi`, `israeli`)
@@ -178,7 +185,7 @@ them:
 | `holiday` | `holiday.<id>`, or `holiday.<id>.<day>` for one day of a holiday | 82 |
 | `zman` | `zman.<id>`, one for each zman in the catalogue | 96 |
 | `parsha` | `parsha.<id>` in reading order, then `parsha.join`, the separator of a double reading | 55 |
-| `term` | `term.<key>`, the everyday words above | 22 |
+| `term` | `term.<key>`, the everyday words above | 27 |
 
 In a leap year `month.12.leap` and `month.13.leap` name the two Adars; in other years `month.12`
 names Adar. A holiday name may hold `{n}` (the day's number) and `{month}`; keep them in the

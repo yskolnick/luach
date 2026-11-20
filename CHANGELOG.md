@@ -1,9 +1,202 @@
 # Changelog
 
 All notable changes for users of the `luach` package. This project follows
-[Semantic Versioning](https://semver.org/).
+[Semantic Versioning](https://semver.org/). Until 1.0, while Luach changes quickly, every release
+counts up the last number (0.5.1, 0.5.2 … 0.5.11 and on), including releases that add API or change
+a default or a result: read **Changed** and **Breaking** before upgrading, and pin an exact
+version.
 
 ## Unreleased
+
+## 0.5.5 — 2026-11-14
+
+### Added
+- `walledCity` in the holiday and day options, and on the built-in Jerusalem: Purim on 15 Adar.
+  `dayInfo` takes it from the place; an explicit value wins. A Purim Meshulash event has `day`
+  (1 to 3) and `parts`.
+- The zmanim in the day view (`dayInfo` and its JSON) have `name`, the zman's name in the caller's
+  locale.
+- Candle lighting with no time because there is no sunset says `no-sunset` (the reason of the
+  sunset it is counted from) in `reason`, not `depends-on-missing-zman`. A zman that a
+  `highLatitudeFallback` gives has `date`, the civil date at the place that its time falls on (JSON
+  and schemas).
+- `fastTimes` and `fastAt` say `beginsEvening`: true for a fast that begins the evening before
+  (Yom Kippur, Tisha B'Av), false for a minor fast. It is also in `fast` in the day and now views
+  (JSON and schemas).
+- `dayLearning` and `dayLearningDetail` include `dafHaShavua`, from one table of cycles that
+  `icalLearning` shares.
+- `icalLearning` takes `amudYomi`.
+- `'chabad'` is an `OmerNusach` (the Ashkenaz wording, as in the Chabad siddur) and in
+  `amidahSeason` (morid hatal in summer, as Sefard).
+- Chabad customs, each read in a sefer and citing it:
+  - `holidaysOn` and the other holiday queries take `chabad: true` and add 23 days of the Chabad
+    calendar (`chabad-19-kislev` …), on their Hebrew dates, named in English by what the sefer says the
+    day marks and in Hebrew by the date.
+  - `tefillaOn` takes `minhag: 'chabad'` (no Tachanun on 10, 19 and 20 Kislev, 12 and 13 Tammuz and
+    7 Adar, nor at the Mincha before them; none from erev Yom Kippur to the end of Tishrei), and
+    `tachanunOmittedAtMincha` tells the Mincha before those days.
+- A new entry point, `luach/dailies`: `tehillimByWeek` and `shnayimMikra` (the week's parsha, read
+  with the congregation's Shabbos). Each from its rule in the Shulchan Aruch and the traditional
+  divisions of the text; no publisher's table.
+- Customs of more communities, each an option with its source, off by default:
+  - `tefillaOn(date, { noTachanunDays })`: a community's own days without Tachanun, such as a
+    Rebbe's yahrzeit.
+  - `tefillaOn(date, { mizmorLesodah: 'sephardi' })` says Mizmor L'Sodah on Erev Pesach, Chol
+    Hamoed Pesach and Erev Yom Kippur.
+  - `amidahSeason(date, { nusach: 'edot-hamizrach' }).barchenu`: the summer text of the blessing of
+    the years.
+- Teimani haftaros for Chayei Sarah, Ki Sisa, Masei, Matos-Masei, the joined parshiyos, the second
+  day of Shavuos, and Shekalim, HaChodesh and Chanukah on Shabbos Rosh Chodesh (they were `null`).
+
+### Breaking
+- Purim Meshulash now appears only where `walledCity` is `true` (Jerusalem in the day view), on
+  three days: Friday, Shabbos and Sunday. It no longer appears everywhere, on the Sunday only.
+- Options are checked. A key a function does not know (`dayInfo(d, { place })`,
+  `candelLightingMinutes`), a value that is not one of the choices (`highLatitudeFallback:
+  'halfnight'`) and an `israel` that is not a boolean now throw, naming the key and the nearest
+  known one, instead of being ignored. `nextHoliday` throws on an unknown event id.
+- Inputs outside what Luach can answer for throw a `RangeError`: a time zone provider whose offset
+  is not a finite number of minutes within ±24 hours (and `fixedOffsetZone` with such an offset), an
+  elevation below -500 m (a negative elevation above that is still read as sea level), a `Date` outside
+  the supported years (the message names the function), and `toICalendar` for dates before the year 1.
+- One spelling for tefilla: `tefillahOn`, `TefillahOptions` and `TefillahDay` are now `tefillaOn`,
+  `TefillaOptions` and `TefillaDay`, as `tefillaAt` and `TefillaAt` already were. The old names are
+  gone (no aliases).
+- The same spelling for the key: the day view's `tefillah` and `dayInfo`'s `tefillah` option are now
+  `tefilla` (JSON, `DayInfo`, `DayInfoOptions` and `schema/day.schema.json`). Rename the key where you
+  read it or pass it; `dayInfo` throws on the old key, naming the new one.
+- `isMelachaForbiddenAt`, `melachaRunAt` and `nowInfo().melacha` now begin at shkiah, not at candle
+  lighting. Candle lighting is unchanged. `melacha.begins` is now the shkiah `Zman` (id `sunset`); the
+  candles are in `melacha.days[0].candles`. `candleLightingMinutes` no longer changes when melacha
+  begins.
+- Every function that takes a location checks it first, and throws where it gave a wrong answer or a
+  raw error: a location that is `null`, not an object or without a time zone string is a
+  `TypeError`; a latitude outside -90 to 90, a longitude outside -180 to 180 and an elevation above
+  10,000 m are a `RangeError`. `nearestPlace` and `distanceKm` throw for a bad point (`nearestPlace(NaN,
+  NaN)` gave Jerusalem at `NaN` km). `dayInfo` with `location: null` throws as `undefined` does. A
+  non-finite value is named as received (`NaN`, not `null`).
+- In TypeScript, the keys of `DayLearning` and `DayLearningDetail` are the cycle names, `LearningCycleName`
+  (new, from `luach/learning`), where they were any string: `learning.dafYomy` no longer compiles.
+  `IcalLearningName` is the subset of them that `icalLearning` takes.
+- Results that were cached and shared are frozen: a `Zman`, the reading cycles and what `parshaFor`
+  returns. Changing one throws a `TypeError` (it used to change every later answer in the process).
+  A `Zman`'s `time` and `exact` give a new `Date` on each read, so `z.time !== z.time`; compare with
+  `getTime()`. Copy before you change: `[...parshaFor(d).parsha].reverse()`.
+- `yearLength`, `yearType`, `monthLength`, `monthsOfYear`, `isLeapYear` and `monthsInYear` throw a
+  `RangeError` for a year that is not a whole number from 1 to 9999 (`yearLength(NaN)` gave `NaN`).
+- `new Zmanim(place)` throws a `RangeError` if `place.candleLighting` is not a
+  `{ minutes, custom, source }` custom (a bare number gave an opinion reading "undefined"); to give
+  only the minutes, use `candleLightingMinutes`.
+
+### Removed
+- `rambamOneChapter`, `rambamThreeChapters` and `seferHaMitzvosDay`, and the Rambam cycles in the day's
+  learning, its JSON and the iCal names: Chabad learning schedules are paused until all of them can be
+  offered.
+
+### Fixed
+- Chabad haftaros (Sefer HaMinhagim): Shabbos HaChodesh on Erev Rosh Chodesh adds the first and
+  last verse of Machar Chodesh (`hachodesh-machar-chodesh`); Shabbos Rosh Chodesh Av reads Shim'u
+  alone, without verses of Isaiah 66.
+- The `'from-2-av'` meat-and-wine custom cites Kaf HaChaim OC 551:126.
+- `Zmanim.parseOpinions` never throws, as documented: keys such as `constructor`, `__proto__` or
+  `toString`, a Proxy and a throwing getter are reported as problems.
+- `icalLearning` counts a repeated name once (each copy added every day's portion again).
+- The published `.d.ts` files no longer carry members marked internal (`Zmanim` and the other classes show only
+  their public members).
+- Caches that could grow without bound are bounded: the time-zone formatters (one per spelling of a
+  zone), the reading cycles, and the per-year table for years out of range. Results are unchanged.
+- `searchPlaces` folds each place's names once: a name not in the full city table costs about a
+  tenth of what it did.
+- A location whose `latitude`, `longitude` or `elevation` is not a number (`null`, `''`, `[]`,
+  `true`, a string) throws a `TypeError` naming the field and the value, where it was read as zero
+  (the equator's times). `dayInfo` with a `location` key that is `undefined` (an unknown
+  `getPlace` id) throws a `TypeError`; leaving `location` out still gives no times.
+- The JSON `offset` is a valid ISO 8601 offset: `±HH:MM`, with `:SS` only for the local mean time
+  of old dates (`+02:20:54`), where it was `+02:20.900000000000006`. The schemas accept exactly that.
+- A civil date its time zone skipped (Pacific/Apia, 30 December 2011) has no times: each is `null`
+  with the new reason `'date-skipped-in-zone'` (in `ZmanUnavailableReason` and the JSON schemas),
+  where the next day's times were given as its own.
+
+## 0.5.4 — 2026-11-13
+
+### Added
+- `moladAnnouncement(year, month, locale, { date, time })`: the app's own formats for the civil
+  date and the clock time, put into the sentence, so no app edits it: "Tuesday night, Dec 12,
+  8:01 PM and 3 chalakim". `MoladAnnouncementOptions` is exported.
+- `molad(...).clock.date`: the civil date of the announced clock time (Jerusalem mean time).
+
+## 0.5.3 — 2026-11-13
+
+- `Zmanim.parseOpinions` reads only roles and zman ids, as `Zmanim.choices` lists them. The keys
+  `tefillah`, `shabbosEnds`, `shkiah` and `netz` and havdala as `"degrees-8.5"` or `"minutes-72"`
+  are no longer upgraded: each is a problem, and that role keeps its default. `upgraded` is gone
+  from the result. Store `{ tefilla, havdala, sunset, sunrise }` with zman ids (`"tzeis-8.5"`).
+- `moladAnnouncement(year, month, locale)` takes a names set, as the other name functions do, in
+  place of `'en' | 'he'`, and is in `he` by default (it was English). Use `ashkenazi` (or another
+  set) for English. The weekdays and Motzaei Shabbos are the set's own names (`weekday.N`,
+  `term.motzaei-shabbos`), so a word is changed through the names, not by editing the sentence:
+  `sephardi` says "Motzaei Shabbat, 7:03 pm …", `en` "Saturday early morning, 3:23 am".
+
+### Added
+- `molad(...).clock.period`: `'early-morning'` (before 6 am), `'day'` or `'night'` (from 6 pm, the
+  night of the next Hebrew day; on a Saturday, Motzaei Shabbos), for a wording of one's own.
+- `Zman.countedFrom` (and `countedFrom` in the JSON): for a time that is a fixed number of
+  minutes from sunrise or sunset, which sunrise or sunset and how many minutes. Candle lighting
+  with elevation on: `{ minutes: -18, zman: sunset-sea-level }`, so an app shows that sunset
+  beside it rather than the day's elevated one, which reads as 19 minutes.
+
+## 0.5.2 — 2026-11-13
+
+### Changed
+- With `useElevation` on, candle lighting (Shabbos, Yom Tov and the evening before Yom Kippur)
+  and the start of Yom Kippur and Tisha B'Av count from the sea-level sunset by default, not the
+  later sunset seen from the place's height; sunrise, sunset and every other time still follow
+  `useElevation`. Jerusalem (786 m), Yom Kippur 5788: 18:13, where 0.5.1 gave 18:17. Their
+  `opinion` says which sunset they count from. This is a documented default for a rav to decide,
+  not a ruling; see the halachic choices. Without `useElevation` nothing changes.
+
+### Added
+- `beginningsSunset: 'sea-level' | 'elevation'` in `ZmanimSettings` and every function that
+  takes them (and in `parseSettings` and `settingsToJSON`): `'elevation'` counts candle lighting
+  and the start of Yom Kippur and Tisha B'Av from the elevated sunset, as 0.5.1 did.
+- The festivals as a whole, without a day number, as `termName` keys: `rosh-hashana`, `sukkos`,
+  `pesach`, `shavuos`, `chanukah` (ראש השנה, סוכות, פסח, שבועות, חנוכה; "Sukkos" in
+  `ashkenazi`, "Sukkot" in `sephardi`, "Passover" and "Hanukkah" in `en`). `nameEntries` lists
+  them, and they can be changed like any name (`term.<key>`).
+
+## 0.5.1 — 2026-11-13
+
+### Breaking
+- `Zmanim.parseOpinions` no longer reads the method names of Luach 0.1 (`"sofZmanShemaMga72"`):
+  each is reported as a problem and left out, as any unknown value is. It does not throw: the
+  choice is missing from `value`, so that role falls back to the default, and only `problems`
+  says why. A caller that ignores `problems` loses a person's stored choice without noticing.
+  Convert stored 0.1 names to zman ids (`"sof-zman-shema-mga-72"`) before upgrading. The keys `tefillah` and `shabbosEnds` and havdala as
+  `"degrees-8.5"` or `"minutes-72"` are still read. About 1 KB smaller wherever `Zmanim` is used.
+
+### Changed
+- Holiday, zman and parsha names fall back from the Sephardi and English sets to the set they
+  follow, as the everyday words already did, so those tables hold only the names that differ.
+  Every name in every built-in set is unchanged. The main bundle is about 1 KB smaller.
+- The command line loads the built-in city table only when a place is named (as it already did the
+  full city table), so a command without a place starts lighter.
+
+### Fixed
+- The molad's announcement: in Hebrew one chelek is "וחלק אחד" (it said "ו־1 חלקים"), and with
+  no chalakim they are left out in both languages ("and 0 chalakim"). In English a molad on
+  Saturday evening is "Motzei Shabbos" (it said "Shabbos night", which in English means Friday
+  night): molad Nisan 5781, "Motzei Shabbos, 7:03 pm and 5 chalakim".
+- Places: GeoNames 284375, named "Battir" there, is Beitar Illit: its Hebrew name (ביתר עילית),
+  population and position are Beitar Illit's, and the village of Battir is another GeoNames
+  place. `luach/places-full` names it "Beitar Illit" (id `geonames:284375` unchanged), with the
+  spellings "Betar Illit" and "Beitar Ilit", and no longer finds it as "Battir". The built-in
+  table adds `beitar-illit` and `meron` (מירון, "Miron").
+- `searchPlaces` ranks a whole word of a name ("Meron" in "Kfar Meron") above a prefix, and the
+  beginning of a later word above the middle of a word, whatever the population: "Meron" no
+  longer finds "Cameron Park" first.
+- The Sephardi names have "Motzaei Shabbat" and "Motzaei Yom Tov" (`termName('motzaei-shabbos',
+  sephardi)` gave the Ashkenazi "Motzei Shabbos"); the English names, which take the Sephardi
+  words they have none of their own for, now say "Motzaei Shabbat" as they say "Shabbat".
 
 ## 0.5.0 — 2026-11-13
 

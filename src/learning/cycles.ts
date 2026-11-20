@@ -19,7 +19,7 @@ import { gematriya } from '../text/gematriya.js';
 
 const g = (n: number) => gematriya(n);
 const gp = (n: number) => gematriya(n, { punctuate: false });
-import { BAVLI_AMUDIM, MISHNAH, NACH, RAMBAM, YERUSHALMI_VILNA } from './data.js';
+import { BAVLI_AMUDIM, MISHNAH, NACH, YERUSHALMI_VILNA } from './data.js';
 import { hebrewDateOrDaysArg } from '../calendar/date-input.js';
 
 /** One day's portion in a learning cycle. */
@@ -180,100 +180,6 @@ export function mishnaYomis(date: HebrewDate | number): LearningPortion | null {
   const heNum = (x: typeof a) => `${gp(x.chapter)}:${gp(x.mishna)}`;
   const textHe = a.name === b.name ? `${a.he} ${heNum(a)}–${heNum(b)}` : `${a.he} ${heNum(a)} – ${b.he} ${heNum(b)}`;
   return { cycle: 'mishna-yomis', cycleNumber: p.cycleNumber, day: p.index + 1, length: MISHNA_DAYS, text, textHe };
-}
-
-// ------------------------------------------------------------ Rambam
-
-const RAMBAM_EPOCH = days(1984, 4, 29);
-
-type RambamUnit = { name: string; he: string; label: string; labelHe: string };
-
-function rambamUnits(track: 1 | 3): RambamUnit[] {
-  const units: RambamUnit[] = [];
-  for (const [name, he, chapters] of RAMBAM) {
-    if (name === 'The Order of Prayer') {
-      // Seder Tefillos: five sections in the 3-chapter track; four days in the 1-chapter track,
-      // the fourth running to the end of Sefer Ahavah.
-      const n = track === 3 ? 5 : 4;
-      for (let i = 1; i <= n; i++) {
-        const last = track === 1 && i === 4;
-        units.push({ name, he, label: last ? 'parts 4–5' : `part ${i}`, labelHe: last ? 'ד–ה' : gp(i) });
-      }
-      continue;
-    }
-    for (let c = 1; c <= chapters; c++) {
-      // Nusach HaHaggadah (chapter 9 of Chametz uMatzah): its own day in the 1-chapter
-      // track; in the 3-chapter track it is learned with chapter 8 and not counted.
-      if (track === 3 && name === 'Leavened and Unleavened Bread' && c === 9) continue;
-      const withHaggadah = track === 3 && name === 'Leavened and Unleavened Bread' && c === 8;
-      units.push({ name, he, label: withHaggadah ? 'chapter 8 and the Haggadah' : c === 9 && name === 'Leavened and Unleavened Bread' ? 'Haggadah' : `chapter ${c}`, labelHe: withHaggadah ? 'פרק ח והגדה' : c === 9 && name === 'Leavened and Unleavened Bread' ? 'נוסח ההגדה' : `פרק ${gp(c)}` });
-    }
-  }
-  return units;
-}
-
-const ONE_INTRO = [
-  ['Introduction, part 1', 'הקדמה א'], ['Introduction, part 2', 'הקדמה ב'], ['Introduction, part 3', 'הקדמה ג'],
-  ['Positive commandments 1–83', 'מצוות עשה א–פג'], ['Positive commandments 84–166', 'מצוות עשה פד–קסו'], ['Positive commandments 167–248', 'מצוות עשה קסז–רמח'],
-  ['Negative commandments 1–122', 'מצוות לא תעשה א–קכב'], ['Negative commandments 123–244', 'מצוות לא תעשה קכג–רמד'], ['Negative commandments 245–365', 'מצוות לא תעשה רמה–שסה'],
-  ['Listing of mitzvos by hilchos, part 1', 'מניין המצוות על סדר ההלכות א'], ['Listing of mitzvos by hilchos, part 2', 'מניין המצוות על סדר ההלכות ב'], ['Listing of mitzvos by hilchos, part 3', 'מניין המצוות על סדר ההלכות ג'],
-] as const;
-const THREE_INTRO = [
-  ['Introduction', 'הקדמה'], ['Positive commandments 1–248', 'מצוות עשה'], ['Negative commandments 1–365', 'מצוות לא תעשה'], ['Listing of mitzvos by hilchos', 'מניין המצוות על סדר ההלכות'],
-] as const;
-
-const ONE_UNITS = rambamUnits(1);
-const THREE_UNITS = rambamUnits(3);
-const ONE_LENGTH = ONE_INTRO.length + ONE_UNITS.length; // 1017
-const THREE_LENGTH = THREE_INTRO.length + THREE_UNITS.length / 3; // 339
-
-const describe = (us: RambamUnit[]): [string, string] => {
-  const parts: string[] = [];
-  const partsHe: string[] = [];
-  for (const u of us) {
-    const prev = parts.length ? us[us.indexOf(u) - 1] : undefined;
-    if (prev && prev.name === u.name) {
-      parts[parts.length - 1] += `, ${u.label.replace(/^chapter /, '')}`;
-      partsHe[partsHe.length - 1] += `, ${u.labelHe}`;
-    } else {
-      parts.push(`${u.name} ${u.label}`);
-      partsHe.push(`${u.he} ${u.labelHe}`);
-    }
-  }
-  return [parts.join('; '), partsHe.join('; ')];
-};
-
-/** Rambam, one chapter a day (Chabad cycle from 27 Nisan 5744, 29 April 1984; 1,017 days). */
-export function rambamOneChapter(date: HebrewDate | number): LearningPortion | null {
-  date = hebrewDateOrDaysArg(date, 'rambamOneChapter');
-  const p = position(RAMBAM_EPOCH, ONE_LENGTH, toDays(date));
-  if (!p) return null;
-  const intro = ONE_INTRO[p.index];
-  const [text, textHe] = intro ? [intro[0], intro[1]] : describe([ONE_UNITS[p.index - ONE_INTRO.length]!]);
-  return { cycle: 'rambam-1', cycleNumber: p.cycleNumber, day: p.index + 1, length: ONE_LENGTH, text, textHe };
-}
-
-/** Rambam, three chapters a day (Chabad cycle from 27 Nisan 5744; 339 days). */
-export function rambamThreeChapters(date: HebrewDate | number): LearningPortion | null {
-  date = hebrewDateOrDaysArg(date, 'rambamThreeChapters');
-  const p = position(RAMBAM_EPOCH, THREE_LENGTH, toDays(date));
-  if (!p) return null;
-  const intro = THREE_INTRO[p.index];
-  const k = p.index - THREE_INTRO.length;
-  const [text, textHe] = intro ? [intro[0], intro[1]] : describe(THREE_UNITS.slice(k * 3, k * 3 + 3));
-  return { cycle: 'rambam-3', cycleNumber: p.cycleNumber, day: p.index + 1, length: THREE_LENGTH, text, textHe };
-}
-
-/**
- * The day number of Sefer HaMitzvos (Chabad), which runs in parallel with the
- * three-chapter Rambam cycle (Day 1 is that cycle's first day; Day 1 fell on
- * 1 March 2025, the start of a three-chapter cycle). The mitzvos for each day come from a
- * published table that Luach does not ship.
- */
-export function seferHaMitzvosDay(date: HebrewDate | number): { cycleNumber: number; day: number } | null {
-  date = hebrewDateOrDaysArg(date, 'seferHaMitzvosDay');
-  const p = position(RAMBAM_EPOCH, THREE_LENGTH, toDays(date));
-  return p ? { cycleNumber: p.cycleNumber, day: p.index + 1 } : null;
 }
 
 // ------------------------------------------------------------ Nach Yomi

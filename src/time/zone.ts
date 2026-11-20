@@ -25,8 +25,16 @@ export interface TimeZoneProvider {
 /** An IANA zone name such as `"America/New_York"`, or a custom provider. */
 export type TimeZone = string | TimeZoneProvider;
 
+/** Throws a RangeError for an offset that is not a finite number of minutes within a day (±24 h) of UTC. */
+function checkOffset(minutes: unknown, who: string): void {
+  if (!(Math.abs(minutes as number) <= 1440)) {
+    throw new RangeError(`${who}: offset ${minutes} is not within ±1440 minutes`);
+  }
+}
+
 /** A provider with a constant offset. Useful for tests and for engines without `Intl`. */
 export function fixedOffsetZone(minutes: number, name?: string): TimeZoneProvider {
+  checkOffset(minutes, 'fixedOffsetZone');
   const sign = minutes < 0 ? '-' : '+';
   const a = Math.abs(minutes);
   const label = name ?? `UTC${sign}${String(Math.floor(a / 60)).padStart(2, '0')}:${String(a % 60).padStart(2, '0')}`;
@@ -36,27 +44,52 @@ export function fixedOffsetZone(minutes: number, name?: string): TimeZoneProvide
 /** The UTC zone. */
 export const UTC: TimeZoneProvider = fixedOffsetZone(0, 'UTC');
 
+// One formatter per zone, keyed by the zone's canonical name: Intl accepts any letter case
+// ("america/NEW_york"), and a formatter per spelling would grow without bound. `spellings`
+// remembers which canonical zone a spelling resolved to, so a repeated spelling costs a lookup.
+// Both are cleared when full.
+const MAX_CACHED = 64;
 const formatters = new Map<string, Intl.DateTimeFormat>();
+const spellings = new Map<string, string>();
+
+/** How many formatters are held (for tests). Not exported from the package. */
+export function zoneCacheSize(): number {
+  return formatters.size;
+}
+
+function makeFormatter(zone: string): Intl.DateTimeFormat {
+  if (typeof Intl === 'undefined' || typeof Intl.DateTimeFormat !== 'function') {
+    throw new Error('Intl.DateTimeFormat is not available; pass a TimeZoneProvider instead of a zone name');
+  }
+  return new Intl.DateTimeFormat('en-US', {
+    timeZone: zone,
+    hour12: false,
+    era: 'short',
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+  });
+}
 
 function formatterFor(zone: string): Intl.DateTimeFormat {
-  let f = formatters.get(zone);
-  if (!f) {
-    if (typeof Intl === 'undefined' || typeof Intl.DateTimeFormat !== 'function') {
-      throw new Error('Intl.DateTimeFormat is not available; pass a TimeZoneProvider instead of a zone name');
-    }
-    f = new Intl.DateTimeFormat('en-US', {
-      timeZone: zone,
-      hour12: false,
-      era: 'short',
-      year: 'numeric',
-      month: 'numeric',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
-      second: 'numeric',
-    });
-    formatters.set(zone, f);
+  const known = spellings.get(zone);
+  if (known !== undefined) {
+    const f = formatters.get(known);
+    if (f) return f;
   }
+  const made = makeFormatter(zone);
+  const canonical = made.resolvedOptions().timeZone || zone;
+  let f = formatters.get(canonical);
+  if (!f) {
+    if (formatters.size >= MAX_CACHED) formatters.clear();
+    formatters.set(canonical, made);
+    f = made;
+  }
+  if (spellings.size >= MAX_CACHED) spellings.clear();
+  spellings.set(zone, canonical);
   return f;
 }
 
@@ -79,7 +112,37 @@ export function assertTimeZone(zone: TimeZone): void {
   }
 }
 
+// The offset at an instant, remembered per zone and per whole second. The formatter reads
+// the instant to the second, so the second is the exact key: a clock change cannot fall
+// inside a key. Bounded; cleared when full.
+const MAX_OFFSETS = 4096;
+const offsets = new Map<string, Map<number, number>>();
+let offsetCount = 0;
+
 function intlOffsetMinutes(zone: string, epochMs: number): number {
+  const sec = Math.floor(epochMs / 1000);
+  let perZone = offsets.get(zone);
+  if (perZone !== undefined) {
+    const hit = perZone.get(sec);
+    if (hit !== undefined) return hit;
+  }
+  const value = intlOffsetMinutesUncached(zone, epochMs);
+  if (offsetCount >= MAX_OFFSETS) {
+    offsets.clear();
+    offsetCount = 0;
+    perZone = undefined;
+  }
+  if (perZone === undefined) {
+    perZone = new Map();
+    offsets.set(zone, perZone);
+  }
+  perZone.set(sec, value);
+  offsetCount++;
+  return value;
+}
+
+/** The offset read from the runtime, without the cache (for tests). Not exported from the package. */
+export function intlOffsetMinutesUncached(zone: string, epochMs: number): number {
   const ms = Math.floor(epochMs / 1000) * 1000;
   const parts = formatterFor(zone).formatToParts(new Date(ms));
   let year = 0, month = 1, day = 1, hour = 0, minute = 0, second = 0, bc = false;
@@ -106,7 +169,10 @@ function intlOffsetMinutes(zone: string, epochMs: number): number {
  * minutes; historical local mean time can have seconds, given as a fraction (140.6667).
  */
 export function offsetMinutes(zone: TimeZone, epochMs: number): number {
-  return typeof zone === 'string' ? intlOffsetMinutes(zone, epochMs) : zone.offsetMinutes(epochMs);
+  if (typeof zone === 'string') return intlOffsetMinutes(zone, epochMs);
+  const m = zone.offsetMinutes(epochMs);
+  checkOffset(m, `time zone "${zone.name}"`);
+  return m;
 }
 
 /** The zone's name, for output. */
